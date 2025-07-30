@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://hvfk26x78kj5"]
+
+[ext_resource type="PackedScene" uid="uid://oq5r73rgk5ps" path="res://Scenes/main_menu.tscn" id="1_ebmjs"]
+
+[node name="Game" type="Node"]
+
+[node name="main_menu" parent="." instance=ExtResource("1_ebmjs")]
+anchors_preset = 0

@@ -1,0 +1,40 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://cc80vt60acelx"]
+
+[ext_resource type="StyleBox" uid="uid://btrq2yxd4rhqe" path="res://Themes/Style_button_normal.tres" id="1_007y7"]
+
+[sub_resource type="SystemFont" id="SystemFont_bddov"]
+font_names = PackedStringArray("Fantasy")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_007y7"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 40
+corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bddov"]
+bg_color = Color(0.381703, 0.381703, 0.381703, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 40
+corner_radius_bottom_right = 4
+
+[resource]
+default_font_size = 65
+Button/colors/font_hover_color = Color(0, 0, 0, 1)
+Button/fonts/font = SubResource("SystemFont_bddov")
+Button/styles/hover = SubResource("StyleBoxFlat_007y7")
+Button/styles/normal = ExtResource("1_007y7")
+Button/styles/pressed = SubResource("StyleBoxFlat_bddov")
+Main_Menu_Buttons/base_type = &"Button"
+Main_Menu_Buttons/colors/font_color = Color(0.99558, 0.99558, 0.99558, 1)
+Main_Menu_Buttons/styles/focus = null
+Main_Menu_Buttons/styles/hover = null
+Main_Menu_Buttons/styles/normal = null
+Main_Menu_Buttons/styles/pressed = null
