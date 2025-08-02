@@ -73,31 +73,29 @@
       "text": "She steps aside as the Principal enters the classroom."
     },
     {
-      {
-  "speaker": "Principal",
-  "text": "Today we received a new call for a super scholarship to study at a prestigious university abroad. You’ll get free education and accommodation if you meet the following criteria:"
-},
-{
-  "speaker": "Principal",
-  "text": "– An average grade of 4.50 or higher in the subjects related to the field of study you’re applying for."
-},
-{
-  "speaker": "Principal",
-  "text": "– Submission of an application for university admission (CV, motivation letter, etc.)."
-},
-{
-  "speaker": "Principal",
-  "text": "– A certificate proving your knowledge of the language in which the program will be taught."
-},
-{
-  "speaker": "Principal",
-  "text": "Unfortunately, the deadline to submit all documents is just one week, so act quickly!"
-},
-{
-  "speaker": "Principal",
-  "text": "For more information, feel free to visit the secretary."
-}
-,
+      "speaker": "Principal",
+      "text": "Today we received a new call for a super scholarship to study at a prestigious university abroad. You’ll get free education and accommodation if you meet the following criteria:"
+    },
+    {
+      "speaker": "Principal",
+      "text": "– An average grade of 4.50 or higher in the subjects related to the field of study you’re applying for."
+    },
+    {
+      "speaker": "Principal",
+      "text": "– Submission of an application for university admission (CV, motivation letter, etc.)."
+    },
+    {
+      "speaker": "Principal",
+      "text": "– A certificate proving your knowledge of the language in which the program will be taught."
+    },
+    {
+      "speaker": "Principal",
+      "text": "Unfortunately, the deadline to submit all documents is just one week, so act quickly!"
+    },
+    {
+      "speaker": "Principal",
+      "text": "For more information, feel free to visit the secretary."
+    },
     {
       "action": "add_task",
       "tasks": ["Visit the School Secretary"]
