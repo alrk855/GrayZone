@@ -19,10 +19,7 @@ extends Control
 var dialogue_data = []
 var line_index := 0
 var selected_ids := []
-var current_choice_line := {}
-
-func _ready() -> void:
-        confirm_button.pressed.connect(_on_confirm_pressed)
+var _confirm_callable: Callable = Callable()
 
 func start(data: Array):
 	dialogue_data = data
@@ -60,11 +57,15 @@ func show_multi_select(line):
         choices_box.show()
         confirm_button.show()
         selected_ids.clear()
-        current_choice_line = line
 
-	for btn in choices_box.get_children():
-		if btn != confirm_button:
-			btn.queue_free()
+        for btn in choices_box.get_children():
+                if btn != confirm_button:
+                        btn.queue_free()
+
+        # Ensure the confirm button is connected only once to prevent
+        # multiple signal emissions when this function is called repeatedly.
+        if _confirm_callable and confirm_button.pressed.is_connected(_confirm_callable):
+                confirm_button.pressed.disconnect(_confirm_callable)
 
         for opt in line["options"]:
                 var b = Button.new()
@@ -73,25 +74,24 @@ func show_multi_select(line):
                 b.pressed.connect(func(): _on_choice_pressed(opt["id"], b))
                 choices_box.add_child(b)
 
+        _confirm_callable = _on_confirm_pressed.bind(line)
+        confirm_button.pressed.connect(_confirm_callable)
+
 func _on_choice_pressed(id, button):
 	if button.button_pressed:
 		selected_ids.append(id)
 	else:
 		selected_ids.erase(id)
 
-func _on_confirm_pressed():
-        if current_choice_line.is_empty():
-                return
-        if selected_ids.size() != current_choice_line["max_select"]:
-                print("You must select exactly %d option(s)." % current_choice_line["max_select"])
-                return
+func _on_confirm_pressed(line):
+	if selected_ids.size() != line["max_select"]:
+		print("You must select exactly %d option(s)." % line["max_select"])
+		return
 
-        GameState.selected_subjects = selected_ids.duplicate()
-        choices_box.hide()
-        confirm_button.hide()
-        line_index += 1
-        current_choice_line = {}
-        display_next()
+	GameState.selected_subjects = selected_ids.duplicate()
+	choices_box.hide()
+	confirm_button.hide()
+	display_next()
 
 func process_action(line):
 	match line["action"]:
