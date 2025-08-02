@@ -1,0 +1,27 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://cv31prkpacm5t"]
+
+[ext_resource type="Texture2D" uid="uid://cgybovqddpqdg" path="res://Icons/male.png" id="1_e8adt"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e8adt"]
+texture = ExtResource("1_e8adt")
+modulate_color = Color(0.101961, 0.101961, 0.101961, 0.768627)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hpqu"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gl0o3"]
+texture = ExtResource("1_e8adt")
+modulate_color = Color(1, 1, 1, 0.498039)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kdsv3"]
+texture = ExtResource("1_e8adt")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5rioo"]
+texture = ExtResource("1_e8adt")
+modulate_color = Color(0.103744, 0.103744, 0.103743, 0.768627)
+
+[resource]
+Button/styles/disabled = SubResource("StyleBoxTexture_e8adt")
+Button/styles/focus = SubResource("StyleBoxEmpty_1hpqu")
+Button/styles/hover = SubResource("StyleBoxTexture_gl0o3")
+Button/styles/normal = SubResource("StyleBoxTexture_kdsv3")
+Button/styles/pressed = SubResource("StyleBoxTexture_5rioo")

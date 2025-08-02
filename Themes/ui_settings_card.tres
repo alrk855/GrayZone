@@ -1,0 +1,21 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://hfoalgua28li"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qvf37"]
+bg_color = Color(0.188235, 0.878431, 0.854902, 0.443137)
+border_width_left = 12
+border_width_top = 12
+border_width_right = 12
+border_width_bottom = 12
+border_color = Color(0.25098, 0.780392, 0.807843, 0.823529)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+expand_margin_left = 24.0
+expand_margin_top = 24.0
+expand_margin_right = 24.0
+expand_margin_bottom = 24.0
+
+[resource]
+Panel/styles/panel = null
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_qvf37")

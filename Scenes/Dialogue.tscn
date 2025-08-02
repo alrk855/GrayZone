@@ -1,0 +1,207 @@
+[gd_scene load_steps=19 format=3 uid="uid://dbmqljwa4bp7s"]
+
+[ext_resource type="Theme" uid="uid://05x0jtoqf3eb" path="res://Themes/Dialouge theme.tres" id="1_oopix"]
+[ext_resource type="Script" uid="uid://jym8uv2ij5ac" path="res://Scripts/new_script.gd" id="3_l7n5n"]
+[ext_resource type="Texture2D" uid="uid://oip0thgbr6fb" path="res://Images/Buttons/buttonhover.png" id="4_mdvt6"]
+[ext_resource type="Texture2D" uid="uid://cb1yxbc2llxn8" path="res://Images/CharacterFrames/secretaryframe.png" id="5_cxhwm"]
+[ext_resource type="Texture2D" uid="uid://6ikg5804ucfw" path="res://Images/Buttons/buttonpressed.png" id="5_nf0h5"]
+[ext_resource type="Texture2D" uid="uid://dn8i2r7f71p60" path="res://Images/CharacterFrames/KlasenFrame.png" id="6_gexym"]
+[ext_resource type="Texture2D" uid="uid://dw2rmabf5glia" path="res://Images/CharacterFrames/Mvr ClerkFrame.png" id="6_hwgbm"]
+[ext_resource type="Texture2D" uid="uid://by3rdaym0rsk5" path="res://Images/CharacterFrames/Prof1Frame.png" id="7_gna8o"]
+[ext_resource type="Texture2D" uid="uid://djcn4m7yuux4b" path="res://Images/CharacterFrames/direktorframe.png" id="7_nf0h5"]
+[ext_resource type="Theme" uid="uid://cic3ab2y0afcf" path="res://Themes/1pxmarginVbox.tres" id="7_w3bqa"]
+[ext_resource type="Texture2D" uid="uid://df7rltulcjgjg" path="res://Images/CharacterFrames/MarkoFrame.png" id="8_20oyp"]
+[ext_resource type="Texture2D" uid="uid://c5jkto6cx7703" path="res://Images/Buttons/buttonunpressed.png" id="8_nf0h5"]
+[ext_resource type="Texture2D" uid="uid://bivm285oiyqv" path="res://Images/CharacterFrames/JanitorFrame.png" id="9_gw4m8"]
+[ext_resource type="Texture2D" uid="uid://dcn21tw4djt30" path="res://Images/CharacterFrames/20250729_1156_Decorative Empty Frame_remix_01k1asp7ezf5b98s7pd91qn311.png" id="14_ukpsn"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nf0h5"]
+texture = ExtResource("4_mdvt6")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mdvt6"]
+texture = ExtResource("8_nf0h5")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bxk41"]
+texture = ExtResource("5_nf0h5")
+
+[sub_resource type="Theme" id="Theme_20pvh"]
+Button/styles/hover = SubResource("StyleBoxTexture_nf0h5")
+Button/styles/normal = SubResource("StyleBoxTexture_mdvt6")
+Button/styles/pressed = SubResource("StyleBoxTexture_bxk41")
+
+[node name="Dialogue UI" type="Control"]
+z_index = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_oopix")
+script = ExtResource("3_l7n5n")
+Homeroomteacher = ExtResource("6_gexym")
+Director = ExtResource("7_nf0h5")
+Secretary = ExtResource("5_cxhwm")
+MVRclerk = ExtResource("6_hwgbm")
+Professor = ExtResource("7_gna8o")
+Marko = ExtResource("8_20oyp")
+Janitor = ExtResource("9_gw4m8")
+
+[node name="Choice Control Node" type="Control" parent="."]
+visibility_layer = 4
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -574.0
+offset_top = -649.0
+offset_right = 574.0
+grow_horizontal = 2
+grow_vertical = 0
+localize_numeral_system = false
+
+[node name="ChoiceBox" type="VBoxContainer" parent="Choice Control Node"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.19
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.310005
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_w3bqa")
+
+[node name="Button" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_20pvh")
+text = "Choice 1"
+
+[node name="Button2" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_20pvh")
+text = "Choice 2"
+
+[node name="Button3" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_20pvh")
+text = "Choice 3"
+
+[node name="Button4" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_20pvh")
+text = "Choice 4"
+
+[node name="Button5" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_20pvh")
+text = "Choice 5"
+
+[node name="Dialogue Box" type="PanelContainer" parent="."]
+z_index = 1
+clip_contents = true
+custom_minimum_size = Vector2(0, 135)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -135.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Control" type="Control" parent="Dialogue Box"]
+custom_minimum_size = Vector2(110, 95)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="PlaceHolderFrame" type="TextureRect" parent="Dialogue Box/Control"]
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.164
+anchor_top = -0.095
+anchor_right = 1.064
+anchor_bottom = 1.168
+offset_left = 0.0400009
+offset_top = 0.0250006
+offset_right = -0.0400009
+offset_bottom = 0.0399933
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+texture = ExtResource("14_ukpsn")
+expand_mode = 1
+
+[node name="Control2" type="Control" parent="Dialogue Box"]
+layout_mode = 2
+size_flags_horizontal = 5
+
+[node name="Dialogue" type="RichTextLabel" parent="Dialogue Box/Control2"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -763.0
+offset_top = -95.0
+offset_right = 800.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 5
+theme_override_font_sizes/normal_font_size = 28
+text = "The Quick Brown Fox Jumped Over The Fence"
+
+[node name="Speaker Box" type="Control" parent="."]
+z_index = 3
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -185.0
+offset_right = 200.0
+offset_bottom = -135.0
+grow_vertical = 0
+
+[node name="Polygon2D" type="Polygon2D" parent="Speaker Box"]
+z_index = 3
+scale = Vector2(0.895, 1)
+color = Color(0.214683, 0.427914, 0.216121, 1)
+polygon = PackedVector2Array(0, 0, 177, 0, 200, 50, 0, 50)
+uv = PackedVector2Array(-2, -3)
+
+[node name="SpeakerLABEL" type="Label" parent="Speaker Box"]
+z_index = 5
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.505
+anchor_right = 0.5
+anchor_bottom = 0.505
+offset_left = -63.0
+offset_top = -25.25
+offset_right = 33.0
+offset_bottom = 23.75
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.00800896
+text = "Insert Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="change_text" type="Timer" parent="."]
+wait_time = 3.5
+one_shot = true

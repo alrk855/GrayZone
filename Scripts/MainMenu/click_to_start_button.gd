@@ -4,7 +4,7 @@ extends Button
 @onready var menu_container: Control = $"../../../Main_Menu_Control/Main_Menu_Picture/V_Button_Container"
 @onready var orn1: Control = $"../../../Main_Menu_Control/Main_Menu_Picture/OrnamentsL"
 @onready var orn2: Control =$"../../../Main_Menu_Control/Main_Menu_Picture/OrnamentsR"
-@onready var main_orn: Control = $"../../../Main_Menu_Control/Main_Menu_Picture/MainOrnament"
+@onready var main_orn: Control = $"../../../Main_Menu_Control/Main_Menu_Picture/HBoxContainer/MainOrnament"
 @onready var swoosh: AudioStreamPlayer2D = $"../Swoosh"
 
 @export var transit: Tween.TransitionType
@@ -22,7 +22,7 @@ func _pressed():
 	swoosh.play()
 
 	var screen_height = get_viewport().get_visible_rect().size.y
-	var target_position = camera.position + Vector2(0, screen_height)
+	var target_position = camera.position + Vector2(0, 1080)
 
 	var tween = create_tween()
 

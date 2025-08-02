@@ -1,0 +1,19 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://t18x08ii57qh"]
+
+[ext_resource type="Texture2D" uid="uid://i3jdfkvsj05v" path="res://Icons/music.png" id="1_7avft"]
+[ext_resource type="Texture2D" uid="uid://dmysx25s6s0i0" path="res://Icons/music-off.png" id="2_id5u2"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5n0dv"]
+texture = ExtResource("1_7avft")
+modulate_color = Color(1, 1, 1, 0.458824)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ne6ao"]
+texture = ExtResource("1_7avft")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tt8ml"]
+texture = ExtResource("2_id5u2")
+
+[resource]
+Button/styles/hover = SubResource("StyleBoxTexture_5n0dv")
+Button/styles/normal = SubResource("StyleBoxTexture_ne6ao")
+Button/styles/pressed = SubResource("StyleBoxTexture_tt8ml")

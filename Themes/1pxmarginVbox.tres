@@ -1,0 +1,4 @@
+[gd_resource type="Theme" load_steps=0 format=3 uid="uid://cic3ab2y0afcf"]
+
+[resource]
+VBoxContainer/constants/separation = 10

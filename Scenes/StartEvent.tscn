@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://dk4oomrw4r2r"]
+
+[ext_resource type="Texture2D" uid="uid://bkwm48qoj5743" path="res://Images/WHITE HD.png" id="1_3ony3"]
+[ext_resource type="Script" uid="uid://id2q7hwo013j" path="res://Scenes/start_event.gd" id="1_33p7c"]
+[ext_resource type="Texture2D" uid="uid://bsojf2uot8g5b" path="res://Images/Characters/klasen.png" id="2_33p7c"]
+
+[node name="main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_33p7c")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_3ony3")
+expand_mode = 1
+
+[node name="Klasen" type="Sprite2D" parent="TextureRect"]
+position = Vector2(925, 395)
+scale = Vector2(0.415, 0.415)
+texture = ExtResource("2_33p7c")

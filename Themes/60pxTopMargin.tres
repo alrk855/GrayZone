@@ -1,0 +1,4 @@
+[gd_resource type="Theme" format=3 uid="uid://cd135mxyvkcbx"]
+
+[resource]
+MarginContainer/constants/margin_top = 60

@@ -1,0 +1,25 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://d1c6ukpor1saj"]
+
+[ext_resource type="Texture2D" uid="uid://dt4jipter25g6" path="res://Icons/united-kingdom.png" id="1_ot574"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nlaru"]
+texture = ExtResource("1_ot574")
+expand_margin_top = 15.0
+expand_margin_bottom = 15.0
+modulate_color = Color(1, 1, 1, 0.419608)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cy6hh"]
+texture = ExtResource("1_ot574")
+expand_margin_top = 15.0
+expand_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dwhub"]
+texture = ExtResource("1_ot574")
+expand_margin_top = 15.0
+expand_margin_bottom = 15.0
+modulate_color = Color(0.188235, 0.188235, 0.188235, 0.811765)
+
+[resource]
+Button/styles/hover = SubResource("StyleBoxTexture_nlaru")
+Button/styles/normal = SubResource("StyleBoxTexture_cy6hh")
+Button/styles/pressed = SubResource("StyleBoxTexture_dwhub")

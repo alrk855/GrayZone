@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://oq5r73rgk5ps"]
+[gd_scene load_steps=38 format=3 uid="uid://oq5r73rgk5ps"]
 
 [ext_resource type="Texture2D" uid="uid://6aagdtaf1sfw" path="res://Images/MainMenu/BlueSky_HD.jpg" id="1_cp0ys"]
 [ext_resource type="Script" uid="uid://cultu8nfi3tif" path="res://Scripts/MainMenu/click_to_start_picture.gd" id="2_trj04"]
@@ -11,9 +11,29 @@
 [ext_resource type="Texture2D" uid="uid://dd58on0xjg4tl" path="res://Images/MainMenu/imgSIVA.jpg" id="6_t1dhk"]
 [ext_resource type="Texture2D" uid="uid://b805xlr5mghjj" path="res://Icons/arrows.png" id="7_5egv6"]
 [ext_resource type="FontFile" uid="uid://de647gnm3sexo" path="res://Fonts/BergamotOrnaments-3oK6.ttf" id="7_16hvj"]
+[ext_resource type="Theme" uid="uid://cj3djhcerx2sa" path="res://Themes/MainOrn.tres" id="10_aylim"]
 [ext_resource type="Script" uid="uid://bk0shcf3ul7ob" path="res://Scripts/MainMenu/play.gd" id="10_vtepg"]
-[ext_resource type="Script" uid="uid://fc2lago8y5do" path="res://Scripts/MainMenu/help.gd" id="11_8dnnj"]
+[ext_resource type="Script" uid="uid://d3sojpw0ye6wd" path="res://Scripts/MainMenu/Settings/settings.gd" id="11_jr6u5"]
+[ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="12_m3bi6"]
 [ext_resource type="AudioStream" uid="uid://cf5osgv40yj6n" path="res://Audio/game.mp3" id="12_t1dhk"]
+[ext_resource type="Script" uid="uid://fc2lago8y5do" path="res://Scripts/MainMenu/quit.gd" id="13_6vfk8"]
+[ext_resource type="Theme" uid="uid://hfoalgua28li" path="res://Themes/ui_settings_card.tres" id="13_8dnnj"]
+[ext_resource type="AudioStream" uid="uid://lyhht1a5m7r7" path="res://Audio/u4.mp3" id="13_tt8ml"]
+[ext_resource type="AudioStream" uid="uid://bxhhbf28dcl2v" path="res://Audio/u1.mp3" id="14_fmarx"]
+[ext_resource type="Texture2D" uid="uid://cum2k6wqu1ge8" path="res://Icons/question.png" id="15_ehtkc"]
+[ext_resource type="Texture2D" uid="uid://do3wi3o5xvjq5" path="res://Icons/close (1).png" id="16_6dk6o"]
+[ext_resource type="Script" uid="uid://4slur511u7dy" path="res://Scripts/MainMenu/Settings/Back.gd" id="18_84iac"]
+[ext_resource type="Theme" uid="uid://yoi5dxdmyy02" path="res://Themes/MasterButton.tres" id="19_84iac"]
+[ext_resource type="Script" uid="uid://5d7vhpr1gd3h" path="res://Scripts/MainMenu/Settings/sliding.gd" id="20_6dk6o"]
+[ext_resource type="Script" uid="uid://bf7p384gxmx6s" path="res://Scripts/MainMenu/Settings/sliding_bar.gd" id="21_84iac"]
+[ext_resource type="Theme" uid="uid://t18x08ii57qh" path="res://Themes/MusicButton.tres" id="21_jr6u5"]
+[ext_resource type="Theme" uid="uid://de6isrgwoaxiw" path="res://Themes/mkdbutton.tres" id="22_6m47u"]
+[ext_resource type="Script" uid="uid://cylk18w3k86fu" path="res://Scripts/MainMenu/Settings/toggle_master.gd" id="22_fmarx"]
+[ext_resource type="Theme" uid="uid://d1c6ukpor1saj" path="res://Themes/engbutton.tres" id="23_84iac"]
+[ext_resource type="Script" uid="uid://cc1xjpneexjrs" path="res://Scripts/MainMenu/Settings/music_toggle.gd" id="25_jw7lb"]
+[ext_resource type="Script" uid="uid://dw4x15fvyclna" path="res://Scripts/MainMenu/Settings/mkd.gd" id="27_hkdq0"]
+[ext_resource type="Script" uid="uid://b7cs46p4tebqd" path="res://Scripts/MainMenu/Settings/eng.gd" id="29_xcoo4"]
+[ext_resource type="Script" uid="uid://byt1da5l05jd" path="res://Scripts/MainMenu/camera_2d.gd" id="33_msuys"]
 
 [sub_resource type="Animation" id="Animation_16hvj"]
 resource_name = "Fade"
@@ -53,14 +73,10 @@ _data = {
 &"RESET": SubResource("Animation_vr1f0")
 }
 
-[node name="main_menu" type="Control"]
-layout_mode = 3
-anchors_preset = 0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="main_menu" type="Node2D"]
 
 [node name="Click_to_Start_Control" type="Control" parent="."]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -134,32 +150,42 @@ grow_vertical = 2
 texture = ExtResource("4_16hvj")
 expand_mode = 1
 
-[node name="MainOrnament" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture"]
-self_modulate = Color(0, 0, 0, 1)
+[node name="HBoxContainer" type="HBoxContainer" parent="Main_Menu_Control/Main_Menu_Picture"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -250.0
-offset_top = 230.0
-offset_right = 250.0
-offset_bottom = 446.0
+anchors_preset = -1
+anchor_left = 0.395
+anchor_top = 0.134
+anchor_right = 0.612
+anchor_bottom = 0.398
+offset_left = 0.599976
+offset_top = 0.279999
+offset_right = 1.95996
+offset_bottom = 7.15997
 grow_horizontal = 2
-theme_override_fonts/normal_font = ExtResource("7_16hvj")
-theme_override_font_sizes/normal_font_size = 135
+grow_vertical = 2
+
+[node name="MainOrnament" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture/HBoxContainer"]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme = ExtResource("10_aylim")
 text = "l"
 fit_content = true
+scroll_active = false
+autowrap_mode = 0
 horizontal_alignment = 1
 
 [node name="OrnamentsL" type="VBoxContainer" parent="Main_Menu_Control/Main_Menu_Picture"]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = -800.0
-offset_top = -145.0
-offset_right = -80.0
-offset_bottom = 345.0
+anchors_preset = -1
+anchor_left = -0.376
+anchor_top = 0.366
+anchor_bottom = 0.819
+offset_left = -0.0799561
+offset_top = -0.280029
+offset_right = -2.0
+offset_bottom = 0.479919
 grow_vertical = 2
 
 [node name="ornament1" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture/OrnamentsL"]
@@ -188,15 +214,14 @@ fit_content = true
 
 [node name="OrnamentsR" type="VBoxContainer" parent="Main_Menu_Control/Main_Menu_Picture"]
 layout_mode = 1
-anchors_preset = 6
+anchors_preset = -1
 anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 80.0
-offset_top = -145.0
-offset_right = 800.0
-offset_bottom = 345.0
+anchor_top = 0.366
+anchor_right = 1.375
+anchor_bottom = 0.819
+offset_top = -0.280029
+offset_right = -0.000244141
+offset_bottom = 0.479919
 grow_horizontal = 0
 grow_vertical = 2
 
@@ -226,23 +251,22 @@ fit_content = true
 
 [node name="V_Button_Container" type="VBoxContainer" parent="Main_Menu_Control/Main_Menu_Picture"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -210.0
-offset_top = -107.0
-offset_right = 220.0
-offset_bottom = 328.0
+anchors_preset = -1
+anchor_left = 0.391
+anchor_top = 0.401
+anchor_right = 0.615
+anchor_bottom = 0.804
+offset_left = -0.720093
+offset_top = -0.0800171
+offset_right = -0.800049
+offset_bottom = -0.320007
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 30
 
 [node name="ButtonWrapper1" type="Control" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container"]
-custom_minimum_size = Vector2(420, 125)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_vertical = 3
 
 [node name="Play" type="Button" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper1"]
 layout_mode = 1
@@ -253,12 +277,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("5_vr1f0")
 text = "Play"
+autowrap_mode = 2
 script = ExtResource("10_vtepg")
 
 [node name="ButtonWrapper2" type="Control" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container"]
-custom_minimum_size = Vector2(420, 125)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_vertical = 3
 
 [node name="Settings" type="Button" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper2"]
 layout_mode = 1
@@ -269,13 +293,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("5_vr1f0")
 text = "Settings"
+script = ExtResource("11_jr6u5")
 
 [node name="ButtonWrapper3" type="Control" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container"]
-custom_minimum_size = Vector2(420, 125)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_vertical = 3
 
-[node name="Help" type="Button" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper3"]
+[node name="Quit" type="Button" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper3"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -283,28 +307,30 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("5_vr1f0")
-text = "Help"
-script = ExtResource("11_8dnnj")
+text = "	QUIT
+"
+script = ExtResource("13_6vfk8")
 
-[node name="Settings_Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_top = 2160.0
-offset_right = 1920.0
-offset_bottom = 3240.0
+[node name="Click" type="AudioStreamPlayer2D" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container"]
+stream = ExtResource("13_tt8ml")
+volume_db = -2.0
 
-[node name="Settings_Picture" type="TextureRect" parent="Settings_Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("6_t1dhk")
-expand_mode = 1
+[node name="Hover" type="AudioStreamPlayer2D" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container"]
+stream = ExtResource("14_fmarx")
+volume_db = -6.0
 
-[node name="Go_Back" type="Button" parent="Settings_Control/Settings_Picture"]
-layout_mode = 1
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("33_msuys")
+target_node = NodePath("../Click_to_Start_Control")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_t1dhk")
+autoplay = true
+bus = &"Music"
+parameters/looping = true
+
+[node name="Go_Back" type="Button" parent="."]
+visible = false
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -320,8 +346,8 @@ icon = ExtResource("7_5egv6")
 icon_alignment = 1
 expand_icon = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Settings_Control/Settings_Picture"]
-layout_mode = 1
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -336,10 +362,280 @@ text = "Settings
 "
 horizontal_alignment = 1
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(960, 540)
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 2160.0
+offset_right = 1920.0
+offset_bottom = 3240.0
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("12_t1dhk")
-autoplay = true
-parameters/looping = true
+[node name="Settings_Control" type="Control" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("12_m3bi6")
+
+[node name="Settings_Picture" type="TextureRect" parent="Control/Settings_Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_t1dhk")
+expand_mode = 1
+
+[node name="Scrim" type="ColorRect" parent="Control/Settings_Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0431373, 0.0588235, 0.0980392, 0.588235)
+
+[node name="CardRoot" type="MarginContainer" parent="Control/Settings_Control"]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 64
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/Settings_Control/CardRoot"]
+layout_mode = 2
+theme = ExtResource("13_8dnnj")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Settings_Control/CardRoot/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 22
+
+[node name="TitleRow" type="HBoxContainer" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 22
+
+[node name="Label" type="Label" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 80
+text = "Settings"
+
+[node name="Spacer" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HelpSettings" type="Button" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+icon = ExtResource("15_ehtkc")
+icon_alignment = 1
+expand_icon = true
+
+[node name="ExitSettings" type="Button" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+icon = ExtResource("16_6dk6o")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("18_84iac")
+
+[node name="Swoosh" type="AudioStreamPlayer2D" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+stream = ExtResource("3_trj04")
+
+[node name="UI_Line" type="HSeparator" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Vspacer" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="VolumeRow" type="HBoxContainer" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 70
+
+[node name="1spacer" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="ToggleMaster" type="Button" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("19_84iac")
+theme_override_constants/h_separation = 5
+toggle_mode = true
+expand_icon = true
+script = ExtResource("22_fmarx")
+
+[node name="2spacer" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+layout_mode = 2
+
+[node name="Sound" type="Label" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "Sound"
+
+[node name="Sliding" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+layout_mode = 2
+size_flags_horizontal = 6
+script = ExtResource("20_6dk6o")
+
+[node name="FillBar" type="ProgressBar" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow/Sliding"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.045
+anchor_top = 0.414
+anchor_right = 1.024
+anchor_bottom = 0.607
+offset_left = -0.105
+offset_top = 0.0399933
+offset_right = 0.255981
+offset_bottom = 0.019989
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.001
+value = 0.5
+
+[node name="HSlider" type="HSlider" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow/Sliding"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.036
+anchor_top = 0.05
+anchor_right = 1.011
+anchor_bottom = 0.95
+offset_left = 0.116001
+offset_right = 0.158997
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+max_value = 1.0
+step = 0.001
+value = 0.5
+
+[node name="VolumeRow2" type="HBoxContainer" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 70
+
+[node name="1spacer" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="MusicToggle" type="Button" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("21_jr6u5")
+theme_override_constants/h_separation = 5
+toggle_mode = true
+expand_icon = true
+script = ExtResource("25_jw7lb")
+
+[node name="2spacer" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+layout_mode = 2
+
+[node name="Music" type="Label" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "Music "
+
+[node name="SlidingBAR" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+layout_mode = 2
+size_flags_horizontal = 6
+script = ExtResource("21_84iac")
+
+[node name="FillBar" type="ProgressBar" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2/SlidingBAR"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.045
+anchor_top = 0.414
+anchor_right = 1.03
+anchor_bottom = 0.607
+offset_left = -0.24
+offset_top = 0.0399933
+offset_right = 0.159973
+offset_bottom = 0.019989
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.001
+value = 0.5
+
+[node name="HSlider" type="HSlider" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2/SlidingBAR"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.036
+anchor_top = 0.05
+anchor_right = 1.017
+anchor_bottom = 0.95
+offset_left = 0.00800133
+offset_right = 0.0239868
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+max_value = 1.0
+step = 0.001
+value = 0.5
+
+[node name="Vspacer2" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="Label Row" type="HBoxContainer" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Language" type="Label" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/Label Row"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 55
+text = "Language"
+
+[node name="Buttons" type="HBoxContainer" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = -900
+
+[node name="mkd" type="Button" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+theme = ExtResource("22_6m47u")
+script = ExtResource("27_hkdq0")
+
+[node name="ENG" type="Button" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+theme = ExtResource("23_84iac")
+script = ExtResource("29_xcoo4")
+
+[node name="Click" type="AudioStreamPlayer2D" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+stream = ExtResource("13_tt8ml")
+volume_db = -2.0
+
+[node name="Hover" type="AudioStreamPlayer2D" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+stream = ExtResource("14_fmarx")
+volume_db = -6.0
+
+[connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper1/Play" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper1/Play" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper2/Settings" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper2/Settings" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper3/Quit" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper3/Quit" method="_on_mouse_entered"]

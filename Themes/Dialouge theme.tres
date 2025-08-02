@@ -1,0 +1,17 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://05x0jtoqf3eb"]
+
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="1_nxfgt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vybrg"]
+content_margin_left = 40.0
+content_margin_top = 20.0
+content_margin_right = 40.0
+content_margin_bottom = 20.0
+bg_color = Color(0, 0, 0, 0.54902)
+border_width_top = 1
+border_color = Color(0.247059, 0.654902, 0.505882, 0.54902)
+
+[resource]
+default_font = ExtResource("1_nxfgt")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_vybrg")
+RichTextLabel/font_sizes/normal_font_size = 40

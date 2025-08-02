@@ -1,0 +1,25 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://de6isrgwoaxiw"]
+
+[ext_resource type="Texture2D" uid="uid://cgfwcjcvf02kt" path="res://Icons/republic-of-macedonia.png" id="1_ld3nr"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kt3by"]
+texture = ExtResource("1_ld3nr")
+expand_margin_top = 15.0
+expand_margin_bottom = 15.0
+modulate_color = Color(1, 1, 1, 0.490196)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5mffm"]
+texture = ExtResource("1_ld3nr")
+expand_margin_top = 15.0
+expand_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lj661"]
+texture = ExtResource("1_ld3nr")
+expand_margin_top = 15.0
+expand_margin_bottom = 15.0
+modulate_color = Color(0.188235, 0.188235, 0.188235, 0.811765)
+
+[resource]
+Button/styles/hover = SubResource("StyleBoxTexture_kt3by")
+Button/styles/normal = SubResource("StyleBoxTexture_5mffm")
+Button/styles/pressed = SubResource("StyleBoxTexture_lj661")

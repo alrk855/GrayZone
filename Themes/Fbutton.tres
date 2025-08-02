@@ -1,0 +1,27 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bxhjmt7by7tw"]
+
+[ext_resource type="Texture2D" uid="uid://d0jm5r1n5f7db" path="res://Icons/female.png" id="1_upp2r"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_upp2r"]
+texture = ExtResource("1_upp2r")
+modulate_color = Color(0.101961, 0.101961, 0.101961, 0.768627)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kiwqn"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e4d8s"]
+texture = ExtResource("1_upp2r")
+modulate_color = Color(1, 1, 1, 0.490196)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mgu4k"]
+texture = ExtResource("1_upp2r")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aosmn"]
+texture = ExtResource("1_upp2r")
+modulate_color = Color(0.101961, 0.101961, 0.101961, 0.768627)
+
+[resource]
+Button/styles/disabled = SubResource("StyleBoxTexture_upp2r")
+Button/styles/focus = SubResource("StyleBoxEmpty_kiwqn")
+Button/styles/hover = SubResource("StyleBoxTexture_e4d8s")
+Button/styles/normal = SubResource("StyleBoxTexture_mgu4k")
+Button/styles/pressed = SubResource("StyleBoxTexture_aosmn")

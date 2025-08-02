@@ -11,14 +11,24 @@ config_version=5
 [application]
 
 config/name="GrayZone"
+run/main_scene="uid://hvfk26x78kj5"
 config/features=PackedStringArray("4.4", "GL Compatibility")
+run/main_script="res://Scenes/main_run.gd"
+
+[audio]
+
+buses/default_bus_layout="res://Themes/default_bus_layout.tres"
+
+[autoload]
+
+GameState="*res://Scripts/Singleton/GameState.gd"
+DialogueManager="*res://Scripts/Singleton/DialogueManager.gd"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/mode="viewport"
 
 [rendering]
 
