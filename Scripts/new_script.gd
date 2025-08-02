@@ -19,6 +19,7 @@ extends Control
 var dialogue_data = []
 var line_index := 0
 var selected_ids := []
+var _confirm_callable: Callable = Callable()
 
 func start(data: Array):
 	dialogue_data = data
@@ -53,22 +54,28 @@ func display_next():
 	line_index += 1
 
 func show_multi_select(line):
-	choices_box.show()
-	confirm_button.show()
-	selected_ids.clear()
+        choices_box.show()
+        confirm_button.show()
+        selected_ids.clear()
 
-	for btn in choices_box.get_children():
-		if btn != confirm_button:
-			btn.queue_free()
+        for btn in choices_box.get_children():
+                if btn != confirm_button:
+                        btn.queue_free()
 
-	for opt in line["options"]:
-		var b = Button.new()
-		b.text = opt["text"]
-		b.toggle_mode = true
-		b.pressed.connect(func(): _on_choice_pressed(opt["id"], b))
-		choices_box.add_child(b)
+        # Ensure the confirm button is connected only once to prevent
+        # multiple signal emissions when this function is called repeatedly.
+        if _confirm_callable and confirm_button.pressed.is_connected(_confirm_callable):
+                confirm_button.pressed.disconnect(_confirm_callable)
 
-	confirm_button.pressed.connect(_on_confirm_pressed.bind(line))
+        for opt in line["options"]:
+                var b = Button.new()
+                b.text = opt["text"]
+                b.toggle_mode = true
+                b.pressed.connect(func(): _on_choice_pressed(opt["id"], b))
+                choices_box.add_child(b)
+
+        _confirm_callable = _on_confirm_pressed.bind(line)
+        confirm_button.pressed.connect(_confirm_callable)
 
 func _on_choice_pressed(id, button):
 	if button.button_pressed:
