@@ -36,7 +36,8 @@ func fade_in():
 func on_dialogue_action(line: Dictionary):
 	match line["action"]:
 		"add_task":
-			print("🧩 Task marker received:", line["tasks"])
+			for task in line["tasks"]:
+				GameState.add_task(task)
 		"adjust_time":
 			GameState.adjust_time(line["value"])
 		"unlock_feature":

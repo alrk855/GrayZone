@@ -26,9 +26,8 @@ var unlocked_features: Dictionary = {}  # e.g. { "study": true, "exam": true }
 # === TIME CONTROL ===
 func adjust_time(minutes_to_add: int):
 	var total_minutes = hour * 60 + minute + minutes_to_add
-	var wrapped_day = floor(total_minutes / 1440.0)  # Use float division then floor
+	var wrapped_day = floor(total_minutes / 1440.0)
 	var new_minutes = total_minutes % 1440
-
 	hour = int(new_minutes / 60)
 	minute = new_minutes % 60
 
@@ -45,7 +44,7 @@ func add_task(task: String):
 		print("📌 Task added:", task)
 
 # === FEATURE UNLOCKS ===
-func unlock_game_feature(name: String):  # Renamed to avoid shadowing Node
+func unlock_game_feature(name: String):
 	unlocked_features[name] = true
 	print("🆓 Feature unlocked:", name)
 

@@ -55,12 +55,12 @@ size_flags_vertical = 0
 [node name="principal" type="TextureRect" parent="background/Control/Control"]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = -1
+anchor_top = 0.252
+anchor_right = 1.253
 anchor_bottom = 1.0
-offset_left = 18.0
-offset_top = 63.0
-offset_right = 53.0
+offset_left = 1.0
+offset_right = 0.0500031
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3

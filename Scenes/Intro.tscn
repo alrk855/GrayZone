@@ -1,10 +1,10 @@
 [gd_scene load_steps=10 format=3 uid="uid://bhtecakire2og"]
 
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="1_rrrc0"]
-[ext_resource type="Script" uid="uid://ddeg6blfaos1v" path="res://Scripts/Intro.gd" id="2_u3s32"]
+[ext_resource type="Script" uid="uid://ddeg6blfaos1v" path="res://Scenes/Intro.gd" id="2_u3s32"]
 [ext_resource type="AudioStream" uid="uid://t2gkr8ot60h3" path="res://Audio/IntroPop.mp3" id="3_vmpge"]
 [ext_resource type="Texture2D" uid="uid://bkfauhcg43i3h" path="res://Icons/arrow-right (2).png" id="4_d0kpp"]
-[ext_resource type="Script" uid="uid://baii3efolmokt" path="res://Scenes/ponatamu.gd" id="5_ina6a"]
+[ext_resource type="Script" uid="uid://baii3efolmokt" path="res://Scripts/ponatamu.gd" id="5_ina6a"]
 [ext_resource type="AudioStream" uid="uid://lyhht1a5m7r7" path="res://Audio/u4.mp3" id="6_ina6a"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ww5ix"]

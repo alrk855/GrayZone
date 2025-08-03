@@ -1,4 +1,3 @@
-
 extends Node
 
 const TASK_MANAGER_SCENE := preload("res://Scenes/TaskManager.tscn")
@@ -30,9 +29,5 @@ func _toggle_task_scene():
 	else:
 		task_instance = TASK_MANAGER_SCENE.instantiate()
 		get_tree().current_scene.add_child(task_instance)
-
-
-
-
-		if task_instance.has_method("_populate_tasks"):
-			task_instance.call("_populate_tasks")
+		if task_instance.has_method("refresh_tasks"):
+			task_instance.call("refresh_tasks")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://be02gb1lcicyt"]
 
-[ext_resource type="Script" uid="uid://cgh3h3gek0533" path="res://Scripts/task_manager.gd" id="1_wsdlb"]
+[ext_resource type="Script" uid="uid://cgh3h3gek0533" path="res://Scenes/task_manager.gd" id="1_wsdlb"]
 [ext_resource type="Texture2D" uid="uid://b4joiojiobkba" path="res://Images/board.png" id="1_xtc5h"]
 [ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="2_5qtaj"]
 [ext_resource type="Texture2D" uid="uid://dll21rvk30k2j" path="res://Images/Pin.png" id="3_5js0q"]
@@ -94,6 +94,8 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
+text_overrun_behavior = 3
+autowrap_mode = 3
 
 [node name="Task2" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
