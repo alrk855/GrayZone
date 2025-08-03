@@ -75,7 +75,6 @@ vertical_alignment = 1
 script = ExtResource("2_u3s32")
 
 [node name="Timer" type="Timer" parent="Panel"]
-wait_time = 5.0
 one_shot = true
 autostart = true
 
@@ -83,7 +82,6 @@ autostart = true
 stream = ExtResource("3_vmpge")
 
 [node name="pop" type="Timer" parent="Panel/AudioStreamPlayer2D"]
-wait_time = 3.3
 one_shot = true
 autostart = true
 

@@ -1,34 +1,45 @@
 extends Control
 
-@onready var dialogue_label = $DialogueBox/Control2/Dialogue
-@onready var speaker_label = $DialogueBox/SpeakerBox/SpeakerLABEL
-@onready var portrait = $DialogueBox/Control/PlaceHolderFrame
-@onready var choices_box = $ChoiceControlNode
-@onready var confirm_button = $ChoiceControlNode/ConfirmButton
+@onready var dialogue_label = $"Dialogue Box/Control2/Dialogue"
+@onready var speaker_label = $"Speaker Box/SpeakerLABEL"
+@onready var portrait = $"Dialogue Box/Control/PlaceHolderFrame"
+@onready var choices_box = $"Choice Control Node/ChoiceBox"
 
-# These will be set via the editor (drag your textures here)
-@export var Homeroomteacher: Texture2D
-@export var Director: Texture2D
-@export var Secretary: Texture2D
-@export var MVRclerk: Texture2D
-@export var Professor: Texture2D
-@export var Daniel: Texture2D
-@export var Marko: Texture2D
-@export var Janitor: Texture2D
+@onready var choice_buttons := [
+	choices_box.get_node("Button"),
+	choices_box.get_node("Button2"),
+	choices_box.get_node("Button3"),
+	choices_box.get_node("Button4"),
+	choices_box.get_node("Button5")
+]
 
-var dialogue_data = []
+@export var portraits := {
+	"teacher": preload("res://Images/CharacterFrames/KlasenFrame.png"),
+	"principal": preload("res://Images/CharacterFrames/direktorframe.png"),
+	"secretary": preload("res://Images/CharacterFrames/secretaryframe.png"),
+	"janitor": preload("res://Images/CharacterFrames/JanitorFrame.png"),
+	"professor": preload("res://Images/CharacterFrames/Prof1Frame.png"),
+	"marko": preload("res://Images/CharacterFrames/MarkoFrame.png"),
+	"mvrclerk": preload("res://Images/CharacterFrames/MvrClerkFrame.png")
+}
+
+var dialogue_data: Array = []
 var line_index := 0
-var selected_ids := []
-var _confirm_callable: Callable = Callable()
+var is_typing := false
+var typing_speed := 0.04 # slower now
+var selected_ids: Array = []
+var max_select := 1
+var caller: Node = null
 
-func start(data: Array):
-	dialogue_data = data
+func start(lines: Array, caller_node: Node = null):
+	dialogue_data = lines
+	caller = caller_node
 	line_index = 0
 	show()
 	display_next()
 
 func _unhandled_input(event):
-	if event.is_action_pressed("ui_accept") and not choices_box.visible:
+	if event.is_action_pressed("ui_accept") and not choices_box.visible and not is_typing:
 		display_next()
 
 func display_next():
@@ -38,92 +49,80 @@ func display_next():
 
 	var line = dialogue_data[line_index]
 
-	if line.has("text"):
-		speaker_label.text = line.get("speaker", "")
-		dialogue_label.text = line["text"]
-		_update_portrait(speaker_label.text)
-	elif line.has("choice_type"):
-		show_multi_select(line)
-		return
-	elif line.has("action"):
-		process_action(line)
+	# Handle scene_transition only when it's a standalone line
+	if line.has("scene_transition") and not line.has("text"):
+		if caller:
+			await caller.call("on_scene_transition", line["scene_transition"])
 		line_index += 1
 		display_next()
 		return
 
-	line_index += 1
-
-func show_multi_select(line):
-        choices_box.show()
-        confirm_button.show()
-        selected_ids.clear()
-
-        for btn in choices_box.get_children():
-                if btn != confirm_button:
-                        btn.queue_free()
-
-        # Ensure the confirm button is connected only once to prevent
-        # multiple signal emissions when this function is called repeatedly.
-        if _confirm_callable and confirm_button.pressed.is_connected(_confirm_callable):
-                confirm_button.pressed.disconnect(_confirm_callable)
-
-        for opt in line["options"]:
-                var b = Button.new()
-                b.text = opt["text"]
-                b.toggle_mode = true
-                b.pressed.connect(func(): _on_choice_pressed(opt["id"], b))
-                choices_box.add_child(b)
-
-        _confirm_callable = _on_confirm_pressed.bind(line)
-        confirm_button.pressed.connect(_confirm_callable)
-
-func _on_choice_pressed(id, button):
-	if button.button_pressed:
-		selected_ids.append(id)
-	else:
-		selected_ids.erase(id)
-
-func _on_confirm_pressed(line):
-	if selected_ids.size() != line["max_select"]:
-		print("You must select exactly %d option(s)." % line["max_select"])
+	if line.has("text"):
+		speaker_label.text = line.get("speaker", "")
+		_update_portrait(speaker_label.text)
+		await _type_text(line["text"])
+		await get_tree().create_timer(0.5).timeout
+		line_index += 1
+		display_next()
+	elif line.has("choice_type"):
+		show_choices(line)
 		return
+	elif line.has("action"):
+		if caller:
+			caller.call("on_dialogue_action", line)
+		line_index += 1
+		display_next()
+	else:
+		line_index += 1
+		display_next()
 
-	GameState.selected_subjects = selected_ids.duplicate()
-	choices_box.hide()
-	confirm_button.hide()
-	display_next()
+func _type_text(text: String) -> void:
+	is_typing = true
+	dialogue_label.text = ""
+	for i in range(text.length()):
+		dialogue_label.text += text[i]
+		await get_tree().create_timer(typing_speed).timeout
+	is_typing = false
 
-func process_action(line):
-	match line["action"]:
-		"add_task":
-			for task in line["tasks"]:
-				GameState.add_task(task)
-		"adjust_time":
-			GameState.adjust_time(line["value"])
-		"schedule_event":
-			GameState.schedule_event(line["event"], line["day"], line["time"])
-		"unlock_feature":
-			GameState.unlock_feature(line["feature"])
-		"load_scene":
-			get_tree().change_scene_to_file(line["scene"])
+func show_choices(line: Dictionary):
+	selected_ids.clear()
+	max_select = int(line.get("max_select", 1))
+
+	for btn in choice_buttons:
+		btn.hide()
+		btn.text = ""
+		btn.disabled = true
+		for conn in btn.pressed.get_connections():
+			btn.pressed.disconnect(conn.callable)
+
+	var options = line["options"]
+	var num_options = min(options.size(), choice_buttons.size())
+
+	for i in range(num_options):
+		var btn = choice_buttons[choice_buttons.size() - 1 - i]
+		var opt = options[i]
+		btn.text = opt["text"]
+		btn.disabled = false
+		btn.show()
+
+		btn.pressed.connect(func():
+			if selected_ids.has(opt["id"]):
+				return
+
+			selected_ids.append(opt["id"])
+			btn.disabled = true
+
+			if selected_ids.size() == max_select:
+				if caller and caller.has_method("on_choices_selected"):
+					caller.on_choices_selected(selected_ids)
+				choices_box.hide()
+				line_index += 1
+				display_next()
+		)
 
 func _update_portrait(speaker: String):
-	match speaker.to_lower():
-		"homeroomteacher":
-			portrait.texture = Homeroomteacher
-		"principal", "director":
-			portrait.texture = Director
-		"secretary":
-			portrait.texture = Secretary
-		"mvrclerk":
-			portrait.texture = MVRclerk
-		"professor":
-			portrait.texture = Professor
-		"daniel":
-			portrait.texture = Daniel
-		"marko":
-			portrait.texture = Marko
-		"janitor":
-			portrait.texture = Janitor
-		_:
-			portrait.texture = null  # or keep the current one
+	var key = speaker.strip_edges().to_lower()
+	if portraits.has(key):
+		portrait.texture = portraits[key]
+	else:
+		portrait.texture = null

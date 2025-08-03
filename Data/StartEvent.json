@@ -45,12 +45,6 @@
       ]
     },
     {
-      "action": "schedule_event",
-      "event": "Final Exam",
-      "day": 5,
-      "time": "morning"
-    },
-    {
       "action": "unlock_feature",
       "feature": "study_sessions",
       "limit": 5,
@@ -61,12 +55,11 @@
       "value": -5
     },
     {
-      "speaker": "Narrator",
-      "text": "The teacher glances toward the open door, just as slow footsteps echo down the hall."
-    },
-    {
       "speaker": "Teacher",
       "text": "And now... the Principal would like to have a few words."
+    },
+    {
+      "scene_transition": "principal_enters"
     },
     {
       "speaker": "Narrator",

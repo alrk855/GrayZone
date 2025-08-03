@@ -18,14 +18,15 @@ var integrity: int = 50
 var reputation: int = 50
 
 # === Gameplay Systems ===
-var selected_subjects: Array = []
+var subject1: String
+var subject2: String
 var tasks: Array = []
 var unlocked_features: Dictionary = {}  # e.g. { "study": true, "exam": true }
 
 # === TIME CONTROL ===
 func adjust_time(minutes_to_add: int):
 	var total_minutes = hour * 60 + minute + minutes_to_add
-	var wrapped_day = total_minutes / 1440  # full 24h days passed
+	var wrapped_day = floor(total_minutes / 1440.0)  # Use float division then floor
 	var new_minutes = total_minutes % 1440
 
 	hour = int(new_minutes / 60)
@@ -41,12 +42,12 @@ func adjust_time(minutes_to_add: int):
 func add_task(task: String):
 	if task not in tasks:
 		tasks.append(task)
-		print("Task added:", task)
+		print("📌 Task added:", task)
 
 # === FEATURE UNLOCKS ===
-func unlock_feature(name: String):
+func unlock_game_feature(name: String):  # Renamed to avoid shadowing Node
 	unlocked_features[name] = true
-	print("Feature unlocked:", name)
+	print("🆓 Feature unlocked:", name)
 
 # === REPUTATION ===
 func adjust_reputation(amount: int):

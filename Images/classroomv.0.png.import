@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dw2rmabf5glia"
-path="res://.godot/imported/Mvr ClerkFrame.png-b22043f9c8a47e31700843608f52bb83.ctex"
+uid="uid://bis1mltor4j43"
+path="res://.godot/imported/classroomv.0.png-bf306cd32f744dca729e054208c091db.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/CharacterFrames/Mvr ClerkFrame.png"
-dest_files=["res://.godot/imported/Mvr ClerkFrame.png-b22043f9c8a47e31700843608f52bb83.ctex"]
+source_file="res://Images/classroomv.0.png"
+dest_files=["res://.godot/imported/classroomv.0.png-bf306cd32f744dca729e054208c091db.ctex"]
 
 [params]
 

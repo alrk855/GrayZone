@@ -1,0 +1,186 @@
+[gd_scene load_steps=13 format=3 uid="uid://be02gb1lcicyt"]
+
+[ext_resource type="Script" uid="uid://cgh3h3gek0533" path="res://Scripts/task_manager.gd" id="1_wsdlb"]
+[ext_resource type="Texture2D" uid="uid://b4joiojiobkba" path="res://Images/board.png" id="1_xtc5h"]
+[ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="2_5qtaj"]
+[ext_resource type="Texture2D" uid="uid://dll21rvk30k2j" path="res://Images/Pin.png" id="3_5js0q"]
+[ext_resource type="Theme" path="res://Themes/NoVisibleScroll.tres" id="3_tv6op"]
+[ext_resource type="Theme" path="res://Themes/5pxMargin.tres" id="4_tv6op"]
+
+[sub_resource type="Theme" id="Theme_tv6op"]
+default_font = ExtResource("2_5qtaj")
+default_font_size = 0
+RichTextLabel/font_sizes/normal_font_size = 82
+RichTextLabel/fonts/normal_font = ExtResource("2_5qtaj")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b3n2l"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4fpbc"]
+texture = ExtResource("3_5js0q")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_86v4f"]
+texture = ExtResource("3_5js0q")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5t3n7"]
+texture = ExtResource("3_5js0q")
+
+[sub_resource type="Theme" id="Theme_wecsq"]
+Button/styles/focus = SubResource("StyleBoxEmpty_b3n2l")
+Button/styles/hover = SubResource("StyleBoxTexture_4fpbc")
+Button/styles/normal = SubResource("StyleBoxTexture_86v4f")
+Button/styles/pressed = SubResource("StyleBoxTexture_5t3n7")
+
+[node name="Control" type="Control"]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wsdlb")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Task Overview" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_xtc5h")
+expand_mode = 1
+
+[node name="Tasks" type="RichTextLabel" parent="CanvasLayer/Task Overview"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -101.0
+offset_top = 83.0
+offset_right = 102.0
+offset_bottom = 156.0
+grow_horizontal = 2
+theme = SubResource("Theme_tv6op")
+text = "Tasks
+"
+scroll_active = false
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Task Overview"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -654.0
+offset_top = -304.0
+offset_right = 642.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_tv6op")
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Task Overview/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("4_tv6op")
+columns = 4
+
+[node name="Task1" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task2" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task3" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task4" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task5" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task6" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task7" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task8" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task9" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task10" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task11" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task12" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_wecsq")
+
+[node name="Task Detailed" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2843.0
+offset_top = 4.0
+offset_right = 2843.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_xtc5h")
+expand_mode = 1

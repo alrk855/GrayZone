@@ -21,7 +21,6 @@ func _pressed():
 	triggered = true
 	swoosh.play()
 
-	var screen_height = get_viewport().get_visible_rect().size.y
 	var target_position = camera.position + Vector2(0, 1080)
 
 	var tween = create_tween()
