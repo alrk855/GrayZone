@@ -1,6 +1,6 @@
 extends Control
 
-@onready var choices_box := $choices_box
+@onready var choices_box := $"Choice Control Node/ChoiceBox"
 @onready var choice_buttons := [
 	choices_box.get_node("Button"),
 	choices_box.get_node("Button2"),

@@ -13,7 +13,7 @@ func _on_door_pressed():
 
 	if now >= OFFICE_OPEN and now < OFFICE_CLOSE:
 		# Office is open — enter the scene
-		get_tree().change_scene_to_file("res://Scenes/SecretaryOffice.tscn")
+		get_tree().change_scene_to_file("res://Scenes/Reusable/Map/SecretaryOffice.tscn")
 	else:
 		# Office is closed — show locked message
 		popup_label.text = "The door is locked. Looks like the secretary has already clocked out for the day."

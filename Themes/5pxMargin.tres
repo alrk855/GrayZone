@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=0 format=3 uid="uid://bq7tvqjuh4jgj"]
+[gd_resource type="Theme" format=3 uid="uid://bt7s2lqt8aalx"]
 
 [resource]
+Button/colors/font_color = Color(0, 0, 0, 1)
 GridContainer/constants/h_separation = 30
 GridContainer/constants/v_separation = 30
 MarginContainer/constants/margin_bottom = 5

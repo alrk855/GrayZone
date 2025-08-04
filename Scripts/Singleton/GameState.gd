@@ -1,3 +1,4 @@
+### GameState.gd ###
 extends Node
 
 # --- Basic Player Info ---
@@ -18,12 +19,13 @@ var reputation := 0
 
 # --- Gameplay Systems ---
 var inventory: Array = []
-var features_unlocked := {}
+var features_unlocked := {}  # feature_id: { limit = x }
 var subject1 := ""
 var subject2 := ""
+var flags := {}  # ✅ Needed for secretary_met etc.
 
 # --- Task Management ---
-var tasks: Array = []  # Task IDs (e.g., "visit_secretary")
+var tasks: Array = []  # Task IDs (e.g., "Visit Secretary")
 var task_steps: Dictionary = {}  # task_id: [step_id1, step_id2, ...]
 
 func _ready():
@@ -54,13 +56,31 @@ func _format_time() -> String:
 	var minutes = time % 60
 	return "%02d:%02d" % [hours, minutes]
 
-# --- TASK STEP TRACKING ---
+func adjust_time(value: int):
+	time += value
+	if time >= 24 * 60:
+		time = 0
+		day += 1
+	elif time < 0:
+		time = 0
+	print("⏱️ Time adjusted by %d → %s" % [value, _format_time()])
+
+# --- TASK SYSTEM ---
+func add_task(task_id: String):
+	if not tasks.has(task_id):
+		tasks.append(task_id)
+		print("➕ Task added:", task_id)
+
 func mark_step_complete(task_id: String, step_id: String):
 	if not task_steps.has(task_id):
 		task_steps[task_id] = []
 	if step_id not in task_steps[task_id]:
 		task_steps[task_id].append(step_id)
 		print("✅ Step complete:", step_id, "in", task_id)
+
+func update_task_step(task_id: String, step_id: String, completed := true):
+	if completed:
+		mark_step_complete(task_id, step_id)
 
 func is_step_complete(task_id: String, step_id: String) -> bool:
 	return task_steps.has(task_id) and step_id in task_steps[task_id]
@@ -72,3 +92,14 @@ func is_task_complete(task_id: String, required_steps: Array) -> bool:
 		if step not in task_steps[task_id]:
 			return false
 	return true
+
+# --- FEATURE SYSTEM ---
+func unlock_game_feature(feature_id: String, limit: Variant = null):
+	if not features_unlocked.has(feature_id):
+		features_unlocked[feature_id] = {}
+	if limit != null:
+		features_unlocked[feature_id]["limit"] = limit
+	print("🔓 Feature unlocked:", feature_id, "Limit:", limit)
+
+func has_feature(feature_id: String) -> bool:
+	return features_unlocked.has(feature_id)

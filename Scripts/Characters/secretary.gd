@@ -1,6 +1,6 @@
 extends Button
 
-@onready var choice_panel := $"res://Scenes/Reusable/CharacterChoiceButtons.tscn"
+@onready var choice_panel = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn").instantiate()
 
 func _ready():
 	# Optional: Only show interaction if during valid hours
@@ -32,6 +32,7 @@ func start_interaction():
 		{ "text": "Submit documents", "id": "submit" },
 		{ "text": "Go back", "id": "back" }
 	]
+	get_tree().current_scene.add_child(choice_panel)
 	choice_panel.show_options(options, Callable(self, "_on_choice_selected"))
 
 func _on_choice_selected(choice_id):
@@ -46,7 +47,6 @@ func _on_choice_selected(choice_id):
 			get_tree().change_scene_to_file("res://Scenes/School.tscn")
 
 func show_locked_popup():
-	# Show message like: “The office is locked. Come back between 13:00–16:00.”
 	var popup := AcceptDialog.new()
 	popup.dialog_text = "🔒 The office is locked.\nCome back between 13:00 and 16:00."
 	add_child(popup)

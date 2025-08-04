@@ -1,15 +1,21 @@
 extends Control
 
-@onready var task_grid := $CanvasLayer/TaskOverview/ScrollContainer/GridContainer
-@onready var task_detail := $CanvasLayer/TaskDetailed
+@onready var task_grid := $"Task Overview/ScrollContainer/GridContainer"
+@onready var task_detail := $"Task Detailed"
 @onready var title_label := task_detail.get_node("Title")
 @onready var meta_label := task_detail.get_node("MetaLabel")
 @onready var step_container := task_detail.get_node("Scroll/LabelContainer")
 @onready var go_back_button := task_detail.get_node("goback")
+@onready var camera := $Camera2D
+
+var overview_y := 0.0
 
 func _ready():
 	_populate_tasks()
-	task_detail.visible = false
+	await get_tree().process_frame
+	# Save current position (overview)
+	overview_y = camera.position.y
+	camera.position = $"Task Overview".global_position + get_viewport().get_visible_rect().size * 0.5
 	go_back_button.pressed.connect(_on_back_pressed)
 
 func _populate_tasks():
@@ -29,12 +35,12 @@ func _populate_tasks():
 				button.visible = false
 
 func _prettify_task_name(task_id: String) -> String:
-	# Converts task_id to "Visit Secretary" from "visit_secretary"
 	return task_id.capitalize().replace("_", " ")
 
 func _on_task_button_pressed(task_id: String):
 	print("📖 Viewing Task:", task_id)
 	_show_task_details(task_id)
+	_move_camera_down()
 
 func _show_task_details(task_id: String):
 	var task_data = _load_task_data(task_id)
@@ -42,15 +48,12 @@ func _show_task_details(task_id: String):
 		print("❌ Task JSON not found or invalid for:", task_id)
 		return
 
-	# Fill in title + meta
 	title_label.text = task_data.get("title", "Untitled Task")
 	meta_label.text = "📍 " + task_data.get("location", "Unknown") + " | 🎓 Given by: " + task_data.get("giver", "???")
 
-	# Clear old step labels
 	for child in step_container.get_children():
 		child.queue_free()
 
-	# Create step labels
 	var steps = task_data.get("steps", [])
 	for step in steps:
 		var step_id = step.get("id", "")
@@ -62,12 +65,21 @@ func _show_task_details(task_id: String):
 			label.text = "[x] " + label.text
 		step_container.add_child(label)
 
-	task_detail.visible = true
-	$CanvasLayer/TaskOverview.visible = false
-
 func _on_back_pressed():
-	task_detail.visible = false
-	$CanvasLayer/TaskOverview.visible = true
+	_clear_task_details()
+	_move_camera_up()
+
+func _clear_task_details():
+	for child in step_container.get_children():
+		child.queue_free()
+
+func _move_camera_down():
+	var new_pos = camera.position + Vector2(0, 1080)
+	camera.position = new_pos
+
+func _move_camera_up():
+	var new_pos = camera.position - Vector2(0, 1080)
+	camera.position = new_pos
 
 func _load_task_data(task_id: String) -> Dictionary:
 	var file_path = "res://Data/Tasks/%s.json" % task_id

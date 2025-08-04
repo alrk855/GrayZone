@@ -1,22 +1,20 @@
 extends Control
 
 @onready var secretary := $background/Secretary
-@onready var choice_panel := $"res://Scenes/Reusable/CharacterChoiceButtons.tscn"
 
 func _ready():
-	# Auto-start dialogue only on Day 1 and between 13:00–16:00
+	GameState.location = "SecretaryOffice"  # ✅ Ensure current location is known
+
 	if GameState.day == 1 and GameState.time >= 13 * 60 and GameState.time < 16 * 60:
 		if not GameState.flags.has("secretary_met"):
-			# Flag prevents repeating this intro
 			GameState.flags["secretary_met"] = true
 			GameState.update_task_step("Visit Secretary", "Visit the Secretary", true)
 			GameState.add_task("Gather Scholarship Requirements")
 
 			await get_tree().create_timer(0.1).timeout
-			DialogueManager.start_dialogue("res://Dialogue/Secretary_Initial.json")
+			DialogueManager.start_dialogue("res://Dialogue/Secretary_Initial.json")  # ⚠ Replace once file exists
 
 func _process(_delta):
-	# Optional: Auto-exit or warn if staying late
 	if GameState.time >= 16 * 60:
 		if is_inside_tree():
 			_show_office_closed()

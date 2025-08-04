@@ -1,5 +1,7 @@
 extends Control
 
+signal dialogue_finished  # ✅ Added to notify when dialogue ends
+
 @onready var dialogue_label = $"Dialogue Box/Control2/Dialogue"
 @onready var speaker_label = $"Speaker Box/SpeakerLABEL"
 @onready var portrait = $"Dialogue Box/Control/PlaceHolderFrame"
@@ -44,6 +46,7 @@ func _unhandled_input(event):
 
 func display_next():
 	if line_index >= dialogue_data.size():
+		emit_signal("dialogue_finished")  # ✅ Signal emitted
 		queue_free()
 		return
 

@@ -5,7 +5,7 @@
 [ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="2_5qtaj"]
 [ext_resource type="Texture2D" uid="uid://dll21rvk30k2j" path="res://Images/Pin.png" id="3_5js0q"]
 [ext_resource type="Theme" path="res://Themes/NoVisibleScroll.tres" id="3_tv6op"]
-[ext_resource type="Theme" path="res://Themes/5pxMargin.tres" id="4_tv6op"]
+[ext_resource type="Theme" uid="uid://bt7s2lqt8aalx" path="res://Themes/5pxMargin.tres" id="4_tv6op"]
 
 [sub_resource type="Theme" id="Theme_tv6op"]
 default_font = ExtResource("2_5qtaj")
@@ -40,9 +40,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_wsdlb")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="Task Overview" type="TextureRect" parent="CanvasLayer"]
+[node name="Task Overview" type="TextureRect" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -51,7 +50,7 @@ grow_vertical = 2
 texture = ExtResource("1_xtc5h")
 expand_mode = 1
 
-[node name="Tasks" type="RichTextLabel" parent="CanvasLayer/Task Overview"]
+[node name="Tasks" type="RichTextLabel" parent="Task Overview"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -66,7 +65,7 @@ text = "Tasks
 "
 scroll_active = false
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Task Overview"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Task Overview"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -81,14 +80,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("3_tv6op")
 
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Task Overview/ScrollContainer"]
+[node name="GridContainer" type="GridContainer" parent="Task Overview/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = ExtResource("4_tv6op")
 columns = 4
 
-[node name="Task1" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task1" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -97,94 +96,94 @@ theme = SubResource("Theme_wecsq")
 text_overrun_behavior = 3
 autowrap_mode = 3
 
-[node name="Task2" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task2" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task3" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task3" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task4" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task4" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task5" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task5" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task6" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task6" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task7" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task7" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task8" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task8" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task9" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task9" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task10" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task10" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task11" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task11" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task12" type="Button" parent="CanvasLayer/Task Overview/ScrollContainer/GridContainer"]
+[node name="Task12" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 
-[node name="Task Detailed" type="TextureRect" parent="CanvasLayer"]
+[node name="Task Detailed" type="TextureRect" parent="."]
+z_index = 1
+layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 2.0
-grow_horizontal = 2
-grow_vertical = 2
 texture = ExtResource("1_xtc5h")
 expand_mode = 1
 
-[node name="Title" type="Label" parent="CanvasLayer/Task Detailed"]
+[node name="Title" type="Label" parent="Task Detailed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.215
@@ -196,8 +195,10 @@ offset_top = -0.360001
 offset_right = 0.280029
 offset_bottom = 0.479996
 grow_horizontal = 2
+theme_override_font_sizes/font_size = 77
+horizontal_alignment = 1
 
-[node name="MetaLabel" type="Label" parent="CanvasLayer/Task Detailed"]
+[node name="MetaLabel" type="Label" parent="Task Detailed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.036
@@ -208,8 +209,10 @@ offset_left = 2.88
 offset_top = 0.279999
 offset_right = -0.360107
 offset_bottom = -0.279999
+theme_override_font_sizes/font_size = 33
+horizontal_alignment = 1
 
-[node name="Scroll" type="ScrollContainer" parent="CanvasLayer/Task Detailed"]
+[node name="Scroll" type="ScrollContainer" parent="Task Detailed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.034
@@ -224,12 +227,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("3_tv6op")
 
-[node name="LabelContainer" type="VBoxContainer" parent="CanvasLayer/Task Detailed/Scroll"]
+[node name="LabelContainer" type="VBoxContainer" parent="Task Detailed/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="goback" type="Button" parent="CanvasLayer/Task Detailed"]
+[node name="goback" type="Button" parent="Task Detailed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.877
@@ -241,3 +244,6 @@ offset_top = 4.2
 offset_right = 1.47998
 offset_bottom = 4.51999
 grow_horizontal = 0
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)

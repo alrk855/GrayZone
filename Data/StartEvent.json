@@ -1,97 +1,97 @@
 {
   "lines": [
-    {
-      "speaker": "Narrator",
-      "text": "The classroom grows quiet. The teacher enters briskly, dropping a folder on the desk."
-    },
-    {
-      "speaker": "Teacher",
-      "text": "Alright, listen up. This is important."
-    },
-    {
-      "speaker": "Teacher",
-      "text": "This Friday, you’ll be taking your Final Exams — standardized, written, no room for games."
-    },
-    {
-      "speaker": "Teacher",
-      "text": "You’ll get to pick two subjects. We’ve submitted your preferences, but the responsibility is yours."
-    },
-    {
-      "speaker": "Teacher",
-      "text": "Your results go directly on your Grade Transcript. These grades will affect your scholarship chances and more."
-    },
-    {
-      "speaker": "Teacher",
-      "text": "Choose wisely — and study. No second chances."
-    },
-    {
-      "choice_type": "multi_select",
-      "prompt": "Select Your Final Exam Subjects",
-      "options": [
-        { "id": "science", "text": "Science" },
-        { "id": "geography", "text": "Geography" },
-        { "id": "math", "text": "Math (Algebra Basics)" },
-        { "id": "macedonian", "text": "Macedonian" },
-        { "id": "english", "text": "English" }
-      ],
-      "max_select": 2,
-      "confirm_text": "Confirm Subjects"
-    },
-    {
-      "action": "add_task",
-      "tasks": [
-        "Prepare for Final Exam: [Subject 1]",
-        "Prepare for Final Exam: [Subject 2]"
-      ]
-    },
-    {
-      "action": "unlock_feature",
-      "feature": "study_sessions",
-      "limit": 5,
-      "info": "2 questions revealed per session"
-    },
-    {
-      "action": "adjust_time",
-      "value": -5
-    },
-    {
-      "speaker": "Teacher",
-      "text": "And now... the Principal would like to have a few words."
-    },
-    {
-      "scene_transition": "principal_enters"
-    },
-    {
-      "speaker": "Narrator",
-      "text": "She steps aside as the Principal enters the classroom."
-    },
-    {
-      "speaker": "Principal",
-      "text": "Today we received a new call for a super scholarship to study at a prestigious university abroad. You’ll get free education and accommodation if you meet the following criteria:"
-    },
-    {
-      "speaker": "Principal",
-      "text": "– An average grade of 4.50 or higher in the subjects related to the field of study you’re applying for."
-    },
-    {
-      "speaker": "Principal",
-      "text": "– Submission of an application for university admission (CV, motivation letter, etc.)."
-    },
-    {
-      "speaker": "Principal",
-      "text": "– A certificate proving your knowledge of the language in which the program will be taught."
-    },
-    {
-      "speaker": "Principal",
-      "text": "Unfortunately, the deadline to submit all documents is just one week, so act quickly!"
-    },
-    {
-      "speaker": "Principal",
-      "text": "For more information, feel free to visit the secretary."
-    },
-    {
-      "action": "add_task",
-      "tasks": ["Visit the School Secretary"]
-    }
+	{
+	  "speaker": "Narrator",
+	  "text": "The classroom grows quiet. The teacher enters briskly, dropping a folder on the desk."
+	},
+	{
+	  "speaker": "Teacher",
+	  "text": "Alright, listen up. This is important."
+	},
+	{
+	  "speaker": "Teacher",
+	  "text": "This Friday, you’ll be taking your Final Exams — standardized, written, no room for games."
+	},
+	{
+	  "speaker": "Teacher",
+	  "text": "You’ll get to pick two subjects. We’ve submitted your preferences, but the responsibility is yours."
+	},
+	{
+	  "speaker": "Teacher",
+	  "text": "Your results go directly on your Grade Transcript. These grades will affect your scholarship chances and more."
+	},
+	{
+	  "speaker": "Teacher",
+	  "text": "Choose wisely — and study. No second chances."
+	},
+	{
+	  "choice_type": "multi_select",
+	  "prompt": "Select Your Final Exam Subjects",
+	  "options": [
+		{ "id": "science", "text": "Science" },
+		{ "id": "geography", "text": "Geography" },
+		{ "id": "math", "text": "Math (Algebra Basics)" },
+		{ "id": "macedonian", "text": "Macedonian" },
+		{ "id": "english", "text": "English" }
+	  ],
+	  "max_select": 2,
+	  "confirm_text": "Confirm Subjects"
+	},
+	{
+	  "action": "add_task",
+	  "tasks": [
+		"Prepare for Final Exam: [Subject 1]",
+		"Prepare for Final Exam: [Subject 2]"
+	  ]
+	},
+	{
+	  "action": "unlock_feature",
+	  "feature": "study_sessions",
+	  "limit": 5,
+	  "info": "2 questions revealed per session"
+	},
+	{
+	  "action": "adjust_time",
+	  "value": -5
+	},
+	{
+	  "speaker": "Teacher",
+	  "text": "And now... the Principal would like to have a few words."
+	},
+	{
+	  "scene_transition": "principal_enters"
+	},
+	{
+	  "speaker": "Narrator",
+	  "text": "She steps aside as the Principal enters the classroom."
+	},
+	{
+	  "speaker": "Principal",
+	  "text": "Today we received a new call for a super scholarship to study at a prestigious university abroad. You’ll get free education and accommodation if you meet the following criteria:"
+	},
+	{
+	  "speaker": "Principal",
+	  "text": "– An average grade of 4.50 or higher in the subjects related to the field of study you’re applying for."
+	},
+	{
+	  "speaker": "Principal",
+	  "text": "– Submission of an application for university admission (CV, motivation letter, etc.)."
+	},
+	{
+	  "speaker": "Principal",
+	  "text": "– A certificate proving your knowledge of the language in which the program will be taught."
+	},
+	{
+	  "speaker": "Principal",
+	  "text": "Unfortunately, the deadline to submit all documents is just one week, so act quickly!"
+	},
+	{
+	  "speaker": "Principal",
+	  "text": "For more information, feel free to visit the secretary."
+	},
+	{
+	  "action": "add_task",
+	  "tasks": ["Visit the School Secretary"]
+	}
   ]
 }

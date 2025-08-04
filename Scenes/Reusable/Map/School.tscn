@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://io6e1ybfv6mj"]
+[gd_scene load_steps=4 format=3 uid="uid://io6e1ybfv6mj"]
 
 [ext_resource type="Texture2D" uid="uid://bkwm48qoj5743" path="res://Images/WHITE HD.png" id="1_64kaa"]
+[ext_resource type="Script" uid="uid://c4d52b5ae03ne" path="res://Scenes/Reusable/Map/school.gd" id="1_hfkw0"]
 [ext_resource type="Script" uid="uid://8gs1pv82wr6n" path="res://Scenes/Reusable/Map/EnterSecretaryOffice.gd" id="2_hfkw0"]
 
 [node name="Control" type="Control"]
@@ -10,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_hfkw0")
 
 [node name="background" type="TextureRect" parent="."]
 layout_mode = 1

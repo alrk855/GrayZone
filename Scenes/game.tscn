@@ -5,5 +5,3 @@
 [node name="Game" type="Node"]
 
 [node name="main_menu" parent="." instance=ExtResource("1_ebmjs")]
-grow_horizontal = 1
-grow_vertical = 1

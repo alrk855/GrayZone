@@ -8,15 +8,17 @@ func _ready():
 	GameState.location = "Classroom"
 	principal_sprite.visible = false
 
-	# Start dialogue and connect to finish signal
-	var dialogue_manager = DialogueManager.start_dialogue("res://Data/StartEvent.json", self)
-	if dialogue_manager:
-		dialogue_manager.connect("dialogue_finished", Callable(self, "_on_start_event_finished"))
+	# Start dialogue
+	var dialogue_ui = DialogueManager.start_dialogue("res://Data/StartEvent.json", self)
+
+	# Connect to "dialogue_finished" if possible
+	if dialogue_ui and dialogue_ui.has_signal("dialogue_finished"):
+		dialogue_ui.connect("dialogue_finished", Callable(self, "_on_start_event_finished"))
 
 func _on_start_event_finished():
 	print("🎬 StartEvent completed. Moving to School.")
 	await fade_out()
-	get_tree().change_scene_to_file("res://Scenes/School.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/School.tscn")
 
 func on_scene_transition(name: String):
 	match name:
