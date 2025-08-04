@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=3 uid="uid://cky0ib4r8cq63"]
+
+[ext_resource type="Script" uid="uid://dp8p3klbuwbwd" path="res://Scenes/Reusable/character_choice_buttons.gd" id="1_6qp2g"]
+[ext_resource type="Theme" uid="uid://cic3ab2y0afcf" path="res://Themes/1pxmarginVbox.tres" id="1_mqmbp"]
+[ext_resource type="Texture2D" uid="uid://oip0thgbr6fb" path="res://Images/Buttons/buttonhover.png" id="2_6qp2g"]
+[ext_resource type="Texture2D" uid="uid://c5jkto6cx7703" path="res://Images/Buttons/buttonunpressed.png" id="3_jbk0c"]
+[ext_resource type="Texture2D" uid="uid://6ikg5804ucfw" path="res://Images/Buttons/buttonpressed.png" id="4_8t8ti"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nf0h5"]
+texture = ExtResource("2_6qp2g")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mdvt6"]
+texture = ExtResource("3_jbk0c")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bxk41"]
+texture = ExtResource("4_8t8ti")
+
+[sub_resource type="Theme" id="Theme_kujrc"]
+Button/styles/hover = SubResource("StyleBoxTexture_nf0h5")
+Button/styles/normal = SubResource("StyleBoxTexture_mdvt6")
+Button/styles/pressed = SubResource("StyleBoxTexture_bxk41")
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6qp2g")
+
+[node name="Choice Control Node" type="Control" parent="."]
+visibility_layer = 4
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -574.0
+offset_top = -649.0
+offset_right = 574.0
+grow_horizontal = 2
+grow_vertical = 0
+localize_numeral_system = false
+
+[node name="ChoiceBox" type="VBoxContainer" parent="Choice Control Node"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_mqmbp")
+
+[node name="Button" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_kujrc")
+text = "Choice 1"
+
+[node name="Button2" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_kujrc")
+text = "Choice 2"
+
+[node name="Button3" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_kujrc")
+text = "Choice 3"
+
+[node name="Button4" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_kujrc")
+text = "Choice 4"
+
+[node name="Button5" type="Button" parent="Choice Control Node/ChoiceBox"]
+visible = false
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = SubResource("Theme_kujrc")
+text = "Choice 5"

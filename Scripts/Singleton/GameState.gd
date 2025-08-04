@@ -1,59 +1,74 @@
 extends Node
 
-# === Time & Calendar ===
-var day: int = 1
-var hour: int = 12
-var minute: int = 35
+# --- Basic Player Info ---
+var player_name := ""
+var player_gender := ""
+var location := "Unknown"
 
-# === Player Identity ===
-var player_name: String = ""
-var player_gender: String = ""
+# --- Time & Day ---
+var time := 13 * 60  # 13:00 in minutes
+var day := 1
+var time_speed := 2.0  # Real seconds per in-game minute
+var time_running := true
 
-# === World Info ===
-var location: String = "Unknown"  # Set by active scene
+# --- Status ---
+var money := 0
+var integrity := 0
+var reputation := 0
 
-# === Stats ===
-var money: int = 0
-var integrity: int = 50
-var reputation: int = 50
+# --- Gameplay Systems ---
+var inventory: Array = []
+var features_unlocked := {}
+var subject1 := ""
+var subject2 := ""
 
-# === Gameplay Systems ===
-var subject1: String
-var subject2: String
-var tasks: Array = []
-var unlocked_features: Dictionary = {}  # e.g. { "study": true, "exam": true }
+# --- Task Management ---
+var tasks: Array = []  # Task IDs (e.g., "visit_secretary")
+var task_steps: Dictionary = {}  # task_id: [step_id1, step_id2, ...]
 
-# === TIME CONTROL ===
-func adjust_time(minutes_to_add: int):
-	var total_minutes = hour * 60 + minute + minutes_to_add
-	var wrapped_day = floor(total_minutes / 1440.0)
-	var new_minutes = total_minutes % 1440
-	hour = int(new_minutes / 60)
-	minute = new_minutes % 60
+func _ready():
+	print("📂 GameState Ready — Starting Time Simulation")
+	_start_time_simulation()
 
-	if wrapped_day > 0:
-		day += int(wrapped_day)
-		print("New day: Day", day)
+# --- TIME SIMULATION ---
+func _start_time_simulation():
+	var timer = Timer.new()
+	timer.name = "TimeTick"
+	timer.wait_time = time_speed
+	timer.autostart = true
+	timer.one_shot = false
+	timer.timeout.connect(_on_minute_passed)
+	add_child(timer)
 
-	print("Time advanced to %02d:%02d on Day %d" % [hour, minute, day])
+func _on_minute_passed():
+	if time_running:
+		time += 1
+		if time >= 24 * 60:
+			time = 0
+			day += 1
+			print("🌅 Day advanced to Day %d" % day)
+		print("🕒 Time: " + _format_time())
 
-# === TASK SYSTEM ===
-func add_task(task: String):
-	if task not in tasks:
-		tasks.append(task)
-		print("📌 Task added:", task)
+func _format_time() -> String:
+	var hours = time / 60
+	var minutes = time % 60
+	return "%02d:%02d" % [hours, minutes]
 
-# === FEATURE UNLOCKS ===
-func unlock_game_feature(name: String):
-	unlocked_features[name] = true
-	print("🆓 Feature unlocked:", name)
+# --- TASK STEP TRACKING ---
+func mark_step_complete(task_id: String, step_id: String):
+	if not task_steps.has(task_id):
+		task_steps[task_id] = []
+	if step_id not in task_steps[task_id]:
+		task_steps[task_id].append(step_id)
+		print("✅ Step complete:", step_id, "in", task_id)
 
-# === REPUTATION ===
-func adjust_reputation(amount: int):
-	reputation = clamp(reputation + amount, 0, 100)
+func is_step_complete(task_id: String, step_id: String) -> bool:
+	return task_steps.has(task_id) and step_id in task_steps[task_id]
 
-func adjust_integrity(amount: int):
-	integrity = clamp(integrity + amount, 0, 100)
-
-func adjust_money(amount: int):
-	money += amount
+func is_task_complete(task_id: String, required_steps: Array) -> bool:
+	if not task_steps.has(task_id):
+		return false
+	for step in required_steps:
+		if step not in task_steps[task_id]:
+			return false
+	return true
