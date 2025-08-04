@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://dk4oomrw4r2r"]
+[gd_scene load_steps=7 format=3 uid="uid://dk4oomrw4r2r"]
 
 [ext_resource type="Script" uid="uid://id2q7hwo013j" path="res://Scenes/start_event.gd" id="1_33p7c"]
 [ext_resource type="Texture2D" uid="uid://bis1mltor4j43" path="res://Images/classroomv.0.png" id="2_33p7c"]
 [ext_resource type="Texture2D" uid="uid://cc5btkfygxwbe" path="res://Images/Characters/klasenchopped.png" id="3_k4npa"]
 [ext_resource type="Texture2D" uid="uid://degyqjdnkcr2f" path="res://Images/Characters/direktorchopped.png" id="3_vie7q"]
+[ext_resource type="PackedScene" uid="uid://be02gb1lcicyt" path="res://Scenes/TaskManager.tscn" id="5_vie7q"]
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="6_jdvs3"]
 
 [node name="main" type="Control"]
 layout_mode = 3
@@ -80,3 +82,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource("3_k4npa")
 expand_mode = 1
+
+[node name="Tasks" parent="." instance=ExtResource("5_vie7q")]
+layout_mode = 1
+
+[node name="TASK_INFO" type="Label" parent="."]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 28.0
+offset_right = 363.0
+offset_bottom = 91.0
+theme_override_colors/font_color = Color(0.395061, 0.457018, 0.322674, 1)
+theme_override_fonts/font = ExtResource("6_jdvs3")
+text = "NEW TASKS ADDED:
+🎯 Prepare for Final Exam: [Subject 1]
+🎯 Prepare for Final Exam: [Subject 2]"
+horizontal_alignment = 1
+vertical_alignment = 1
