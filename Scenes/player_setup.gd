@@ -10,6 +10,8 @@ var selected_gender: String = ""
 
 func _ready():
 	# Use button_up to avoid signal name collisions
+	self.modulate = Color(0, 0, 0, 1)
+	create_tween().tween_property(self, "modulate", Color(1, 1, 1, 1), 2)
 	male_button.button_up.connect(_on_gender_selected.bind("male"))
 	female_button.button_up.connect(_on_gender_selected.bind("female"))
 	continue_button.pressed.connect(_on_continue_pressed)
