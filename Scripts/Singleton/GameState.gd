@@ -24,18 +24,9 @@ var subject1 := ""
 var subject2 := ""
 var flags := {}  # ✅ Needed for secretary_met etc.
 
-<<<<<<< Updated upstream
 # --- Task Management ---
 var tasks: Array = []  # Task IDs (e.g., "Visit Secretary")
 var task_steps: Dictionary = {}  # task_id: [step_id1, step_id2, ...]
-=======
-# === Gameplay Systems ===
-var subject1: String
-var subject2: String
-var tasks: Array[String] = []
-var taskIndex: int = 0
-var unlocked_features: Dictionary = {}  # e.g. { "study": true, "exam": true }
->>>>>>> Stashed changes
 
 func _ready():
 	print("📂 GameState Ready — Starting Time Simulation")
@@ -60,7 +51,6 @@ func _on_minute_passed():
 			print("🌅 Day advanced to Day %d" % day)
 		print("🕒 Time: " + _format_time())
 
-<<<<<<< Updated upstream
 func _format_time() -> String:
 	var hours = time / 60
 	var minutes = time % 60
@@ -74,19 +64,6 @@ func adjust_time(value: int):
 	elif time < 0:
 		time = 0
 	print("⏱️ Time adjusted by %d → %s" % [value, _format_time()])
-=======
-# === TASK SYSTEM ===
-func add_task(task: String):
-	if task not in tasks:
-		taskIndex = taskIndex + 1
-		tasks.append(task)
-		print("📌 Task added:", task)
-
-# === FEATURE UNLOCKS ===
-func unlock_game_feature(nameU: String):
-	unlocked_features[nameU] = true
-	print("🆓 Feature unlocked:", name)
->>>>>>> Stashed changes
 
 # --- TASK SYSTEM ---
 func add_task(task_id: String):

@@ -106,7 +106,6 @@ grow_horizontal = 2
 grow_vertical = 2
 action_mode = 0
 script = ExtResource("3_16hvj")
-transit = 5
 
 [node name="Text" type="RichTextLabel" parent="Click_to_Start_Control/Click_To_Start_Picture"]
 layout_mode = 1
@@ -183,11 +182,10 @@ anchors_preset = -1
 anchor_left = -0.376
 anchor_top = 0.366
 anchor_bottom = 0.819
-offset_left = 321.92
-offset_top = -0.279999
-offset_right = -28.0
-offset_bottom = 0.47998
-grow_horizontal = 2
+offset_left = -0.0799561
+offset_top = -0.280029
+offset_right = -2.0
+offset_bottom = 0.479919
 grow_vertical = 2
 
 [node name="ornament1" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture/OrnamentsL"]
@@ -195,7 +193,7 @@ self_modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("7_16hvj")
 theme_override_font_sizes/normal_font_size = 100
-text = " X"
+text = " XX"
 fit_content = true
 
 [node name="ornament2" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture/OrnamentsL"]
@@ -203,7 +201,7 @@ self_modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("7_16hvj")
 theme_override_font_sizes/normal_font_size = 100
-text = " X"
+text = " XX"
 fit_content = true
 
 [node name="ornament3" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture/OrnamentsL"]
@@ -211,7 +209,7 @@ self_modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("7_16hvj")
 theme_override_font_sizes/normal_font_size = 100
-text = " X"
+text = " XX"
 fit_content = true
 
 [node name="OrnamentsR" type="VBoxContainer" parent="Main_Menu_Control/Main_Menu_Picture"]
@@ -222,8 +220,8 @@ anchor_top = 0.366
 anchor_right = 1.375
 anchor_bottom = 0.819
 offset_top = -0.280029
-offset_right = -353.0
-offset_bottom = 0.47998
+offset_right = -0.000244141
+offset_bottom = 0.479919
 grow_horizontal = 0
 grow_vertical = 2
 
@@ -232,7 +230,7 @@ self_modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("7_16hvj")
 theme_override_font_sizes/normal_font_size = 100
-text = " X"
+text = " XX"
 fit_content = true
 
 [node name="ornament2" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture/OrnamentsR"]
@@ -240,7 +238,7 @@ self_modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("7_16hvj")
 theme_override_font_sizes/normal_font_size = 100
-text = " X"
+text = " XX"
 fit_content = true
 
 [node name="ornament3" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture/OrnamentsR"]
@@ -248,7 +246,7 @@ self_modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("7_16hvj")
 theme_override_font_sizes/normal_font_size = 100
-text = " X"
+text = " XX"
 fit_content = true
 
 [node name="V_Button_Container" type="VBoxContainer" parent="Main_Menu_Control/Main_Menu_Picture"]
@@ -296,7 +294,6 @@ grow_vertical = 2
 theme = ExtResource("5_vr1f0")
 text = "Settings"
 script = ExtResource("11_jr6u5")
-transit = 5
 
 [node name="ButtonWrapper3" type="Control" parent="Main_Menu_Control/Main_Menu_Picture/V_Button_Container"]
 layout_mode = 2
@@ -453,7 +450,6 @@ icon = ExtResource("16_6dk6o")
 icon_alignment = 1
 expand_icon = true
 script = ExtResource("18_84iac")
-transit = 7
 
 [node name="Swoosh" type="AudioStreamPlayer2D" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
 stream = ExtResource("3_trj04")
