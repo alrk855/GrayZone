@@ -35,7 +35,7 @@ func _pressed():
 	var vbox_size = menu_container.size
 
 	var orn1_target_x = vbox_pos.x + 240
-	var orn2_target_x = vbox_pos.x + vbox_size.x - 240 - orn2.size.x
+	var orn2_target_x = vbox_pos.x + vbox_size.x - 230 - orn2.size.x
 
 	tween.tween_property(orn1, "global_position:x", orn1_target_x, 1.5).set_trans(transit)
 	tween.parallel().tween_property(orn2, "global_position:x", orn2_target_x, 1.5).set_trans(transit)

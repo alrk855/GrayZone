@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="GrayZone"
+config/tags=PackedStringArray("2d", "official")
 run/main_scene="uid://hvfk26x78kj5"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 run/main_script="res://Scenes/main_run.gd"

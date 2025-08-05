@@ -4,13 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://b4joiojiobkba" path="res://Images/board.png" id="1_xtc5h"]
 [ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="2_5qtaj"]
 [ext_resource type="Texture2D" uid="uid://dll21rvk30k2j" path="res://Images/Pin.png" id="3_5js0q"]
-<<<<<<< Updated upstream:Scenes/Reusable/TaskManager.tscn
 [ext_resource type="Theme" path="res://Themes/NoVisibleScroll.tres" id="3_tv6op"]
 [ext_resource type="Theme" uid="uid://bt7s2lqt8aalx" path="res://Themes/5pxMargin.tres" id="4_tv6op"]
-=======
-[ext_resource type="Theme" uid="uid://ddajan8x4gjds" path="res://Themes/NoVisibleScroll.tres" id="3_tv6op"]
-[ext_resource type="Theme" uid="uid://bq7tvqjuh4jgj" path="res://Themes/5pxMargin.tres" id="4_tv6op"]
->>>>>>> Stashed changes:Scenes/TaskManager.tscn
 
 [sub_resource type="Theme" id="Theme_tv6op"]
 default_font = ExtResource("2_5qtaj")
@@ -35,7 +30,7 @@ Button/styles/hover = SubResource("StyleBoxTexture_4fpbc")
 Button/styles/normal = SubResource("StyleBoxTexture_86v4f")
 Button/styles/pressed = SubResource("StyleBoxTexture_5t3n7")
 
-[node name="Tasks" type="Control"]
+[node name="Control" type="Control"]
 custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 3
 anchors_preset = 15
@@ -45,15 +40,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_wsdlb")
 
-<<<<<<< Updated upstream:Scenes/Reusable/TaskManager.tscn
 [node name="Task Overview" type="TextureRect" parent="."]
 layout_mode = 1
-=======
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-visible = false
-
-[node name="Task Overview" type="TextureRect" parent="CanvasLayer"]
->>>>>>> Stashed changes:Scenes/TaskManager.tscn
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

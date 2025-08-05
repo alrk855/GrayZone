@@ -20,8 +20,8 @@ func _on_start_event_finished():
 	await fade_out()
 	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/School.tscn")
 
-func on_scene_transition(namee: String):
-	match namee:
+func on_scene_transition(name: String):
+	match name:
 		"principal_enters":
 			await fade_out()
 			_swap_to_principal()

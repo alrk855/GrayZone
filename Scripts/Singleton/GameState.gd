@@ -24,18 +24,9 @@ var subject1 := ""
 var subject2 := ""
 var flags := {}  # ✅ Needed for secretary_met etc.
 
-<<<<<<< Updated upstream
 # --- Task Management ---
 var tasks: Array = []  # Task IDs (e.g., "Visit Secretary")
-var task_steps: Dictionary = {}  # task_id: [step_id1, step_id2, ...]
-=======
-# === Gameplay Systems ===
-var subject1: String
-var subject2: String
-var tasks: Array[String] = []
-var taskIndex: int = 0
-var unlocked_features: Dictionary = {}  # e.g. { "study": true, "exam": true }
->>>>>>> Stashed changes
+var task_step_index: Dictionary = {}  # task_id: step_index (e.g., "gather_requirements": 2)
 
 func _ready():
 	print("📂 GameState Ready — Starting Time Simulation")
@@ -60,7 +51,6 @@ func _on_minute_passed():
 			print("🌅 Day advanced to Day %d" % day)
 		print("🕒 Time: " + _format_time())
 
-<<<<<<< Updated upstream
 func _format_time() -> String:
 	var hours = time / 60
 	var minutes = time % 60
@@ -74,47 +64,22 @@ func adjust_time(value: int):
 	elif time < 0:
 		time = 0
 	print("⏱️ Time adjusted by %d → %s" % [value, _format_time()])
-=======
-# === TASK SYSTEM ===
-func add_task(task: String):
-	if task not in tasks:
-		taskIndex = taskIndex + 1
-		tasks.append(task)
-		print("📌 Task added:", task)
-
-# === FEATURE UNLOCKS ===
-func unlock_game_feature(nameU: String):
-	unlocked_features[nameU] = true
-	print("🆓 Feature unlocked:", name)
->>>>>>> Stashed changes
 
 # --- TASK SYSTEM ---
 func add_task(task_id: String):
 	if not tasks.has(task_id):
 		tasks.append(task_id)
+		task_step_index[task_id] = 0
 		print("➕ Task added:", task_id)
 
-func mark_step_complete(task_id: String, step_id: String):
-	if not task_steps.has(task_id):
-		task_steps[task_id] = []
-	if step_id not in task_steps[task_id]:
-		task_steps[task_id].append(step_id)
-		print("✅ Step complete:", step_id, "in", task_id)
+func update_task_step(task_id: String):
+	if not task_step_index.has(task_id):
+		task_step_index[task_id] = 0
+	task_step_index[task_id] += 1
+	print("✅ Step advanced to index", task_step_index[task_id], "in", task_id)
 
-func update_task_step(task_id: String, step_id: String, completed := true):
-	if completed:
-		mark_step_complete(task_id, step_id)
-
-func is_step_complete(task_id: String, step_id: String) -> bool:
-	return task_steps.has(task_id) and step_id in task_steps[task_id]
-
-func is_task_complete(task_id: String, required_steps: Array) -> bool:
-	if not task_steps.has(task_id):
-		return false
-	for step in required_steps:
-		if step not in task_steps[task_id]:
-			return false
-	return true
+func get_task_progress(task_id: String) -> int:
+	return task_step_index.get(task_id, 0)
 
 # --- FEATURE SYSTEM ---
 func unlock_game_feature(feature_id: String, limit: Variant = null):
