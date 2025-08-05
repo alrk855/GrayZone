@@ -1,3 +1,4 @@
+### TaskManager.gd ###
 extends Control
 
 @onready var task_grid := $"Task Overview/ScrollContainer/GridContainer"
@@ -13,7 +14,6 @@ var overview_y := 0.0
 func _ready():
 	_populate_tasks()
 	await get_tree().process_frame
-	# Save current position (overview)
 	overview_y = camera.position.y
 	camera.position = $"Task Overview".global_position + get_viewport().get_visible_rect().size * 0.5
 	go_back_button.pressed.connect(_on_back_pressed)
@@ -51,16 +51,18 @@ func _show_task_details(task_id: String):
 	title_label.text = task_data.get("title", "Untitled Task")
 	meta_label.text = "📍 " + task_data.get("location", "Unknown") + " | 🎓 Given by: " + task_data.get("giver", "???")
 
-	for child in step_container.get_children():
-		child.queue_free()
+	_clear_task_details()
 
 	var steps = task_data.get("steps", [])
-	for step in steps:
-		var step_id = step.get("id", "")
+	var progress = GameState.get_task_progress(task_id)
+
+	for i in range(steps.size()):
+		if i > progress:
+			break
+		var step = steps[i]
 		var label = Label.new()
 		label.text = "• " + step.get("text", "Unnamed Step")
-
-		if GameState.is_step_complete(task_id, step_id):
+		if i < progress:
 			label.add_theme_color_override("font_color", Color.DIM_GRAY)
 			label.text = "[x] " + label.text
 		step_container.add_child(label)
@@ -74,12 +76,10 @@ func _clear_task_details():
 		child.queue_free()
 
 func _move_camera_down():
-	var new_pos = camera.position + Vector2(0, 1080)
-	camera.position = new_pos
+	camera.position += Vector2(0, 1080)
 
 func _move_camera_up():
-	var new_pos = camera.position - Vector2(0, 1080)
-	camera.position = new_pos
+	camera.position -= Vector2(0, 1080)
 
 func _load_task_data(task_id: String) -> Dictionary:
 	var file_path = "res://Data/Tasks/%s.json" % task_id
