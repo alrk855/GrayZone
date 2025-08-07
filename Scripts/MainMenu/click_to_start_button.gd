@@ -19,7 +19,7 @@ func _pressed():
 	if triggered:
 		return
 	triggered = true
-	swoosh.play()
+	swoosh.play(0)
 
 	var target_position = camera.position + Vector2(0, 1080)
 

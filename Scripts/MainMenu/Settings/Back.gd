@@ -2,6 +2,7 @@ extends Button
 
 @onready var camera = $"../../../../../../../Camera2D"
 @onready var swoosh = $"../Swoosh"
+@onready var c = $"../../Hover"
 @export var transit: Tween.TransitionType
 
 var is_moving := false  # prevents spam
@@ -20,3 +21,7 @@ func _pressed():
 
 func _on_tween_finished():
 	is_moving = false
+
+
+func _on_mouse_entered() -> void:
+	c.play()

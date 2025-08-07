@@ -9,14 +9,14 @@ extends Control
 
 var questions : Array[Dictionary] = [ 
 	{
-		"question": "What is the capital of France?",
-		"options": ["Berlin", "Madrid", "Paris"],
-		"answer": 2
+		"question": "Who is the biggest gay out there?",
+		"options": ["FIC", "ACO!", "MORTAR"],
+		"answer": 1
 	},
 	{
-		"question": "What is 2 + 2?",
-		"options": ["3", "4", "5"],
-		"answer": 1
+		"question": "What is the quadratic formula?",
+		"options": ["x = (-b ± √(b² - 4ac)) / (2a)", "x = (b ± √(b² - 4ac)) / (a)", "x = -b ± √b² - 4ac / 2a"],
+		"answer": 0
 	},
 	{
 		"question": "Which is the largest planet?",
@@ -55,7 +55,6 @@ func load_question() -> void:
 			button.pressed.disconnect(_on_option_pressed)
 		
 		button.pressed.connect(_on_option_pressed.bind(i))
-	
 
 func _on_option_pressed(selected_index: int) -> void:
 	var correct_index : int = questions[current_question]["answer"]

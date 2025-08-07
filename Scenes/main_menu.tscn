@@ -642,3 +642,4 @@ volume_db = -6.0
 [connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper1/Play" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper1/Play" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper2/Settings" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper2/Settings" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper3/Quit" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper3/Quit" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow/ExitSettings" to="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow/ExitSettings" method="_on_mouse_entered"]
