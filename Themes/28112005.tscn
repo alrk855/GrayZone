@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://cpct24jadte6y"]
+
+[ext_resource type="Shader" uid="uid://cx7qgxmcynl88" path="res://Themes/28112005.gdshader" id="1_i88d3"]
+[ext_resource type="Texture2D" uid="uid://depooqjp1v6ao" path="res://Themes/Heartz.png" id="1_qbact"]
+[ext_resource type="AudioStream" uid="uid://0utxpdh1fxrj" path="res://Audio/ost.mp3" id="3_dm4d0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dm4d0"]
+shader = ExtResource("1_i88d3")
+shader_parameter/VIEWPORT_SIZE = Vector2(1280, 720)
+
+[node name="28112005" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_dm4d0")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_qbact")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_dm4d0")
+volume_db = 12.026
+autoplay = true
