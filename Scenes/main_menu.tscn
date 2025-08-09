@@ -15,7 +15,7 @@
 [ext_resource type="Script" uid="uid://bk0shcf3ul7ob" path="res://Scripts/MainMenu/play.gd" id="10_vtepg"]
 [ext_resource type="Script" uid="uid://d3sojpw0ye6wd" path="res://Scripts/MainMenu/Settings/settings.gd" id="11_jr6u5"]
 [ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="12_m3bi6"]
-[ext_resource type="AudioStream" uid="uid://cf5osgv40yj6n" path="res://Audio/game.mp3" id="12_t1dhk"]
+[ext_resource type="AudioStream" uid="uid://c86k0swfa5wtq" path="res://Audio/game.mp3" id="12_t1dhk"]
 [ext_resource type="Script" uid="uid://fc2lago8y5do" path="res://Scripts/MainMenu/quit.gd" id="13_6vfk8"]
 [ext_resource type="Theme" uid="uid://hfoalgua28li" path="res://Themes/ui_settings_card.tres" id="13_8dnnj"]
 [ext_resource type="AudioStream" uid="uid://lyhht1a5m7r7" path="res://Audio/u4.mp3" id="13_tt8ml"]
