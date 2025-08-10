@@ -23,7 +23,8 @@ func _on_PlayerInput_text_changed(new_text):
 
 # Optional: when player presses Enter
 func _process(_delta: float) -> void:
-	if target_text[current_target] == input_field.text:
-		feedback_label.text = "🎉 You did it!"
-	else:
-		feedback_label.text = "Try again!"
+	if Input.is_action_just_pressed("CV_Input"):
+		if target_text[current_target] == input_field.text:
+			feedback_label.text = "🎉 You did it!"
+		else:
+			feedback_label.text = "Try again!"

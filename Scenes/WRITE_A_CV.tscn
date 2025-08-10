@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://qd280ybioky1"]
 
-[ext_resource type="Script" uid="uid://do4deu8dtxej5" path="res://Scenes/write_a_cv.gd" id="1_aog3w"]
+[ext_resource type="Script" uid="uid://do4deu8dtxej5" path="res://Scenes/WRITE_A_CV.gd" id="1_aog3w"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_aog3w"]
 [ext_resource type="Texture2D" uid="uid://dp58ywitfyhh6" path="res://Images/MainMenu/BlueSky_HD2.png" id="2_fx2dp"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_fx2dp"]
@@ -67,6 +67,7 @@ autowrap_mode = 2
 text_direction = 1
 
 [node name="Feedback" type="Label" parent="mainbox"]
+z_index = 3
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -79,6 +80,7 @@ offset_right = 135.0
 offset_bottom = 35.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Label"
 horizontal_alignment = 1
 vertical_alignment = 1
