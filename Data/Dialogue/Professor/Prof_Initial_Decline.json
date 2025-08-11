@@ -1,0 +1,15 @@
+{
+  "id": "Prof_Initial_Decline",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "Then don’t expect a passing grade."
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "project_declined"
+      ]
+    }
+  ]
+}

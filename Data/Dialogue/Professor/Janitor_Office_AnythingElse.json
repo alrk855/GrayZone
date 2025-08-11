@@ -1,0 +1,15 @@
+{
+  "id": "Janitor_Office_AnythingElse",
+  "lines": [
+    {
+      "speaker": "Janitor",
+      "text": "Maybe. Try the classroom later this week… if you’re the type who studies answer sheets instead of books."
+    },
+    {
+      "action": "add_task",
+      "tasks": [
+        "Visit the Classroom"
+      ]
+    }
+  ]
+}

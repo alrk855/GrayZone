@@ -1,0 +1,34 @@
+{
+  "id": "Janitor_Office_Buy_500",
+  "lines": [
+    {
+      "speaker": "Janitor",
+      "text": "Deal."
+    },
+    {
+      "action": "money",
+      "delta": -500
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "have_old_project",
+        "integrity_penalty_pending"
+      ]
+    },
+    {
+      "action": "adjust_time",
+      "value": 15
+    },
+    {
+      "speaker": "Janitor",
+      "text": "Try the classroom later this week… if you’re the type who studies answer sheets instead of books."
+    },
+    {
+      "action": "add_task",
+      "tasks": [
+        "Visit the Classroom"
+      ]
+    }
+  ]
+}

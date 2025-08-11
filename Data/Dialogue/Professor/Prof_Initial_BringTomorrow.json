@@ -1,0 +1,34 @@
+{
+  "id": "Prof_Initial_BringTomorrow",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "Then bring it before class ends tomorrow. I don’t chase students."
+    },
+    {
+      "action": "add_task",
+      "tasks": [
+        "project"
+      ]
+    },
+    {
+      "action": "unlock_feature",
+      "feature": "final_project",
+      "limit": 1
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "project_due_day4_eod"
+      ]
+    },
+    {
+      "action": "update_task_step",
+      "task": "project"
+    },
+    {
+      "action": "adjust_time",
+      "value": 15
+    }
+  ]
+}

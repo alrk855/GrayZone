@@ -1,0 +1,34 @@
+{
+  "id": "Prof_Initial_AskDeadline",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "Friday, noon. Final deadline. Make it your own work."
+    },
+    {
+      "action": "add_task",
+      "tasks": [
+        "project"
+      ]
+    },
+    {
+      "action": "unlock_feature",
+      "feature": "final_project",
+      "limit": 1
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "project_due_friday_noon"
+      ]
+    },
+    {
+      "action": "update_task_step",
+      "task": "project"
+    },
+    {
+      "action": "adjust_time",
+      "value": 15
+    }
+  ]
+}

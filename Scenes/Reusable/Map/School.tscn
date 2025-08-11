@@ -1,8 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://io6e1ybfv6mj"]
+[gd_scene load_steps=8 format=3 uid="uid://io6e1ybfv6mj"]
 
-[ext_resource type="Texture2D" uid="uid://bkwm48qoj5743" path="res://Images/WHITE HD.png" id="1_64kaa"]
 [ext_resource type="Script" uid="uid://c4d52b5ae03ne" path="res://Scenes/Reusable/Map/school.gd" id="1_hfkw0"]
+[ext_resource type="Texture2D" uid="uid://4ilsh38540f" path="res://Images/download.jpg" id="2_flddd"]
 [ext_resource type="Script" uid="uid://8gs1pv82wr6n" path="res://Scenes/Reusable/Map/EnterSecretaryOffice.gd" id="2_hfkw0"]
+[ext_resource type="Script" uid="uid://dkcvwrcbq2t8o" path="res://Scenes/Reusable/Map/EnterProfessorsOffice.gd" id="3_flddd"]
+[ext_resource type="Script" uid="uid://bngil6nruelbw" path="res://Scenes/Reusable/Map/rollback.gd" id="5_60yip"]
+[ext_resource type="Script" uid="uid://rmihi0djaxp4" path="res://Scenes/Reusable/Map/forward.gd" id="6_jxu8x"]
+[ext_resource type="Script" uid="uid://ce7l6fkt52tex" path="res://Scenes/Reusable/Map/freeze.gd" id="7_iq7gh"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -20,7 +24,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_64kaa")
+texture = ExtResource("2_flddd")
 
 [node name="doors" type="HBoxContainer" parent="background"]
 layout_mode = 1
@@ -31,7 +35,7 @@ anchor_right = 0.93
 anchor_bottom = 0.776
 offset_left = -0.399994
 offset_top = -0.279999
-offset_right = 0.399902
+offset_right = -64.6
 offset_bottom = -0.0800171
 grow_horizontal = 2
 grow_vertical = 2
@@ -49,6 +53,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "ProfessorsOffice
 "
+script = ExtResource("3_flddd")
 
 [node name="SecretaryOffice" type="Button" parent="background/doors"]
 custom_minimum_size = Vector2(300, 0)
@@ -72,3 +77,29 @@ offset_right = -429.28
 offset_bottom = -48.98
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Button" type="Button" parent="background"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+offset_right = 8.0
+offset_bottom = 8.0
+text = "-30"
+script = ExtResource("5_60yip")
+
+[node name="Button2" type="Button" parent="background"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+offset_left = 351.0
+offset_right = 451.0
+offset_bottom = 100.0
+text = "+30"
+script = ExtResource("6_jxu8x")
+
+[node name="Button3" type="Button" parent="background"]
+custom_minimum_size = Vector2(200, 100)
+offset_left = 126.0
+offset_right = 314.0
+offset_bottom = 100.0
+text = "FREEZE UNFREEZE TIME
+"
+script = ExtResource("7_iq7gh")

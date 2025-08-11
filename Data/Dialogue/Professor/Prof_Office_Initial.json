@@ -1,0 +1,39 @@
+{
+  "id": "Prof_Office_Initial",
+  "lines": [
+    {
+      "speaker": "Player",
+      "text": "Excuse me, Professor… Do you have a moment?"
+    },
+    {
+      "speaker": "Professor",
+      "text": "If this is about your grades — they’re not finalized yet."
+    },
+    {
+      "speaker": "Professor",
+      "text": "But if you’re here about the Finals Project, then you’re only slightly late."
+    },
+    {
+      "speaker": "Professor",
+      "text": "It’s mandatory. Everyone must submit one. No project, no pass."
+    },
+    {
+      "choice_type": "goto",
+      "prompt": "Ask about the project?",
+      "options": [
+        {
+          "text": "When do I need to bring it?",
+          "file": "res://Data/Dialogue/Professor/Office_Initial_AskDeadline.json"
+        },
+        {
+          "text": "I’ll bring it tomorrow.",
+          "file": "res://Data/Dialogue/Professor/Office_Initial_BringTomorrow.json"
+        },
+        {
+          "text": "…Never mind.",
+          "file": "res://Data/Dialogue/Professor/Office_Initial_Decline.json"
+        }
+      ]
+    }
+  ]
+}
