@@ -1,0 +1,14 @@
+{
+  "title": "Volunteer for Community Work",
+  "giver": "Youth Civil Office (Daniel)",
+  "location": "Youth Civil Office",
+  "optional": true,
+  "steps": [
+    { "id": "unlock_day2", "text": "Unlocks after Day 2 classroom scene" },
+    { "id": "visit_office", "text": "Visit the Youth Civil Office" },
+    { "id": "talk_daniel", "text": "Talk to Daniel the supervisor" },
+    { "id": "accept", "text": "Accept volunteering task" },
+    { "id": "shifts", "text": "Complete volunteering shifts (0/3)" },
+    { "id": "letter", "text": "Collect recommendation letter" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Janitor Tip",
+  "giver": "Marko",
+  "location": "School",
+  "optional": true,
+  "steps": [
+    { "id": "marko_hint", "text": "Talk to Marko: the janitor might have access to 'old projects'." },
+    { "id": "visit_before_close", "text": "Visit the school before closing hours and find the janitor" },
+    { "id": "choice_buy_decline", "text": "Choose: Buy last year's project or Decline" },
+    { "id": "unlock_classroom_path", "text": "If you talked to the janitor → unlock 'Visit the Classroom' path" }
+  ]
+}

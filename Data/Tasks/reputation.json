@@ -1,0 +1,11 @@
+{
+  "title": "Maintain Good Reputation",
+  "giver": "Secretary",
+  "location": "School",
+  "steps": [
+    { "id": "ongoing", "text": "Ongoing" },
+    { "id": "no_skip", "text": "Avoid skipping class" },
+    { "id": "no_cheat", "text": "Don’t accept bribes or cheat" },
+    { "id": "positive", "text": "Keep positive interactions with teachers and peers" }
+  ]
+}

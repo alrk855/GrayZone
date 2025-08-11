@@ -1,0 +1,13 @@
+{
+  "title": "Get a Birth Certificate",
+  "giver": "Secretary",
+  "location": "MVR Office",
+  "steps": [
+    { "id": "mvr_clerk", "text": "Talk to the MVR Clerk" },
+    { "id": "choose_method", "text": "Choose processing method (Standard or Fast)" },
+    { "id": "wait_days", "text": "Wait for processing to complete (0/3 → 3/3 days depending on method)" },
+    { "id": "collect", "text": "Return to collect the certificate" },
+    { "id": "notarize", "text": "Notarize the certificate" },
+    { "id": "fallback_collect", "text": "If you did not timeskip with the clerk: return after 16:00 to collect and notarize" }
+  ]
+}

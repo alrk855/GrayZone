@@ -1,0 +1,14 @@
+{
+  "title": "Classroom Answers Lead",
+  "giver": "Janitor",
+  "location": "Classroom",
+  "optional": true,
+  "steps": [
+    { "id": "janitor_line", "text": "Janitor: “Try the classroom later this week… if you prefer answer sheets over books.”" },
+    { "id": "checks", "text": "Check the classroom before closing hours (0/3 attempts over the week)" },
+    { "id": "buy_subj1", "text": "Bought the Finals Answers [{subject1}] (optional)" },
+    { "id": "buy_subj2", "text": "Bought the Finals Answers [{subject2}] (optional)" },
+    { "id": "declined", "text": "Declined the offer" },
+    { "id": "branching", "text": "If bought only one set, the classroom reappears later in the week; otherwise the thread ends" }
+  ]
+}

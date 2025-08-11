@@ -1,0 +1,12 @@
+{
+  "title": "Create Final Project",
+  "giver": "Professor",
+  "location": "Home / Professor's Office",
+  "steps": [
+    { "id": "talk_prof", "text": "Talk to the Professor about the project" },
+    { "id": "write", "text": "Write the project" },
+    { "id": "submit", "text": "Submit the project" },
+    { "id": "grade_c", "text": "Grade must be C or higher" },
+    { "id": "plagiarized_branch", "text": "If flagged as plagiarized before Friday → rewrite and resubmit by next day; grade must be C or higher" }
+  ]
+}

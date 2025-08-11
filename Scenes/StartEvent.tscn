@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dk4oomrw4r2r"]
 
 [ext_resource type="Script" uid="uid://id2q7hwo013j" path="res://Scenes/start_event.gd" id="1_33p7c"]
-[ext_resource type="Texture2D" uid="uid://bis1mltor4j43" path="res://Images/classroomv.0.png" id="2_33p7c"]
+[ext_resource type="Texture2D" uid="uid://b2ewotw87jjtg" path="res://Images/classroom.png" id="2_k4npa"]
 [ext_resource type="Texture2D" uid="uid://cc5btkfygxwbe" path="res://Images/Characters/klasenchopped.png" id="3_k4npa"]
 [ext_resource type="Texture2D" uid="uid://degyqjdnkcr2f" path="res://Images/Characters/direktorchopped.png" id="3_vie7q"]
 
@@ -32,7 +32,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_33p7c")
+texture = ExtResource("2_k4npa")
 expand_mode = 1
 
 [node name="Control" type="MarginContainer" parent="background"]
@@ -56,11 +56,13 @@ size_flags_vertical = 0
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.252
-anchor_right = 1.253
+anchor_left = -0.093
+anchor_top = 0.3
+anchor_right = 1.127
 anchor_bottom = 1.0
-offset_left = 1.0
-offset_right = 0.0500031
+offset_left = -0.0499992
+offset_right = -0.0500183
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
@@ -71,9 +73,13 @@ expand_mode = 1
 [node name="teacher2" type="TextureRect" parent="background/Control/Control"]
 clip_contents = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = 0.147
+anchor_top = 0.08
+anchor_right = 0.98
+anchor_bottom = 0.996
+offset_left = -0.0499992
+offset_bottom = -1.52588e-05
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3

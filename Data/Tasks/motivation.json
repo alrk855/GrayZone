@@ -1,0 +1,11 @@
+{
+  "title": "Submit Motivational Letter",
+  "giver": "Secretary",
+  "location": "Home / Classroom",
+  "steps": [
+    { "id": "visit_home", "text": "Visit Home" },
+    { "id": "draft", "text": "Draft a Motivational Letter" },
+    { "id": "finish", "text": "Finish writing the Motivational Letter" },
+    { "id": "optional_rewrite", "text": "OPTIONAL (if teacher checked the work & you used GPT): Rewrite the letter yourself and have the Homeroom Teacher check it", "optional": true }
+  ]
+}

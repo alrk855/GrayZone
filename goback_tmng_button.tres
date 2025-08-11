@@ -1,0 +1,22 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://dac3bbni4k0gv"]
+
+[ext_resource type="Texture2D" uid="uid://blk88uyybrcha" path="res://Icons/reply.png" id="1_epkwa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4v0i7"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_epkwa"]
+texture = ExtResource("1_epkwa")
+modulate_color = Color(1, 1, 1, 0.490196)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ri4iu"]
+texture = ExtResource("1_epkwa")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uknvw"]
+texture = ExtResource("1_epkwa")
+modulate_color = Color(0, 0, 0, 0.635294)
+
+[resource]
+Button/styles/focus = SubResource("StyleBoxEmpty_4v0i7")
+Button/styles/hover = SubResource("StyleBoxTexture_epkwa")
+Button/styles/normal = SubResource("StyleBoxTexture_ri4iu")
+Button/styles/pressed = SubResource("StyleBoxTexture_uknvw")

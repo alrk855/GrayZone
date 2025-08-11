@@ -8,14 +8,17 @@ func _ready():
 	GameState.location = "Classroom"
 	principal_sprite.visible = false
 
-	# Start dialogue
+	# Start dialogue (pass self so callbacks still work)
 	var dialogue_ui = DialogueManager.start_dialogue("res://Data/StartEvent.json", self)
 
 	# Connect to "dialogue_finished" if possible
 	if dialogue_ui and dialogue_ui.has_signal("dialogue_finished"):
 		dialogue_ui.connect("dialogue_finished", Callable(self, "_on_start_event_finished"))
 
-func _on_start_event_finished():
+func _on_start_event_finished(_dlg_id: String = "", _payload: Variant = null):
+	# Start the global game clock AFTER the intro (keeps any JSON time adjustments)
+	GameState.begin_game(GameState.day, GameState.time)
+
 	print("🎬 StartEvent completed. Moving to School.")
 	await fade_out()
 	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/School.tscn")
@@ -44,17 +47,9 @@ func fade_in():
 	await tween.finished
 	screen_fader.visible = false
 
+# Route line actions through GameState helper
 func on_dialogue_action(line: Dictionary):
-	match line["action"]:
-		"add_task":
-			for task in line["tasks"]:
-				GameState.add_task(task)
-		"adjust_time":
-			GameState.adjust_time(line["value"])
-		"unlock_feature":
-			GameState.unlock_game_feature(line["feature"])
-		_:
-			print("⚠ Unknown action:", line["action"])
+	GameState.apply_action(line)
 
 func on_choices_selected(selected: Array):
 	if selected.size() >= 2:

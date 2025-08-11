@@ -1,0 +1,10 @@
+{
+  "title": "Get English Language Certificate",
+  "giver": "Secretary",
+  "location": "Home / Mailbox",
+  "steps": [
+    { "id": "requested", "text": "The certificate has been requested — check the mailbox daily" },
+    { "id": "check_mailbox", "text": "Check the mailbox" },
+    { "id": "claimed", "text": "Claim the certificate from the mailbox" }
+  ]
+}

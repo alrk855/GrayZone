@@ -1,0 +1,11 @@
+{
+  "title": "Avoid Serious Disciplinary Reports",
+  "giver": "Secretary",
+  "location": "School",
+  "steps": [
+    { "id": "none", "text": "No violations" },
+    { "id": "cheating", "text": "Cheating (avoid)" },
+    { "id": "bribery", "text": "Bribery (avoid)" },
+    { "id": "absence", "text": "Excessive absences (avoid)" }
+  ]
+}

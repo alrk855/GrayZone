@@ -1,0 +1,13 @@
+{
+  "title": "Study {subject2}",
+  "giver": "Self",
+  "location": "Home",
+  "steps": [
+    {
+      "id": "study_sessions",
+      "text": "Study {subject2} at home",
+      "counter_key": "study",
+      "counter_goal": 5
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Bring Grade Transcripts",
+  "giver": "Homeroom Teacher",
+  "location": "Classroom",
+  "steps": [
+    { "id": "visit_teacher", "text": "Visit the Homeroom Teacher" },
+    { "id": "take_quiz", "text": "Take Friday’s Quiz" },
+    { "id": "receive_transcripts", "text": "Talk to the Homeroom Teacher to receive the transcripts" }
+  ]
+}
