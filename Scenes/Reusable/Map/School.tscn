@@ -97,6 +97,7 @@ script = ExtResource("6_jxu8x")
 
 [node name="Button3" type="Button" parent="background"]
 custom_minimum_size = Vector2(200, 100)
+layout_mode = 0
 offset_left = 126.0
 offset_right = 314.0
 offset_bottom = 100.0

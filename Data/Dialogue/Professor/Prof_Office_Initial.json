@@ -23,15 +23,15 @@
       "options": [
         {
           "text": "When do I need to bring it?",
-          "file": "res://Data/Dialogue/Professor/Office_Initial_AskDeadline.json"
+          "id": "prof_initial_ask_deadline"
         },
         {
           "text": "I’ll bring it tomorrow.",
-          "file": "res://Data/Dialogue/Professor/Office_Initial_BringTomorrow.json"
+          "id": "prof_initial_bring_tomorrow"
         },
         {
           "text": "…Never mind.",
-          "file": "res://Data/Dialogue/Professor/Office_Initial_Decline.json"
+          "id": "prof_initial_decline"
         }
       ]
     }
