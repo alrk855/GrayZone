@@ -1,31 +1,8 @@
 {
   "id": "Janitor_Office_Tipped_Intro",
   "lines": [
-    {
-      "speaker": "Janitor",
-      "text": "Marko’s little protégé, huh? Didn’t think you’d show."
-    },
-    {
-      "speaker": "Janitor",
-      "text": "Project. Last year’s. Neat, graded, forgotten. 300 денари and we forget this ever happened."
-    },
-    {
-      "choice_type": "goto",
-      "prompt": "What do you do?",
-      "options": [
-        {
-          "text": "Deal (300 денари)",
-          "file": "res://Data/Dialogue/Professor/Janitor_Office_Buy_300.json"
-        },
-        {
-          "text": "That’s still shady.",
-          "file": "res://Data/Dialogue/Professor/Janitor_Office_Pass.json"
-        },
-        {
-          "text": "Anything else for sale?",
-          "file": "res://Data/Dialogue/Professor/Janitor_Office_AnythingElse.json"
-        }
-      ]
-    }
+	{ "speaker": "Janitor", "text": "Marko’s little protégé, huh? Didn’t think you’d show." },
+	{ "speaker": "Janitor", "text": "Project. Last year’s. Neat, graded, forgotten. 300 денари and we forget this ever happened." },
+	{ "action": "show_janitor_office_options" }
   ]
 }

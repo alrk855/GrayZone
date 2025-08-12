@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://io6e1ybfv6mj"]
+[gd_scene load_steps=9 format=3 uid="uid://io6e1ybfv6mj"]
 
 [ext_resource type="Script" uid="uid://c4d52b5ae03ne" path="res://Scenes/Reusable/Map/school.gd" id="1_hfkw0"]
-[ext_resource type="Texture2D" uid="uid://4ilsh38540f" path="res://Images/download.jpg" id="2_flddd"]
 [ext_resource type="Script" uid="uid://8gs1pv82wr6n" path="res://Scenes/Reusable/Map/EnterSecretaryOffice.gd" id="2_hfkw0"]
+[ext_resource type="Texture2D" uid="uid://bdlw063lhqkm6" path="res://Images/dwnd.jpg" id="2_iq7gh"]
 [ext_resource type="Script" uid="uid://dkcvwrcbq2t8o" path="res://Scenes/Reusable/Map/EnterProfessorsOffice.gd" id="3_flddd"]
 [ext_resource type="Script" uid="uid://bngil6nruelbw" path="res://Scenes/Reusable/Map/rollback.gd" id="5_60yip"]
 [ext_resource type="Script" uid="uid://rmihi0djaxp4" path="res://Scenes/Reusable/Map/forward.gd" id="6_jxu8x"]
 [ext_resource type="Script" uid="uid://ce7l6fkt52tex" path="res://Scenes/Reusable/Map/freeze.gd" id="7_iq7gh"]
+[ext_resource type="Script" uid="uid://c763p6eaw512u" path="res://Scenes/Reusable/Map/gocity.gd" id="8_3mlsj"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -24,7 +25,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_flddd")
+texture = ExtResource("2_iq7gh")
 
 [node name="doors" type="HBoxContainer" parent="background"]
 layout_mode = 1
@@ -104,3 +105,20 @@ offset_bottom = 100.0
 text = "FREEZE UNFREEZE TIME
 "
 script = ExtResource("7_iq7gh")
+
+[node name="Button4" type="Button" parent="background"]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -8.0
+offset_right = 4.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "City"
+script = ExtResource("8_3mlsj")
+target_scene = "uid://bdwff2rioevg3"

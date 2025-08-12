@@ -1,27 +1,10 @@
 {
   "id": "Prof_Submit_Generic",
   "lines": [
-    {
-      "speaker": "Player",
-      "text": "I’ve brought my Final Project."
-    },
-    {
-      "speaker": "Professor",
-      "text": "…Hmph. I’ll review it."
-    },
-    {
-      "action": "set_flags",
-      "flags": [
-        "project_submitted"
-      ]
-    },
-    {
-      "action": "update_task_step",
-      "task": "project"
-    },
-    {
-      "action": "adjust_time",
-      "value": 15
-    }
+	{ "speaker": "Player", "text": "I’ve brought my Final Project." },
+	{ "speaker": "Professor", "text": "…Hmph. I’ll review it." },
+	{ "action": "set_flags", "flags": ["project_submitted"] },
+	{ "action": "update_task_step", "task": "project" },
+	{ "action": "adjust_time", "value": 15 }
   ]
 }

@@ -1,9 +1,6 @@
 {
   "id": "Prof_NotHere",
   "lines": [
-    {
-      "speaker": "Narrator",
-      "text": "The professor’s not here right now. You’ll have to come back another time."
-    }
+	{ "speaker": "Narrator", "text": "The professor’s not here right now. You’ll have to come back another time." }
   ]
 }

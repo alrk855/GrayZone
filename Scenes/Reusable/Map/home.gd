@@ -1,0 +1,175 @@
+# Home.gd
+extends Control
+
+# --- Drop your UI button here in the Inspector ---
+@export var home_button: Button
+
+# --- CharacterChoiceButtons scene path ---
+const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
+
+# --- Manual scene paths (edit these) ---
+const CITY_SCENE_PATH        := "res://Scenes/Reusable/Map/City.tscn"
+const STUDY_SCENE_PATH       := "res://Scenes/Reusable/Tasks/Study.tscn"
+const WRITE_CV_SCENE_PATH    := "res://Scenes/Reusable/Tasks/WriteCV.tscn"
+const WRITE_MOTIVATION_PATH  := "res://Scenes/Reusable/Tasks/WriteMotivation.tscn"
+const WRITE_PROJECT_PATH     := "res://Scenes/WRITE_A_PROJECT.tscn"
+const MAILBOX_SCENE_PATH     := "res://Scenes/Reusable/Tasks/MailboxCheck.tscn"
+const SOCIAL_SCENE_PATH      := "res://Scenes/Reusable/Tasks/Social.tscn"
+
+# --- Internals ---
+var _panel: Control = null
+const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
+
+func _ready() -> void:
+	GameState.location = "Home"
+	if home_button:
+		home_button.pressed.connect(_on_home_btn_pressed)
+
+func _on_home_btn_pressed() -> void:
+	show_home_menu()
+
+# ================= Menus =================
+
+func show_home_menu() -> void:
+	var choices := [
+		{"id":"activities", "text":"Activities"},
+		{"id":"city",       "text":"City"}
+	]
+	if GameState.time >= SLEEP_AVAILABLE_MIN and not GameState.is_time_frozen():
+		choices.append({"id":"sleep", "text":"Sleep"})
+	else:
+		choices.append({"id":"sleep_locked", "text":"Sleep (Locked)"})
+	choices.append({"id":"back", "text":"Back"})
+	_show_choices(choices, Callable(self, "_on_home_choice"))
+
+func _on_home_choice(id: String) -> void:
+	match id:
+		"activities":
+			_show_activities_menu()
+		"city":
+			_change_scene(CITY_SCENE_PATH)
+		"sleep":
+			_do_sleep()
+		"sleep_locked":
+			print("🛌 Too early to sleep. Come back after 19:00.")
+			show_home_menu()
+		"back":
+			_clear_panel()
+
+func _show_activities_menu() -> void:
+	var choices := [
+		{"id":"study",      "text":"Study"},
+		{"id":"schoolwork", "text":"Schoolwork"},
+		{"id":"mailbox",    "text":"Check Mailbox"},
+		{"id":"social",     "text":"Social Media"},
+		{"id":"back",       "text":"Back"}
+	]
+	_show_choices(choices, Callable(self, "_on_activities_choice"))
+
+func _on_activities_choice(id: String) -> void:
+	match id:
+		"study":
+			_show_study_menu()
+		"schoolwork":
+			_show_schoolwork_menu()
+		"mailbox":
+			_change_scene(MAILBOX_SCENE_PATH)
+		"social":
+			_change_scene(SOCIAL_SCENE_PATH)
+		"back":
+			show_home_menu()
+
+func _show_study_menu() -> void:
+	var s1 := GameState.subject1.strip_edges()
+	var s2 := GameState.subject2.strip_edges()
+	if s1 == "": s1 = "[Subject 1]"
+	if s2 == "": s2 = "[Subject 2]"
+	var choices := [
+		{"id":"s1",   "text":"Study " + s1},
+		{"id":"s2",   "text":"Study " + s2},
+		{"id":"back", "text":"Back"}
+	]
+	_show_choices(choices, Callable(self, "_on_study_choice"))
+
+func _on_study_choice(id: String) -> void:
+	match id:
+		"s1", "s2":
+			# If you want to tell Study.tscn which subject was picked, set a flag here.
+			# GameState.set_flag("study_pick_s1", id == "s1")
+			_change_scene(STUDY_SCENE_PATH)
+		"back":
+			_show_activities_menu()
+
+func _show_schoolwork_menu() -> void:
+	var choices := [
+		{"id":"cv",         "text":"Write CV"},
+		{"id":"motivation", "text":"Write Motivation Letter"},
+		{"id":"project",    "text":"Write Project"},
+		{"id":"back",       "text":"Back"}
+	]
+	_show_choices(choices, Callable(self, "_on_schoolwork_choice"))
+
+func _on_schoolwork_choice(id: String) -> void:
+	match id:
+		"cv":
+			_change_scene(WRITE_CV_SCENE_PATH)
+		"motivation":
+			_change_scene(WRITE_MOTIVATION_PATH)
+		"project":
+			_change_scene(WRITE_PROJECT_PATH)
+		"back":
+			_show_activities_menu()
+
+# ================= CCB wrapper =================
+
+func _show_choices(options: Array, cb: Callable) -> void:
+	_clear_panel()
+	var ps := load(CCB_SCENE_PATH) as PackedScene
+	if ps == null:
+		push_error("CharacterChoiceButtons not found at: " + CCB_SCENE_PATH)
+		return
+	_panel = ps.instantiate()
+	add_child(_panel)
+	# Your CCB API: show_options(options:Array, callback:Callable)
+	_panel.call("show_options", options, cb)
+
+func _clear_panel() -> void:
+	if _panel and is_instance_valid(_panel):
+		_panel.queue_free()
+	_panel = null
+
+# ================= Actions =================
+
+func _change_scene(path: String) -> void:
+	_clear_panel()
+	if path == "" or not ResourceLoader.exists(path):
+		push_warning("Scene missing or invalid: " + path)
+		return
+	get_tree().change_scene_to_file(path)
+
+func _do_sleep() -> void:
+	if GameState.is_time_frozen():
+		print("⏸️ Finish the conversation first.")
+		show_home_menu()
+		return
+	if GameState.time < SLEEP_AVAILABLE_MIN:
+		print("🛌 Too early to sleep. Come back after 19:00.")
+		show_home_menu()
+		return
+	# Prefer your GameState sleep if present
+	if GameState.has_method("sleep_now"):
+		GameState.sleep_now()
+	else:
+		# Fallback: next day @ 07:30 (+ oversleep if after 23:00)
+		var wake_base := 7 * 60 + 30
+		var penalty := 0
+		if GameState.time >= 23 * 60:
+			var after_23 := GameState.time - 23 * 60
+			penalty = int(ceil(float(after_23) / 4.0))
+		var wake := wake_base + penalty
+		while wake >= 24 * 60:
+			wake -= 24 * 60
+		GameState.day += 1
+		GameState.time = wake
+		print("🛌 Slept. Wake at %02d:%02d (Day %d), penalty +%d min" % [wake/60, wake%60, GameState.day, penalty])
+	_clear_panel()

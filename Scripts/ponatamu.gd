@@ -21,6 +21,6 @@ func _pressed() -> void:
 	timer_end.start()
 
 func _on_end_timeout() -> void:
-	get_tree().change_scene_to_file("res://Scenes/StartEvent.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Reusable/Events/StartEvent.tscn")
 
 #optimizirano

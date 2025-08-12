@@ -1,0 +1,230 @@
+{
+  "subject": "macedonian",
+  "pool": [
+    {
+      "id": "MKD_01",
+      "q": "What is the capital city of North Macedonia?",
+      "correct": "Skopje",
+      "wrong": [
+        "Ohrid",
+        "Tetovo"
+      ]
+    },
+    {
+      "id": "MKD_02",
+      "q": "Macedonian primarily uses which script?",
+      "correct": "Cyrillic",
+      "wrong": [
+        "Latin",
+        "Greek"
+      ]
+    },
+    {
+      "id": "MKD_03",
+      "q": "Lake Ohrid is shared by North Macedonia and which country?",
+      "correct": "Albania",
+      "wrong": [
+        "Greece",
+        "Serbia"
+      ]
+    },
+    {
+      "id": "MKD_04",
+      "q": "Which city is famous for the Stone Bridge?",
+      "correct": "Skopje",
+      "wrong": [
+        "Bitola",
+        "Prilep"
+      ]
+    },
+    {
+      "id": "MKD_05",
+      "q": "What is a popular roasted red‑pepper spread in Macedonia?",
+      "correct": "Ajvar",
+      "wrong": [
+        "Hummus",
+        "Salsa"
+      ]
+    },
+    {
+      "id": "MKD_06",
+      "q": "What is the currency of North Macedonia?",
+      "correct": "Denar",
+      "wrong": [
+        "Euro",
+        "Dinar"
+      ]
+    },
+    {
+      "id": "MKD_07",
+      "q": "Which mountain range is well‑known in the northwest of the country?",
+      "correct": "Šar Mountains",
+      "wrong": [
+        "Balkan Mountains",
+        "Alps"
+      ]
+    },
+    {
+      "id": "MKD_08",
+      "q": "Mother Teresa was born in which city (now in North Macedonia)?",
+      "correct": "Skopje",
+      "wrong": [
+        "Ohrid",
+        "Kumanovo"
+      ]
+    },
+    {
+      "id": "MKD_09",
+      "q": "Which large lake lies in the southwest of North Macedonia?",
+      "correct": "Lake Ohrid",
+      "wrong": [
+        "Lake Prespa",
+        "Lake Skadar"
+      ]
+    },
+    {
+      "id": "MKD_10",
+      "q": "Which traditional dance is common at celebrations?",
+      "correct": "Oro",
+      "wrong": [
+        "Sirtaki",
+        "Flamenco"
+      ]
+    },
+    {
+      "id": "MKD_11",
+      "q": "What is the official name of the country?",
+      "correct": "Republic of North Macedonia",
+      "wrong": [
+        "Republic of Macedonia",
+        "Macedonian Republic of the Balkans"
+      ]
+    },
+    {
+      "id": "MKD_12",
+      "q": "Which neighboring country lies to the south?",
+      "correct": "Greece",
+      "wrong": [
+        "Serbia",
+        "Bulgaria"
+      ]
+    },
+    {
+      "id": "MKD_13",
+      "q": "What’s a common traditional pastry with cheese?",
+      "correct": "Burek",
+      "wrong": [
+        "Croissant",
+        "Pretzel"
+      ]
+    },
+    {
+      "id": "MKD_14",
+      "q": "Which city is known for its ancient theater and churches?",
+      "correct": "Ohrid",
+      "wrong": [
+        "Shtip",
+        "Veles"
+      ]
+    },
+    {
+      "id": "MKD_15",
+      "q": "What color is NOT on the national flag?",
+      "correct": "Blue",
+      "wrong": [
+        "Red",
+        "Yellow"
+      ]
+    },
+    {
+      "id": "MKD_16",
+      "q": "Which language is closely related to Macedonian?",
+      "correct": "Bulgarian",
+      "wrong": [
+        "Hungarian",
+        "Albanian"
+      ]
+    },
+    {
+      "id": "MKD_17",
+      "q": "Which river flows through Skopje?",
+      "correct": "Vardar",
+      "wrong": [
+        "Danube",
+        "Sava"
+      ]
+    },
+    {
+      "id": "MKD_18",
+      "q": "What is the traditional red pepper called when dried?",
+      "correct": "Bukovka",
+      "wrong": [
+        "Paprika",
+        "Harissa"
+      ]
+    },
+    {
+      "id": "MKD_19",
+      "q": "Which UNESCO site is famous in North Macedonia?",
+      "correct": "Ohrid Region",
+      "wrong": [
+        "Plitvice Lakes",
+        "Acropolis of Athens"
+      ]
+    },
+    {
+      "id": "MKD_20",
+      "q": "Which season usually has the most snow in the mountains?",
+      "correct": "Winter",
+      "wrong": [
+        "Summer",
+        "Spring"
+      ]
+    },
+    {
+      "id": "MKD_21",
+      "q": "Which alphabet letter is unique to Macedonian among its neighbors?",
+      "correct": "Ѓ (Gje)",
+      "wrong": [
+        "Q",
+        "W"
+      ]
+    },
+    {
+      "id": "MKD_22",
+      "q": "Which is a common Macedonian greeting meaning 'hello'?",
+      "correct": "Здраво (Zdravo)",
+      "wrong": [
+        "Adiós",
+        "Ciao"
+      ]
+    },
+    {
+      "id": "MKD_23",
+      "q": "Which dish is a slow‑cooked bean stew?",
+      "correct": "Tavče gravče",
+      "wrong": [
+        "Goulash",
+        "Ratatouille"
+      ]
+    },
+    {
+      "id": "MKD_24",
+      "q": "Which lake is south of Ohrid Lake and also shared with Greece and Albania?",
+      "correct": "Prespa Lake",
+      "wrong": [
+        "Skadar Lake",
+        "Doiran Lake"
+      ]
+    },
+    {
+      "id": "MKD_25",
+      "q": "Which city is known for an international poetry festival on Lake Ohrid?",
+      "correct": "Struga",
+      "wrong": [
+        "Bitola",
+        "Kichevo"
+      ]
+    }
+  ]
+}

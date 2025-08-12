@@ -1,0 +1,26 @@
+{
+  "id": "Marko_Study_End",
+  "lines": [
+	{
+	  "speaker": "Marko",
+	  "text": "That’s it. Get some rest."
+	},
+	{
+	  "action": "adjust_reputation",
+	  "value": 5
+	},
+	{
+	  "action": "set_flags",
+	  "flags": [
+		"marko_first_event_done"
+	  ]
+	},
+	{
+	  "action": "goto",
+	  "scene": "res://Scenes/Reusable/Map/Home.tscn"
+	},
+	{
+	  "action": "end_event"
+	}
+  ]
+}

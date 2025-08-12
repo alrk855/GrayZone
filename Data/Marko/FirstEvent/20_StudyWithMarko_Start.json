@@ -1,0 +1,36 @@
+{
+  "id": "Marko_Study_Start",
+  "lines": [
+	{
+	  "speaker": "Narrator",
+	  "text": "You sit down with Marko to go over [Subject 1]."
+	},
+	{
+	  "action": "update_task_step",
+	  "task": "study_subject1"
+	},
+	{
+	  "action": "adjust_time",
+	  "value": 30
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "Solid effort. For [Subject 1], watch out for these:"
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "• Question A"
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "• Question B"
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "You planning to cover [Subject 2] the same way?"
+	},
+	{
+	  "action": "marko_study_show_choices"
+	}
+  ]
+}

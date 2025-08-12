@@ -1,0 +1,32 @@
+{
+  "id": "Marko_Study_Subject2",
+  "lines": [
+	{
+	  "action": "update_task_step",
+	  "task": "study_subject2"
+	},
+	{
+	  "action": "adjust_time",
+	  "value": 30
+	},
+	{
+	  "speaker": "Narrator",
+	  "text": "You work through [Subject 2] together."
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "Nice. These are the tricky ones for [Subject 2]:"
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "• Question D"
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "• Question E"
+	},
+	{
+	  "action": "marko_study_goto_end"
+	}
+  ]
+}

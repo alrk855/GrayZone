@@ -1,0 +1,230 @@
+{
+  "subject": "geography",
+  "pool": [
+    {
+      "id": "GEO_01",
+      "q": "What is the capital of France?",
+      "correct": "Paris",
+      "wrong": [
+        "Rome",
+        "Berlin"
+      ]
+    },
+    {
+      "id": "GEO_02",
+      "q": "Which is the largest ocean on Earth?",
+      "correct": "Pacific Ocean",
+      "wrong": [
+        "Atlantic Ocean",
+        "Indian Ocean"
+      ]
+    },
+    {
+      "id": "GEO_03",
+      "q": "How many continents are there?",
+      "correct": "Seven",
+      "wrong": [
+        "Five",
+        "Six"
+      ]
+    },
+    {
+      "id": "GEO_04",
+      "q": "Which desert is the largest hot desert?",
+      "correct": "Sahara",
+      "wrong": [
+        "Gobi",
+        "Kalahari"
+      ]
+    },
+    {
+      "id": "GEO_05",
+      "q": "The equator divides Earth into which two halves?",
+      "correct": "Northern and Southern Hemispheres",
+      "wrong": [
+        "Eastern and Western Hemispheres",
+        "Arctic and Antarctic Circles"
+      ]
+    },
+    {
+      "id": "GEO_06",
+      "q": "What is the longest river in the world (commonly taught)?",
+      "correct": "Nile",
+      "wrong": [
+        "Amazon",
+        "Yangtze"
+      ]
+    },
+    {
+      "id": "GEO_07",
+      "q": "Which country is both in Europe and Asia?",
+      "correct": "Turkey",
+      "wrong": [
+        "Spain",
+        "Morocco"
+      ]
+    },
+    {
+      "id": "GEO_08",
+      "q": "Mount Everest is part of which mountain range?",
+      "correct": "Himalayas",
+      "wrong": [
+        "Andes",
+        "Alps"
+      ]
+    },
+    {
+      "id": "GEO_09",
+      "q": "Which continent is also a country?",
+      "correct": "Australia",
+      "wrong": [
+        "Africa",
+        "Europe"
+      ]
+    },
+    {
+      "id": "GEO_10",
+      "q": "What do we call lines that run east‑west on maps?",
+      "correct": "Latitude",
+      "wrong": [
+        "Longitude",
+        "Meridians"
+      ]
+    },
+    {
+      "id": "GEO_11",
+      "q": "Which direction does a compass needle usually point?",
+      "correct": "North",
+      "wrong": [
+        "South",
+        "West"
+      ]
+    },
+    {
+      "id": "GEO_12",
+      "q": "What is the capital of Japan?",
+      "correct": "Tokyo",
+      "wrong": [
+        "Beijing",
+        "Seoul"
+      ]
+    },
+    {
+      "id": "GEO_13",
+      "q": "Which ocean lies on the east coast of the United States?",
+      "correct": "Atlantic Ocean",
+      "wrong": [
+        "Pacific Ocean",
+        "Arctic Ocean"
+      ]
+    },
+    {
+      "id": "GEO_14",
+      "q": "What is the largest country by area?",
+      "correct": "Russia",
+      "wrong": [
+        "Canada",
+        "China"
+      ]
+    },
+    {
+      "id": "GEO_15",
+      "q": "Which sea separates Europe and Africa at the Strait of Gibraltar?",
+      "correct": "Mediterranean Sea",
+      "wrong": [
+        "Black Sea",
+        "Red Sea"
+      ]
+    },
+    {
+      "id": "GEO_16",
+      "q": "Which desert is in northern China and southern Mongolia?",
+      "correct": "Gobi",
+      "wrong": [
+        "Atacama",
+        "Namib"
+      ]
+    },
+    {
+      "id": "GEO_17",
+      "q": "What is the capital of the United Kingdom?",
+      "correct": "London",
+      "wrong": [
+        "Dublin",
+        "Edinburgh"
+      ]
+    },
+    {
+      "id": "GEO_18",
+      "q": "Which U.S. state is an island chain in the Pacific?",
+      "correct": "Hawaii",
+      "wrong": [
+        "Alaska",
+        "Florida"
+      ]
+    },
+    {
+      "id": "GEO_19",
+      "q": "What is the capital of North Macedonia?",
+      "correct": "Skopje",
+      "wrong": [
+        "Ohrid",
+        "Bitola"
+      ]
+    },
+    {
+      "id": "GEO_20",
+      "q": "Which river flows through Cairo, Egypt?",
+      "correct": "Nile",
+      "wrong": [
+        "Tigris",
+        "Danube"
+      ]
+    },
+    {
+      "id": "GEO_21",
+      "q": "What is the smallest continent?",
+      "correct": "Australia",
+      "wrong": [
+        "Europe",
+        "Antarctica"
+      ]
+    },
+    {
+      "id": "GEO_22",
+      "q": "Which country has the city of Rio de Janeiro?",
+      "correct": "Brazil",
+      "wrong": [
+        "Portugal",
+        "Argentina"
+      ]
+    },
+    {
+      "id": "GEO_23",
+      "q": "Which continent is the Sahara Desert on?",
+      "correct": "Africa",
+      "wrong": [
+        "Asia",
+        "South America"
+      ]
+    },
+    {
+      "id": "GEO_24",
+      "q": "Which country is famous for the pyramids at Giza?",
+      "correct": "Egypt",
+      "wrong": [
+        "Mexico",
+        "Peru"
+      ]
+    },
+    {
+      "id": "GEO_25",
+      "q": "What is the capital of Italy?",
+      "correct": "Rome",
+      "wrong": [
+        "Milan",
+        "Naples"
+      ]
+    }
+  ]
+}

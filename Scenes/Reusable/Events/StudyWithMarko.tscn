@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqwn5yx54a1r2"]
+
+[ext_resource type="Script" uid="uid://cb4ffsx5bw5ag" path="res://Scenes/Reusable/Events/study_with_marko.gd" id="1_sguoi"]
+[ext_resource type="Texture2D" uid="uid://ci6r73qv0hkce" path="res://Images/BlueSky_HD3.png" id="2_8qr1g"]
+
+[node name="StudyWithMarko" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sguoi")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_8qr1g")

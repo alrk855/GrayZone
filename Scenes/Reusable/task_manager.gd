@@ -1,22 +1,21 @@
 extends Control
 
-@onready var task_grid := $"Task Overview/ScrollContainer/GridContainer"
-@onready var task_detail := $"Task Detailed"
-@onready var title_label := task_detail.get_node("Title")
-@onready var meta_label := task_detail.get_node("MetaLabel")
-@onready var step_container := task_detail.get_node("Scroll/LabelContainer")
-@onready var go_back_button := task_detail.get_node("goback")
-@onready var camera := $Camera2D
+@onready var task_grid: GridContainer = $"Task Overview/ScrollContainer/GridContainer"
+@onready var task_detail: Control = $"Task Detailed"
+@onready var title_label: Label = task_detail.get_node("Title") as Label
+@onready var meta_label: Label = task_detail.get_node("MetaLabel") as Label
+@onready var step_container: Control = task_detail.get_node("Scroll/LabelContainer") as Control
+@onready var go_back_button: Button = task_detail.get_node("goback") as Button
+@onready var camera: Camera2D = $Camera2D as Camera2D
 
 const MAIN_REQUIREMENTS_TASK_ID := "Gather Scholarship Requirements"
 const BASE_STEP_FONT_SIZE := 22
-const STEP_FONT_SIZE := BASE_STEP_FONT_SIZE + 4   # +4 as requested
+const STEP_FONT_SIZE := BASE_STEP_FONT_SIZE + 4
 
-var overview_y := 0.0
+var overview_y: float = 0.0
 var CUSTOM_FONT: Font = preload("res://Fonts/Chalkboard-Regular.ttf")
 
-func _ready():
-	# connect wrappers
+func _ready() -> void:
 	if not GameState.task_added.is_connected(Callable(self, "_on_task_added")):
 		GameState.task_added.connect(Callable(self, "_on_task_added"))
 	if not GameState.task_updated.is_connected(Callable(self, "_on_task_updated")):
@@ -24,9 +23,7 @@ func _ready():
 	if not GameState.flag_changed.is_connected(Callable(self, "_on_flag_changed")):
 		GameState.flag_changed.connect(Callable(self, "_on_flag_changed"))
 
-	# apply custom font to static labels (buttons untouched)
 	_apply_title_meta_fonts()
-
 	refresh_tasks()
 	await get_tree().process_frame
 	overview_y = camera.position.y
@@ -34,38 +31,45 @@ func _ready():
 	go_back_button.pressed.connect(_on_back_pressed)
 
 func _apply_title_meta_fonts() -> void:
-	# Title
 	title_label.add_theme_font_override("font", CUSTOM_FONT)
 	var tsize: int = title_label.get_theme_font_size("font_size")
-	if tsize <= 0: tsize = 24
+	if tsize <= 0:
+		tsize = 24
 	title_label.add_theme_font_size_override("font_size", tsize + 4)
 
-	# Meta
 	meta_label.add_theme_font_override("font", CUSTOM_FONT)
 	var msize: int = meta_label.get_theme_font_size("font_size")
-	if msize <= 0: msize = 14
+	if msize <= 0:
+		msize = 14
 	meta_label.add_theme_font_size_override("font_size", msize + 4)
 
-func _on_task_added(_id: String) -> void: refresh_tasks()
-func _on_task_updated(_id: String, _idx: int) -> void: refresh_tasks()
-func _on_flag_changed(_flag: String, _val: bool) -> void: refresh_tasks()
+func _on_task_added(_id: String) -> void:
+	refresh_tasks()
 
-# Public API
-func refresh_tasks():
+func _on_task_updated(_id: String, _idx: int) -> void:
+	refresh_tasks()
+
+func _on_flag_changed(_flag: String, _val: bool) -> void:
+	refresh_tasks()
+
+func refresh_tasks() -> void:
 	for button in task_grid.get_children():
-		if button is Button:
-			if button.pressed.is_connected(Callable(self, "_on_task_button_pressed_internal")):
-				button.pressed.disconnect(Callable(self, "_on_task_button_pressed_internal"))
+		if button is Button and (button as Button).pressed.is_connected(Callable(self, "_on_task_button_pressed_internal")):
+			(button as Button).pressed.disconnect(Callable(self, "_on_task_button_pressed_internal"))
 	_populate_tasks()
 
-func _populate_tasks():
-	var current_tasks: Array = GameState.tasks
-	var i := 0
-	for button in task_grid.get_children():
-		if button is Button:
+func _populate_tasks() -> void:
+	var current_tasks: Array[String] = []
+	for t in GameState.tasks:
+		current_tasks.append(String(t))
+
+	var i: int = 0
+	for child in task_grid.get_children():
+		if child is Button:
+			var button := child as Button
 			if i < current_tasks.size():
-				var task_id: String = str(current_tasks[i])
-				var title := _get_task_title(task_id)
+				var task_id: String = current_tasks[i]
+				var title: String = _get_task_title(task_id)
 				button.text = title
 				button.visible = true
 				button.set_meta("task_id", task_id)
@@ -75,55 +79,61 @@ func _populate_tasks():
 			else:
 				button.visible = false
 
-func _on_task_button_pressed_internal(button: Button):
-	var task_id := String(button.get_meta("task_id"))
+func _on_task_button_pressed_internal(button: Button) -> void:
+	var meta: Variant = button.get_meta("task_id")
+	var task_id: String = String(meta)
 	_on_task_button_pressed(task_id)
 
 func _get_task_title(task_id: String) -> String:
-	var data := _load_task_data(task_id)
+	var data: Dictionary = _load_task_data(task_id)
 	if data.is_empty():
 		return _prettify_task_name(task_id)
-	var raw_title := String(data.get("title", "Untitled Task"))
-	return GameState.format_placeholders(raw_title)
+	var raw_title: String = String(data.get("title", "Untitled Task"))
+	return _format_placeholders(raw_title)
 
 func _prettify_task_name(task_id: String) -> String:
 	return task_id.capitalize().replace("_", " ")
 
-func _on_task_button_pressed(task_id: String):
+func _on_task_button_pressed(task_id: String) -> void:
 	_show_task_details(task_id)
 	_move_camera_down()
 
-func _show_task_details(task_id: String):
+func _show_task_details(task_id: String) -> void:
 	var task_data: Dictionary = _load_task_data(task_id)
 	if task_data.is_empty():
 		return
 
-	var raw_title := String(task_data.get("title", "Untitled Task"))
-	title_label.text = GameState.format_placeholders(raw_title)
-	var raw_meta := "📍 " + String(task_data.get("location", "Unknown")) + " | 🎓 Given by: " + String(task_data.get("giver", "???"))
-	meta_label.text = GameState.format_placeholders(raw_meta)
+	var raw_title: String = String(task_data.get("title", "Untitled Task"))
+	title_label.text = _format_placeholders(raw_title)
+	var raw_meta: String = "📍 " + String(task_data.get("location", "Unknown")) + " | 🎓 Given by: " + String(task_data.get("giver", "???"))
+	meta_label.text = _format_placeholders(raw_meta)
 
 	_clear_task_details()
 
-	var steps: Array = task_data.get("steps", [])
+	var steps_variant: Variant = task_data.get("steps", [])
+	var steps: Array[Dictionary] = []
+	if steps_variant is Array:
+		for s in steps_variant:
+			if typeof(s) == TYPE_DICTIONARY:
+				steps.append(s as Dictionary)
+
 	var progress: int = GameState.get_task_progress(task_id)
-	var show_all_steps := (task_id == MAIN_REQUIREMENTS_TASK_ID)
+	var show_all_steps: bool = (task_id == MAIN_REQUIREMENTS_TASK_ID)
 
 	for i in range(steps.size()):
 		if not show_all_steps and i > progress:
 			break
-		var step := steps[i] as Dictionary
-		var raw_txt := String(step.get("text", "Unnamed Step"))
-		var txt := GameState.format_placeholders(raw_txt)
+		var step: Dictionary = steps[i]
+		var raw_txt: String = String(step.get("text", "Unnamed Step"))
+		var txt: String = _format_placeholders(raw_txt)
 
 		if step.has("counter_key") and step.has("counter_goal"):
-			var key := String(step.get("counter_key"))
-			var goal := int(step.get("counter_goal"))
-			var count := GameState.get_task_counter(task_id, key, 0)
+			var key: String = String(step.get("counter_key"))
+			var goal: int = int(step.get("counter_goal"))
+			var count: int = int(GameState.get_task_counter(task_id, key, 0))
 			txt += " (%d/%d)" % [count, goal]
 
 		var label := Label.new()
-		# custom font + bigger size (+4)
 		label.add_theme_font_override("font", CUSTOM_FONT)
 		label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
 
@@ -140,27 +150,28 @@ func _show_task_details(task_id: String):
 		GameState.set_flag("req_subtasks_added", true)
 		refresh_tasks()
 
-func _add_requirement_subtasks(steps: Array):
-	for step in steps:
-		if typeof(step) == TYPE_DICTIONARY:
-			var d := step as Dictionary
-			var sub_id: String = String(d.get("id", "")).strip_edges()
-			if sub_id != "":
-				GameState.ensure_task(sub_id)
+func _add_requirement_subtasks(steps: Array[Dictionary]) -> void:
+	for s in steps:
+		var sub_id: String = String(s.get("id", "")).strip_edges()
+		if sub_id != "":
+			GameState.ensure_task(sub_id)
 
-func _on_back_pressed():
+func _on_back_pressed() -> void:
 	_clear_task_details()
 	_move_camera_up()
 
-func _clear_task_details():
+func _clear_task_details() -> void:
 	for child in step_container.get_children():
 		child.queue_free()
 
-func _move_camera_down(): camera.position += Vector2(0, 1080)
-func _move_camera_up(): camera.position -= Vector2(0, 1080)
+func _move_camera_down() -> void:
+	camera.position += Vector2(0, 1080)
+
+func _move_camera_up() -> void:
+	camera.position -= Vector2(0, 1080)
 
 func _load_task_data(task_id: String) -> Dictionary:
-	var file_path := "res://Data/Tasks/%s.json" % task_id
+	var file_path: String = "res://Data/Tasks/%s.json" % task_id
 	if not FileAccess.file_exists(file_path):
 		push_error("❌ Task file not found: " + file_path)
 		return {}
@@ -168,9 +179,20 @@ func _load_task_data(task_id: String) -> Dictionary:
 	if not file:
 		push_error("❌ Could not open file: " + file_path)
 		return {}
-	var content := file.get_as_text()
+	var content: String = file.get_as_text()
 	var parsed: Variant = JSON.parse_string(content)
 	if typeof(parsed) != TYPE_DICTIONARY:
 		push_error("❌ Malformed JSON in file: " + file_path)
 		return {}
 	return parsed as Dictionary
+
+# Local replacement for the old GameState.format_placeholders()
+func _format_placeholders(text: String) -> String:
+	var s := text
+	if GameState.subject1 != "":
+		s = s.replace("{subject1}", GameState.subject1.capitalize())
+		s = s.replace("[Subject 1]", GameState.subject1.capitalize())
+	if GameState.subject2 != "":
+		s = s.replace("{subject2}", GameState.subject2.capitalize())
+		s = s.replace("[Subject 2]", GameState.subject2.capitalize())
+	return s

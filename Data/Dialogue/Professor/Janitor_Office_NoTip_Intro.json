@@ -1,31 +1,9 @@
 {
   "id": "Janitor_Office_NoTip_Intro",
   "lines": [
-    {
-      "speaker": "Janitor",
-      "text": "Well, well… you look like someone who needs help no one official wants to give."
-    },
-    {
-      "speaker": "Janitor",
-      "text": "Got a project from last year. Real polished work. Yours for 500 денари."
-    },
-    {
-      "choice_type": "goto",
-      "prompt": "What do you do?",
-      "options": [
-        {
-          "text": "Buy it (500 денари)",
-          "file": "res://Data/Dialogue/Professor/Janitor_Office_Buy_500.json"
-        },
-        {
-          "text": "I’ll pass.",
-          "file": "res://Data/Dialogue/Professor/Janitor_Office_Pass.json"
-        },
-        {
-          "text": "Anything else for sale?",
-          "file": "res://Data/Dialogue/Professor/Janitor_Office_AnythingElse.json"
-        }
-      ]
-    }
+	{ "speaker": "Janitor", "text": "Well, well… you look like someone who needs help no one official wants to give." },
+	{ "speaker": "Janitor", "text": "Got a project from last year. Real polished work. Yours for 500 денари." },
+	{ "action": "show_janitor_office_options" }
   ]
 }
+	

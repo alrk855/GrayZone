@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://cv4gk855bhhjn"]
+
+[ext_resource type="Texture2D" uid="uid://bbbu7wtr72dyt" path="res://Images/images.jpg" id="1_3jtac"]
+[ext_resource type="Script" uid="uid://dxg3mlealgste" path="res://Scenes/Reusable/Map/home.gd" id="1_py00c"]
+
+[node name="Home" type="Control" node_paths=PackedStringArray("home_button")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_py00c")
+home_button = NodePath("TextureRect/Activity")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_3jtac")
+
+[node name="Activity" type="Button" parent="TextureRect"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -1,0 +1,30 @@
+{
+  "id": "Marko_Solo_Study_End",
+  "lines": [
+    {
+      "action": "goto",
+      "scene": "res://Scenes/Reusable/Map/Home.tscn"
+    },
+    {
+      "action": "adjust_time",
+      "value": 90
+    },
+    {
+      "speaker": "Narrator",
+      "text": "You spend the evening studying on your own."
+    },
+    {
+      "speaker": "Marko",
+      "text": "Fair. Get some sleep."
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "marko_first_event_done"
+      ]
+    },
+    {
+      "action": "end_event"
+    }
+  ]
+}

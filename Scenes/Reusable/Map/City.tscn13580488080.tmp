@@ -1,0 +1,52 @@
+[gd_scene load_steps=10 format=3 uid="uid://bdwff2rioevg3"]
+
+[ext_resource type="Script" uid="uid://57qv81hsikf3" path="res://Scenes/Reusable/Map/city.gd" id="1_1r77k"]
+[ext_resource type="Texture2D" uid="uid://4ilsh38540f" path="res://Images/download.jpg" id="1_moe23"]
+[ext_resource type="PackedScene" uid="uid://cv4gk855bhhjn" path="res://Scenes/Reusable/Map/Home.tscn" id="2_ntj7v"]
+[ext_resource type="PackedScene" uid="uid://io6e1ybfv6mj" path="res://Scenes/Reusable/Map/School.tscn" id="3_bdqx8"]
+[ext_resource type="PackedScene" uid="uid://dnvnpxlfvrjgx" path="res://Scenes/Reusable/Map/MVR.tscn" id="4_0lt4e"]
+[ext_resource type="PackedScene" uid="uid://c85ya7md0kuy3" path="res://Scenes/Reusable/Map/YCO.tscn" id="5_y01xw"]
+[ext_resource type="PackedScene" uid="uid://kphk3myuv54y" path="res://Scenes/MarkoFirstEvent.tscn" id="6_y01xw"]
+[ext_resource type="PackedScene" uid="uid://coanffbur1o0l" path="res://Scenes/Reusable/Tasks/Hangout.tscn" id="7_horts"]
+[ext_resource type="PackedScene" uid="uid://c2v7i40dnk6l6" path="res://Scenes/Reusable/Tasks/Tutoring.tscn" id="8_28f6h"]
+
+[node name="City" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1r77k")
+choice_buttons_path = null
+home_scene = ExtResource("2_ntj7v")
+school_scene = ExtResource("3_bdqx8")
+mvr_scene = ExtResource("4_0lt4e")
+yco_scene = ExtResource("5_y01xw")
+marko_first_event_scene = ExtResource("6_y01xw")
+marko_hangout_scene = ExtResource("7_horts")
+tutoring_scene = ExtResource("8_28f6h")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_moe23")
+
+[node name="Button" type="Button" parent="TextureRect"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2

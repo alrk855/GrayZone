@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bef2wd7vkbweo"]
+[gd_scene load_steps=5 format=3 uid="uid://bef2wd7vkbweo"]
 
 [ext_resource type="Texture2D" uid="uid://vw1dhtj30301" path="res://Images/b7500904646b294d9b087886b204113a_t.jpeg" id="1_s2o6n"]
 [ext_resource type="Script" uid="uid://cd15u1veyfu4k" path="res://Scenes/Reusable/Map/professors_office.gd" id="1_vnqiv"]
 [ext_resource type="Texture2D" uid="uid://iygnwscw1gxq" path="res://Images/Characters/profesor 1.png" id="2_vnqiv"]
 [ext_resource type="Texture2D" uid="uid://d082cklmg7s1s" path="res://Images/Characters/janitor.png" id="3_udjl8"]
-[ext_resource type="Script" uid="uid://dh2foc6ydbd63" path="res://Scenes/Reusable/Map/professor_back.gd" id="5_udjl8"]
 
 [node name="ProfessorsOffice" type="Control"]
 layout_mode = 3
@@ -65,4 +64,3 @@ offset_top = -8.0
 offset_right = 4.0
 grow_horizontal = 2
 grow_vertical = 0
-script = ExtResource("5_udjl8")

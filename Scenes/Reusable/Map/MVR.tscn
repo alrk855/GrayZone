@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnvnpxlfvrjgx"]
+
+[ext_resource type="Texture2D" uid="uid://vw1dhtj30301" path="res://Images/b7500904646b294d9b087886b204113a_t.jpeg" id="1_l1kwk"]
+[ext_resource type="Script" uid="uid://c763p6eaw512u" path="res://Scenes/Reusable/Map/gocity.gd" id="2_7e1ok"]
+
+[node name="Mvr" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_l1kwk")
+
+[node name="Button4" type="Button" parent="TextureRect"]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -8.0
+offset_right = 4.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "City"
+script = ExtResource("2_7e1ok")
+target_scene = "uid://bdwff2rioevg3"

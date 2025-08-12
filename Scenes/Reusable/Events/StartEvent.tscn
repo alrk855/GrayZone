@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dk4oomrw4r2r"]
 
-[ext_resource type="Script" uid="uid://id2q7hwo013j" path="res://Scenes/start_event.gd" id="1_33p7c"]
+[ext_resource type="Script" uid="uid://id2q7hwo013j" path="res://Scenes/Reusable/Events/start_event.gd" id="1_33p7c"]
 [ext_resource type="Texture2D" uid="uid://b2ewotw87jjtg" path="res://Images/classroom.png" id="2_k4npa"]
 [ext_resource type="Texture2D" uid="uid://cc5btkfygxwbe" path="res://Images/Characters/klasenchopped.png" id="3_k4npa"]
 [ext_resource type="Texture2D" uid="uid://degyqjdnkcr2f" path="res://Images/Characters/direktorchopped.png" id="3_vie7q"]

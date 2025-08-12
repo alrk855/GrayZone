@@ -1,0 +1,230 @@
+{
+  "subject": "english",
+  "pool": [
+    {
+      "id": "ENG_01",
+      "q": "Choose the correct plural: one child, two ___",
+      "correct": "children",
+      "wrong": [
+        "childs",
+        "childes"
+      ]
+    },
+    {
+      "id": "ENG_02",
+      "q": "Pick the correct article: ___ apple a day keeps the doctor away.",
+      "correct": "An",
+      "wrong": [
+        "A",
+        "The"
+      ]
+    },
+    {
+      "id": "ENG_03",
+      "q": "Which is a noun?",
+      "correct": "Happiness",
+      "wrong": [
+        "Quickly",
+        "Blue"
+      ]
+    },
+    {
+      "id": "ENG_04",
+      "q": "Which sentence is correct?",
+      "correct": "She doesn’t like coffee.",
+      "wrong": [
+        "She don’t like coffee.",
+        "She doesn’t likes coffee."
+      ]
+    },
+    {
+      "id": "ENG_05",
+      "q": "What is the past tense of 'go'?",
+      "correct": "went",
+      "wrong": [
+        "goed",
+        "gone"
+      ]
+    },
+    {
+      "id": "ENG_06",
+      "q": "Which word is an adjective?",
+      "correct": "Tall",
+      "wrong": [
+        "Run",
+        "Swiftly"
+      ]
+    },
+    {
+      "id": "ENG_07",
+      "q": "Find the synonym of 'big'.",
+      "correct": "Large",
+      "wrong": [
+        "Tiny",
+        "Narrow"
+      ]
+    },
+    {
+      "id": "ENG_08",
+      "q": "Which needs a capital letter?",
+      "correct": "I went home.",
+      "wrong": [
+        "i went home.",
+        "i Went home."
+      ]
+    },
+    {
+      "id": "ENG_09",
+      "q": "Which word completes: 'There ___ three cats.'",
+      "correct": "are",
+      "wrong": [
+        "is",
+        "be"
+      ]
+    },
+    {
+      "id": "ENG_10",
+      "q": "Choose the correct spelling:",
+      "correct": "necessary",
+      "wrong": [
+        "neccesary",
+        "neccesery"
+      ]
+    },
+    {
+      "id": "ENG_11",
+      "q": "Which is an antonym of 'happy'?",
+      "correct": "Sad",
+      "wrong": [
+        "Glad",
+        "Merry"
+      ]
+    },
+    {
+      "id": "ENG_12",
+      "q": "Pick the preposition: 'The book is on the table.'",
+      "correct": "on",
+      "wrong": [
+        "book",
+        "table"
+      ]
+    },
+    {
+      "id": "ENG_13",
+      "q": "Which is a complete sentence?",
+      "correct": "They ran.",
+      "wrong": [
+        "Running fast.",
+        "Because he ran."
+      ]
+    },
+    {
+      "id": "ENG_14",
+      "q": "Comparative of 'fast' is ___",
+      "correct": "faster",
+      "wrong": [
+        "fastest",
+        "more fast"
+      ]
+    },
+    {
+      "id": "ENG_15",
+      "q": "Which punctuation ends a question?",
+      "correct": "Question mark (?)",
+      "wrong": [
+        "Comma (,)",
+        "Colon (:)"
+      ]
+    },
+    {
+      "id": "ENG_16",
+      "q": "Which is a verb?",
+      "correct": "Jump",
+      "wrong": [
+        "Blue",
+        "Tall"
+      ]
+    },
+    {
+      "id": "ENG_17",
+      "q": "Which is the correct possessive?",
+      "correct": "the dog’s bone",
+      "wrong": [
+        "the dogs bone",
+        "the dog bone’s"
+      ]
+    },
+    {
+      "id": "ENG_18",
+      "q": "Which word fits: 'I have ___ umbrella.'",
+      "correct": "an",
+      "wrong": [
+        "a",
+        "the"
+      ]
+    },
+    {
+      "id": "ENG_19",
+      "q": "Which sentence has correct subject‑verb agreement?",
+      "correct": "The team is winning.",
+      "wrong": [
+        "The team are winning.",
+        "The team be winning."
+      ]
+    },
+    {
+      "id": "ENG_20",
+      "q": "Past tense of 'eat' is ___",
+      "correct": "ate",
+      "wrong": [
+        "eated",
+        "eaten"
+      ]
+    },
+    {
+      "id": "ENG_21",
+      "q": "Pick the correct form: 'She is ___ than me.'",
+      "correct": "taller",
+      "wrong": [
+        "more tall",
+        "tallest"
+      ]
+    },
+    {
+      "id": "ENG_22",
+      "q": "Which is a pronoun?",
+      "correct": "They",
+      "wrong": [
+        "Apple",
+        "Green"
+      ]
+    },
+    {
+      "id": "ENG_23",
+      "q": "Which is a compound word?",
+      "correct": "Toothbrush",
+      "wrong": [
+        "Tooth",
+        "Brush"
+      ]
+    },
+    {
+      "id": "ENG_24",
+      "q": "Which is an imperative sentence?",
+      "correct": "Close the door.",
+      "wrong": [
+        "The door is closed.",
+        "Is the door closed?"
+      ]
+    },
+    {
+      "id": "ENG_25",
+      "q": "Which is a proper noun?",
+      "correct": "London",
+      "wrong": [
+        "city",
+        "river"
+      ]
+    }
+  ]
+}

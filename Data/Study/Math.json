@@ -1,0 +1,230 @@
+{
+  "subject": "math",
+  "pool": [
+    {
+      "id": "MATH_01",
+      "q": "Solve for x: x + 5 = 12",
+      "correct": "7",
+      "wrong": [
+        "6",
+        "8"
+      ]
+    },
+    {
+      "id": "MATH_02",
+      "q": "Solve for x: 2x = 14",
+      "correct": "7",
+      "wrong": [
+        "6",
+        "8"
+      ]
+    },
+    {
+      "id": "MATH_03",
+      "q": "Simplify: 3x + 2x",
+      "correct": "5x",
+      "wrong": [
+        "6x",
+        "3x^2"
+      ]
+    },
+    {
+      "id": "MATH_04",
+      "q": "Evaluate: 2(3 + 4)",
+      "correct": "14",
+      "wrong": [
+        "10",
+        "12"
+      ]
+    },
+    {
+      "id": "MATH_05",
+      "q": "What is the slope in y = 2x + 3?",
+      "correct": "2",
+      "wrong": [
+        "3",
+        "-2"
+      ]
+    },
+    {
+      "id": "MATH_06",
+      "q": "Solve for x: x - 9 = 4",
+      "correct": "13",
+      "wrong": [
+        "-5",
+        "5"
+      ]
+    },
+    {
+      "id": "MATH_07",
+      "q": "Which is a solution to x/3 = 4?",
+      "correct": "12",
+      "wrong": [
+        "7",
+        "3"
+      ]
+    },
+    {
+      "id": "MATH_08",
+      "q": "Simplify: (x)(x)",
+      "correct": "x^2",
+      "wrong": [
+        "2x",
+        "x"
+      ]
+    },
+    {
+      "id": "MATH_09",
+      "q": "Distribute: 3(x + 2)",
+      "correct": "3x + 6",
+      "wrong": [
+        "3x + 2",
+        "6x + 2"
+      ]
+    },
+    {
+      "id": "MATH_10",
+      "q": "Combine like terms: 4y - 2y",
+      "correct": "2y",
+      "wrong": [
+        "6y",
+        "-2y"
+      ]
+    },
+    {
+      "id": "MATH_11",
+      "q": "Solve: 5x = 20",
+      "correct": "4",
+      "wrong": [
+        "5",
+        "15"
+      ]
+    },
+    {
+      "id": "MATH_12",
+      "q": "Evaluate when x=3: x^2",
+      "correct": "9",
+      "wrong": [
+        "6",
+        "3"
+      ]
+    },
+    {
+      "id": "MATH_13",
+      "q": "Factor: x^2 + 5x + 6",
+      "correct": "(x+2)(x+3)",
+      "wrong": [
+        "(x+1)(x+6)",
+        "(x+5)(x+1)"
+      ]
+    },
+    {
+      "id": "MATH_14",
+      "q": "Solve: x/2 + 3 = 7",
+      "correct": "8",
+      "wrong": [
+        "10",
+        "4"
+      ]
+    },
+    {
+      "id": "MATH_15",
+      "q": "What is the y‑intercept in y = -x + 4?",
+      "correct": "4",
+      "wrong": [
+        "-1",
+        "-4"
+      ]
+    },
+    {
+      "id": "MATH_16",
+      "q": "Simplify: 2x + 3 - x",
+      "correct": "x + 3",
+      "wrong": [
+        "5x",
+        "x + 1"
+      ]
+    },
+    {
+      "id": "MATH_17",
+      "q": "Solve for x: 3x - 2 = 7",
+      "correct": "3",
+      "wrong": [
+        "9",
+        "-3"
+      ]
+    },
+    {
+      "id": "MATH_18",
+      "q": "Which is equivalent to 5(x - 1)?",
+      "correct": "5x - 5",
+      "wrong": [
+        "5x + 5",
+        "x - 5"
+      ]
+    },
+    {
+      "id": "MATH_19",
+      "q": "Solve: x^2 = 16 (take the positive root)",
+      "correct": "4",
+      "wrong": [
+        "-4",
+        "8"
+      ]
+    },
+    {
+      "id": "MATH_20",
+      "q": "What is 0 multiplied by any number?",
+      "correct": "0",
+      "wrong": [
+        "The same number",
+        "1"
+      ]
+    },
+    {
+      "id": "MATH_21",
+      "q": "Solve: 2x + 4 = 0",
+      "correct": "-2",
+      "wrong": [
+        "2",
+        "-4"
+      ]
+    },
+    {
+      "id": "MATH_22",
+      "q": "Simplify: x + x + x",
+      "correct": "3x",
+      "wrong": [
+        "x^3",
+        "x^2"
+      ]
+    },
+    {
+      "id": "MATH_23",
+      "q": "Which is a solution to x + 2 = 2x?",
+      "correct": "2",
+      "wrong": [
+        "0",
+        "-2"
+      ]
+    },
+    {
+      "id": "MATH_24",
+      "q": "Solve: x^2 - 9 = 0 (positive root)",
+      "correct": "3",
+      "wrong": [
+        "-3",
+        "9"
+      ]
+    },
+    {
+      "id": "MATH_25",
+      "q": "If y = 2x and x = 5, what is y?",
+      "correct": "10",
+      "wrong": [
+        "7",
+        "2"
+      ]
+    }
+  ]
+}
