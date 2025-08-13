@@ -1,0 +1,25 @@
+{
+  "id": "Prof_Grade_F",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "(He exhales through his nose.)"
+    },
+    {
+      "speaker": "Professor",
+      "text": "This isn’t up to standard. Rushed, unclear, and unsupported."
+    },
+    {
+      "speaker": "Professor",
+      "text": "F."
+    },
+    {
+      "speaker": "System",
+      "text": "⛔ Grade: F"
+    },
+    {
+      "speaker": "System",
+      "text": "✅ Project Submitted"
+    }
+  ]
+}

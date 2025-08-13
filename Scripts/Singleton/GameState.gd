@@ -66,15 +66,45 @@ var exam_revealed: Dictionary = {}      # subject -> Array[String] (revealed)
 var study_sheet_cache: Dictionary = {}  # subject -> Dictionary(day_string -> Array[String] 5 ids)
 var study_guard: Dictionary = {}        # "subject|day" -> bool (counted already?)
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+# -----------------------------
+# Defaults / Flags
+# -----------------------------
+const DEFAULT_FLAGS := {
+	# Secretary / printing / MVR
+	"secretary_met": false,
+	"have_birth_certificate": false,   # set true after MVR gives it
+	"notarized_birth": false,          # set true after notary
+	"printed_cv": false,
+	"printed_motivation": false,
+	"printed_project": false,
+
+	# Project / professor / janitor
+	"bought_project": false,           # set true when buying from janitor
+	"project_written": false,          # set when player completes writing
+	"project_accepted": false,         # professor accepted to bring it
+	"project_submitted": false,        # submitted to professor
+	"project_plagiarized": false,      # grading check marks it
+	"bring_tomorrow_promised": false,  # if you picked “I’ll bring it tomorrow”
+
+	# Legacy compatibility (some older checks might exist)
+	"have_old_project": false,         # mirrors janitor purchase if you still check it anywhere
+	"printed_transcript": false        # harmless even if unused now
+}
+func _init_default_flags() -> void:
+	for k in DEFAULT_FLAGS.keys():
+		if not flags.has(k):
+			flags[k] = DEFAULT_FLAGS[k]
 
 # -------------------------------------------------
 # Lifecycle
 # -------------------------------------------------
 func _ready() -> void:
+	_init_default_flags()
 	_rng.randomize()
 	print("📂 GameState Ready — timer idle at %s (Day %d)" % [_format_time(), day])
 
 func begin_game(day_start: int, time_start: int) -> void:
+	_init_default_flags()
 	day = day_start
 	time = time_start
 	_start_time_simulation()

@@ -1,0 +1,13 @@
+{
+  "id": "Prof_PostSubmit",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "You’ve already submitted your project."
+    },
+    {
+      "speaker": "Professor",
+      "text": "Check your other tasks—there’s always more to do."
+    }
+  ]
+}

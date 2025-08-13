@@ -3,9 +3,25 @@
   "giver": "Secretary",
   "location": "Home / Photo Studio",
   "steps": [
-    { "id": "visit_home", "text": "Visit Home" },
-    { "id": "draft_cv", "text": "Draft a CV" },
-    { "id": "photo", "text": "Print a passport-style photo" },
-    { "id": "finish_cv", "text": "Finish writing the CV" }
+    {
+      "id": "visit_home",
+      "text": "Visit Home"
+    },
+    {
+      "id": "draft_cv",
+      "text": "Draft a CV"
+    },
+    {
+      "id": "photo",
+      "text": "Print a passport-style photo"
+    },
+    {
+      "id": "finish_cv",
+      "text": "Finish writing the CV"
+    },
+    {
+      "id": "print_cv",
+      "text": "Print the CV"
+    }
   ]
 }

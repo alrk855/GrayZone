@@ -4,10 +4,24 @@
   "location": "Home",
   "steps": [
     {
-      "id": "study_sessions",
-      "text": "Study {subject2} at home",
-      "counter_key": "study",
-      "counter_goal": 5
+      "id": "study_1",
+      "text": "Study {subject2} (1/5)"
+    },
+    {
+      "id": "study_2",
+      "text": "Study {subject2} (2/5)"
+    },
+    {
+      "id": "study_3",
+      "text": "Study {subject2} (3/5)"
+    },
+    {
+      "id": "study_4",
+      "text": "Study {subject2} (4/5)"
+    },
+    {
+      "id": "study_5",
+      "text": "Study {subject2} (5/5)"
     }
   ]
 }

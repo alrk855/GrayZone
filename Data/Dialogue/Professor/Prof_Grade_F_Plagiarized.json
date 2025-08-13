@@ -1,0 +1,29 @@
+{
+  "id": "Prof_Grade_F_Plagiarized",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "(He flips back and forth between pages.)"
+    },
+    {
+      "speaker": "Professor",
+      "text": "These phrases are… identical to something I’ve read before."
+    },
+    {
+      "speaker": "Professor",
+      "text": "Academic dishonesty is unacceptable."
+    },
+    {
+      "speaker": "Professor",
+      "text": "F."
+    },
+    {
+      "speaker": "System",
+      "text": "⛔ Grade: F"
+    },
+    {
+      "speaker": "System",
+      "text": "✅ Project Submitted"
+    }
+  ]
+}

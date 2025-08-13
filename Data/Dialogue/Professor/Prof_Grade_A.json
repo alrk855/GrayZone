@@ -1,0 +1,25 @@
+{
+  "id": "Prof_Grade_A",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "(He puts the pages down.)"
+    },
+    {
+      "speaker": "Professor",
+      "text": "Hmph. I’ll admit — this is excellent work. Organized, original, and clear."
+    },
+    {
+      "speaker": "Professor",
+      "text": "A."
+    },
+    {
+      "speaker": "System",
+      "text": "🟩 Grade: A"
+    },
+    {
+      "speaker": "System",
+      "text": "✅ Project Submitted"
+    }
+  ]
+}

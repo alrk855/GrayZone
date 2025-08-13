@@ -1,0 +1,25 @@
+{
+  "id": "Prof_Grade_C",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "(He grunts.)"
+    },
+    {
+      "speaker": "Professor",
+      "text": "I’ve seen better. But I’ve also seen worse. It passes."
+    },
+    {
+      "speaker": "Professor",
+      "text": "C."
+    },
+    {
+      "speaker": "System",
+      "text": "🟧 Grade: C"
+    },
+    {
+      "speaker": "System",
+      "text": "✅ Project Submitted"
+    }
+  ]
+}

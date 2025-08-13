@@ -1,0 +1,21 @@
+{
+  "id": "Prof_Fail_SecondChance",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "(He sets the pages aside.)"
+    },
+    {
+      "speaker": "Professor",
+      "text": "This won’t pass as is. But it’s still early in the week."
+    },
+    {
+      "speaker": "Professor",
+      "text": "You have one more chance. Fix it and bring it back before Friday."
+    },
+    {
+      "action": "adjust_time",
+      "value": 15
+    }
+  ]
+}
