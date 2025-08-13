@@ -11,14 +11,18 @@ const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
 const CITY_SCENE_PATH        := "res://Scenes/Reusable/Map/City.tscn"
 const STUDY_SCENE_PATH       := "res://Scenes/Reusable/Tasks/Study.tscn"
 const WRITE_CV_SCENE_PATH    := "res://Scenes/Reusable/Tasks/WriteCV.tscn"
-const WRITE_MOTIVATION_PATH  := "res://Scenes/Reusable/Tasks/WriteMotivation.tscn"
-const WRITE_PROJECT_PATH     := "res://Scenes/WRITE_A_PROJECT.tscn"
+const WRITE_MOTIVATION_PATH  := "res://Scenes/Reusable/Tasks/WRITE_A_CV.tscn"
+const WRITE_PROJECT_PATH     := "res://Scenes/Reusable/WRITE_A_PROJECT.tscn"
 const MAILBOX_SCENE_PATH     := "res://Scenes/Reusable/Tasks/MailboxCheck.tscn"
 const SOCIAL_SCENE_PATH      := "res://Scenes/Reusable/Tasks/Social.tscn"
 
 # --- Internals ---
 var _panel: Control = null
 const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
+
+# Keys used by StudyShell/MarkoStudyBridge (we only set them; StudyShell reads them)
+const KEY_STUDY_MODE := "__study_mode"          # "regular" | "marko"
+const KEY_SUBJECT_PICK := "__study_subject_pick" # "subject1" | "subject2"
 
 func _ready() -> void:
 	GameState.location = "Home"
@@ -82,8 +86,10 @@ func _on_activities_choice(id: String) -> void:
 func _show_study_menu() -> void:
 	var s1 := GameState.subject1.strip_edges()
 	var s2 := GameState.subject2.strip_edges()
-	if s1 == "": s1 = "[Subject 1]"
-	if s2 == "": s2 = "[Subject 2]"
+	if s1 == "":
+		s1 = "[Subject 1]"
+	if s2 == "":
+		s2 = "[Subject 2]"
 	var choices := [
 		{"id":"s1",   "text":"Study " + s1},
 		{"id":"s2",   "text":"Study " + s2},
@@ -93,9 +99,14 @@ func _show_study_menu() -> void:
 
 func _on_study_choice(id: String) -> void:
 	match id:
-		"s1", "s2":
-			# If you want to tell Study.tscn which subject was picked, set a flag here.
-			# GameState.set_flag("study_pick_s1", id == "s1")
+		"s1":
+			# Tell StudyShell we chose subject1 for today
+			GameState.features_unlocked[KEY_STUDY_MODE] = "regular"
+			GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject1"
+			_change_scene(STUDY_SCENE_PATH)
+		"s2":
+			GameState.features_unlocked[KEY_STUDY_MODE] = "regular"
+			GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject2"
 			_change_scene(STUDY_SCENE_PATH)
 		"back":
 			_show_activities_menu()
@@ -103,10 +114,14 @@ func _on_study_choice(id: String) -> void:
 func _show_schoolwork_menu() -> void:
 	var choices := [
 		{"id":"cv",         "text":"Write CV"},
-		{"id":"motivation", "text":"Write Motivation Letter"},
-		{"id":"project",    "text":"Write Project"},
-		{"id":"back",       "text":"Back"}
+		{"id":"motivation", "text":"Write Motivation Letter"}
 	]
+
+	# Only add "Write Project" when available.
+	if _is_project_available_now():
+		choices.append({"id":"project", "text":"Write Project"})
+
+	choices.append({"id":"back", "text":"Back"})
 	_show_choices(choices, Callable(self, "_on_schoolwork_choice"))
 
 func _on_schoolwork_choice(id: String) -> void:
@@ -160,7 +175,6 @@ func _do_sleep() -> void:
 	if GameState.has_method("sleep_now"):
 		GameState.sleep_now()
 	else:
-		# Fallback: next day @ 07:30 (+ oversleep if after 23:00)
 		var wake_base := 7 * 60 + 30
 		var penalty := 0
 		if GameState.time >= 23 * 60:
@@ -173,3 +187,20 @@ func _do_sleep() -> void:
 		GameState.time = wake
 		print("🛌 Slept. Wake at %02d:%02d (Day %d), penalty +%d min" % [wake/60, wake%60, GameState.day, penalty])
 	_clear_panel()
+
+# ================= Availability logic =================
+
+func _is_project_available_now() -> bool:
+	# Show if professor granted a second chance (even if previously bought/written/submitted)
+	if GameState.has_flag("project_second_chance"):
+		return true
+
+	# Otherwise hide if any of these are true
+	if GameState.has_flag("project_submitted"):
+		return false
+	if GameState.has_flag("have_old_project"):  # bought from janitor
+		return false
+	if GameState.has_flag("project_written"):   # finished writing already
+		return false
+
+	return true

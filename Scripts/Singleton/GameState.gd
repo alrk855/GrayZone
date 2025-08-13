@@ -20,7 +20,7 @@ var location: String = "Unknown"
 # -----------------------------
 # Time
 # -----------------------------
-var time: int = 12 * 60 + 45 # 12:45 in minutes
+var time: int = 12 * 60 + 45
 var day: int = 1
 var time_speed: float = 2.0
 var time_running: bool = false
@@ -29,7 +29,7 @@ var _freeze_stack: Array[String] = []
 # -----------------------------
 # Status
 # -----------------------------
-var money: int = 2000 # STARTING MONEY
+var money: int = 2000
 var integrity: int = 0
 var reputation: int = 0
 
@@ -61,8 +61,10 @@ var study_paths: Dictionary = {
 }
 
 var study_pool_cache: Dictionary = {}   # subject -> Array[Dictionary]
-var exam_finals: Dictionary = {}        # subject -> Array[String] ids (picked 10)
-var exam_revealed: Dictionary = {}      # subject -> Array[String] ids (revealed during study)
+var exam_finals: Dictionary = {}        # subject -> Array[String] (10 ids)
+var exam_revealed: Dictionary = {}      # subject -> Array[String] (revealed)
+var study_sheet_cache: Dictionary = {}  # subject -> Dictionary(day_string -> Array[String] 5 ids)
+var study_guard: Dictionary = {}        # "subject|day" -> bool (counted already?)
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 # -------------------------------------------------
@@ -143,9 +145,8 @@ func pop_time_freeze(src: String) -> void:
 func is_time_frozen() -> bool:
 	return _freeze_stack.size() > 0
 
-# Provide a canonical sleep for Home.gd
 func sleep_now() -> void:
-	var wake_base: int = 7 * 60 + 30 # 07:30
+	var wake_base: int = 7 * 60 + 30
 	var penalty: int = 0
 	if time >= 23 * 60:
 		var after_23: int = time - 23 * 60
@@ -163,13 +164,10 @@ func sleep_now() -> void:
 func add_money(delta: int) -> void:
 	var before: int = money
 	money += delta
-
-	# First spend detection
 	if delta < 0 and not has_flag("spent_money_once"):
 		set_flag("spent_money_once", true)
 		print("[MoneyWatch] First spend detected — Tutoring unlocked.")
-		add_task("Tutoring Task") # replace with your actual tutoring task ID
-
+		add_task("Tutoring Task") # swap to your real task id
 	emit_signal("money_changed", money)
 
 # -------------------------------------------------
@@ -291,11 +289,10 @@ func apply_action(line: Dictionary) -> void:
 		"adjust_integrity":
 			adjust_integrity(int(line.get("value", 0)))
 		_:
-			# ignore unknown actions
 			pass
 
 # -------------------------------------------------
-# Text helpers (used by Task Manager UI)
+# Text helpers (for UI)
 # -------------------------------------------------
 func format_placeholders(text: String) -> String:
 	var s: String = text
@@ -362,92 +359,96 @@ func _pick_unique_indexes(n: int, k: int) -> Array[int]:
 		out.append(arr[i])
 	return out
 
-# Returns 5 question dicts for study session (2 finals + 3 fillers)
-# Each dict has: id, q, correct, wrong[2] (you'll only display q + correct during study)
-func build_study_batch(subject_raw: String) -> Array:
+# Finals pair ids for "today": (0,1),(2,3),(4,5),(6,7),(8,9)
+func get_today_finals_pair_ids(subject_raw: String) -> Array[String]:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	_ensure_finals(subject)
+	var finals: Array = exam_finals.get(subject, [])
+	if finals.size() < 2:
+		return []
+	var base_index: int = int(((day - 1) % 5) * 2)
+	if base_index + 1 >= finals.size():
+		base_index = max(0, finals.size() - 2)
+	return [ String(finals[base_index]), String(finals[base_index + 1]) ]
+
+# Deterministic daily 5-item sheet (2 finals for today + 3 non-final fillers)
+# Cached per (subject, day). Returns Array[Dictionary] (q objects).
+func get_daily_study_sheet(subject_raw: String) -> Array:
+	var subject: String = _get_subject_key_from_choice(subject_raw)
+	_ensure_finals(subject)
+
+	var day_key: String = str(day)
+	if not study_sheet_cache.has(subject):
+		study_sheet_cache[subject] = {}
+	var by_day: Dictionary = study_sheet_cache[subject]
+
+	if by_day.has(day_key):
+		return _ids_to_questions(subject_raw, by_day[day_key] as Array)
+
+	# create new sheet for today
 	var pool: Array = _load_pool(subject)
 	if pool.is_empty(): return []
 
-	# index by id
-	var by_id: Dictionary = {}
-	for q in pool:
-		var qd: Dictionary = q
-		by_id[String(qd.get("id",""))] = qd
+	# ids for today's finals
+	var pair_ids: Array[String] = get_today_finals_pair_ids(subject_raw)
+	var finals_set: Dictionary = {}
+	for id in pair_ids: finals_set[id] = true
 
-	var finals: Array = exam_finals.get(subject, [])
-	var revealed: Array = exam_revealed.get(subject, [])
-	var finals_left: Array = []
-	for id in finals:
-		if revealed.find(id) == -1:
-			finals_left.append(id)
+	# collect candidate fillers (non-finals)
+	var candidate_ids: Array[String] = []
+	for qv in pool:
+		var qd: Dictionary = qv
+		var qid: String = String(qd.get("id",""))
+		if not finals_set.has(qid) and exam_finals.get(subject, []).find(qid) == -1:
+			# ensure it's not any of the 10 finals (we want true non-finals)
+			candidate_ids.append(qid)
 
-	# pick up to 2 finals
-	var finals_pick: Array = []
-	var num_final: int = min(2, finals_left.size())
-	if num_final > 0:
-		var idxs: Array[int] = _pick_unique_indexes(finals_left.size(), num_final)
-		for i in idxs:
-			finals_pick.append(String(finals_left[i]))
+	# deterministic pick of 3 fillers based on (subject, day)
+	var fillers: Array[String] = []
+	if candidate_ids.size() > 0:
+		var start: int = (day * 3) % candidate_ids.size()
+		var count: int = min(3, candidate_ids.size())
+		for i in range(count):
+			fillers.append(candidate_ids[(start + i) % candidate_ids.size()])
 
-	# mark revealed
-	for id in finals_pick:
-		if revealed.find(id) == -1:
-			revealed.append(id)
-	exam_revealed[subject] = revealed
+	# store id order: [final1, final2, filler1, filler2, filler3]
+	var today_ids: Array[String] = []
+	for id in pair_ids: today_ids.append(id)
+	for id in fillers:   today_ids.append(id)
 
-	# filler candidates (non-finals)
-	var final_set: Dictionary = {}
-	for id in finals:
-		final_set[id] = true
-	var filler_candidates: Array = []
-	for q in pool:
-		var qid: String = String((q as Dictionary).get("id",""))
-		if not final_set.has(qid):
-			filler_candidates.append(qid)
+	by_day[day_key] = today_ids
+	study_sheet_cache[subject] = by_day
+	return _ids_to_questions(subject_raw, today_ids)
 
-	# pick 3 fillers
-	var fillers_pick: Array = []
-	if filler_candidates.size() > 0:
-		var idxs2: Array[int] = _pick_unique_indexes(filler_candidates.size(), 3)
-		for i in idxs2:
-			fillers_pick.append(String(filler_candidates[i]))
+# turn id list into full question dicts
+func _ids_to_questions(subject_raw: String, ids: Array) -> Array:
+	var out: Array = []
+	for id in ids:
+		var qd: Dictionary = get_question_by_id(subject_raw, String(id))
+		if not qd.is_empty():
+			out.append(qd)
+	return out
 
-	# assemble
-	var result: Array = []
-	for id in finals_pick:
-		result.append(by_id[id])
-	for id in fillers_pick:
-		result.append(by_id[id])
-	return result
-
-# Build the 10-question exam paper with shuffled choices
-# Each item: { id, q, choices:Array[String], correct_index:int }
+# Build the 10-question exam paper (shuffled choices)
 func build_exam_paper(subject_raw: String) -> Array:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	_ensure_finals(subject)
 	var pool: Array = _load_pool(subject)
 	if pool.is_empty(): return []
-
-	# index by id
 	var by_id: Dictionary = {}
 	for q in pool:
 		var qd: Dictionary = q
 		by_id[String(qd.get("id",""))] = qd
-
 	var finals: Array = exam_finals.get(subject, [])
 	var paper: Array = []
 	for id in finals:
 		var qd: Dictionary = by_id.get(id, {}) as Dictionary
-		if qd.is_empty():
-			continue
+		if qd.is_empty(): continue
 		var correct: String = String(qd.get("correct",""))
 		var wrongs: Array = qd.get("wrong", []) as Array
 		var opts: Array = [correct, String(wrongs[0]), String(wrongs[1])]
-		# shuffle
 		var order: Array[int] = _pick_unique_indexes(opts.size(), opts.size())
-		var shuffled: Array = []
+		var shuffled: Array[String] = []
 		var correct_index: int = 0
 		for idx in range(order.size()):
 			var choice: String = String(opts[order[idx]])
@@ -462,33 +463,31 @@ func build_exam_paper(subject_raw: String) -> Array:
 		})
 	return paper
 
-# Reveal two finals now (for Marko tips) and mark them revealed
-# Returns Array[String] of IDs; you can fetch text via get_question_by_id()
+# Reveal two finals now (for Marko), mark them revealed
 func reveal_two_finals(subject_raw: String) -> Array:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	_ensure_finals(subject)
-	var finals: Array = exam_finals.get(subject, [])
-	var revealed: Array = exam_revealed.get(subject, [])
+	var finals: Array[String] = exam_finals.get(subject, [])
+	var revealed: Array[String] = exam_revealed.get(subject, [])
 
-	var left: Array = []
+	var left: Array[String] = []
 	for id in finals:
 		if revealed.find(id) == -1:
 			left.append(id)
 
-	var pick: Array = []
+	var pick: Array[String] = []
 	if left.size() > 0:
 		var idxs: Array[int] = _pick_unique_indexes(left.size(), min(2, left.size()))
 		for i in idxs:
 			pick.append(String(left[i]))
 
-	# mark revealed
 	for id in pick:
 		if revealed.find(id) == -1:
 			revealed.append(id)
 	exam_revealed[subject] = revealed
 	return pick
 
-# Utility to fetch full question dict by ID (useful for showing Marko's reveal text)
+# Utility to fetch full question dict by ID
 func get_question_by_id(subject_raw: String, qid: String) -> Dictionary:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	var pool: Array = _load_pool(subject)
@@ -497,3 +496,32 @@ func get_question_by_id(subject_raw: String, qid: String) -> Dictionary:
 		if String(qd.get("id","")) == qid:
 			return qd
 	return {}
+
+# --------- study count guard (once per day per subject) ----------
+func _which_subject_slot(subject_raw: String) -> String:
+	var key_raw: String = _get_subject_key_from_choice(subject_raw)
+	var s1: String = _get_subject_key_from_choice(subject1)
+	var s2: String = _get_subject_key_from_choice(subject2)
+	if key_raw == s2:
+		return "subject2"
+	return "subject1"
+
+# Returns true if it counted; false if already counted today.
+func count_study_if_new(subject_raw: String, add_time_minutes: int) -> bool:
+	var key_raw: String = _get_subject_key_from_choice(subject_raw)
+	var k: String = key_raw + "|" + str(day)
+	if study_guard.has(k):
+		return false
+	study_guard[k] = true
+
+	var slot: String = _which_subject_slot(subject_raw)
+	var tid: String = ""
+	if slot == "subject2":
+		tid = "study_subject2"
+	else:
+		tid = "study_subject1"
+
+	update_task_step(tid)
+	if add_time_minutes > 0:
+		adjust_time(add_time_minutes)
+	return true

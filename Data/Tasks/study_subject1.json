@@ -3,11 +3,11 @@
   "giver": "Self",
   "location": "Home",
   "steps": [
-    {
-      "id": "study_sessions",
-      "text": "Study {subject1} at home",
-      "counter_key": "study",
-      "counter_goal": 5
-    }
+	{
+	  "id": "study_sessions",
+	  "text": "Study {subject1} at home",
+	  "counter_key": "study",
+	  "counter_goal": 5
+	}
   ]
 }

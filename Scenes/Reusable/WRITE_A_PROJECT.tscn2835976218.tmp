@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://c0vlcl456ke7y"]
 
-[ext_resource type="Script" uid="uid://bqyk43gnul3mf" path="res://Scenes/WRITE_A_PROJECT.gd" id="1_pxg6s"]
+[ext_resource type="Script" uid="uid://bqyk43gnul3mf" path="res://Scenes/Reusable/WRITE_A_PROJECT.gd" id="1_pxg6s"]
 [ext_resource type="Texture2D" uid="uid://dll21rvk30k2j" path="res://Images/Pin.png" id="2_g38qk"]
 [ext_resource type="FontFile" uid="uid://de647gnm3sexo" path="res://Fonts/BergamotOrnaments-3oK6.ttf" id="3_5lfw6"]
 [ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="4_moawo"]
@@ -490,6 +490,39 @@ theme_override_font_sizes/font_size = 51
 text = "Time Taken : 46"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Exit" type="Label" parent="."]
+visible = false
+z_index = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -130.5
+offset_top = -33.5
+offset_right = 130.5
+offset_bottom = 33.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_ylhej")
+theme_override_font_sizes/font_size = 50
+text = "Leave"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="button2" type="Button" parent="Exit"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_m4l4v")
+theme_override_styles/normal = ExtResource("6_p26ic")
 
 [connection signal="pressed" from="Begin/button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="Leave/button2" to="." method="_on_button_2_pressed"]
