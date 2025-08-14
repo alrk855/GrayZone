@@ -1,13 +1,13 @@
 {
-  "id": "Marko_First_Entry",
+  "id": "Marko_FirstEvent_Entry",
   "lines": [
 	{
 	  "speaker": "Marko",
-	  "text": "Yo. Heading home already?"
+	  "text": "Yo. You actually showed up."
 	},
 	{
 	  "speaker": "Marko",
-	  "text": "What’s the plan — study or be normal for once and do literally anything else?"
+	  "text": "So—study, hang out, or do your own thing?"
 	},
 	{
 	  "action": "marko_show_entry_choices"

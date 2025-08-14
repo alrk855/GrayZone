@@ -3,11 +3,7 @@
   "lines": [
 	{
 	  "speaker": "Marko",
-	  "text": "Study, huh? Come on, just one afternoon off won't kill you."
-	},
-	{
-	  "speaker": "Marko",
-	  "text": "If it's about that project, I’ll help you out after we’re done hanging out."
+	  "text": "Study? Come on, just a little break first."
 	},
 	{
 	  "action": "marko_show_study_sway_choices"

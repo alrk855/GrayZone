@@ -1,48 +1,23 @@
 {
   "id": "Marko_Hangout_End",
   "lines": [
-    {
-      "action": "goto",
-      "scene": "res://Scenes/Reusable/Tasks/Hangout.tscn"
-    },
-    {
-      "action": "adjust_time",
-      "value": 120
-    },
-    {
-      "speaker": "Narrator",
-      "text": "You hang out with Marko until evening."
-    },
-    {
-      "speaker": "Marko",
-      "text": "Oh — before I forget. The janitor at school? Not just a mop and bucket guy."
-    },
-    {
-      "speaker": "Marko",
-      "text": "He’s got… access. To things. Let’s just say: past projects live longer than you’d think."
-    },
-    {
-      "action": "set_flags",
-      "flags": [
-        "marko_tip"
-      ]
-    },
-    {
-      "action": "adjust_reputation",
-      "value": -5
-    },
-    {
-      "action": "set_flags",
-      "flags": [
-        "marko_first_event_done"
-      ]
-    },
-    {
-      "action": "goto",
-      "scene": "res://Scenes/Reusable/Map/Home.tscn"
-    },
-    {
-      "action": "end_event"
-    }
+	{
+	  "action": "adjust_reputation",
+	  "value": -5
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "Not bad. Next time maybe we actually study."
+	},
+	{
+	  "action": "set_flags",
+	  "flags": [
+		"marko_first_event_done"
+	  ]
+	},
+	{
+	  "action": "goto",
+	  "scene": "res://Scenes/Reusable/Map/Home.tscn"
+	}
   ]
 }

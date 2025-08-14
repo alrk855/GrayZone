@@ -6,8 +6,26 @@
 	  "text": "Fine, fine. Let’s hit the books then. You’re no fun — but maybe that’s what gets things done."
 	},
 	{
+	  "action": "adjust_reputation",
+	  "value": 5
+	},
+	{
+	  "action": "adjust_integrity",
+	  "value": 5
+	},
+	{
+	  "action": "adjust_time",
+	  "value": 30
+	},
+	{
+	  "action": "set_flags",
+	  "flags": [
+		"marko_first_event_done"
+	  ]
+	},
+	{
 	  "action": "goto",
-	  "scene": "res://Scenes/Reusable/Events/StudyWithMarko.tscn"
+	  "scene": "res://Scenes/Reusable/Events/MarkoStudy.tscn"
 	}
   ]
 }

@@ -1,12 +1,12 @@
 {
   "id": "Marko_Study_Alone_Push",
   "lines": [
-    {
-      "speaker": "Marko",
-      "text": "Alone? Man, that’s no way to live. Let’s hang out a bit first — I’ll even help if it’s about the project."
-    },
-    {
-      "action": "marko_show_alone_push_choices"
-    }
+	{
+	  "speaker": "Marko",
+	  "text": "Suit yourself. Don’t say I didn’t try to make it fun."
+	},
+	{
+	  "action": "marko_show_alone_push_choices"
+	}
   ]
 }
