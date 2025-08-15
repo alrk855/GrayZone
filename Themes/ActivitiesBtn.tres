@@ -1,0 +1,25 @@
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://uv5syh2wbonm"]
+
+[ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="1_fld4v"]
+[ext_resource type="Texture2D" uid="uid://flo3b8vpv28" path="res://Images/Buttons/btn1.png" id="2_upor5"]
+[ext_resource type="Texture2D" uid="uid://dikv7ps6asrlu" path="res://Images/Buttons/btn2.png" id="3_60agu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eluph"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k83tj"]
+texture = ExtResource("2_upor5")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kd3py"]
+texture = ExtResource("3_60agu")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3bur8"]
+texture = ExtResource("3_60agu")
+modulate_color = Color(0.233925, 0.233925, 0.233925, 0.482353)
+
+[resource]
+Button/colors/font_color = Color(0.353233, 0.193062, 0, 1)
+Button/fonts/font = ExtResource("1_fld4v")
+Button/styles/focus = SubResource("StyleBoxEmpty_eluph")
+Button/styles/hover = SubResource("StyleBoxTexture_k83tj")
+Button/styles/normal = SubResource("StyleBoxTexture_kd3py")
+Button/styles/pressed = SubResource("StyleBoxTexture_3bur8")

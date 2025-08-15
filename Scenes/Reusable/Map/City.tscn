@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bdwff2rioevg3"]
+[gd_scene load_steps=4 format=3 uid="uid://bdwff2rioevg3"]
 
 [ext_resource type="Script" uid="uid://57qv81hsikf3" path="res://Scenes/Reusable/Map/city.gd" id="1_1r77k"]
-[ext_resource type="Texture2D" uid="uid://4ilsh38540f" path="res://Images/download.jpg" id="1_moe23"]
+[ext_resource type="Texture2D" uid="uid://cs447uwu1njr1" path="res://Images/ploshtad.png" id="2_1r77k"]
+[ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_kyi2b"]
 
 [node name="City" type="Control"]
 layout_mode = 3
@@ -11,7 +12,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1r77k")
-city_button_path = NodePath("TextureRect/Button")
+city_button_path = NodePath("TextureRect/ShowMenuButton")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -20,19 +21,21 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_moe23")
+texture = ExtResource("2_1r77k")
 
-[node name="Button" type="Button" parent="TextureRect"]
-custom_minimum_size = Vector2(400, 100)
+[node name="ShowMenuButton" type="Button" parent="TextureRect"]
+custom_minimum_size = Vector2(210, 100)
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -4.0
-offset_top = -4.0
-offset_right = 4.0
-offset_bottom = 4.0
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -130.0
+offset_right = 100.0
+offset_bottom = -30.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
+theme = ExtResource("3_kyi2b")
+text = "Activities"
