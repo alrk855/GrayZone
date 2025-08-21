@@ -1,0 +1,404 @@
+[gd_scene load_steps=9 format=3 uid="uid://bbw8mfjycwlt"]
+
+[ext_resource type="Script" uid="uid://dwfc7ddawqw73" path="res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd" id="1_hg68k"]
+[ext_resource type="Texture2D" uid="uid://uobfmga22klq" path="res://Images/MainMenu/BlueSky_HD_END.png" id="1_ppx27"]
+[ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_0lpo1"]
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_2mygu"]
+[ext_resource type="StyleBox" uid="uid://d3s5ek8kweqtk" path="res://Themes/BUTTON_WHITE_BORDER.tres" id="5_2mygu"]
+
+[sub_resource type="Animation" id="Animation_qn3i6"]
+resource_name = "LetterIntro"
+length = 20.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RichTextLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(9, 10),
+"transitions": PackedFloat32Array(1, 0.554785),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("a:visible_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3, 6, 8),
+"transitions": PackedFloat32Array(1, 1, 1, 1.46409),
+"update": 0,
+"values": [0.0, 1.0, 1.0, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("box:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(10, 11.0333),
+"transitions": PackedFloat32Array(0.297302, 0.25),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("box/Header:visible_ratio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(10.5667, 12.4333),
+"transitions": PackedFloat32Array(0.554785, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("box/button:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(13.6, 14.3333),
+"transitions": PackedFloat32Array(0.594603, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("box/button2:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(13.0667, 13.8333),
+"transitions": PackedFloat32Array(0.466517, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("box/button3:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(15.9333, 16.8667),
+"transitions": PackedFloat32Array(0.659754, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_igtkr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RichTextLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("a:visible_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.05263]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("box:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("box/Header:visible_ratio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("box/button:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("box/button2:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("box/button3:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0ev40"]
+_data = {
+&"LetterIntro": SubResource("Animation_qn3i6"),
+&"RESET": SubResource("Animation_igtkr")
+}
+
+[node name="WriteAMletter" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hg68k")
+
+[node name="SceneAnimation" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_0ev40")
+}
+
+[node name="BG" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ppx27")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -521.0
+offset_right = 521.0
+offset_bottom = 141.0
+grow_horizontal = 2
+theme_override_fonts/normal_font = ExtResource("2_0lpo1")
+theme_override_font_sizes/normal_font_size = 36
+text = "WRITE A MOTIVATION LETTER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="a" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.5
+offset_top = -19.0
+offset_right = 18.5
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 32
+text = "Your screen is empty. A blinking cursor waits for your words... or a shortcut link glows temptingly at the bottom."
+
+[node name="box" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -531.0
+offset_top = -310.5
+offset_right = 531.0
+offset_bottom = 310.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="Label" parent="box"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -390.0
+offset_top = -269.0
+offset_right = 390.0
+offset_bottom = -232.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 31
+text = "How do you want to write your motivation letter?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="button" type="Button" parent="box"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -114.0
+offset_top = 2.0
+offset_right = 114.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/focus = ExtResource("5_2mygu")
+theme_override_styles/normal = ExtResource("5_2mygu")
+text = "Write it Yourself"
+
+[node name="button2" type="Button" parent="box"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -222.0
+offset_top = -174.0
+offset_right = 222.0
+offset_bottom = -136.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/focus = ExtResource("5_2mygu")
+theme_override_styles/normal = ExtResource("5_2mygu")
+text = "Use ChatGPT to Auto-Generate It"
+
+[node name="button3" type="Button" parent="box"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -77.0
+offset_top = 184.0
+offset_right = 81.0
+offset_bottom = 222.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/focus = ExtResource("5_2mygu")
+theme_override_styles/normal = ExtResource("5_2mygu")
+text = "Never mind"
+
+[node name="gamebox" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -531.0
+offset_top = -310.5
+offset_right = 531.0
+offset_bottom = 310.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="Label" parent="gamebox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -290.5
+offset_top = -293.0
+offset_right = 290.5
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 31
+text = "Dear Committee,
+I come from a modest background, but I’ve worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community.
+Thank you for the opportunity.
+Sincerely, Me"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="gamebox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -161.0
+offset_top = 214.0
+offset_right = 161.0
+offset_bottom = 288.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 45
+placeholder_text = "Type shit"
+alignment = 1
+
+[node name="DebugLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1556.0
+offset_top = 52.0
+offset_right = 1870.0
+offset_bottom = 133.0
+theme_override_font_sizes/font_size = 51
+text = "Points: 
+Errors: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="box/button" to="." method="_on_button_pressed"]
+[connection signal="text_submitted" from="gamebox/LineEdit" to="." method="_on_line_edit_text_submitted"]

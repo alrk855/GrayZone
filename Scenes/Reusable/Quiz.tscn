@@ -130,4 +130,15 @@ text = "Score : 0"
 wait_time = 10.0
 one_shot = true
 
+[node name="Map" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1698.0
+offset_top = 34.0
+offset_right = 1859.0
+offset_bottom = 125.0
+theme_override_font_sizes/font_size = 66
+text = "QUIZ"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

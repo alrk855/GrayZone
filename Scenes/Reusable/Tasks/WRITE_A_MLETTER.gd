@@ -1,0 +1,50 @@
+extends Control
+
+@onready var lab : Label = $"a"
+@onready var text_library : Array[String] = ["Dear Committee, I come from a modest background, but I've worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community. Thank you for the opportunity. Sincerely, Me"
+, "Dear Committee, I'm the first in my family to attend college. This scholarship would let me keep my grades up and continue mentoring local kids. Thank you. Sincerely, Me"
+, "Dear Committee, Hard work lifted my GPA to 3.9 despite tight finances. Your support keeps me in school and giving back. Thanks. Best, Me"
+, "Dear Esteemed Committee, My journey began at a kitchen table where bills often outnumbered paychecks. From that table, I learned that perseverance is a currency more reliable than cash. It bought me top grades, leadership roles in two campus clubs, and the chance every Saturday to serve meals at the youth shelter."
+, "Dear Committee, I juggle jobs and classes to stay on the Dean's List. Help me finish my degree and keep tutoring teens. Thank you."]
+@onready var header : Label = $"gamebox/Header"
+@onready var edit : LineEdit = $"gamebox/LineEdit"
+@onready var debLabel : Label = $"DebugLabel"
+@onready var gamebox : Control = $"gamebox"
+@onready var box : Control = $"box"
+var current : int = 0
+var words : PackedStringArray = []
+var current_word : int = 0
+var correct : int = 0
+var wrong : int = 0
+
+func _ready() -> void:
+	$SceneAnimation.play("LetterIntro")
+	current = randi() % 5
+	words = text_library[current].split(" ", false)
+	header.text = words[current_word]
+
+
+func _on_line_edit_text_submitted(new_text) -> void:
+	if(new_text == header.text):
+		current_word+=1
+		correct+=1
+		edit.text = ""
+	else:
+		wrong+=1
+		current_word+=1
+
+func _process(_delta: float) -> void:
+	debLabel.text = "Correct: %d" %correct + "
+	Errors: %d" %wrong
+	header.text = words[current_word]
+	if(edit.text == header.text):
+		current_word+=1
+		correct+=1
+		edit.text = ""
+
+
+func _on_button_pressed() -> void:
+	gamebox.modulate.a = 0
+	create_tween().tween_property(gamebox, "modulate:a", 1, 2)
+	box.visible = false
+	gamebox.visible = true

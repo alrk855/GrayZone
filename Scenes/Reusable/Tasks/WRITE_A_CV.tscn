@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://qd280ybioky1"]
+[gd_scene load_steps=4 format=3 uid="uid://qd280ybioky1"]
 
 [ext_resource type="Script" uid="uid://do4deu8dtxej5" path="res://Scenes/Reusable/Tasks/WRITE_A_CV.gd" id="1_aog3w"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_aog3w"]
 [ext_resource type="Texture2D" uid="uid://dp58ywitfyhh6" path="res://Images/MainMenu/BlueSky_HD2.png" id="2_fx2dp"]
-[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_fx2dp"]
 
 [node name="CV" type="Control"]
 layout_mode = 3
@@ -39,60 +38,47 @@ text = "WRITE A CV"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="mainbox" type="Control" parent="."]
+[node name="SceneAnimation" type="AnimationPlayer" parent="."]
+
+[node name="CVBOX" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -485.5
-offset_top = -351.5
-offset_right = 485.5
-offset_bottom = 351.5
+offset_left = -443.0
+offset_top = -285.0
+offset_right = 443.0
+offset_bottom = 285.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TargetText" type="Label" parent="mainbox"]
+[node name="Panel" type="Panel" parent="CVBOX"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_fonts/font = ExtResource("4_fx2dp")
-text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
-vertical_alignment = 2
-autowrap_mode = 2
-text_direction = 1
 
-[node name="Feedback" type="Label" parent="mainbox"]
-z_index = 3
+[node name="Label" type="Label" parent="CVBOX"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -135.0
-offset_top = -35.5
-offset_right = 135.0
-offset_bottom = 35.5
+offset_left = -156.5
+offset_top = -76.5
+offset_right = 156.5
+offset_bottom = 76.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Label"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Input" type="TextEdit" parent="mainbox"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("4_fx2dp")
-text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
-wrap_mode = 1
-autowrap_mode = 1
+theme_override_font_sizes/font_size = 41
+text = "🖋 CV Entry (Simple Confirm Template):
+Name: [YourName]
+Date of Birth: [DD/MM/YYYY]
+Education: High School (Current)
+Skills: Typing, Teamwork, Basic Research
+Experience: None yet — willing to learn"
