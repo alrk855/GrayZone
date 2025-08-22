@@ -19,21 +19,25 @@ var words : PackedStringArray = []
 var current_word : int = 0
 var correct : int = 0
 var wrong : int = 0
-var freed : bool = true
+var freed : bool = false
 
 # SFX
 var zvuci = [
-	preload("res://Audio/u4.mp3"),
-	preload("res://Audio/u1.mp3"),
-	preload("res://Audio/u2.mp3"),
-	preload("res://Audio/u3.mp3")
+	preload("res://Audio/MotivLetterSounds/b1.mp3"),
+	preload("res://Audio/MotivLetterSounds/b2.mp3"),
+	preload("res://Audio/MotivLetterSounds/b3.mp3"),
+	preload("res://Audio/MotivLetterSounds/b4.mp3"),
+	preload("res://Audio/MotivLetterSounds/b5.mp3")
 ]
+@onready var zvuk_end : AudioStreamPlayer2D = $"end"
+@onready var zvuk_wrong : AudioStreamPlayer2D = $"wrong"
 
 func _ready() -> void:
 	$SceneAnimation.play("LetterIntro")
 	current = randi() % 5
 	words = text_library[current].split(" ", false)
 	header.text = words[current_word]
+	current_word = 100
 	await $SceneAnimation.animation_finished
 
 func _on_line_edit_text_submitted(new_text) -> void:
@@ -47,25 +51,27 @@ func _on_line_edit_text_submitted(new_text) -> void:
 		current_word+=1
 		edit.grab_focus()
 		edit.text = ""
+		if !zvuk_wrong.playing:
+			zvuk_wrong.play()
 
 func _process(_delta: float) -> void:
 	debLabel.text = "Correct: %d" %correct + "
 	Errors: %d" %wrong + "
 	Status:        "
 	#print(words.size())
-	if(current_word < words.size()):
+	if current_word < words.size():
+	# Only update header when starting a new word
 		header.text = words[current_word]
-		if(edit.text == header.text):
-			current_word+=1
-			correct+=1
+
+		if edit.text == header.text:
+			current_word += 1
+			correct += 1
 			edit.text = ""
 			SFX_play()
-	else:
-		freed = false
-		if(freed == false):
-			freed = true
-			gamebox.visible = false
-			outro()
+	elif !freed:
+		freed = true
+		gamebox.visible = false
+		outro()
 
 
 func _on_button_pressed() -> void:
@@ -76,6 +82,7 @@ func _on_button_pressed() -> void:
 	msg.play("mesg")
 
 func outro() -> void:
+	zvuk_end.play()
 	debLabel.visible_ratio = 0
 	status.visible = false
 	var tween : Tween = create_tween()
@@ -91,13 +98,13 @@ func outro() -> void:
 		status.text = "Bad"
 	tween.tween_property(debLabel, "visible_ratio", 1, 1)
 	await tween.finished
-	create_tween().tween_property(status, "modulate:a", 255, 1).set_trans(Tween.TRANS_CUBIC)
+	create_tween().tween_property(status, "modulate:a", 1, 1).set_trans(Tween.TRANS_CUBIC)
 	status.visible = true
 
 func SFX_play(): #poliranje
 	var sound = AudioStreamPlayer2D.new()
 	add_child(sound)
-	sound.stream = zvuci[randi() % 3]
+	sound.stream = zvuci[randi() % 5]
 	sound.play()
 	await sound.finished
 	sound.queue_free()

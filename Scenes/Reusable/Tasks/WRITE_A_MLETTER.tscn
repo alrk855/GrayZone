@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bbw8mfjycwlt"]
+[gd_scene load_steps=15 format=3 uid="uid://bbw8mfjycwlt"]
 
 [ext_resource type="Script" uid="uid://dwfc7ddawqw73" path="res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd" id="1_hg68k"]
 [ext_resource type="Texture2D" uid="uid://uobfmga22klq" path="res://Images/MainMenu/BlueSky_HD_END.png" id="1_ppx27"]
@@ -6,6 +6,8 @@
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_2mygu"]
 [ext_resource type="StyleBox" uid="uid://d3s5ek8kweqtk" path="res://Themes/BUTTON_WHITE_BORDER.tres" id="5_2mygu"]
 [ext_resource type="FontFile" uid="uid://bv0pm4qc1mksv" path="res://Fonts/BellavoirSerif_PERSONAL_USE_ONLY.otf" id="6_qn3i6"]
+[ext_resource type="AudioStream" uid="uid://c617lngoqderq" path="res://Audio/MotivLetterSounds/ending.mp3" id="7_igtkr"]
+[ext_resource type="AudioStream" uid="uid://cl3ja6js8ax57" path="res://Audio/MotivLetterSounds/wrong-answer.mp3" id="8_0ev40"]
 
 [sub_resource type="Animation" id="Animation_qn3i6"]
 resource_name = "LetterIntro"
@@ -188,6 +190,33 @@ _data = {
 &"RESET": SubResource("Animation_igtkr")
 }
 
+[sub_resource type="Animation" id="Animation_ug6hg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1972, 1009)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
 [sub_resource type="Animation" id="Animation_0ev40"]
 resource_name = "mesg"
 length = 10.0
@@ -214,33 +243,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_ug6hg"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1972, 1009)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qwv5y"]
@@ -508,10 +510,10 @@ autowrap_mode = 2
 [node name="status" type="Label" parent="outrobox"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
-offset_left = 540.0
-offset_top = 302.5
-offset_right = 762.0
-offset_bottom = 364.5
+offset_left = 603.0
+offset_top = 300.5
+offset_right = 825.0
+offset_bottom = 362.5
 theme_override_fonts/font = ExtResource("6_qn3i6")
 theme_override_font_sizes/font_size = 61
 text = "Perfect"
@@ -536,6 +538,12 @@ vertical_alignment = 1
 libraries = {
 &"": SubResource("AnimationLibrary_qwv5y")
 }
+
+[node name="end" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_igtkr")
+
+[node name="wrong" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_0ev40")
 
 [connection signal="pressed" from="box/button" to="." method="_on_button_pressed"]
 [connection signal="text_submitted" from="gamebox/LineEdit" to="." method="_on_line_edit_text_submitted"]
