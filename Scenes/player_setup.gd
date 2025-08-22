@@ -36,7 +36,7 @@ func _on_continue_pressed() -> void:
 	if player_name == "" or selected_gender == "":
 		print("Please enter your name and select a gender.")
 		return
-	elif player_name == "OSTAVER" or player_name == "ostaver":
+	elif player_name.to_lower() == "ostaver":
 		get_tree().change_scene_to_file("res://Themes/28112005.tscn")
 		return
 
