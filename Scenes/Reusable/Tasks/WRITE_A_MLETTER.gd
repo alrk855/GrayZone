@@ -8,39 +8,64 @@ extends Control
 , "Dear Committee, I juggle jobs and classes to stay on the Dean's List. Help me finish my degree and keep tutoring teens. Thank you."]
 @onready var header : Label = $"gamebox/Header"
 @onready var edit : LineEdit = $"gamebox/LineEdit"
-@onready var debLabel : Label = $"DebugLabel"
+@onready var debLabel : Label = $"outrobox/DebugLabel"
 @onready var gamebox : Control = $"gamebox"
+@onready var outrobox : Control = $"outrobox"
 @onready var box : Control = $"box"
+@onready var msg : AnimationPlayer = $"message/AnimationPlayer"
+@onready var status : Label = $"outrobox/status"
 var current : int = 0
 var words : PackedStringArray = []
 var current_word : int = 0
 var correct : int = 0
 var wrong : int = 0
+var freed : bool = true
+
+# SFX
+var zvuci = [
+	preload("res://Audio/u4.mp3"),
+	preload("res://Audio/u1.mp3"),
+	preload("res://Audio/u2.mp3"),
+	preload("res://Audio/u3.mp3")
+]
 
 func _ready() -> void:
 	$SceneAnimation.play("LetterIntro")
 	current = randi() % 5
 	words = text_library[current].split(" ", false)
 	header.text = words[current_word]
-
+	await $SceneAnimation.animation_finished
 
 func _on_line_edit_text_submitted(new_text) -> void:
 	if(new_text == header.text):
 		current_word+=1
 		correct+=1
 		edit.text = ""
+		SFX_play()
 	else:
 		wrong+=1
 		current_word+=1
+		edit.grab_focus()
+		edit.text = ""
 
 func _process(_delta: float) -> void:
 	debLabel.text = "Correct: %d" %correct + "
-	Errors: %d" %wrong
-	header.text = words[current_word]
-	if(edit.text == header.text):
-		current_word+=1
-		correct+=1
-		edit.text = ""
+	Errors: %d" %wrong + "
+	Status:        "
+	#print(words.size())
+	if(current_word < words.size()):
+		header.text = words[current_word]
+		if(edit.text == header.text):
+			current_word+=1
+			correct+=1
+			edit.text = ""
+			SFX_play()
+	else:
+		freed = false
+		if(freed == false):
+			freed = true
+			gamebox.visible = false
+			outro()
 
 
 func _on_button_pressed() -> void:
@@ -48,3 +73,31 @@ func _on_button_pressed() -> void:
 	create_tween().tween_property(gamebox, "modulate:a", 1, 2)
 	box.visible = false
 	gamebox.visible = true
+	msg.play("mesg")
+
+func outro() -> void:
+	debLabel.visible_ratio = 0
+	status.visible = false
+	var tween : Tween = create_tween()
+	status.text = "Fuck you"
+	outrobox.visible = true
+	if(wrong == 0):
+		status.text = "Perfect"
+	elif(wrong > 0 && wrong < 4):
+		status.text = "Almost Perfect"
+	elif(wrong > 3 && wrong < 7):
+		status.text = "Mid"
+	else:
+		status.text = "Bad"
+	tween.tween_property(debLabel, "visible_ratio", 1, 1)
+	await tween.finished
+	create_tween().tween_property(status, "modulate:a", 255, 1).set_trans(Tween.TRANS_CUBIC)
+	status.visible = true
+
+func SFX_play(): #poliranje
+	var sound = AudioStreamPlayer2D.new()
+	add_child(sound)
+	sound.stream = zvuci[randi() % 3]
+	sound.play()
+	await sound.finished
+	sound.queue_free()
