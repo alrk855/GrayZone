@@ -10,9 +10,9 @@ const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
 # --- Manual scene paths (edit these) ---
 const CITY_SCENE_PATH        := "res://Scenes/Reusable/Map/City.tscn"
 const STUDY_SCENE_PATH       := "res://Scenes/Reusable/Tasks/Study.tscn"
-const WRITE_CV_SCENE_PATH    := "res://Scenes/Reusable/Tasks/WriteCV.tscn"
-const WRITE_MOTIVATION_PATH  := "res://Scenes/Reusable/Tasks/WRITE_A_CV.tscn"
-const WRITE_PROJECT_PATH     := "res://Scenes/Reusable/WRITE_A_PROJECT.tscn"
+const WRITE_CV_SCENE_PATH    := "res://Scenes/Reusable/Tasks/WRITE_A_CV.tscn"
+const WRITE_MOTIVATION_PATH  := "res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn"
+const WRITE_PROJECT_PATH     := "res://Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn"
 const MAILBOX_SCENE_PATH     := "res://Scenes/Reusable/Tasks/MailboxCheck.tscn"
 const SOCIAL_SCENE_PATH      := "res://Scenes/Reusable/Tasks/Social.tscn"
 
