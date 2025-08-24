@@ -1,25 +1,25 @@
 {
   "id": "Prof_Grade_D",
   "lines": [
-    {
-      "speaker": "Professor",
-      "text": "(He squints at a page, confused.)"
-    },
-    {
-      "speaker": "Professor",
-      "text": "This is barely coherent. You want to pass with this?"
-    },
-    {
-      "speaker": "Professor",
-      "text": "D. You’re lucky I’m in a good mood."
-    },
-    {
-      "speaker": "System",
-      "text": "🟥 Grade: D"
-    },
-    {
-      "speaker": "System",
-      "text": "✅ Project Submitted"
-    }
+	{
+	  "speaker": "Professor",
+	  "text": "(He squints at a page, confused.)"
+	},
+	{
+	  "speaker": "Professor",
+	  "text": "This is barely coherent. You want to pass with this?"
+	},
+	{
+	  "speaker": "Professor",
+	  "text": "D. You’re lucky I’m in a good mood."
+	},
+	{
+	  "speaker": "System",
+	  "text": "🟥 Grade: D"
+	},
+	{
+	  "speaker": "System",
+	  "text": "✅ Project Submitted"
+	}
   ]
 }

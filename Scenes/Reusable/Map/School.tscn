@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://io6e1ybfv6mj"]
+[gd_scene load_steps=8 format=3 uid="uid://io6e1ybfv6mj"]
 
 [ext_resource type="Script" uid="uid://c4d52b5ae03ne" path="res://Scenes/Reusable/Map/school.gd" id="1_hfkw0"]
 [ext_resource type="Texture2D" uid="uid://dwsapmgj87lci" path="res://Images/Hallway igra.png" id="2_3mlsj"]
 [ext_resource type="Script" uid="uid://bngil6nruelbw" path="res://Scenes/Reusable/Map/rollback.gd" id="5_60yip"]
 [ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="6_iq7gh"]
 [ext_resource type="Script" uid="uid://rmihi0djaxp4" path="res://Scenes/Reusable/Map/forward.gd" id="6_jxu8x"]
+[ext_resource type="Script" uid="uid://dhefif5oi342t" path="res://Scripts/DOMA.gd" id="7_3mlsj"]
 [ext_resource type="Script" uid="uid://ce7l6fkt52tex" path="res://Scenes/Reusable/Map/freeze.gd" id="7_iq7gh"]
 
 [node name="Control" type="Control"]
@@ -98,6 +99,16 @@ grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("6_iq7gh")
 text = "Activities"
+
+[node name="Button4" type="Button" parent="background"]
+layout_mode = 0
+offset_left = 570.0
+offset_top = 24.0
+offset_right = 689.0
+offset_bottom = 90.0
+text = "doma
+"
+script = ExtResource("7_3mlsj")
 
 [node name="PopUp" type="Label" parent="."]
 visible = false

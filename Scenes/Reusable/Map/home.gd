@@ -1,13 +1,10 @@
-# Home.gd
+# res://Scripts/Scenes/Home.gd
 extends Control
 
-# --- Drop your UI button here in the Inspector ---
 @export var home_button: Button
 
-# --- CharacterChoiceButtons scene path ---
 const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
 
-# --- Manual scene paths (edit these) ---
 const CITY_SCENE_PATH        := "res://Scenes/Reusable/Map/City.tscn"
 const STUDY_SCENE_PATH       := "res://Scenes/Reusable/Tasks/Study.tscn"
 const WRITE_CV_SCENE_PATH    := "res://Scenes/Reusable/Tasks/WRITE_A_CV.tscn"
@@ -16,12 +13,10 @@ const WRITE_PROJECT_PATH     := "res://Scenes/Reusable/Tasks/WRITE_A_PROJECT.tsc
 const MAILBOX_SCENE_PATH     := "res://Scenes/Reusable/Tasks/MailboxCheck.tscn"
 const SOCIAL_SCENE_PATH      := "res://Scenes/Reusable/Tasks/Social.tscn"
 
-# --- Internals ---
 var _panel: Control = null
 const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
 
-# Keys used by StudyShell/MarkoStudyBridge (we only set them; StudyShell reads them)
-const KEY_STUDY_MODE := "__study_mode"          # "regular" | "marko"
+const KEY_STUDY_MODE := "__study_mode"           # "regular" | "marko"
 const KEY_SUBJECT_PICK := "__study_subject_pick" # "subject1" | "subject2"
 
 func _ready() -> void:
@@ -100,7 +95,6 @@ func _show_study_menu() -> void:
 func _on_study_choice(id: String) -> void:
 	match id:
 		"s1":
-			# Tell StudyShell we chose subject1 for today
 			GameState.features_unlocked[KEY_STUDY_MODE] = "regular"
 			GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject1"
 			_change_scene(STUDY_SCENE_PATH)
@@ -116,11 +110,9 @@ func _show_schoolwork_menu() -> void:
 		{"id":"cv",         "text":"Write CV"},
 		{"id":"motivation", "text":"Write Motivation Letter"}
 	]
-
 	# Only add "Write Project" when available.
 	if _is_project_available_now():
 		choices.append({"id":"project", "text":"Write Project"})
-
 	choices.append({"id":"back", "text":"Back"})
 	_show_choices(choices, Callable(self, "_on_schoolwork_choice"))
 
@@ -145,7 +137,6 @@ func _show_choices(options: Array, cb: Callable) -> void:
 		return
 	_panel = ps.instantiate()
 	add_child(_panel)
-	# Your CCB API: show_options(options:Array, callback:Callable)
 	_panel.call("show_options", options, cb)
 
 func _clear_panel() -> void:
@@ -171,7 +162,6 @@ func _do_sleep() -> void:
 		print("🛌 Too early to sleep. Come back after 19:00.")
 		show_home_menu()
 		return
-	# Prefer your GameState sleep if present
 	if GameState.has_method("sleep_now"):
 		GameState.sleep_now()
 	else:
@@ -191,11 +181,11 @@ func _do_sleep() -> void:
 # ================= Availability logic =================
 
 func _is_project_available_now() -> bool:
-	# Show if professor granted a second chance (even if previously bought/written/submitted)
-	if GameState.has_flag("project_second_chance"):
-		return true
+	# Must have accepted with professor OR be on a second chance
+	if not (GameState.has_flag("project_accepted") or GameState.has_flag("project_second_chance")):
+		return false
 
-	# Otherwise hide if any of these are true
+	# Still blocked if already finished/bought/submitted
 	if GameState.has_flag("project_submitted"):
 		return false
 	if GameState.has_flag("have_old_project"):  # bought from janitor

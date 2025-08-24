@@ -11,7 +11,7 @@ const FLAG_BOUGHT_PROJECT := "bought_project"
 const FLAG_PRINTED_CV := "printed_cv"
 const FLAG_PRINTED_LETTER := "printed_motivation"
 const FLAG_PRINTED_PROJECT := "printed_project"
-const FLAG_HAS_BIRTH_CERT := "have_birth_certificate" # NEW: Needed for notarization dialogue
+const FLAG_HAS_BIRTH_CERT := "have_birth_certificate" # for notarization dialogue
 
 # JSON paths
 const PRINT_MENU_JSON := "res://Data/Dialogue/Secretary/Secretary_Print_Menu.json"
@@ -24,9 +24,16 @@ var _print_cfg: Dictionary = {}
 func _ready() -> void:
 	GameState.location = "SecretaryOffice"
 
-	# Auto-trigger first visit intro
-	if GameState.tasks.has(VISIT_SEC_ID) and GameState.get_task_progress(VISIT_SEC_ID) == 0:
+	# Ensure the task exists even if player comes late.
+	GameState.ensure_task(VISIT_SEC_ID)
+
+	# First visit: step and intro
+	if GameState.get_task_progress(VISIT_SEC_ID) == 0:
 		GameState.update_task_step(VISIT_SEC_ID)
+		GameState.set_flag("secretary_met", true) # Home uses this to gate Schoolwork + bootstrap tasks
+		# (Optional) expose features so other menus can also gate on features:
+		GameState.unlock_game_feature("cv")
+		GameState.unlock_game_feature("motivation_letter")
 		DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Initial.json", self)
 		return
 
@@ -58,7 +65,7 @@ func start_interaction() -> void:
 	var options: Array = []
 	options.append({ "text": "Ask about scholarship", "id": "talk" })
 
-	# Only show notarization if we have the birth certificate
+	# Notarization appears only if we have the birth cert
 	if GameState.has_flag(FLAG_HAS_BIRTH_CERT):
 		options.append({ "text": "Ask about notarization", "id": "notarization" })
 
@@ -81,7 +88,7 @@ func _on_choice_selected(choice_id: String) -> void:
 		"notarization":
 			DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Notarization.json", self)
 		"print":
-			DialogueManager.start_dialogue(PRINT_MENU_JSON, self)
+			DialogueManager.start_dialogue(PRINT_MENU_JSON, self) # JSON will call sec_show_print_menu action
 		"submit":
 			if GameState.day < 5:
 				DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Submit_PreFriday.json", self)
@@ -91,7 +98,7 @@ func _on_choice_selected(choice_id: String) -> void:
 			_clear_panel()
 
 func on_dialogue_action(line: Dictionary) -> void:
-	var act: String = String(line.get("action", ""))
+	var act: String = String(line.get("action", "" ))
 	match act:
 		"sec_show_print_menu":
 			_show_print_menu_from_config()

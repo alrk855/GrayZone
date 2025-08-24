@@ -1,27 +1,27 @@
 {
   "id": "Marko_Solo_Study_End",
   "lines": [
-    {
-      "action": "adjust_time",
-      "value": 90
-    },
-    {
-      "action": "adjust_integrity",
-      "value": 5
-    },
-    {
-      "speaker": "Marko",
-      "text": "Alright then, see you around."
-    },
-    {
-      "action": "set_flags",
-      "flags": [
-        "marko_first_event_done"
-      ]
-    },
-    {
-      "action": "goto",
-      "scene": "res://Scenes/Reusable/Map/Home.tscn"
-    }
+	{
+	  "action": "adjust_time",
+	  "value": 90
+	},
+	{
+	  "action": "adjust_integrity",
+	  "value": 5
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "Alright then, see you around."
+	},
+	{
+	  "action": "set_flags",
+	  "flags": [
+		"marko_first_event_done"
+	  ]
+	},
+	{
+	  "action": "goto",
+	  "scene": "res://Scenes/Reusable/Map/Home.tscn"
+	}
   ]
 }

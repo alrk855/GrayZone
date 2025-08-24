@@ -1,3 +1,4 @@
+# res://Scripts/Scenes/ProfessorOffice.gd
 extends Control
 
 @export var professor_path: NodePath = "background/Professor"
@@ -20,7 +21,7 @@ const JSON_PROF_ASK          := D_PROF + "Prof_Initial_AskDeadline.json"
 const JSON_PROF_TOMORROW     := D_PROF + "Prof_Initial_BringTomorrow.json"
 const JSON_PROF_DECLINE      := D_PROF + "Prof_Initial_Decline.json" # flavor used by "Never mind"
 
-# Grades (JSONs already in your folder)
+# Grades
 const JSON_GRADE_A      := D_PROF + "Prof_Grade_A.json"
 const JSON_GRADE_B      := D_PROF + "Prof_Grade_B.json"
 const JSON_GRADE_C      := D_PROF + "Prof_Grade_C.json"
@@ -28,7 +29,7 @@ const JSON_GRADE_D      := D_PROF + "Prof_Grade_D.json"
 const JSON_GRADE_F      := D_PROF + "Prof_Grade_F.json"
 const JSON_GRADE_F_PLAG := D_PROF + "Prof_Grade_F_Plagiarized.json"
 
-# Extra flows (JSONs already in your folder)
+# Extra flows
 const JSON_FAIL_SECOND_CHANCE := D_PROF + "Prof_Fail_SecondChance.json"
 const JSON_PRAISE_INIT        := D_PROF + "Prof_Praise_Initiative.json"
 const JSON_SCOLD_MISSED       := D_PROF + "Prof_Scold_MissedPromise.json"
@@ -150,7 +151,7 @@ func _handle_project_submission() -> void:
 	var side := _promise_reward_or_penalty(is_bought)
 	_clear_promise_flags()
 
-	# Plagiarism state (persist for endings)
+	# Persist plagiarism state for endings if bought (caught or not)
 	if is_bought:
 		GameState.set_flag("project_plagiarized", true)
 
@@ -180,9 +181,13 @@ func _handle_project_submission() -> void:
 	# Normal grading path (not bought)
 	var grade_id := _grade_from_score(score)
 	if grade_id == "F":
-		# Second chance ONLY before Friday (Day < 5). Reset task to step 1. Do NOT mark submitted.
+		# Second chance ONLY before Friday (Day < 5). Reset to write/buy state fresh.
 		if GameState.day < 5:
 			_reset_project_to_step1()
+			GameState.set_flag("project_second_chance", true)
+			GameState.clear_flag("project_written")
+			GameState.clear_flag("have_old_project")
+			GameState.clear_flag("bought_project")
 			DialogueManager.start_dialogue(JSON_FAIL_SECOND_CHANCE, self)
 			return
 		# After/On Friday: final fail → mark submitted, no task increment
@@ -220,11 +225,13 @@ func _play_grade_dialogue(grade: String, side: String) -> void:
 
 func _mark_submitted_no_task_increment() -> void:
 	GameState.set_flag("project_submitted", true)
+	GameState.clear_flag("project_second_chance")
 	GameState.adjust_time(15)
 	_clear_panel()
 
 func _valid_submit_increment_task() -> void:
 	GameState.set_flag("project_submitted", true)
+	GameState.clear_flag("project_second_chance")
 	GameState.update_task_step(TASK_PROJECT) # increment by 1 on valid submit
 	GameState.adjust_time(15)
 	_clear_panel()
@@ -257,7 +264,7 @@ func _clear_promise_flags() -> void:
 		GameState.flags.erase("project_promise_day")
 
 func on_dialogue_action(line: Dictionary) -> void:
-	var act: String = String(line.get("action", ""))
+	var act: String = String(line.get("action", ""))	
 	if act == "show_prof_intro_choices":
 		if GameState.has_flag("project_accepted"):
 			DialogueManager.end_active_dialogue()
@@ -290,11 +297,13 @@ func _on_prof_intro_option(id: String) -> void:
 	match id:
 		"prof_ask_deadline":
 			GameState.set_flag("project_accepted", true)
+			GameState.unlock_game_feature("final_project")
 			DialogueManager.start_dialogue(JSON_PROF_ASK, self)
 		"prof_bring_tomorrow":
 			GameState.set_flag("project_accepted", true)
 			GameState.set_flag("project_tomorrow_promise", true)
 			GameState.flags["project_promise_day"] = GameState.day
+			GameState.unlock_game_feature("final_project")
 			DialogueManager.start_dialogue(JSON_PROF_TOMORROW, self)
 		"prof_nevermind":
 			DialogueManager.start_dialogue(JSON_PROF_DECLINE, self) # flavor
