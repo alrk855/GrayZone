@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bbw8mfjycwlt"]
+[gd_scene load_steps=18 format=3 uid="uid://bbw8mfjycwlt"]
 
 [ext_resource type="Script" uid="uid://dwfc7ddawqw73" path="res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd" id="1_hg68k"]
 [ext_resource type="Texture2D" uid="uid://uobfmga22klq" path="res://Images/MainMenu/BlueSky_HD_END.png" id="1_ppx27"]
@@ -249,6 +249,91 @@ tracks/1/keys = {
 _data = {
 &"RESET": SubResource("Animation_ug6hg"),
 &"mesg": SubResource("Animation_0ev40")
+}
+
+[sub_resource type="Animation" id="Animation_qwv5y"]
+resource_name = "GPT"
+length = 15.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Header:visible_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.766667, 3, 3.23333),
+"transitions": PackedFloat32Array(1, 1, 0.435275, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("typewriter:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(3.4, 3.6, 3.9, 4.1, 4.4, 4.6, 4.83333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("textfull:visible_ratio")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(5.2, 9, 14, 15),
+"transitions": PackedFloat32Array(0.517633, 1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_k6x2e"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Header:visible_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("typewriter:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("textfull:visible_ratio")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gsh2j"]
+_data = {
+&"GPT": SubResource("Animation_qwv5y"),
+&"RESET": SubResource("Animation_k6x2e")
 }
 
 [node name="WriteAMletter" type="Control"]
@@ -509,16 +594,42 @@ autowrap_mode = 2
 
 [node name="status" type="Label" parent="outrobox"]
 modulate = Color(1, 1, 1, 0)
-layout_mode = 0
-offset_left = 603.0
-offset_top = 300.5
-offset_right = 825.0
-offset_bottom = 362.5
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -122.5
+offset_top = 62.0
+offset_right = 122.5
+offset_bottom = 164.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("6_qn3i6")
-theme_override_font_sizes/font_size = 61
+theme_override_font_sizes/font_size = 101
 text = "Perfect"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="finish" type="Button" parent="outrobox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -127.0
+offset_top = 197.0
+offset_right = 127.0
+offset_bottom = 235.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/focus = ExtResource("5_2mygu")
+theme_override_styles/normal = ExtResource("5_2mygu")
+text = "Finish and go back"
 
 [node name="message" type="Label" parent="."]
 modulate = Color(1, 1, 1, 0)
@@ -545,5 +656,81 @@ stream = ExtResource("7_igtkr")
 [node name="wrong" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_0ev40")
 
+[node name="outroGPT" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -531.0
+offset_top = -310.5
+offset_right = 531.0
+offset_bottom = 310.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="Label" parent="outroGPT"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -390.0
+offset_top = -269.0
+offset_right = 390.0
+offset_bottom = -232.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 31
+text = "Writing your letter with AI?!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="outroGPT"]
+libraries = {
+&"": SubResource("AnimationLibrary_gsh2j")
+}
+
+[node name="typewriter" type="Label" parent="outroGPT"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 506.0
+offset_top = -12.5
+offset_right = 560.0
+offset_bottom = 84.5
+theme_override_font_sizes/font_size = 71
+text = "_"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="textfull" type="Label" parent="outroGPT"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -473.0
+offset_top = -285.0
+offset_right = 475.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
+theme_override_font_sizes/font_size = 50
+text = "Dear Committee,
+I come from a modest background, but I’ve worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community.
+Thank you for the opportunity.
+Sincerely, Me"
+horizontal_alignment = 1
+autowrap_mode = 2
+visible_characters = 0
+visible_ratio = 0.0
+
 [connection signal="pressed" from="box/button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="box/button2" to="." method="_on_button_2_pressed"]
 [connection signal="text_submitted" from="gamebox/LineEdit" to="." method="_on_line_edit_text_submitted"]

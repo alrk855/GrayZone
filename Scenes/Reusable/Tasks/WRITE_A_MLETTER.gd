@@ -14,6 +14,10 @@ extends Control
 @onready var box : Control = $"box"
 @onready var msg : AnimationPlayer = $"message/AnimationPlayer"
 @onready var status : Label = $"outrobox/status"
+@onready var gptanim : AnimationPlayer = $"outroGPT/AnimationPlayer"
+@onready var finishbutt : Button = $"outrobox/finish"
+@onready var nevermind : Button = $"box/button3"
+
 var current : int = 0
 var words : PackedStringArray = []
 var current_word : int = 0
@@ -33,6 +37,9 @@ var zvuci = [
 @onready var zvuk_wrong : AudioStreamPlayer2D = $"wrong"
 
 func _ready() -> void:
+	finishbutt.modulate.a = 0
+	nevermind.pressed.connect(exit)
+	finishbutt.pressed.connect(exit)
 	$SceneAnimation.play("LetterIntro")
 	current = randi() % 5
 	words = text_library[current].split(" ", false)
@@ -56,7 +63,7 @@ func _on_line_edit_text_submitted(new_text) -> void:
 func _process(_delta: float) -> void:
 	debLabel.text = "Correct: %d" %correct + "
 	Errors: %d" %wrong + "
-	Status:        "
+	Status:"
 	if current_word < words.size():
 		header.text = words[current_word]
 
@@ -71,7 +78,7 @@ func _process(_delta: float) -> void:
 		outro()
 
 
-func _on_button_pressed() -> void:
+func _on_button_pressed() -> void: #Play option
 	gamebox.modulate.a = 0
 	create_tween().tween_property(gamebox, "modulate:a", 1, 2)
 	box.visible = false
@@ -95,8 +102,9 @@ func outro() -> void:
 		status.text = "Bad"
 	tween.tween_property(debLabel, "visible_ratio", 1, 1)
 	await tween.finished
-	create_tween().tween_property(status, "modulate:a", 1, 1).set_trans(Tween.TRANS_CUBIC)
 	status.visible = true
+	create_tween().tween_property(status, "modulate:a", 1, 5)
+	create_tween().tween_property(finishbutt, "modulate:a", 1, 5)
 
 func SFX_play(): #poliranje
 	var sound = AudioStreamPlayer2D.new()
@@ -105,3 +113,18 @@ func SFX_play(): #poliranje
 	sound.play()
 	await sound.finished
 	sound.queue_free()
+
+
+func _on_button_2_pressed() -> void: #GPT Option
+	box.visible = false
+	$outroGPT.visible = true
+	gptanim.play("GPT")
+	await gptanim.animation_finished
+	$outroGPT.visible = false
+	outro()
+
+func exit():
+	var tween : Tween = create_tween()
+	tween.tween_property(self, "modulate:a", 0, 1).set_trans(Tween.TRANS_CUBIC)
+	await tween.finished
+	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/City.tscn")
