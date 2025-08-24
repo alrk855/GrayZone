@@ -1,14 +1,14 @@
 /**
  * Starfield Shader
- * 
+ *
  * This shader is adapted from a tutorial by Martijn Steinrucken,
  * also known as "The Art of Code" on YouTube.
- * 
+ *
  * All credits for the concept and implementation go to Martijn.
  * This code is shared here for educational and non-commercial purposes.
- * 
+ *
  * Original tutorial: https://www.youtube.com/c/TheArtofCodeIsCool
- * 
+ *
  * Shader type: canvas_item (2D)
  */
 
@@ -45,7 +45,7 @@ float Star(vec2 uv, float flare) {
 float Hash21(vec2 p) {
     p = fract(p * vec2(123.23, 456.34));
     p += dot(p, p + 45.45);
-    return fract(p.x * p.y);	
+    return fract(p.x * p.y);
 }
 
 vec3 StarLayer(vec2 uv) {
