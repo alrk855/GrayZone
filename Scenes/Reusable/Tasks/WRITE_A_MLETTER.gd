@@ -37,7 +37,6 @@ func _ready() -> void:
 	current = randi() % 5
 	words = text_library[current].split(" ", false)
 	header.text = words[current_word]
-	current_word = 100
 	await $SceneAnimation.animation_finished
 
 func _on_line_edit_text_submitted(new_text) -> void:
@@ -58,9 +57,7 @@ func _process(_delta: float) -> void:
 	debLabel.text = "Correct: %d" %correct + "
 	Errors: %d" %wrong + "
 	Status:        "
-	#print(words.size())
 	if current_word < words.size():
-	# Only update header when starting a new word
 		header.text = words[current_word]
 
 		if edit.text == header.text:
