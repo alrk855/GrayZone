@@ -20,10 +20,6 @@
 	  "text": "Submit the project"
 	},
 	{
-	  "id": "grade_c",
-	  "text": "Grade must be C or higher"
-	},
-	{
 	  "id": "plagiarized_branch",
 	  "text": "If flagged as plagiarized before Friday → rewrite and resubmit by next day; grade must be C or higher"
 	}

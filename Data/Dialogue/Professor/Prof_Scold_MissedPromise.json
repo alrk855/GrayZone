@@ -1,21 +1,21 @@
 {
   "id": "Prof_Scold_MissedPromise",
   "lines": [
-    {
-      "speaker": "Professor",
-      "text": "(He glances at the clock.)"
-    },
-    {
-      "speaker": "Professor",
-      "text": "You promised yesterday. You’re late."
-    },
-    {
-      "speaker": "Professor",
-      "text": "Next time, keep your word."
-    },
-    {
-      "speaker": "System",
-      "text": "🟥 -10 Reputation, -10 Integrity"
-    }
+	{
+	  "speaker": "Professor",
+	  "text": "(He glances at the clock.)"
+	},
+	{
+	  "speaker": "Professor",
+	  "text": "You promised yesterday. You’re late."
+	},
+	{
+	  "speaker": "Professor",
+	  "text": "Next time, keep your word."
+	},
+	{
+	  "speaker": "System",
+	  "text": "🟥 -10 Reputation, -10 Integrity"
+	}
   ]
 }

@@ -77,7 +77,6 @@ func _process(_delta: float) -> void:
 		gamebox.visible = false
 		outro()
 
-
 func _on_button_pressed() -> void: #Play option
 	gamebox.modulate.a = 0
 	create_tween().tween_property(gamebox, "modulate:a", 1, 2)
@@ -106,14 +105,13 @@ func outro() -> void:
 	create_tween().tween_property(status, "modulate:a", 1, 5)
 	create_tween().tween_property(finishbutt, "modulate:a", 1, 5)
 
-func SFX_play(): #poliranje
+func SFX_play():
 	var sound = AudioStreamPlayer2D.new()
 	add_child(sound)
 	sound.stream = zvuci[randi() % 5]
 	sound.play()
 	await sound.finished
 	sound.queue_free()
-
 
 func _on_button_2_pressed() -> void: #GPT Option
 	box.visible = false
@@ -124,7 +122,15 @@ func _on_button_2_pressed() -> void: #GPT Option
 	outro()
 
 func exit():
+	# If the player actually completed the letter, mark DRAFT done
+	if freed:
+		GameState.ensure_task("motivation")
+		if GameState.get_task_progress("motivation") < 2:
+			GameState.update_task_step("motivation")  # step 2 (draft)
+		GameState.set_flag("motivation_written", true)
+
 	var tween : Tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0, 1).set_trans(Tween.TRANS_CUBIC)
 	await tween.finished
-	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/City.tscn")
+	# Go to HOME (not City)
+	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/Home.tscn")

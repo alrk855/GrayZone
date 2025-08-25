@@ -3,17 +3,9 @@ extends Control
 @onready var secretary: Node = $background/Secretary
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 
-const GSR_ID := "Gather Scholarship Requirements"
 const VISIT_SEC_ID := "Visit the Secretary"
 
-# Flags used by printing gating
-const FLAG_BOUGHT_PROJECT := "bought_project"
-const FLAG_PRINTED_CV := "printed_cv"
-const FLAG_PRINTED_LETTER := "printed_motivation"
-const FLAG_PRINTED_PROJECT := "printed_project"
-const FLAG_HAS_BIRTH_CERT := "have_birth_certificate" # for notarization dialogue
-
-# JSON paths
+# JSONs
 const PRINT_MENU_JSON := "res://Data/Dialogue/Secretary/Secretary_Print_Menu.json"
 const PRINT_CONFIG_JSON := "res://Data/Dialogue/Secretary/Secretary_Print_Config.json"
 
@@ -23,153 +15,126 @@ var _print_cfg: Dictionary = {}
 
 func _ready() -> void:
 	GameState.location = "SecretaryOffice"
-
-	# Ensure the task exists even if player comes late.
 	GameState.ensure_task(VISIT_SEC_ID)
 
-	# First visit: step and intro
+	# Auto-trigger first visit
 	if GameState.get_task_progress(VISIT_SEC_ID) == 0:
 		GameState.update_task_step(VISIT_SEC_ID)
-		GameState.set_flag("secretary_met", true) # Home uses this to gate Schoolwork + bootstrap tasks
-		# (Optional) expose features so other menus can also gate on features:
-		GameState.unlock_game_feature("cv")
-		GameState.unlock_game_feature("motivation_letter")
+		GameState.set_flag("secretary_met", true)
 		DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Initial.json", self)
-		return
 
 func _process(_delta: float) -> void:
-	if GameState.time >= 16 * 60:
-		if GameState.is_time_frozen():
-			_pending_close_to_school = true
-		else:
-			_close_to_school()
+	# Don’t yank the player out mid-dialogue
+	if GameState.time >= 16 * 60 and not GameState.is_time_frozen():
+		_close_to_school()
 
 func _close_to_school() -> void:
-	print("🔒 The secretary has left for the day. Returning to school.")
 	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/School.tscn")
 
-func _clear_panel() -> void:
-	if _active_panel and is_instance_valid(_active_panel):
-		_active_panel.queue_free()
-	_active_panel = null
-
-# Entry button in the scene
 func start_interaction() -> void:
-	if _pending_close_to_school and not GameState.is_time_frozen():
-		_pending_close_to_school = false
-		_close_to_school()
-		return
-
 	_clear_panel()
 
-	var options: Array = []
-	options.append({ "text": "Ask about scholarship", "id": "talk" })
+	var opts: Array = []
+	opts.append({ "text": "Ask about scholarship", "id": "talk" })
 
-	# Notarization appears only if we have the birth cert
-	if GameState.has_flag(FLAG_HAS_BIRTH_CERT):
-		options.append({ "text": "Ask about notarization", "id": "notarization" })
+	# Only after birth certificate is obtained
+	if GameState.has_flag("have_birth_certificate"):
+		opts.append({ "text": "Ask about notarization", "id": "notarization" })
 
+	# Print menu only if at least one item is printable
 	if _has_any_printables():
-		options.append({ "text": "Print a document", "id": "print" })
+		opts.append({ "text": "Print a document", "id": "print" })
 
+	# Submissions from Day 5 onward
 	if GameState.day >= 5:
-		options.append({ "text": "Submit documents", "id": "submit" })
+		opts.append({ "text": "Submit documents", "id": "submit" })
 
-	options.append({ "text": "Back", "id": "back_dialogue" })
+	opts.append({ "text": "Back", "id": "back" })
 
-	_active_panel = choice_panel_scene.instantiate() as Control
+	_active_panel = choice_panel_scene.instantiate()
 	add_child(_active_panel)
-	_active_panel.call("show_options", options, Callable(self, "_on_choice_selected"))
+	_active_panel.call("show_options", opts, Callable(self, "_on_choice_selected"))
 
-func _on_choice_selected(choice_id: String) -> void:
-	match choice_id:
+func _on_choice_selected(id: String) -> void:
+	match id:
 		"talk":
 			DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Talk.json", self)
 		"notarization":
 			DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Notarization.json", self)
 		"print":
-			DialogueManager.start_dialogue(PRINT_MENU_JSON, self) # JSON will call sec_show_print_menu action
+			# Enters your tiny wrapper JSON which then calls sec_show_print_menu
+			DialogueManager.start_dialogue(PRINT_MENU_JSON, self)
 		"submit":
 			if GameState.day < 5:
 				DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Submit_PreFriday.json", self)
 			else:
 				DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Submit.json", self)
-		"back_dialogue":
+		"back":
 			_clear_panel()
 
 func on_dialogue_action(line: Dictionary) -> void:
-	var act: String = String(line.get("action", "" ))
-	match act:
-		"sec_show_print_menu":
-			_show_print_menu_from_config()
-		_:
-			GameState.apply_action(line)
+	var act: String = String(line.get("action", ""))
+	if act == "sec_show_print_menu":
+		_show_print_menu_from_config()
+	else:
+		GameState.apply_action(line)
 
-# ---------------- JSON-driven printing ----------------
+# ---------- Printing gating ----------
+
+func _is_print_ready_item(item: Dictionary) -> bool:
+	# Uses your config fields exactly as provided
+	var item_id: String = String(item.get("id", ""))
+	var printed_flag: String = String(item.get("flag", ""))
+
+	# Already printed? hide
+	if printed_flag != "" and GameState.has_flag(printed_flag):
+		return false
+
+	# CV: require task progress >= 2 (e.g., visit/draft done → print step)
+	if printed_flag == "printed_cv" or item_id == "print_cv":
+		return GameState.get_task_progress("cv") >= 2
+
+	# Motivation letter: same logic
+	if printed_flag == "printed_motivation" or item_id == "print_letter":
+		return GameState.get_task_progress("motivation") >= 2
+
+	# Project: must be written OR bought (janitor). Printing the bought one is allowed.
+	if printed_flag == "printed_project" or item_id == "print_project":
+		return GameState.has_flag("project_written") or GameState.has_flag("bought_project")
+
+	return false
 
 func _has_any_printables() -> bool:
-	var cfg := _load_print_config()
+	var cfg: Dictionary = _load_print_config()
 	var items: Array = cfg.get("items", []) as Array
-	for item_v in items:
-		var item: Dictionary = item_v
-		var requires_feature: String = String(item.get("requires_feature", ""))
-		var requires_flag_any: Array = item.get("requires_flag_any", []) as Array
-		var flag_done: String = String(item.get("flag", ""))
-
-		if flag_done != "" and GameState.has_flag(flag_done):
-			continue
-
-		if requires_feature != "" and GameState.has_feature(requires_feature):
+	for v in items:
+		var it: Dictionary = v
+		if _is_print_ready_item(it):
 			return true
-
-		for rf in requires_flag_any:
-			if GameState.has_flag(String(rf)):
-				return true
-
 	return false
 
 func _show_print_menu_from_config() -> void:
 	_clear_panel()
 
 	_print_cfg = _load_print_config()
-	if _print_cfg.is_empty():
-		print("⚠️ Missing or malformed print config:", PRINT_CONFIG_JSON)
-		return
-
 	var items: Array = _print_cfg.get("items", []) as Array
+
 	var opts: Array = []
-
-	for item_v in items:
-		var item: Dictionary = item_v
-		var id: String = String(item.get("id", ""))
-		var text: String = String(item.get("text", ""))
-		var price: int = int(item.get("price", 0))
-		var flag_done: String = String(item.get("flag", ""))
-		var requires_feature: String = String(item.get("requires_feature", ""))
-		var requires_flag_any: Array = item.get("requires_flag_any", []) as Array
-
-		if flag_done != "" and GameState.has_flag(flag_done):
-			continue
-
-		if requires_feature != "" and not GameState.has_feature(requires_feature):
-			var any_ok := false
-			for rf in requires_flag_any:
-				if GameState.has_flag(String(rf)):
-					any_ok = true
-					break
-			if not any_ok:
-				continue
-
-		var label := "%s (%d$)" % [text, price]
-		opts.append({ "text": label, "id": id })
+	for v in items:
+		var it: Dictionary = v
+		if _is_print_ready_item(it):
+			var text: String = String(it.get("text", ""))
+			var price: int = int(it.get("price", 0))
+			var id: String = String(it.get("id", ""))
+			opts.append({ "text": "%s (%d$)" % [text, price], "id": id })
 
 	if opts.is_empty():
-		print("ℹ️ Nothing to print.")
+		# Nothing to print right now — quietly return (or show a small notice if you prefer)
 		return
 
 	opts.append({ "text": "Back", "id": "back" })
 
-	_active_panel = choice_panel_scene.instantiate() as Control
+	_active_panel = choice_panel_scene.instantiate()
 	add_child(_active_panel)
 	_active_panel.call("show_options", opts, Callable(self, "_on_print_choice"))
 
@@ -179,33 +144,36 @@ func _on_print_choice(choice_id: String) -> void:
 		return
 
 	var items: Array = _print_cfg.get("items", []) as Array
-	for item_v in items:
-		var item: Dictionary = item_v
-		if String(item.get("id", "")) != choice_id:
-			continue
+	for v in items:
+		var it: Dictionary = v
+		if String(it.get("id", "")) == choice_id:
+			var price: int = int(it.get("price", 0))
+			var action_json: String = String(it.get("action_json", ""))
 
-		var price := int(item.get("price", 0))
-		var action_json := String(item.get("action_json", ""))
+			# Not enough cash
+			if GameState.money < price:
+				return
 
-		if GameState.money < price:
-			print("❌ Not enough money to print.")
+			# Hand off to the action JSON — that JSON should:
+			#  - add_money:-price
+			#  - set_flags: printed_*
+			#  - update_task_step: cv/motivation/project (their print step)
+			if action_json != "" and FileAccess.file_exists(action_json):
+				DialogueManager.start_dialogue(action_json, self)
+
+			_clear_panel()
 			return
-
-		if action_json != "" and FileAccess.file_exists(action_json):
-			DialogueManager.start_dialogue(action_json, self)
-		else:
-			print("⚠️ Missing action JSON for", choice_id, "->", action_json)
-
-		_clear_panel()
-		return
-
-	print("⚠️ Unknown print choice:", choice_id)
 
 func _load_print_config() -> Dictionary:
 	if not FileAccess.file_exists(PRINT_CONFIG_JSON):
 		return {}
-	var txt := FileAccess.get_file_as_string(PRINT_CONFIG_JSON)
+	var txt: String = FileAccess.get_file_as_string(PRINT_CONFIG_JSON)
 	var parsed: Variant = JSON.parse_string(txt)
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return {}
 	return parsed
+
+func _clear_panel() -> void:
+	if _active_panel and is_instance_valid(_active_panel):
+		_active_panel.queue_free()
+	_active_panel = null
