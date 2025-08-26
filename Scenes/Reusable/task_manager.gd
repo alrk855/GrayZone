@@ -1,3 +1,4 @@
+# res://Scenes/Reusable/task_manager.gd
 extends Control
 
 @onready var task_grid: GridContainer = $"Task Overview/ScrollContainer/GridContainer"
@@ -24,7 +25,7 @@ func _ready() -> void:
 		GameState.flag_changed.connect(Callable(self, "_on_flag_changed"))
 
 	_apply_title_meta_fonts()
-	refresh_tasks()
+	_populate_tasks()
 	await get_tree().process_frame
 	overview_y = camera.position.y
 	camera.position = $"Task Overview".global_position + get_viewport().get_visible_rect().size * 0.5
@@ -33,29 +34,22 @@ func _ready() -> void:
 func _apply_title_meta_fonts() -> void:
 	title_label.add_theme_font_override("font", CUSTOM_FONT)
 	var tsize: int = title_label.get_theme_font_size("font_size")
-	if tsize <= 0:
-		tsize = 24
+	if tsize <= 0: tsize = 24
 	title_label.add_theme_font_size_override("font_size", tsize + 4)
 
 	meta_label.add_theme_font_override("font", CUSTOM_FONT)
 	var msize: int = meta_label.get_theme_font_size("font_size")
-	if msize <= 0:
-		msize = 14
+	if msize <= 0: msize = 14
 	meta_label.add_theme_font_size_override("font_size", msize + 4)
 
 func _on_task_added(_id: String) -> void:
-	refresh_tasks()
+	_populate_tasks()
 
 func _on_task_updated(_id: String, _idx: int) -> void:
-	refresh_tasks()
+	# Only details panel needs refresh; overview list (titles) stays same
+	_populate_tasks()
 
 func _on_flag_changed(_flag: String, _val: bool) -> void:
-	refresh_tasks()
-
-func refresh_tasks() -> void:
-	for button in task_grid.get_children():
-		if button is Button and (button as Button).pressed.is_connected(Callable(self, "_on_task_button_pressed_internal")):
-			(button as Button).pressed.disconnect(Callable(self, "_on_task_button_pressed_internal"))
 	_populate_tasks()
 
 func _populate_tasks() -> void:
@@ -73,8 +67,11 @@ func _populate_tasks() -> void:
 				button.text = title
 				button.visible = true
 				button.set_meta("task_id", task_id)
-				if not button.pressed.is_connected(Callable(self, "_on_task_button_pressed_internal")):
-					button.pressed.connect(Callable(self, "_on_task_button_pressed_internal").bind(button))
+
+				var cb := Callable(self, "_on_task_button_pressed_internal").bind(button)
+				if not button.pressed.is_connected(cb):
+					button.pressed.connect(cb)
+
 				i += 1
 			else:
 				button.visible = false
@@ -148,7 +145,7 @@ func _show_task_details(task_id: String) -> void:
 	if task_id == MAIN_REQUIREMENTS_TASK_ID and not GameState.has_flag("req_subtasks_added"):
 		_add_requirement_subtasks(steps)
 		GameState.set_flag("req_subtasks_added", true)
-		refresh_tasks()
+		_populate_tasks()
 
 func _add_requirement_subtasks(steps: Array[Dictionary]) -> void:
 	for s in steps:
@@ -186,7 +183,7 @@ func _load_task_data(task_id: String) -> Dictionary:
 		return {}
 	return parsed as Dictionary
 
-# Local replacement for the old GameState.format_placeholders()
+# Local replacement for GameState.format_placeholders()
 func _format_placeholders(text: String) -> String:
 	var s := text
 	if GameState.subject1 != "":

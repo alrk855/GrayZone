@@ -25,6 +25,7 @@ buses/default_bus_layout="res://Themes/default_bus_layout.tres"
 GameState="*res://Scripts/Singleton/GameState.gd"
 DialogueManager="*res://Scripts/Singleton/DialogueManager.gd"
 UiTask="*res://Scripts/Singleton/ui_task.gd"
+A="*res://Scripts/Singleton/GameFlags.gd"
 
 [display]
 

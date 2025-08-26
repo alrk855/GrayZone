@@ -1,5 +1,7 @@
 extends Node
 
+const Flags = preload("res://Scripts/Singleton/GameFlags.gd")
+
 # -----------------------------
 # Signals
 # -----------------------------
@@ -40,7 +42,7 @@ var inventory: Array = []
 var features_unlocked: Dictionary = {}
 var subject1: String = ""
 var subject2: String = ""
-var flags: Dictionary = {}
+var flags: Dictionary = {}   # canonicalized keys only (via Flags.canon)
 
 # -----------------------------
 # Tasks
@@ -66,34 +68,6 @@ var exam_revealed: Dictionary = {}      # subject -> Array[String] (revealed)
 var study_sheet_cache: Dictionary = {}  # subject -> Dictionary(day_string -> Array[String] 5 ids)
 var study_guard: Dictionary = {}        # "subject|day" -> bool (counted already?)
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
-# -----------------------------
-# Defaults / Flags
-# -----------------------------
-const DEFAULT_FLAGS := {
-	# Secretary / printing / MVR
-	"secretary_met": false,
-	"have_birth_certificate": false,   # set true after MVR gives it
-	"notarized_birth": false,          # set true after notary
-	"printed_cv": false,
-	"printed_motivation": false,
-	"printed_project": false,
-
-	# Project / professor / janitor
-	"bought_project": false,           # set true when buying from janitor
-	"project_written": false,          # set when player completes writing
-	"project_accepted": false,         # professor accepted to bring it
-	"project_submitted": false,        # submitted to professor
-	"project_plagiarized": false,      # grading check marks it
-	"bring_tomorrow_promised": false,  # if you picked “I’ll bring it tomorrow”
-
-	# Legacy compatibility (some older checks might exist)
-	"have_old_project": false,         # mirrors janitor purchase if you still check it anywhere
-	"printed_transcript": false        # harmless even if unused now
-}
-func _init_default_flags() -> void:
-	for k in DEFAULT_FLAGS.keys():
-		if not flags.has(k):
-			flags[k] = DEFAULT_FLAGS[k]
 
 # -------------------------------------------------
 # Lifecycle
@@ -110,6 +84,12 @@ func begin_game(day_start: int, time_start: int) -> void:
 	_start_time_simulation()
 	time_running = true
 	emit_signal("clock_started")
+
+func _init_default_flags() -> void:
+	# Pull all defaults from the static Flags singleton
+	for k in Flags.DEFAULTS.keys():
+		if not flags.has(k):
+			flags[k] = Flags.DEFAULTS[k]
 
 # -------------------------------------------------
 # Reputation / Integrity helpers
@@ -214,21 +194,33 @@ func has_feature(feature_id: String) -> bool:
 	return features_unlocked.has(feature_id)
 
 # -------------------------------------------------
-# Flags
+# Flags (canonicalized)
 # -------------------------------------------------
 func has_flag(flag: String) -> bool:
-	return bool(flags.get(flag, false))
+	var f: String = Flags.canon(flag)
+	return bool(flags.get(f, false))
 
 func set_flag(flag: String, value: bool = true) -> void:
-	var prev: bool = has_flag(flag)
-	flags[flag] = value
+	var f: String = Flags.canon(flag)
+	var prev: bool = bool(flags.get(f, false))
+	flags[f] = value
 	if prev != value:
-		emit_signal("flag_changed", flag, value)
+		emit_signal("flag_changed", f, value)
 
 func clear_flag(flag: String) -> void:
-	if flags.has(flag):
-		flags.erase(flag)
-		emit_signal("flag_changed", flag, false)
+	var f: String = Flags.canon(flag)
+	if flags.has(f):
+		flags.erase(f)
+		emit_signal("flag_changed", f, false)
+
+# Optional typed helpers for non-boolean state stored alongside flags
+func set_int(key: String, value: int) -> void:
+	var k: String = Flags.canon(key)
+	flags[k] = int(value)
+
+func get_int(key: String, default_val: int = 0) -> int:
+	var k: String = Flags.canon(key)
+	return int(flags.get(k, default_val))
 
 # -------------------------------------------------
 # Tasks
@@ -275,10 +267,11 @@ func ensure_task_progress_at_least(task_id: String, target_step: int) -> void:
 		prog += 1
 
 # -------------------------------------------------
-# Dialogue JSON action router
+# Dialogue JSON action router (canonicalized flag ops)
 # -------------------------------------------------
 func apply_action(line: Dictionary) -> void:
 	var act: String = String(line.get("action", ""))
+
 	match act:
 		"add_task":
 			var t: Variant = line.get("tasks", null)
@@ -287,10 +280,12 @@ func apply_action(line: Dictionary) -> void:
 					add_task(String(x))
 			elif t is String:
 				add_task(String(t))
+
 		"update_task_step":
 			var task: String = String(line.get("task", ""))
 			if task != "":
 				update_task_step(task)
+
 		"set_flags":
 			var fs: Variant = line.get("flags", null)
 			if fs is Array:
@@ -298,26 +293,33 @@ func apply_action(line: Dictionary) -> void:
 					set_flag(String(f), true)
 			elif fs is String:
 				set_flag(String(fs), true)
+
 		"clear_flags":
-			var cf: Variant = line.get("flags", null)
-			if cf is Array:
-				for f2 in (cf as Array):
+			var fs2: Variant = line.get("flags", null)
+			if fs2 is Array:
+				for f2 in (fs2 as Array):
 					clear_flag(String(f2))
-			elif cf is String:
-				clear_flag(String(cf))
+			elif fs2 is String:
+				clear_flag(String(fs2))
+
 		"adjust_time":
 			adjust_time(int(line.get("value", 0)))
+
 		"unlock_feature":
 			var feat: String = String(line.get("feature", ""))
 			var lim: Variant = line.get("limit", null)
 			if feat != "":
 				unlock_game_feature(feat, lim)
+
 		"add_money":
 			add_money(int(line.get("value", 0)))
+
 		"adjust_reputation":
 			adjust_reputation(int(line.get("value", 0)))
+
 		"adjust_integrity":
 			adjust_integrity(int(line.get("value", 0)))
+
 		_:
 			pass
 

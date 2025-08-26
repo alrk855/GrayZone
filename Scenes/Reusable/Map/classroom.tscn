@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://vgvcoj82tega"]
+[gd_scene load_steps=0 format=3 uid="uid://vgvcoj82tega"]
 
 [node name="Classroom" type="Control"]
 layout_mode = 3

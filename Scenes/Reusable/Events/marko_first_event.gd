@@ -70,8 +70,6 @@ func on_dialogue_action(line: Dictionary) -> void:
 			_show_study_sway_choices()
 		"marko_show_alone_push_choices":
 			_show_alone_push_choices()
-
-		# scene control (deferred)
 		"goto":
 			var scene_path: String = String(line.get("scene", ""))
 			if scene_path != "":
@@ -80,7 +78,6 @@ func on_dialogue_action(line: Dictionary) -> void:
 		"end_event":
 			_safe_end_dialogue()
 			_safe_change_scene(FALLBACK_HOME)
-
 		_:
 			GameState.apply_action(line)
 
@@ -114,7 +111,7 @@ func _on_entry_choice(id: String) -> void:
 func _show_study_sway_choices() -> void:
 	_clear_panel()
 	var options: Array = [
-		{ "text": "No, seriously. Let’s study.",   "id": "study_now" },
+		{ "text": "No, seriously. Let’s study.",    "id": "study_now" },
 		{ "text": "Alright, let’s hang out a bit.", "id": "hangout_now" }
 	]
 	_panel = choice_panel_scene.instantiate()
@@ -127,15 +124,18 @@ func _on_study_sway_choice(id: String) -> void:
 			# force Subject 1 for first Marko study
 			GameState.features_unlocked[KEY_STUDY_MODE] = "marko"
 			GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject1"
-			var ret := ""
+			var ret: String = ""
 			if get_tree() and get_tree().current_scene:
 				ret = String(get_tree().current_scene.get_scene_file_path())
+			if ret == "":
+				ret = FALLBACK_HOME
 			GameState.features_unlocked[KEY_RETURN_SCENE] = ret
 			_clear_panel()
 			_safe_end_dialogue()
-			_safe_start_dialogue(JSON_GOTO_STUDY) # JSON applies +REP/+INT/+time then goes to MarkoStudy scene
+			# JSON_GOTO_STUDY should do +rep/+int/+30min and goto StudyWithMarko.tscn
+			_safe_start_dialogue(JSON_GOTO_STUDY)
 		"hangout_now":
-			# swayed → penalties here (kept in script since JSONs have no branching)
+			# swayed → penalties inline (JSON path stays simple)
 			GameState.adjust_integrity(-10)
 			GameState.adjust_reputation(-5)
 			_clear_panel()
@@ -157,7 +157,8 @@ func _on_alone_push_choice(id: String) -> void:
 		"solo_study":
 			_clear_panel()
 			_safe_end_dialogue()
-			_safe_start_dialogue(JSON_SOLO_END) # JSON gives +INT and exits
+			# JSON_SOLO_END should +integrity and end
+			_safe_start_dialogue(JSON_SOLO_END)
 		"hangout_now":
 			GameState.adjust_integrity(-10)
 			GameState.adjust_reputation(-5)

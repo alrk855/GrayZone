@@ -1,3 +1,4 @@
+# res://Scenes/Reusable/Map/secretary_office.gd
 extends Control
 
 @onready var secretary: Node = $background/Secretary
@@ -10,7 +11,6 @@ const PRINT_MENU_JSON := "res://Data/Dialogue/Secretary/Secretary_Print_Menu.jso
 const PRINT_CONFIG_JSON := "res://Data/Dialogue/Secretary/Secretary_Print_Config.json"
 
 var _active_panel: Control = null
-var _pending_close_to_school: bool = false
 var _print_cfg: Dictionary = {}
 
 func _ready() -> void:
@@ -62,7 +62,7 @@ func _on_choice_selected(id: String) -> void:
 		"notarization":
 			DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Notarization.json", self)
 		"print":
-			# Enters your tiny wrapper JSON which then calls sec_show_print_menu
+			# Wrapper JSON -> calls sec_show_print_menu
 			DialogueManager.start_dialogue(PRINT_MENU_JSON, self)
 		"submit":
 			if GameState.day < 5:
@@ -82,7 +82,6 @@ func on_dialogue_action(line: Dictionary) -> void:
 # ---------- Printing gating ----------
 
 func _is_print_ready_item(item: Dictionary) -> bool:
-	# Uses your config fields exactly as provided
 	var item_id: String = String(item.get("id", ""))
 	var printed_flag: String = String(item.get("flag", ""))
 
@@ -90,7 +89,7 @@ func _is_print_ready_item(item: Dictionary) -> bool:
 	if printed_flag != "" and GameState.has_flag(printed_flag):
 		return false
 
-	# CV: require task progress >= 2 (e.g., visit/draft done → print step)
+	# CV: require task progress >= 2 (visit/draft done → print step)
 	if printed_flag == "printed_cv" or item_id == "print_cv":
 		return GameState.get_task_progress("cv") >= 2
 
@@ -98,7 +97,7 @@ func _is_print_ready_item(item: Dictionary) -> bool:
 	if printed_flag == "printed_motivation" or item_id == "print_letter":
 		return GameState.get_task_progress("motivation") >= 2
 
-	# Project: must be written OR bought (janitor). Printing the bought one is allowed.
+	# Project: must be written OR bought (janitor)
 	if printed_flag == "printed_project" or item_id == "print_project":
 		return GameState.has_flag("project_written") or GameState.has_flag("bought_project")
 
@@ -129,7 +128,12 @@ func _show_print_menu_from_config() -> void:
 			opts.append({ "text": "%s (%d$)" % [text, price], "id": id })
 
 	if opts.is_empty():
-		# Nothing to print right now — quietly return (or show a small notice if you prefer)
+		# Optional: tiny notice instead of silent return
+		var nothing: Array = [{ "text": "Nothing to print right now.", "id": "noop" },
+			{ "text": "Back", "id": "back" }]
+		_active_panel = choice_panel_scene.instantiate()
+		add_child(_active_panel)
+		_active_panel.call("show_options", nothing, Callable(self, "_on_print_choice"))
 		return
 
 	opts.append({ "text": "Back", "id": "back" })
@@ -139,7 +143,7 @@ func _show_print_menu_from_config() -> void:
 	_active_panel.call("show_options", opts, Callable(self, "_on_print_choice"))
 
 func _on_print_choice(choice_id: String) -> void:
-	if choice_id == "back":
+	if choice_id == "back" or choice_id == "noop":
 		_clear_panel()
 		return
 
@@ -150,14 +154,13 @@ func _on_print_choice(choice_id: String) -> void:
 			var price: int = int(it.get("price", 0))
 			var action_json: String = String(it.get("action_json", ""))
 
-			# Not enough cash
 			if GameState.money < price:
+				# Optional: you can start a "not enough money" JSON here
+				print("❌ Not enough money to print.")
 				return
 
-			# Hand off to the action JSON — that JSON should:
-			#  - add_money:-price
-			#  - set_flags: printed_*
-			#  - update_task_step: cv/motivation/project (their print step)
+			# Let the action JSON handle: add_money:-price, set_flags: printed_*,
+			# and update_task_step: cv/motivation/project (print step)
 			if action_json != "" and FileAccess.file_exists(action_json):
 				DialogueManager.start_dialogue(action_json, self)
 
