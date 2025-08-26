@@ -1,12 +1,30 @@
 {
   "id": "Prof_Initial_AskDeadline",
   "lines": [
-	{ "speaker": "Professor", "text": "By Friday, noon. That’s the final deadline. Make sure it’s your own work." },
-
-	{ "action": "add_task", "tasks": ["project"] },
-	{ "action": "unlock_feature", "feature": "final_project", "limit": 1 },
-
-	{ "action": "set_flags", "flags": ["project_accepted", "project_due_friday_noon"] },
-	{ "action": "adjust_time", "value": 15 }
+	{
+	  "speaker": "Professor",
+	  "text": "Good. I’ll expect your final project by the end of the week. Don’t forget to print it before you bring it."
+	},
+	{
+	  "action": "add_task",
+	  "tasks": "project"
+	},
+	{
+	  "action": "update_task_step",
+	  "task": "project"
+	},
+	{
+	  "action": "set_flags",
+	  "flags": ["project_accepted"]
+	},
+	{
+	  "action": "unlock_feature",
+	  "feature": "final_project",
+	  "limit": 1.0
+	},
+	{
+	  "action": "adjust_time",
+	  "value": 15
+	}
   ]
 }

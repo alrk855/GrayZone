@@ -1,6 +1,6 @@
 [gd_scene load_steps=18 format=3 uid="uid://bbw8mfjycwlt"]
 
-[ext_resource type="Script" uid="uid://dwfc7ddawqw73" path="res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd" id="1_hg68k"]
+[ext_resource type="Script" path="res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd" id="1_hg68k"]
 [ext_resource type="Texture2D" uid="uid://uobfmga22klq" path="res://Images/MainMenu/BlueSky_HD_END.png" id="1_ppx27"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_0lpo1"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_2mygu"]
