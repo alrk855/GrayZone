@@ -11,10 +11,14 @@
             "id": "7394bc74979c49ff",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Characters/Professor/Never Mind.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Never Mind"
             }
           }
         ]
@@ -158,21 +162,20 @@
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "command-palette:Open command palette": false
     }
   },
   "active": "7394bc74979c49ff",
   "lastOpenFiles": [
-    "UI/Character Frame.md",
-    "Characters/Janitor/First Interaction.md",
-    "UI/Time.md",
-    "Characters/Janitor",
-    "Characters/Marko/Study With Marko - Event.md",
-    "Characters/Professor/Never Mind.md",
-    "Characters/Marko",
     "Characters/Secretary/Untitled.md",
+    "Characters/Professor/Never Mind.md",
+    "Characters/Marko/Study With Marko - Event.md",
+    "Characters/Janitor/First Interaction.md",
+    "UI/Character Frame.md",
+    "UI/Time.md",
     "UI/Task Overview.md",
+    "Characters/Janitor",
+    "Characters/Marko",
     "Characters/Professor",
     "Data/Untitled 1.md",
     "Characters/Secretary",

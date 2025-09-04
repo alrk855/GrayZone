@@ -1,4 +1,5 @@
 - **Status**: Open  
 - **Priority**: **High**
 - **Location/Scene**:  TIME UI
-- **Quick Notes**: Time doesn't stop at 1am , loops over the 24hours cycle , day stays the same.
+- **Quick Notes**: Time doesn't stop at 1am , loops over the 24hours cycle.
+- Application: Godot
