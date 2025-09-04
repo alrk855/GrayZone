@@ -1,21 +1,21 @@
 {
   "id": "Prof_Praise_Initiative",
   "lines": [
-    {
-      "speaker": "Professor",
-      "text": "(He nods once.)"
-    },
-    {
-      "speaker": "Professor",
-      "text": "You said you’d bring it tomorrow—and you did."
-    },
-    {
-      "speaker": "Professor",
-      "text": "Good initiative."
-    },
-    {
-      "speaker": "System",
-      "text": "🟩 +5 Reputation, +5 Integrity"
-    }
+	{
+	  "speaker": "Professor",
+	  "text": "(He nods once.)"
+	},
+	{
+	  "speaker": "Professor",
+	  "text": "You said you’d bring it tomorrow—and you did."
+	},
+	{
+	  "speaker": "Professor",
+	  "text": "Good initiative."
+	},
+	{
+	  "speaker": "System",
+	  "text": "🟩 +5 Reputation, +5 Integrity"
+	}
   ]
 }

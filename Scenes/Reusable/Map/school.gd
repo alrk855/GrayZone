@@ -10,9 +10,9 @@ const CITY_SCENE := "res://Scenes/Reusable/Map/City.tscn"
 
 # --- Time limits (minutes from 00:00) ---
 const PROFESSOR_OPEN := 13 * 60
-const PROFESSOR_CLOSE := 16 * 60
+const PROFESSOR_CLOSE := 18 * 60
 const SECRETARY_OPEN := 13 * 60
-const SECRETARY_CLOSE := 17 * 60 + 45
+const SECRETARY_CLOSE := 18 * 60
 # Classroom uses professor's schedule
 const CLASSROOM_OPEN := PROFESSOR_OPEN
 const CLASSROOM_CLOSE := PROFESSOR_CLOSE

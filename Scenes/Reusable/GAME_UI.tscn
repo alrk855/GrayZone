@@ -1,0 +1,197 @@
+[gd_scene load_steps=8 format=3 uid="uid://dla5bjdlqyvsk"]
+
+[ext_resource type="Theme" uid="uid://bmo2rrdsh5k1p" path="res://Themes/GameUipadding.tres" id="1_ip11e"]
+[ext_resource type="Theme" uid="uid://ct4j7ofxvfe56" path="res://Themes/digitalClock.tres" id="2_38m6b"]
+[ext_resource type="Texture2D" uid="uid://bdalt3e7tx6eh" path="res://Icons/hourglass.png" id="2_41x8x"]
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_j8nkt"]
+[ext_resource type="Texture2D" uid="uid://dgrannivbu2q" path="res://Icons/money.png" id="5_435u1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bwqbu"]
+bg_color = Color(0, 0.643828, 0.913796, 0.0705882)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.730126, 0.792231, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="Theme" id="Theme_yrb43"]
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_bwqbu")
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Padding" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(1000, 90)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -500.0
+offset_right = 500.0
+offset_bottom = 98.0
+grow_horizontal = 2
+theme = ExtResource("1_ip11e")
+
+[node name="Contents" type="VBoxContainer" parent="Padding"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Padding/Contents"]
+layout_mode = 2
+
+[node name="spacer" type="Control" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="TimeIcon" type="TextureRect" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_41x8x")
+expand_mode = 1
+
+[node name="spacer5" type="Control" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Time" type="RichTextLabel" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(160, 80)
+layout_mode = 2
+theme = ExtResource("2_38m6b")
+text = "19:00"
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="spacer6" type="Control" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Day" type="RichTextLabel" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(230, 92)
+layout_mode = 2
+theme = ExtResource("2_38m6b")
+theme_override_fonts/normal_font = ExtResource("4_j8nkt")
+theme_override_font_sizes/normal_font_size = 80
+text = "DAY 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="spacer3" type="Control" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Value" type="RichTextLabel" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(160, 90)
+layout_mode = 2
+theme = ExtResource("2_38m6b")
+text = "1000"
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="spacer4" type="Control" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="money" type="TextureRect" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+texture = ExtResource("5_435u1")
+expand_mode = 1
+
+[node name="spacer2" type="Control" parent="Padding/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Notification" type="PanelContainer" parent="."]
+z_index = -1
+layout_mode = 0
+offset_left = 500.0
+offset_right = 1431.0
+offset_bottom = 50.0
+theme = SubResource("Theme_yrb43")
+
+[node name="NotificationLabel" type="Label" parent="Notification"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Notification1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Notification2" type="PanelContainer" parent="."]
+z_index = -1
+offset_left = 500.0
+offset_right = 1431.0
+offset_bottom = 50.0
+theme = SubResource("Theme_yrb43")
+
+[node name="NotificationLabel" type="Label" parent="Notification2"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Notification1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Notification3" type="PanelContainer" parent="."]
+z_index = -1
+offset_left = 500.0
+offset_right = 1431.0
+offset_bottom = 50.0
+theme = SubResource("Theme_yrb43")
+
+[node name="NotificationLabel" type="Label" parent="Notification3"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Notification1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Notification4" type="PanelContainer" parent="."]
+z_index = -1
+offset_left = 500.0
+offset_right = 1431.0
+offset_bottom = 50.0
+theme = SubResource("Theme_yrb43")
+
+[node name="NotificationLabel" type="Label" parent="Notification4"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Notification1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Notification5" type="PanelContainer" parent="."]
+z_index = -1
+offset_left = 500.0
+offset_right = 1431.0
+offset_bottom = 50.0
+theme = SubResource("Theme_yrb43")
+
+[node name="NotificationLabel" type="Label" parent="Notification5"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Notification1"
+horizontal_alignment = 1
+vertical_alignment = 1
