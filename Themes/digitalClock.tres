@@ -1,0 +1,11 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://ct4j7ofxvfe56"]
+
+[ext_resource type="FontFile" uid="uid://cxij1hv6vfs8p" path="res://Fonts/digital-7.ttf" id="1_gmxn5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ojtw5"]
+
+[resource]
+RichTextLabel/colors/default_color = Color(0.188069, 0.299909, 0.421927, 1)
+RichTextLabel/font_sizes/normal_font_size = 85
+RichTextLabel/fonts/normal_font = ExtResource("1_gmxn5")
+RichTextLabel/styles/focus = SubResource("StyleBoxEmpty_ojtw5")

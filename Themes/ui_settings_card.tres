@@ -1,4 +1,6 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://hfoalgua28li"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://hfoalgua28li"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_x343w"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qvf37"]
 bg_color = Color(0.188235, 0.878431, 0.854902, 0.443137)
@@ -17,5 +19,5 @@ expand_margin_right = 24.0
 expand_margin_bottom = 24.0
 
 [resource]
-Panel/styles/panel = null
+Panel/styles/panel = SubResource("StyleBoxTexture_x343w")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_qvf37")
