@@ -26,7 +26,7 @@ var wrong : int = 0
 var freed : bool = false
 
 # SFX
-var zvuci = [
+var zvuci : Array[AudioStream] = [
 	preload("res://Audio/MotivLetterSounds/b1.mp3"),
 	preload("res://Audio/MotivLetterSounds/b2.mp3"),
 	preload("res://Audio/MotivLetterSounds/b3.mp3"),
