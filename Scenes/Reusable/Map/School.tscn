@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://bngil6nruelbw" path="res://Scenes/Reusable/Map/rollback.gd" id="5_60yip"]
 [ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="6_iq7gh"]
 [ext_resource type="Script" uid="uid://rmihi0djaxp4" path="res://Scenes/Reusable/Map/forward.gd" id="6_jxu8x"]
-[ext_resource type="Script" uid="uid://dhefif5oi342t" path="res://Scripts/DOMA.gd" id="7_3mlsj"]
+[ext_resource type="Script" path="res://Scripts/DOMA.gd" id="7_3mlsj"]
 [ext_resource type="Script" uid="uid://ce7l6fkt52tex" path="res://Scenes/Reusable/Map/freeze.gd" id="7_iq7gh"]
 
 [node name="Control" type="Control"]

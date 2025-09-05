@@ -3,7 +3,7 @@
   "lines": [
 	{
 	  "speaker": "Professor",
-	  "text": "Good. I’ll expect your final project by the end of the week. Don’t forget to print it before you bring it."
+	  "text": "I’ll expect your final project by the end of the week. Don’t forget to print it before you bring it."
 	},
 	{
 	  "action": "add_task",

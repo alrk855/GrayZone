@@ -28,6 +28,7 @@ const SPENT_MONEY_ONCE           := "spent_money_once"
 
 # Marko first event
 const MARKO_FIRST_EVENT_DONE     := "marko_first_event_done"
+const TIPPED                     := "marko_tip"
 
 # Legacy compatibility (still used in some JSONs)
 const HAVE_OLD_PROJECT           := "have_old_project"
@@ -57,7 +58,7 @@ const DEFAULTS := {
 	SPENT_MONEY_ONCE: false,
 
 	MARKO_FIRST_EVENT_DONE: false,
-
+	TIPPED: false,
 	HAVE_OLD_PROJECT: false,
 	PRINTED_TRANSCRIPT: false,
 	INTEGRITY_PENALTY_PENDING: false,

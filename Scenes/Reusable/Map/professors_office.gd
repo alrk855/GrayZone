@@ -312,11 +312,12 @@ func _on_prof_intro_option(id: String) -> void:
 		"prof_nevermind":
 			DialogueManager.start_dialogue(JSON_PROF_DECLINE, self) # flavor
 			await get_tree().create_timer(0.2).timeout
-			_show_prof_intro_options() # loop until accepted
+			 # loop until accepted
 		_:
 			DialogueManager.end_active_dialogue()
 
 # ---------- Janitor ----------
+var has_tip = GameFlags.TIPPED
 func _on_janitor_pressed() -> void:
 	_clear_panel()
 	_janitor_panel_shown = false
@@ -324,10 +325,12 @@ func _on_janitor_pressed() -> void:
 	var rep: int = GameState.reputation
 	if rep >= 30 and FileAccess.file_exists(JSON_JANITOR_HIGHREP):
 		DialogueManager.start_dialogue(JSON_JANITOR_HIGHREP, self)
+	elif has_tip==true:
+		DialogueManager.start_dialogue(JSON_JANITOR_TIPPED_INTRO, self)
 	else:
 		DialogueManager.start_dialogue(JSON_JANITOR_NOTIP_INTRO, self)
-
 func _show_janitor_office_options() -> void:
+	
 	if GameState.has_flag("bought_project"):
 		DialogueManager.end_active_dialogue()
 		return
@@ -336,7 +339,7 @@ func _show_janitor_office_options() -> void:
 	_janitor_panel_shown = true
 
 	var options: Array[Dictionary] = []
-	var has_tip: bool = false # tip flow not implemented; default to 500
+	 # tip flow not implemented; default to 500
 
 	if has_tip:
 		options.append({ "text": "Deal (300 денари)", "id": "janitor_buy_300" })

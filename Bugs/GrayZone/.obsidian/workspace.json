@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Characters/Professor/Never Mind.md",
+                "file": "Characters/Professor/Never Mind (FIXED).md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Never Mind"
+              "title": "Never Mind (FIXED)"
             }
           }
         ]
@@ -157,6 +157,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -168,7 +169,7 @@
   "active": "7394bc74979c49ff",
   "lastOpenFiles": [
     "Characters/Secretary/Untitled.md",
-    "Characters/Professor/Never Mind.md",
+    "Characters/Professor/Never Mind (FIXED).md",
     "Characters/Marko/Study With Marko - Event.md",
     "Characters/Janitor/First Interaction.md",
     "UI/Character Frame.md",

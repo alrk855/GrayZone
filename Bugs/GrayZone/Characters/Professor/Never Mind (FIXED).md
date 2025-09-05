@@ -1,6 +1,6 @@
 # Bug: {Option 3/Never Mind}
 
-- **Status**: Open  
+- **Status**: Closed  
 - **Priority**: **High**
 - **Location/Scene**:  Professors Office , Day 1 , "ProfessorsOffice.tscn"
 - **Quick Notes**:  Clicking never mind runs the text with the 3 options visible, doesn't quit the options menu ,
