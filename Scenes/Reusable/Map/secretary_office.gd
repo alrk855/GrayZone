@@ -98,7 +98,7 @@ func _is_print_ready_item(item: Dictionary) -> bool:
 		return GameState.get_task_progress("motivation") >= 2
 
 	# Project: must be written OR bought (janitor)
-	if printed_flag == "printed_project" or item_id == "print_project":
+	if printed_flag == "printed_project":
 		return GameState.has_flag("project_written") or GameState.has_flag("bought_project")
 
 	return false

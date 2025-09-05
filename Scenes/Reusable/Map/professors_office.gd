@@ -166,10 +166,10 @@ func _handle_project_submission() -> void:
 
 	if side == "praise":
 		DialogueManager.start_dialogue(JSON_PRAISE_INIT, self)
-		await get_tree().create_timer(0.2).timeout
+		await DialogueManager.dialogue_finished
 	elif side == "scold":
 		DialogueManager.start_dialogue(JSON_SCOLD_MISSED, self)
-		await get_tree().create_timer(0.2).timeout
+		await DialogueManager.dialogue_finished
 
 	# 2) Grading logic
 	var score: int = GameState.get_int("project_score", 0)
@@ -182,10 +182,14 @@ func _handle_project_submission() -> void:
 		rng.randomize()
 		caught_plag = rng.randf() < PLAGIARISM_CATCH_CHANCE
 		if caught_plag:
-			GameState.adjust_integrity(-5)
-			print("[Integrity] Plagiarism detected at submission. -5 integrity.")
+			GameState.adjust_integrity(-10)
+			print("[Integrity] Plagiarism detected at submission. -10 integrity.")
 
 	if caught_plag:
+		if GameState.day < 5:
+			_reset_project_for_second_chance()
+			DialogueManager.start_dialogue(JSON_FAIL_SECOND_CHANCE, self)
+			return
 		DialogueManager.start_dialogue(JSON_GRADE_F_PLAG, self)
 		_mark_submitted_no_task_increment()
 		return
@@ -210,8 +214,7 @@ func _handle_project_submission() -> void:
 		"A": DialogueManager.start_dialogue(JSON_GRADE_A, self)
 		"B": DialogueManager.start_dialogue(JSON_GRADE_B, self)
 		"C": DialogueManager.start_dialogue(JSON_GRADE_C, self)
-		"D": DialogueManager.start_dialogue(JSON_GRADE_D, self)
-		_:   DialogueManager.start_dialogue(JSON_GRADE_C, self) # fallback
+		"D": DialogueManager.start_dialogue(JSON_GRADE_D, self) 
 	_valid_submit_increment_task()
 
 func _grade_from_score(score: int) -> String:
@@ -249,10 +252,10 @@ func _promise_reward_or_penalty() -> String:
 	# Returns "praise", "scold", or ""
 	var promised: bool = GameState.has_flag("project_promise_tomorrow")
 	var prom_day: int = GameState.get_int("project_promise_day", 0)
-	if not promised or prom_day <= 0:
+	if not promised:
 		return ""
 
-	if GameState.day == prom_day + 1:
+	if GameState.day <= prom_day + 1:
 		GameState.adjust_reputation(+5)
 		GameState.adjust_integrity(+5)
 		return "praise"
