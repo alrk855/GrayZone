@@ -189,6 +189,7 @@ func _handle_project_submission() -> void:
 		if GameState.day < 5:
 			_reset_project_for_second_chance()
 			DialogueManager.start_dialogue(JSON_FAIL_SECOND_CHANCE, self)
+			GameState.set_flag("project_second_chance", true)
 			return
 		DialogueManager.start_dialogue(JSON_GRADE_F_PLAG, self)
 		_mark_submitted_no_task_increment()
@@ -247,6 +248,7 @@ func _reset_project_for_second_chance() -> void:
 	GameState.clear_flag("bought_project")
 	GameState.clear_flag("have_old_project")
 	GameState.clear_flag("project_plagiarized")
+	GameState.clear_flag("project_submitted")
 
 func _promise_reward_or_penalty() -> String:
 	# Returns "praise", "scold", or ""
@@ -388,7 +390,6 @@ func _on_janitor_option(id: String) -> void:
 func _handle_janitor_purchase(tipped: bool) -> void:
 	GameState.set_flag("bought_project", true)
 	GameState.set_flag("project_plagiarized", true) # persist for endings
-	GameState.set_flag("have_old_project", true)    # legacy compatibility
 	GameState.adjust_integrity(-5)                  # buying penalty
 	print("[Integrity] Bought project from janitor. -5 integrity.")
 	GameState.ensure_task_progress_at_least(TASK_PROJECT, 2)

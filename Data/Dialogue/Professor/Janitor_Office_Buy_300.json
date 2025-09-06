@@ -3,9 +3,7 @@
   "lines": [
 	{ "speaker": "Janitor", "text": "Pleasure doing business." },
 	{ "action": "money", "delta": -300 },
-	{ "action": "set_flags", "flags": ["have_old_project", "integrity_penalty_pending"] },
 	{ "action": "adjust_time", "value": 15 },
 	{ "speaker": "Janitor", "text": "Maybe try the classroom later this week… if you’re the type who studies answer sheets instead of books." },
-	{ "action": "add_task", "tasks": ["Visit the Classroom"] }
   ]
 }

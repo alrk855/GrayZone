@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://dla5bjdlqyvsk"]
+[gd_scene load_steps=9 format=3 uid="uid://dla5bjdlqyvsk"]
 
+[ext_resource type="Script" uid="uid://28kpowfhgtu6" path="res://Scripts/Singleton/UI.gd" id="1_8wimu"]
 [ext_resource type="Theme" uid="uid://bmo2rrdsh5k1p" path="res://Themes/GameUipadding.tres" id="1_ip11e"]
 [ext_resource type="Theme" uid="uid://ct4j7ofxvfe56" path="res://Themes/digitalClock.tres" id="2_38m6b"]
 [ext_resource type="Texture2D" uid="uid://bdalt3e7tx6eh" path="res://Icons/hourglass.png" id="2_41x8x"]
@@ -21,17 +22,17 @@ corner_radius_bottom_left = 30
 [sub_resource type="Theme" id="Theme_yrb43"]
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_bwqbu")
 
-[node name="Control" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Control" type="CanvasLayer" node_paths=PackedStringArray("time", "money", "day")]
+layer = 11
+script = ExtResource("1_8wimu")
+time = NodePath("Padding/Contents/HBoxContainer/Time")
+money = NodePath("Padding/Contents/HBoxContainer/Value")
+day = NodePath("Padding/Contents/HBoxContainer/Day")
+notification_nodes = [NodePath("Notification"), NodePath("Notification2"), NodePath("Notification3"), NodePath("Notification4"), NodePath("Notification5"), NodePath("Notification6")]
 
 [node name="Padding" type="PanelContainer" parent="."]
+z_index = 100
 custom_minimum_size = Vector2(1000, 90)
-layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -127,7 +128,6 @@ size_flags_vertical = 3
 
 [node name="Notification" type="PanelContainer" parent="."]
 z_index = -1
-layout_mode = 0
 offset_left = 500.0
 offset_top = 100.0
 offset_right = 1431.0
@@ -143,7 +143,6 @@ vertical_alignment = 1
 
 [node name="Notification2" type="PanelContainer" parent="."]
 z_index = -1
-layout_mode = 0
 offset_left = 500.0
 offset_right = 1431.0
 offset_bottom = 50.0
@@ -158,7 +157,6 @@ vertical_alignment = 1
 
 [node name="Notification3" type="PanelContainer" parent="."]
 z_index = -1
-layout_mode = 0
 offset_left = 500.0
 offset_right = 1431.0
 offset_bottom = 50.0
@@ -173,7 +171,6 @@ vertical_alignment = 1
 
 [node name="Notification4" type="PanelContainer" parent="."]
 z_index = -1
-layout_mode = 0
 offset_left = 500.0
 offset_right = 1431.0
 offset_bottom = 50.0
@@ -188,13 +185,27 @@ vertical_alignment = 1
 
 [node name="Notification5" type="PanelContainer" parent="."]
 z_index = -1
-layout_mode = 0
 offset_left = 500.0
 offset_right = 1431.0
 offset_bottom = 50.0
 theme = SubResource("Theme_yrb43")
 
 [node name="NotificationLabel" type="Label" parent="Notification5"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Notification1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Notification6" type="PanelContainer" parent="."]
+z_index = -1
+offset_left = 500.0
+offset_top = 100.0
+offset_right = 1431.0
+offset_bottom = 150.0
+theme = SubResource("Theme_yrb43")
+
+[node name="NotificationLabel" type="Label" parent="Notification6"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 text = "Notification1"

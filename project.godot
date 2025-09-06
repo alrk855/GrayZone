@@ -26,6 +26,7 @@ GameState="*res://Scripts/Singleton/GameState.gd"
 DialogueManager="*res://Scripts/Singleton/DialogueManager.gd"
 UiTask="*res://Scripts/Singleton/ui_task.gd"
 A="*res://Scripts/Singleton/GameFlags.gd"
+GameUi="*res://Scenes/GAME_UI.tscn"
 
 [display]
 

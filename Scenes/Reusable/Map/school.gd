@@ -23,6 +23,7 @@ const CLASSROOM_CLOSE := PROFESSOR_CLOSE
 var _panel: Control = null
 
 func _ready() -> void:
+	GameUi.visible = true
 	GameState.location = "School"
 	popup_label.visible = false
 	show_menu_button.pressed.connect(_show_menu)

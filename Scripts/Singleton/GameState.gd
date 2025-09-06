@@ -11,6 +11,7 @@ signal flag_changed(flag: String, value: bool)
 signal money_changed(new_money: int)
 signal clock_started
 signal clock_stopped
+signal time_changed(new_time: String, new_day: int)
 
 # -----------------------------
 # Basic Player / World
@@ -32,8 +33,8 @@ var _freeze_stack: Array[String] = []
 # Status
 # -----------------------------
 var money: int = 2000
-var integrity: int = 0
-var reputation: int = 0
+var integrity: int = 50
+var reputation: int = 50
 
 # -----------------------------
 # Gameplay
@@ -81,6 +82,8 @@ func begin_game(day_start: int, time_start: int) -> void:
 	_init_default_flags()
 	day = day_start
 	time = time_start
+	emit_signal("time_changed", _format_time(), day)
+	emit_signal("money_changed", money)
 	_start_time_simulation()
 	time_running = true
 	emit_signal("clock_started")
@@ -124,6 +127,8 @@ func _on_minute_passed() -> void:
 		time = 0
 		day += 1
 	print("🕒 Time:%s" % _format_time())
+	emit_signal("time_changed", _format_time(), day)
+	print("📢 Emitted time_changed:", time, day)
 
 func _format_time() -> String:
 	var hours: int = time / 60
@@ -138,6 +143,7 @@ func adjust_time(value: int) -> void:
 	if time < 0:
 		time = 0
 	print("⏱️ Time adjusted by %d → %s (Day %d)" % [value, _format_time(), day])
+	emit_signal("time_changed", _format_time(), day)
 
 func push_time_freeze(src: String) -> void:
 	if not _freeze_stack.has(src):
