@@ -24,7 +24,6 @@ signal dialogue_finished  # ✅ Added to notify when dialogue ends
 	"marko": preload("res://Images/CharacterFrames/MarkoFrame.png"),
 	"mvrclerk": preload("res://Images/CharacterFrames/MvrClerkFrame.png")
 }
-
 var dialogue_data: Array = []
 var line_index := 0
 var is_typing := false

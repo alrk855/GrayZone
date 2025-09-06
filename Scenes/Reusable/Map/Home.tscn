@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cv4gk855bhhjn"]
 
-[ext_resource type="Texture2D" uid="uid://bbbu7wtr72dyt" path="res://Images/images.jpg" id="1_3jtac"]
 [ext_resource type="Script" uid="uid://dxg3mlealgste" path="res://Scenes/Reusable/Map/home.gd" id="1_py00c"]
+[ext_resource type="Texture2D" uid="uid://burvn6tb2fue7" path="res://Images/Home_final.png" id="2_py00c"]
 [ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_py00c"]
 
 [node name="Home" type="Control" node_paths=PackedStringArray("home_button")]
@@ -21,7 +21,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_3jtac")
+texture = ExtResource("2_py00c")
 
 [node name="ShowMenuButton" type="Button" parent="TextureRect"]
 custom_minimum_size = Vector2(210, 100)

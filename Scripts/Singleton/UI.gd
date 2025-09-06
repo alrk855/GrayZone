@@ -1,39 +1,43 @@
 extends CanvasLayer
-# =================== UI (time/day/money + notifications) ===================
+# ===== UI (time/day/money + wave-based notifications) =====
 
-# ---- Assign in the inspector ----
+# ---- Top bar ----
 @export var time: RichTextLabel
 @export var money: RichTextLabel
 @export var day: RichTextLabel
 
-# Slots can be PanelContainers/HBoxes/etc.; each must contain a Label somewhere inside.
+# ---- Notification slots (Controls that contain a Label) ----
 @export var notification_nodes: Array[Control] = []
 
-# ---- Notification config ----
-@export var visible_slots: int = 4
-@export var anchor_y: int = 50        # final y = anchor_y + step_y * (1..N)
+# ---- Stack config ----
+@export var visible_slots: int = 4         # how many to show per wave
+@export var anchor_y: int = 50             # final y = anchor_y + step_y * (slot_index+1)
 @export var step_y: int = 50
 @export var slide_dur: float = 0.30
 @export var stay_dur: float = 2.00
 @export var fade_dur: float = 0.45
 
 # ---- Extras ----
-@export var sfx_show: AudioStream     # optional whoosh; drop a file here later
-@export var notif_font: Font          # optional custom font for the slot Labels
+@export var sfx_show: AudioStream          # optional: drop a whoosh file
+@export var notif_font: Font               # optional: custom font for each Label
 
+# ---- Internals ----
 var _queue: Array[String] = []
-var _active: Array[Control] = []      # oldest first
-var _tweens: Dictionary = {}          # node -> Tween
-var _label_cache: Dictionary = {}     # Control -> Label
+var _active_nodes: Array[Control] = []            # nodes currently visible (this wave)
+var _node_slot_index: Dictionary = {}             # Control -> int (0..visible_slots-1)
+var _label_cache: Dictionary = {}                 # Control -> Label
+var _tweens: Dictionary = {}                      # Control -> Tween
 var _sfx_player: AudioStreamPlayer
+var _wave_running: bool = false
 
 # ============================ READY ============================
 func _ready() -> void:
-	# SFX player (simple; uses defaults)
+	# SFX player
 	_sfx_player = AudioStreamPlayer.new()
 	add_child(_sfx_player)
 
-	# Hide/reset notifications and prep fonts
+	# Clamp & reset slots
+	visible_slots = clamp(visible_slots, 1, notification_nodes.size())
 	for n: Control in notification_nodes:
 		if n:
 			n.visible = false
@@ -43,10 +47,9 @@ func _ready() -> void:
 			if lbl and notif_font:
 				lbl.add_theme_font_override("font", notif_font)
 
-	# wait a frame so singletons/autoloads are ready
 	await get_tree().process_frame
 
-	# --- Connect GameState signals ---
+	# --- Connect GameState signals (tasks only; no flags) ---
 	if is_instance_valid(GameState):
 		var c_money := Callable(self, "_on_money_changed")
 		if not GameState.is_connected("money_changed", c_money):
@@ -56,7 +59,6 @@ func _ready() -> void:
 		if not GameState.is_connected("time_changed", c_time):
 			GameState.time_changed.connect(c_time)
 
-		# Task notifications only (no flag toasts)
 		var c_added := Callable(self, "_on_task_added")
 		if not GameState.is_connected("task_added", c_added):
 			GameState.task_added.connect(c_added)
@@ -86,7 +88,8 @@ func notify(text: String) -> void:
 	if msg == "":
 		return
 	_queue.append(msg)
-	_drain_queue()
+	if not _wave_running:
+		_start_next_wave()
 
 func notify_task_added(task_id: String) -> void:
 	notify("Task added: " + task_id)
@@ -101,74 +104,95 @@ func _on_task_added(task_id: String) -> void:
 func _on_task_updated(task_id: String, step_index: int) -> void:
 	notify_task_updated(task_id, step_index)
 
-# ========================= NOTIFY ENGINE =========================
-func _drain_queue() -> void:
-	var cap: int = clamp(visible_slots, 1, notification_nodes.size())
-	while _queue.size() > 0 and _active.size() < cap:
-		var slot: Control = _get_free_slot()
-		if slot == null:
-			break
+# ========================= WAVE ENGINE =========================
+func _start_next_wave() -> void:
+	if _wave_running:
+		return
+	if _queue.is_empty():
+		return
+
+	_wave_running = true
+	_active_nodes.clear()
+	_node_slot_index.clear()
+
+	# choose nodes from pool and spawn up to visible_slots items
+	var count: int = min(visible_slots, notification_nodes.size(), _queue.size())
+	var pool: Array[Control] = _free_pool_nodes(count)
+
+	count = min(count, pool.size())
+	for i in range(count):
+		var node: Control = pool[i]
 		var msg: String = String(_queue.pop_front())
-		_show_in_slot(slot, msg)
+		_node_slot_index[node] = i
+		_active_nodes.append(node)
+		_show_in_slot(node, msg, i)
 
-func _get_free_slot() -> Control:
+func _free_pool_nodes(max_count: int) -> Array[Control]:
+	var out: Array[Control] = []
 	for n: Control in notification_nodes:
-		if n and _active.find(n) == -1:
-			return n
-	return null
+		if _active_nodes.has(n):
+			continue
+		out.append(n)
+		if out.size() == max_count:
+			break
+	return out
 
-func _show_in_slot(node: Control, msg: String) -> void:
+func _show_in_slot(node: Control, msg: String, slot_index: int) -> void:
 	_set_slot_text(node, msg)
-	_active.append(node)
 
 	node.visible = true
 	node.position.y = anchor_y
 	node.modulate.a = 0.0
 
-	var target_y: int = anchor_y + step_y * _active.size() # 1-based stacking
+	var target_y: int = anchor_y + step_y * (slot_index + 1)
+
 	var tw: Tween = create_tween()
 	_tweens[node] = tw
-
-	tw.tween_property(node, "modulate:a", 1.0, 0.15)              # fade in
-	tw.tween_property(node, "position:y", target_y, slide_dur)     # slide down
-	tw.tween_interval(stay_dur)                                    # stay
-	tw.tween_property(node, "modulate:a", 0.0, fade_dur)           # fade out
-	tw.tween_callback(Callable(self, "_finish_slot").bind(node))
+	tw.tween_property(node, "modulate:a", 1.0, 0.15)          # fade in
+	tw.tween_property(node, "position:y", target_y, slide_dur) # slide
+	tw.tween_interval(stay_dur)                                # stay
+	tw.tween_property(node, "modulate:a", 0.0, fade_dur)       # fade out
+	tw.tween_callback(Callable(self, "_on_toast_finished").bind(node))
 
 	_play_notify_sound()
 
-func _finish_slot(node: Control) -> void:
+func _on_toast_finished(node: Control) -> void:
 	if node:
 		node.visible = false
 		node.position.y = anchor_y
 		_tweens.erase(node)
 
-	_active.erase(node)
-	_restack_active()
-	_drain_queue()
+	_active_nodes.erase(node)
+	_node_slot_index.erase(node)
 
-func _restack_active() -> void:
-	for i in range(_active.size()):
-		var n: Control = _active[i]
-		var target_y: int = anchor_y + step_y * (i + 1)
-		var tw: Tween = create_tween()
-		_tweens[n] = tw
-		tw.tween_property(n, "position:y", target_y, slide_dur * 0.8)
+	# When the last one is gone, start the next wave (if queued)
+	if _active_nodes.is_empty():
+		_wave_running = false
+		_start_next_wave()
 
 # ======================== Convenience =========================
 func set_notifications_spacing(step: int) -> void:
 	step_y = max(0, step)
-	_restack_active()
+	_reposition_active()
 
 func set_notifications_anchor(y: int) -> void:
 	anchor_y = y
-	_restack_active()
+	_reposition_active()
 
 func show_ui() -> void:
 	visible = true
 
 func hide_ui() -> void:
 	visible = false
+
+# Reposition active to their slot targets (used if you tweak anchor/spacing mid-wave)
+func _reposition_active() -> void:
+	for node: Control in _active_nodes:
+		var idx: int = int(_node_slot_index.get(node, 0))
+		var target_y: int = anchor_y + step_y * (idx + 1)
+		var tw: Tween = create_tween()
+		_tweens[node] = tw
+		tw.tween_property(node, "position:y", target_y, 0.2)
 
 # ======================== Internals =========================
 func _label_for(node: Control) -> Label:

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb1yxbc2llxn8"
-path="res://.godot/imported/MvrClerkFrame.png-c0982f4b944cc3496ec0db04c4c72aea.ctex"
+uid="uid://mlxwb7a78sey"
+path="res://.godot/imported/mvr_shalter.png-6f1c465099295ac663dcbb758cb83429.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/CharacterFrames/MvrClerkFrame.png"
-dest_files=["res://.godot/imported/MvrClerkFrame.png-c0982f4b944cc3496ec0db04c4c72aea.ctex"]
+source_file="res://Images/mvr_shalter.png"
+dest_files=["res://.godot/imported/mvr_shalter.png-6f1c465099295ac663dcbb758cb83429.ctex"]
 
 [params]
 

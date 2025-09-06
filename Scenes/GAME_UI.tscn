@@ -30,9 +30,9 @@ time = NodePath("Padding/Contents/HBoxContainer/Time")
 money = NodePath("Padding/Contents/HBoxContainer/Value")
 day = NodePath("Padding/Contents/HBoxContainer/Day")
 notification_nodes = [NodePath("Notification"), NodePath("Notification2"), NodePath("Notification3"), NodePath("Notification4"), NodePath("Notification5"), NodePath("Notification6")]
-slide_dur = 1.3
-stay_dur = 2.7
-fade_dur = 1.3
+slide_dur = 1.0
+stay_dur = 4.0
+fade_dur = 0.5
 notif_font = ExtResource("4_j8nkt")
 
 [node name="Padding" type="PanelContainer" parent="."]
