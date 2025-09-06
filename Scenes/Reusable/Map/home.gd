@@ -160,10 +160,6 @@ func _do_sleep() -> void:
 
 # ——— availability logic ———
 func _is_project_available_now() -> bool:
-	# Optional: allow when professor granted second chance (if you still use this flag)
-	if GameState.has_flag("project_second_chance"):
-		return true
-
 	# Otherwise it’s available only if:
 	# - not already submitted
 	# - not already written (until printed & submitted)
@@ -173,6 +169,6 @@ func _is_project_available_now() -> bool:
 		return false
 	if GameState.has_flag("project_written"):
 		return false
-	if GameState.has_flag("have_old_project") or GameState.has_flag("bought_project"):
+	if GameState.has_flag("bought_project"):
 		return false
 	return GameState.has_flag("project_accepted")

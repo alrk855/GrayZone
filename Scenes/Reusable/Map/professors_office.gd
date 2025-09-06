@@ -206,6 +206,7 @@ func _handle_project_submission() -> void:
 		if GameState.day < 5:
 			_reset_project_for_second_chance()
 			DialogueManager.start_dialogue(JSON_FAIL_SECOND_CHANCE, self)
+			GameState.set_flag("project_second_chance", true)
 			return
 		DialogueManager.start_dialogue(JSON_GRADE_F, self)
 		_mark_submitted_no_task_increment()

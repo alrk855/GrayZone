@@ -18,9 +18,8 @@ const YCO_SCENE_PATH             := "res://Scenes/Reusable/Map/YCO.tscn"
 const MARKO_FIRST_EVENT_SCENE    := "res://Scenes/Reusable/Events/MarkoFirstEvent.tscn"
 
 # Flags
-const FLAG_MARKO_EVENT_DONE      := "marko_first_event_done"
-const FLAG_MARKO_EVENT_SEEN      := "marko_first_event_seen"
-const FLAG_YCO_INTERACTION_DONE  := "yco_interaction_done"
+const MARKO_FIRST_EVENT_DONE      := "marko_first_event_done"
+const YCO_INTERACTION_DONE  := "yco_interaction_done"
 
 func _ready() -> void:
 	# Wire the button that should pop the city menu
@@ -113,8 +112,8 @@ func _on_activity_choice(id: String) -> void:
 func _go_home() -> void:
 	GameState.location = "Home"
 	# Day 1 first time going Home -> start Marko First Event
-	if GameState.day == 1 and not GameState.has_flag(FLAG_MARKO_EVENT_SEEN):
-		GameState.set_flag(FLAG_MARKO_EVENT_SEEN, true)
+	if GameState.day == 1 and not GameState.has_flag(MARKO_FIRST_EVENT_DONE):
+		GameState.set_flag(MARKO_FIRST_EVENT_DONE, true)
 		print("Auto-starting MarkoFirstEvent (Day 1, first Home).")
 		_start_scene(MARKO_FIRST_EVENT_SCENE)
 		_clear_panel()
@@ -135,10 +134,10 @@ func _start_scene(path: String) -> void:
 
 # ========= UNLOCK CHECKS =========
 func _is_yco_available() -> bool:
-	return GameState.day >= 2 and GameState.has_flag(FLAG_YCO_INTERACTION_DONE)
+	return GameState.day >= 2 and GameState.has_flag(YCO_INTERACTION_DONE)
 
 func _is_marko_unlocked() -> bool:
-	return GameState.has_flag(FLAG_MARKO_EVENT_DONE)
+	return GameState.has_flag(MARKO_FIRST_EVENT_DONE)
 
 func _is_tutoring_unlocked() -> bool:
 	return GameState.has_flag("spent_money_once")

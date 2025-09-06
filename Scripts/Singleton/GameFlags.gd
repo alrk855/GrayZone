@@ -25,15 +25,12 @@ const PROJECT_PROMISE_DAY        := "project_promise_day"        # int day value
 
 # City / Misc
 const SPENT_MONEY_ONCE           := "spent_money_once"
-
+const YCO_INTERACTION            := "yco_interaction_done"
 # Marko first event
 const MARKO_FIRST_EVENT_DONE     := "marko_first_event_done"
 const TIPPED                     := "marko_tip"
-
-# Legacy compatibility (still used in some JSONs)
-const HAVE_OLD_PROJECT           := "have_old_project"
-const PRINTED_TRANSCRIPT         := "printed_transcript"
-const INTEGRITY_PENALTY_PENDING  := "integrity_penalty_pending"
+#TASK MANAGER
+const REQ_SUBTASKS               := "req_subtasks_added"
 
 # ===== Defaults (types are respected) =====
 const DEFAULTS := {
@@ -59,9 +56,7 @@ const DEFAULTS := {
 
 	MARKO_FIRST_EVENT_DONE: false,
 	TIPPED: false,
-	HAVE_OLD_PROJECT: false,
-	PRINTED_TRANSCRIPT: false,
-	INTEGRITY_PENALTY_PENDING: false,
+	REQ_SUBTASKS: false
 }
 
 # ===== Legacy → Canonical map =====
@@ -74,9 +69,6 @@ const ALIASES := {
 	# due-date hints (keep as-is, no behavior change)
 	"project_due_friday_noon": "project_due_friday_noon",
 	"project_due_day4_eod": "project_due_day4_eod",
-
-	# old → new links
-	HAVE_OLD_PROJECT: BOUGHT_PROJECT,  # treat old as bought
 }
 
 static func canon(name: String) -> String:
