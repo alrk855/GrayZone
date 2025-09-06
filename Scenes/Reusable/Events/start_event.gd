@@ -5,6 +5,7 @@ extends Control
 @onready var screen_fader: ColorRect = $ColorRect
 
 func _ready():
+	GameUi.visible = true
 	GameState.location = "Classroom"
 	principal_sprite.visible = false
 

@@ -247,9 +247,9 @@ func _reset_project_for_second_chance() -> void:
 	GameState.clear_flag("project_written")
 	GameState.clear_flag("printed_project")
 	GameState.clear_flag("bought_project")
-	GameState.clear_flag("have_old_project")
 	GameState.clear_flag("project_plagiarized")
 	GameState.clear_flag("project_submitted")
+	GameState.set_flag("project_accepted", true)
 
 func _promise_reward_or_penalty() -> String:
 	# Returns "praise", "scold", or ""

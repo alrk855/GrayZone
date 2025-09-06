@@ -11,7 +11,7 @@ signal flag_changed(flag: String, value: bool)
 signal money_changed(new_money: int)
 signal clock_started
 signal clock_stopped
-signal time_changed(new_time: String, new_day: int)
+signal time_changed(new_time: int, new_day: int)
 
 # -----------------------------
 # Basic Player / World
@@ -82,7 +82,7 @@ func begin_game(day_start: int, time_start: int) -> void:
 	_init_default_flags()
 	day = day_start
 	time = time_start
-	emit_signal("time_changed", _format_time(), day)
+	emit_signal("time_changed", time, day)   # minutes, not string
 	emit_signal("money_changed", money)
 	_start_time_simulation()
 	time_running = true
@@ -120,15 +120,14 @@ func _start_time_simulation() -> void:
 	add_child(timer)
 
 func _on_minute_passed() -> void:
-	if not time_running: return
-	if is_time_frozen(): return
+	if not time_running or is_time_frozen():
+		return
 	time += 1
 	if time >= 24 * 60:
 		time = 0
 		day += 1
-	print("🕒 Time:%s" % _format_time())
-	emit_signal("time_changed", _format_time(), day)
-	print("📢 Emitted time_changed:", time, day)
+	emit_signal("time_changed", time, day)   # minutes, not string
+
 
 func _format_time() -> String:
 	var hours: int = time / 60
@@ -142,8 +141,8 @@ func adjust_time(value: int) -> void:
 		day += 1
 	if time < 0:
 		time = 0
-	print("⏱️ Time adjusted by %d → %s (Day %d)" % [value, _format_time(), day])
-	emit_signal("time_changed", _format_time(), day)
+	emit_signal("time_changed", time, day)   # minutes, not string
+
 
 func push_time_freeze(src: String) -> void:
 	if not _freeze_stack.has(src):

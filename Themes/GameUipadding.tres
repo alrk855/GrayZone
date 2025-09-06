@@ -1,7 +1,7 @@
 [gd_resource type="Theme" load_steps=2 format=3 uid="uid://bmo2rrdsh5k1p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_flgwp"]
-bg_color = Color(0.897538, 0.686233, 0.612716, 0.772549)
+bg_color = Color(0.898039, 0.686275, 0.611765, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4

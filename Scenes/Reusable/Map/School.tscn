@@ -103,10 +103,10 @@ text = "Activities"
 
 [node name="Button4" type="Button" parent="background"]
 layout_mode = 0
-offset_left = 483.0
-offset_top = 1.0
-offset_right = 602.0
-offset_bottom = 101.0
+offset_left = -1.0
+offset_top = 154.0
+offset_right = 118.0
+offset_bottom = 254.0
 text = "doma
 "
 script = ExtResource("7_3mlsj")
