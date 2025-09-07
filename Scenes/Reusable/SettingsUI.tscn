@@ -30,17 +30,11 @@ corner_radius_top_right = 9
 corner_radius_bottom_right = 9
 corner_radius_bottom_left = 9
 
-[node name="Control" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Control" type="CanvasLayer"]
 script = ExtResource("1_iak35")
 
 [node name="Settings_Control" type="Control" parent="."]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -273,7 +267,6 @@ stream = ExtResource("19_ia4hl")
 volume_db = -6.0
 
 [node name="PaddingContainer" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
-visible = false
 layout_mode = 2
 
 [node name="Second padding" type="PanelContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/PaddingContainer"]
@@ -284,6 +277,7 @@ size_flags_horizontal = 6
 [node name="CanvasLayer" type="CanvasLayer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
 
 [node name="Warning" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer"]
+visible = false
 custom_minimum_size = Vector2(0, 230)
 offset_left = 76.0
 offset_top = 680.0
@@ -315,6 +309,7 @@ custom_minimum_size = Vector2(380, 0)
 layout_mode = 2
 
 [node name="Yes_No Container" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer"]
+visible = false
 offset_left = 76.0
 offset_top = 932.0
 offset_right = 1844.0
@@ -347,11 +342,10 @@ custom_minimum_size = Vector2(550, 0)
 layout_mode = 2
 
 [node name="Buttons" type="VBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer"]
-visible = false
-offset_left = 76.0
-offset_top = 680.0
-offset_right = 1844.0
-offset_bottom = 680.0
+offset_left = 89.0
+offset_top = 686.0
+offset_right = 1833.0
+offset_bottom = 1020.0
 theme = ExtResource("1_isorg")
 theme_override_constants/separation = 10
 
@@ -359,6 +353,7 @@ theme_override_constants/separation = 10
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 4
 text = "Main Menu
 "
 

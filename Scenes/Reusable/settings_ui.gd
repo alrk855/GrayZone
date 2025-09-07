@@ -1,20 +1,157 @@
-extends Control
+extends CanvasLayer
+# Root is a CanvasLayer; there is another CanvasLayer inside for the Buttons.
+
+# --- Replace with your real paths ---
+const HELP_SCENE_PATH      := "res://SCENES/Help.tscn"
+const MAIN_MENU_SCENE_PATH := "res://Scenes/main_menu.tscn"
+const CLICK_SFX_PATH       := "res://Audio/u4.mp3"
+const HOVER_SFX_PATH       := "res://Audio/u1.mp3"
+# ------------------------------------
+
+# Layers
+@onready var _root_layer    : CanvasLayer = self
+@onready var _buttons_layer : CanvasLayer = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer  # inner layer
+
+# UI (match your hierarchy)
+@onready var _help_btn          : Button = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow/HelpSettings
+@onready var _exit_btn          : Button = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow/ExitSettings
+
+@onready var _click_player      : AudioStreamPlayer2D = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/Click
+@onready var _hover_player      : AudioStreamPlayer2D = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/Hover
+
+@onready var _padding_container : HBoxContainer = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/PaddingContainer
+
+@onready var _buttons_box       : VBoxContainer = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons
+@onready var _btn_main_menu     : Button       = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/MainMenu
+@onready var _btn_save          : Button       = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Save
+@onready var _btn_load          : Button       = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Load
+
+@onready var _warning_box       : HBoxContainer = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Warning
+@onready var _yesno_box         : HBoxContainer = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"
+@onready var _btn_yes           : Button       = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container/Yes"
+@onready var _btn_no            : Button       = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container/No"
 
 func _ready() -> void:
-	_dump_hierarchy(self, "user://settings_ui_tree.txt")
+	# Keep layers above the world/HUD
+	if _root_layer.layer < 100: _root_layer.layer = 100
+	if _buttons_layer: _buttons_layer.layer = _root_layer.layer + 1
 
-func _dump_hierarchy(root: Node, path: String) -> void:
-	var lines: Array[String] = []
-	_walk_node(root, 0, lines)
+	# Start closed (autoload opens it)
+	hide_settings()
 
-	DirAccess.make_dir_recursive_absolute("user://")
-	var f := FileAccess.open(path, FileAccess.WRITE)
-	if f:
-		f.store_string("\n".join(lines))
-		f.close()
-		print("Node hierarchy written to: ", path)
+	# SFX
+	_set_stream_if_empty(_click_player, CLICK_SFX_PATH)
+	_set_stream_if_empty(_hover_player, HOVER_SFX_PATH)
 
-func _walk_node(n: Node, depth: int, lines: Array[String]) -> void:
-	lines.append("%s%s [%s]" % ["\t".repeat(depth), n.name, n.get_class()])
-	for c in n.get_children():
-		_walk_node(c, depth + 1, lines)
+	# Wire handlers
+	_help_btn.pressed.connect(_on_help_pressed)
+	_exit_btn.pressed.connect(_on_exit_pressed)
+
+	_btn_main_menu.pressed.connect(_on_main_menu_pressed)
+	_btn_save.pressed.connect(_on_save_pressed)
+	_btn_load.pressed.connect(_on_load_pressed)
+
+	_btn_yes.pressed.connect(_on_yes_pressed)
+	_btn_no.pressed.connect(_on_no_pressed)
+
+	for b in [_help_btn, _exit_btn, _btn_main_menu, _btn_save, _btn_load, _btn_yes, _btn_no]:
+		b.mouse_entered.connect(_play_hover_sfx)
+		b.pressed.connect(_play_click_sfx)
+
+# --------- Public API (used by Autoload) ---------
+
+func show_settings() -> void:
+	_root_layer.visible = true
+	if _buttons_layer: _buttons_layer.visible = true
+	_show_menu_state()
+
+func hide_settings() -> void:
+	_root_layer.visible = false
+	if _buttons_layer: _buttons_layer.visible = false
+
+func is_open() -> bool:
+	return _root_layer.visible or (_buttons_layer and _buttons_layer.visible)
+
+# --------------- UI state -----------------
+
+func _show_menu_state() -> void:
+	_buttons_box.visible = true
+	_padding_container.visible = true
+	_warning_box.visible = false
+	_yesno_box.visible = false
+
+func _show_confirm_state() -> void:
+	_buttons_box.visible = false
+	_padding_container.visible = false
+	_warning_box.visible = true
+	_yesno_box.visible = true
+
+# --------------- Handlers -----------------
+
+func _on_help_pressed() -> void:
+	hide_settings() # optional: hide before switching
+	get_tree().change_scene_to_file(HELP_SCENE_PATH)
+
+func _on_exit_pressed() -> void:
+	hide_settings()
+
+func _on_main_menu_pressed() -> void:
+	# Block while dialogue is active (no UI change, just ignore)
+	if _is_dialogue_active():
+		_play_click_sfx() # (optional) soft feedback
+		return
+	_show_confirm_state()
+
+func _on_save_pressed() -> void:
+	# to be implemented later
+	pass
+
+func _on_load_pressed() -> void:
+	# to be implemented later
+	pass
+
+func _on_no_pressed() -> void:
+	_show_menu_state()
+
+func _on_yes_pressed() -> void:
+	get_tree().change_scene_to_file(MAIN_MENU_SCENE_PATH)
+
+# --------------- Dialogue detection -----------------
+
+func _is_dialogue_active() -> bool:
+	var root: Node = get_tree().get_root()
+
+	# 1) Our always-used choice UI
+	var ccb: Node = root.find_child("CharacterChoiceButtons", true, false)
+	if ccb is Control and (ccb as Control).visible:
+		return true
+
+	# 2) Common dialogue groups (if you use them)
+	for group_name in ["dialogue", "dialogue_ui", "Dialogue", "DialogueUI"]:
+		var nodes := get_tree().get_nodes_in_group(group_name)
+		for n in nodes:
+			if n is Control and (n as Control).visible:
+				return true
+
+	# 3) Common node names
+	var dlg: Node = root.find_child("Dialogue", true, false)
+	if dlg is Control and (dlg as Control).visible:
+		return true
+
+	return false
+
+# ----------------- SFX --------------------
+
+func _set_stream_if_empty(player: AudioStreamPlayer2D, res_path: String) -> void:
+	if player and player.stream == null and res_path != "":
+		var s: Resource = load(res_path)
+		if s:
+			player.stream = s
+
+func _play_click_sfx() -> void:
+	if _click_player and _click_player.stream:
+		_click_player.play()
+
+func _play_hover_sfx() -> void:
+	if _hover_player and _hover_player.stream:
+		_hover_player.play()

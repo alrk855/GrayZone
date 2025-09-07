@@ -3,7 +3,7 @@ extends Control
 
 @onready var hover_sound : AudioStreamPlayer2D = $"../../Hover"
 @onready var click_sound : AudioStreamPlayer2D = $"../../Click"
-@onready var main : Node2D = $"/root/Game/main_menu"
+@onready var main : Node2D = $"../../../../.."
 func _ready():
 	pass
 func _on_mouse_entered() -> void:

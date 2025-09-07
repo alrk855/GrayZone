@@ -4,7 +4,8 @@
 - **Priority**: **High**
 - **Location/Scene**:  Professors Office , Day 1 , "ProfessorsOffice.tscn"
 - **Quick Notes**:  Clicking never mind runs the text with the 3 options visible, doesn't quit the options menu ,
-  Player is stuck until making a choice between Option 1 /2
+- - Application: Godot
+  
 
 ---
    *Layered bug*/s :
