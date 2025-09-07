@@ -1,0 +1,377 @@
+[gd_scene load_steps=18 format=3 uid="uid://bu1qy61ttp47k"]
+
+[ext_resource type="Script" uid="uid://damghbksmw56q" path="res://Scenes/Reusable/settings_ui.gd" id="1_iak35"]
+[ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="1_isorg"]
+[ext_resource type="Texture2D" uid="uid://dd58on0xjg4tl" path="res://Images/MainMenu/imgSIVA.jpg" id="2_byxdr"]
+[ext_resource type="Theme" uid="uid://hfoalgua28li" path="res://Themes/ui_settings_card.tres" id="3_iika7"]
+[ext_resource type="Texture2D" uid="uid://cum2k6wqu1ge8" path="res://Icons/question.png" id="4_okmda"]
+[ext_resource type="Texture2D" uid="uid://do3wi3o5xvjq5" path="res://Icons/close (1).png" id="5_vkron"]
+[ext_resource type="AudioStream" uid="uid://bjhan6vo2jpdi" path="res://Audio/swoosh-6-351021.mp3" id="7_j0mww"]
+[ext_resource type="Theme" uid="uid://yoi5dxdmyy02" path="res://Themes/MasterButton.tres" id="8_dnn0y"]
+[ext_resource type="Script" uid="uid://cylk18w3k86fu" path="res://Scripts/MainMenu/Settings/toggle_master.gd" id="9_j2ljc"]
+[ext_resource type="Script" uid="uid://5d7vhpr1gd3h" path="res://Scripts/MainMenu/Settings/sliding.gd" id="10_3o85l"]
+[ext_resource type="Theme" uid="uid://t18x08ii57qh" path="res://Themes/MusicButton.tres" id="11_1e7ep"]
+[ext_resource type="Script" uid="uid://cc1xjpneexjrs" path="res://Scripts/MainMenu/Settings/music_toggle.gd" id="12_o2fnn"]
+[ext_resource type="Script" uid="uid://bf7p384gxmx6s" path="res://Scripts/MainMenu/Settings/sliding_bar.gd" id="13_og0hk"]
+[ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="15_uo60w"]
+[ext_resource type="AudioStream" uid="uid://lyhht1a5m7r7" path="res://Audio/u4.mp3" id="18_6r6ts"]
+[ext_resource type="AudioStream" uid="uid://bxhhbf28dcl2v" path="res://Audio/u1.mp3" id="19_ia4hl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iak35"]
+bg_color = Color(0.00336944, 0.727814, 0.678605, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_iak35")
+
+[node name="Settings_Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_isorg")
+
+[node name="Settings_Picture" type="TextureRect" parent="Settings_Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_byxdr")
+expand_mode = 1
+
+[node name="Scrim" type="ColorRect" parent="Settings_Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0431373, 0.0588235, 0.0980392, 0.588235)
+
+[node name="CardRoot" type="MarginContainer" parent="Settings_Control"]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 64
+
+[node name="PanelContainer" type="PanelContainer" parent="Settings_Control/CardRoot"]
+layout_mode = 2
+theme = ExtResource("3_iika7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings_Control/CardRoot/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 22
+
+[node name="TitleRow" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 22
+
+[node name="Label" type="Label" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 80
+text = "Settings"
+
+[node name="Spacer" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HelpSettings" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+icon = ExtResource("4_okmda")
+icon_alignment = 1
+expand_icon = true
+
+[node name="ExitSettings" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+icon = ExtResource("5_vkron")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Swoosh" type="AudioStreamPlayer2D" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
+stream = ExtResource("7_j0mww")
+
+[node name="UI_Line" type="HSeparator" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Vspacer" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="VolumeRow" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 70
+
+[node name="1spacer" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="ToggleMaster" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("8_dnn0y")
+theme_override_constants/h_separation = 5
+toggle_mode = true
+expand_icon = true
+script = ExtResource("9_j2ljc")
+
+[node name="2spacer" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+layout_mode = 2
+
+[node name="Sound" type="Label" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "Sound"
+
+[node name="Sliding" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
+layout_mode = 2
+size_flags_horizontal = 6
+script = ExtResource("10_3o85l")
+
+[node name="FillBar" type="ProgressBar" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow/Sliding"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.045
+anchor_top = 0.414
+anchor_right = 1.024
+anchor_bottom = 0.607
+offset_left = -0.105
+offset_top = 0.0399933
+offset_right = 0.255981
+offset_bottom = 0.019989
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.001
+value = 0.5
+
+[node name="HSlider" type="HSlider" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow/Sliding"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.036
+anchor_top = 0.05
+anchor_right = 1.011
+anchor_bottom = 0.95
+offset_left = 0.116001
+offset_right = 0.158997
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+max_value = 1.0
+step = 0.001
+value = 0.5
+
+[node name="VolumeRow2" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 70
+
+[node name="1spacer" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="MusicToggle" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("11_1e7ep")
+theme_override_constants/h_separation = 5
+toggle_mode = true
+expand_icon = true
+script = ExtResource("12_o2fnn")
+
+[node name="2spacer" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+layout_mode = 2
+
+[node name="Music" type="Label" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "Music "
+
+[node name="Sliding2" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
+layout_mode = 2
+size_flags_horizontal = 6
+script = ExtResource("13_og0hk")
+
+[node name="FillBar" type="ProgressBar" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2/Sliding2"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.045
+anchor_top = 0.414
+anchor_right = 1.03
+anchor_bottom = 0.607
+offset_left = -0.24
+offset_top = 0.0399933
+offset_right = 0.159973
+offset_bottom = 0.019989
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+step = 0.001
+value = 0.5
+
+[node name="HSlider" type="HSlider" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2/Sliding2"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.036
+anchor_top = 0.05
+anchor_right = 1.017
+anchor_bottom = 0.95
+offset_left = 0.00800133
+offset_right = 0.0239868
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+max_value = 1.0
+step = 0.001
+value = 0.5
+
+[node name="Click" type="AudioStreamPlayer2D" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+stream = ExtResource("18_6r6ts")
+volume_db = -2.0
+
+[node name="Hover" type="AudioStreamPlayer2D" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+stream = ExtResource("19_ia4hl")
+volume_db = -6.0
+
+[node name="PaddingContainer" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Second padding" type="PanelContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/PaddingContainer"]
+custom_minimum_size = Vector2(400, 320)
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
+
+[node name="Warning" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer"]
+custom_minimum_size = Vector2(0, 230)
+offset_left = 76.0
+offset_top = 680.0
+offset_right = 1844.0
+offset_bottom = 910.0
+
+[node name="Spacer" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Warning"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Warning"]
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_iak35")
+
+[node name="Label" type="Label" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Warning/PanelContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.255659, 0.255659, 0.255659, 1)
+theme_override_fonts/font = ExtResource("15_uo60w")
+theme_override_font_sizes/font_size = 30
+text = "Quitting will erase all progress so far!
+
+Are you sure you want to Quit?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Warning"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+
+[node name="Yes_No Container" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer"]
+offset_left = 76.0
+offset_top = 932.0
+offset_right = 1844.0
+offset_bottom = 956.0
+
+[node name="Spacer" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"]
+custom_minimum_size = Vector2(550, 0)
+layout_mode = 2
+
+[node name="No" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+size_flags_vertical = 0
+theme = ExtResource("1_isorg")
+text = "No"
+
+[node name="Spacer3" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+
+[node name="Yes" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+size_flags_vertical = 0
+theme = ExtResource("1_isorg")
+text = "Yes"
+
+[node name="Spacer2" type="Control" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"]
+custom_minimum_size = Vector2(550, 0)
+layout_mode = 2
+
+[node name="Buttons" type="VBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer"]
+visible = false
+offset_left = 76.0
+offset_top = 680.0
+offset_right = 1844.0
+offset_bottom = 680.0
+theme = ExtResource("1_isorg")
+theme_override_constants/separation = 10
+
+[node name="MainMenu" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Main Menu
+"
+
+[node name="Save" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Save
+"
+
+[node name="Load" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Load
+"
