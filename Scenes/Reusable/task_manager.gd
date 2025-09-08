@@ -1,4 +1,3 @@
-# res://Scenes/Reusable/task_manager.gd
 extends Control
 
 @onready var task_grid: GridContainer = $"Task Overview/ScrollContainer/GridContainer"
@@ -11,16 +10,21 @@ extends Control
 
 const MAIN_REQUIREMENTS_TASK_ID := "Gather Scholarship Requirements"
 
-# --------- Font + UI tuning ----------
-const OVERVIEW_FONT_INC := 4                 # +4 on overview buttons
-const BASE_STEP_FONT_SIZE := 22
-const STEP_FONT_SIZE := BASE_STEP_FONT_SIZE + 4
-const FONT_PATH := "res://Fonts/Russo_One.ttf"  # <--- put your font here
-var CUSTOM_FONT: Font = preload(FONT_PATH)
+# ---------------- Fonts ----------------
+const OVERVIEW_FONT_PATH := "res://Fonts/Russo_One.ttf"          # buttons font
+const BODY_FONT_PATH     := "res://Fonts/Chalkboard-Regular.ttf" # title/meta/steps
 
-# --------- Sorting helpers ----------
-var _last_opened := {}      # task_id -> unix time (session only)
-var _task_cache := {}       # task_id -> parsed JSON
+var FONT_OVERVIEW: Font = preload(OVERVIEW_FONT_PATH)
+var FONT_BODY: Font     = preload(BODY_FONT_PATH)
+
+# fixed size (no incremental growth)
+const OVERVIEW_FONT_SIZE: int = 22
+const BASE_STEP_FONT_SIZE: int = 22
+const STEP_FONT_SIZE: int = BASE_STEP_FONT_SIZE + 4
+
+# ---------------- Sorting helpers ----------------
+var _last_opened: Dictionary = {}   # task_id -> unix time (session only)
+var _task_cache: Dictionary = {}    # task_id -> parsed JSON
 
 func _ready() -> void:
 	if not GameState.task_added.is_connected(Callable(self, "_on_task_added")):
@@ -36,19 +40,21 @@ func _ready() -> void:
 	camera.position = $"Task Overview".global_position + get_viewport().get_visible_rect().size * 0.5
 	go_back_button.pressed.connect(_on_back_pressed)
 
+# ---------------- Font application ----------------
 func _apply_title_meta_fonts() -> void:
-	title_label.add_theme_font_override("font", CUSTOM_FONT)
+	title_label.add_theme_font_override("font", FONT_BODY)
 	var tsize: int = title_label.get_theme_font_size("font_size")
 	if tsize <= 0:
 		tsize = 24
 	title_label.add_theme_font_size_override("font_size", tsize + 4)
 
-	meta_label.add_theme_font_override("font", CUSTOM_FONT)
+	meta_label.add_theme_font_override("font", FONT_BODY)
 	var msize: int = meta_label.get_theme_font_size("font_size")
 	if msize <= 0:
 		msize = 14
 	meta_label.add_theme_font_size_override("font_size", msize + 4)
 
+# ---------------- Signals ----------------
 func _on_task_added(_id: String) -> void:
 	_populate_tasks()
 
@@ -58,18 +64,17 @@ func _on_task_updated(_id: String, _idx: int) -> void:
 func _on_flag_changed(_flag: String, _val: bool) -> void:
 	_populate_tasks()
 
-# ----------------- Overview population -----------------
-
+# ---------------- Overview population ----------------
 func _populate_tasks() -> void:
-	# 1) collect ids
+	# 1) Collect task ids
 	var ids: Array = []
 	for t in GameState.tasks:
 		ids.append(String(t))
 
-	# 2) sort by % complete desc, then last opened desc, then title
+	# 2) Sort by % complete desc, last opened desc, title asc
 	var sorted: Array = _get_sorted_tasks(ids)
 
-	# 3) assign to grid buttons
+	# 3) Render into grid buttons
 	var i := 0
 	for child in task_grid.get_children():
 		if child is Button:
@@ -78,21 +83,20 @@ func _populate_tasks() -> void:
 				var task_id: String = String(sorted[i])
 				var title: String = TaskCatalog.get_title(task_id)
 
+				# Text + tooltip
 				button.text = title
+				button.tooltip_text = title
 				button.visible = true
 				button.set_meta("task_id", task_id)
 
-				# overview font bump + custom font
-				button.add_theme_font_override("font", CUSTOM_FONT)
-				var bsize: int = button.get_theme_font_size("font_size")
-				if bsize <= 0:
-					bsize = 18
-				button.add_theme_font_size_override("font_size", bsize + OVERVIEW_FONT_INC)
+				# Font (fixed size; no incremental growth)
+				button.add_theme_font_override("font", FONT_OVERVIEW)
+				button.add_theme_font_size_override("font_size", OVERVIEW_FONT_SIZE)
 
-				# color coding
+
+
 				_apply_overview_color(button, task_id)
 
-				# connect once
 				var cb := Callable(self, "_on_task_button_pressed_internal").bind(button)
 				if not button.pressed.is_connected(cb):
 					button.pressed.connect(cb)
@@ -104,17 +108,16 @@ func _populate_tasks() -> void:
 func _apply_overview_color(button: Button, task_id: String) -> void:
 	var steps_total := _get_steps_count(task_id)
 	var prog := GameState.get_task_progress(task_id)
-	# Completed (green)
+
 	if steps_total > 0 and prog >= steps_total:
-		button.add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))
+		button.add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))   # green
 	elif _is_task_blocked(task_id):
-		# Blocked (red)
-		button.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
+		button.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25)) # red
 	else:
-		# inherit theme for active/in-progress
 		if button.has_theme_color_override("font_color"):
 			button.remove_theme_color_override("font_color")
 
+# ---------------- Sorting ----------------
 func _get_sorted_tasks(ids: Array) -> Array:
 	var items: Array = []
 	for idv in ids:
@@ -126,7 +129,6 @@ func _get_sorted_tasks(ids: Array) -> Array:
 			pct = float(prog) / float(steps_total)
 		var opened: int = int(_last_opened.get(id, 0))
 		items.append({"id": id, "pct": pct, "opened": opened})
-	# sort using a named comparator (no inline lambda)
 	items.sort_custom(Callable(self, "_cmp_task_items"))
 	var out: Array = []
 	for it in items:
@@ -134,7 +136,6 @@ func _get_sorted_tasks(ids: Array) -> Array:
 	return out
 
 func _cmp_task_items(a: Dictionary, b: Dictionary) -> bool:
-	# return true if a should come before b
 	if a["pct"] > b["pct"]:
 		return true
 	if a["pct"] < b["pct"]:
@@ -147,8 +148,7 @@ func _cmp_task_items(a: Dictionary, b: Dictionary) -> bool:
 	var bt: String = TaskCatalog.get_title(String(b["id"]))
 	return at.naturalnocasecmp_to(bt) < 0
 
-# ----------------- Details panel -----------------
-
+# ---------------- Details panel ----------------
 func _on_task_button_pressed_internal(button: Button) -> void:
 	var task_id: String = String(button.get_meta("task_id"))
 	_last_opened[task_id] = Time.get_unix_time_from_system()
@@ -193,15 +193,13 @@ func _show_task_details(task_id: String) -> void:
 			txt += " (%d/%d)" % [count, goal]
 
 		var label := Label.new()
-		label.add_theme_font_override("font", CUSTOM_FONT)
+		label.add_theme_font_override("font", FONT_BODY)
 		label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
-
 		if i < progress:
 			label.add_theme_color_override("font_color", Color.DIM_GRAY)
 			label.text = "✔ " + txt
 		else:
 			label.text = "• " + txt
-
 		step_container.add_child(label)
 
 	if task_id == MAIN_REQUIREMENTS_TASK_ID and not GameState.has_flag("req_subtasks_added"):
@@ -229,8 +227,7 @@ func _move_camera_down() -> void:
 func _move_camera_up() -> void:
 	camera.position -= Vector2(0, 1080)
 
-# ----------------- Data access + helpers -----------------
-
+# ---------------- Data access + helpers ----------------
 func _load_task_data(task_id: String) -> Dictionary:
 	if _task_cache.has(task_id):
 		return _task_cache[task_id]
@@ -265,7 +262,6 @@ func _get_steps_count(task_id: String) -> int:
 	return 0
 
 func _is_task_blocked(task_id: String) -> bool:
-	# Generic heuristics configurable per task JSON
 	var d: Dictionary = _load_task_data(task_id)
 	if bool(d.get("blocked", false)):
 		return true
@@ -277,7 +273,6 @@ func _is_task_blocked(task_id: String) -> bool:
 		return true
 	return false
 
-# Local placeholder formatter (keeps script self-contained)
 func _format_placeholders(text: String) -> String:
 	var s := text
 	if GameState.subject1 != "":

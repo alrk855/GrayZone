@@ -20,7 +20,12 @@ func get_title(task_id: String) -> String:
 		_title_cache[task_id] = title
 
 	return title
-
+func get_steps_count(task_id: String) -> int:
+	var d := _get_data(task_id)
+	var arr: Variant = d.get("steps", [])
+	if arr is Array:
+		return (arr as Array).size()
+	return 0
 func _get_data(task_id: String) -> Dictionary:
 	if _cache.has(task_id):
 		return _cache[task_id]

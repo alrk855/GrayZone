@@ -92,10 +92,32 @@ func notify(text: String) -> void:
 		_start_next_wave()
 
 func notify_task_added(task_id: String) -> void:
-	notify("Task added: " + task_id)
+	var tc := get_node_or_null("/root/TaskCatalog")
+	var title := task_id
+	var total := 0
+	if tc:
+		title = String(tc.call("get_title", task_id))
+		total = int(tc.call("get_steps_count", task_id))
+
+	if total > 0:
+		notify("Task added: %s (0/%d)" % [title, total])
+	else:
+		notify("Task added: %s" % title)
+
 
 func notify_task_updated(task_id: String, step_index: int) -> void:
-	notify("Task updated: %s → Step %d" % [task_id, step_index])
+	var tc := get_node_or_null("/root/TaskCatalog")
+	var title := task_id
+	var total := 0
+	if tc:
+		title = String(tc.call("get_title", task_id))
+		total = int(tc.call("get_steps_count", task_id))
+
+	if total > 0:
+		var shown = min(step_index, total)
+		notify("Task updated: %s → Step %d/%d" % [title, shown, total])
+	else:
+		notify("Task updated: %s → Step %d" % [title, step_index])
 
 # =================== GameState → notifications ===================
 func _on_task_added(task_id: String) -> void:
