@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bef2wd7vkbweo"]
+[gd_scene load_steps=4 format=3 uid="uid://bef2wd7vkbweo"]
 
-[ext_resource type="Texture2D" uid="uid://vw1dhtj30301" path="res://Images/b7500904646b294d9b087886b204113a_t.jpeg" id="1_s2o6n"]
 [ext_resource type="Script" uid="uid://cd15u1veyfu4k" path="res://Scenes/Reusable/Map/professors_office.gd" id="1_vnqiv"]
-[ext_resource type="Texture2D" uid="uid://iygnwscw1gxq" path="res://Images/Characters/profesor 1.png" id="2_vnqiv"]
+[ext_resource type="Texture2D" uid="uid://bydalyqoqcxyq" path="res://Images/Professor_office-Recovered_2.png" id="2_s2o6n"]
 [ext_resource type="Texture2D" uid="uid://d082cklmg7s1s" path="res://Images/Characters/janitor.png" id="3_udjl8"]
 
 [node name="ProfessorsOffice" type="Control"]
@@ -21,23 +20,21 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_s2o6n")
+texture = ExtResource("2_s2o6n")
 
 [node name="Professor" type="TextureButton" parent="background"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -376.0
-offset_top = -338.0
-offset_right = 361.0
-offset_bottom = 187.0
+anchors_preset = -1
+anchor_left = 0.358
+anchor_top = 0.368
+anchor_right = 0.776
+anchor_bottom = 0.835
+offset_left = 0.639954
+offset_top = -0.440033
+offset_right = 0.0799561
+offset_bottom = 0.199951
 grow_horizontal = 2
 grow_vertical = 2
-texture_normal = ExtResource("2_vnqiv")
-ignore_texture_size = true
 stretch_mode = 0
 
 [node name="Janitor" type="TextureButton" parent="background"]

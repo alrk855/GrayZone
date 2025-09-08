@@ -239,4 +239,4 @@ func _on_exit_label_input(event: InputEvent) -> void:
 func _go_home() -> void:
 	if HOME_SCENE_PATH == "":
 		return
-	get_tree().change_scene_to_file(HOME_SCENE_PATH)
+	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/Home.tscn")

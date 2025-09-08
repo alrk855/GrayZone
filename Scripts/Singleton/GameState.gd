@@ -33,8 +33,8 @@ var _freeze_stack: Array[String] = []
 # Status
 # -----------------------------
 var money: int = 2000
-var integrity: int = 50
-var reputation: int = 50
+var integrity: int = 20
+var reputation: int = 20
 
 # -----------------------------
 # Gameplay

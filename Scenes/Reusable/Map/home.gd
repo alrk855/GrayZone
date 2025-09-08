@@ -17,6 +17,11 @@ const KEY_STUDY_MODE := "__study_mode"
 const KEY_SUBJECT_PICK := "__study_subject_pick"
 
 func _ready() -> void:
+	if GameState.get_task_progress("cv") == 0:
+		GameState.update_task_step("cv")  # step 1
+	if GameState.get_task_progress("motivation") == 0:
+		GameState.update_task_step("motivation")  # step 1
+		
 	GameState.location = "Home"
 	if home_button:
 		home_button.pressed.connect(_on_home_btn_pressed)

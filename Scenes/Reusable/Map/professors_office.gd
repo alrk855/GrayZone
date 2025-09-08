@@ -180,7 +180,6 @@ func _handle_project_submission() -> void:
 	var caught_plag: bool = false
 
 	if is_bought:
-		# Decide now, but apply penalties/flags after the message is shown
 		var rng := RandomNumberGenerator.new()
 		rng.randomize()
 		caught_plag = rng.randf() < PLAGIARISM_CATCH_CHANCE
@@ -189,7 +188,6 @@ func _handle_project_submission() -> void:
 	if is_bought and caught_plag:
 		if GameState.day < 5:
 			await _start_and_wait(JSON_FAIL_SECOND_CHANCE)
-			# apply effects AFTER the dialogue
 			GameState.set_flag("project_plagiarized", true)
 			GameState.adjust_integrity(-10)
 			print("[Integrity] Plagiarism detected at submission. -10 integrity.")
@@ -203,15 +201,14 @@ func _handle_project_submission() -> void:
 			_mark_submitted_no_task_increment()
 		return
 
-	# --- Plagiarized but NOT caught => auto A path per your rules ---
+	# --- Plagiarized but NOT caught ---
 	if is_bought and not caught_plag:
 		await _start_and_wait(JSON_GRADE_A)
-		# keep the persistent “plagiarized” flag for endings
 		GameState.set_flag("project_plagiarized", true)
 		_valid_submit_increment_task()
 		return
 
-	# --- Normal (self-written) grading ---
+	# --- Normal grading ---
 	var grade_id: String = _grade_from_score(score)
 
 	if grade_id == "F":
@@ -335,7 +332,6 @@ func _on_prof_intro_option(id: String) -> void:
 			DialogueManager.end_active_dialogue()
 
 # ---------- Janitor ----------
-var has_tip = GameFlags.TIPPED
 func _on_janitor_pressed() -> void:
 	_clear_panel()
 	_janitor_panel_shown = false
@@ -343,7 +339,7 @@ func _on_janitor_pressed() -> void:
 	var rep: int = GameState.reputation
 	if rep >= 30 and FileAccess.file_exists(JSON_JANITOR_HIGHREP):
 		DialogueManager.start_dialogue(JSON_JANITOR_HIGHREP, self)
-	elif has_tip==true:
+	elif GameState.has_flag("marko_tip"):
 		DialogueManager.start_dialogue(JSON_JANITOR_TIPPED_INTRO, self)
 	else:
 		DialogueManager.start_dialogue(JSON_JANITOR_NOTIP_INTRO, self)
@@ -357,7 +353,7 @@ func _show_janitor_office_options() -> void:
 	_janitor_panel_shown = true
 
 	var options: Array[Dictionary] = []
-	if has_tip:
+	if GameState.has_flag("marko_tip"):
 		options.append({ "text": "Deal (300 денари)", "id": "janitor_buy_300" })
 	else:
 		options.append({ "text": "Buy it (500 денари)", "id": "janitor_buy_500" })
