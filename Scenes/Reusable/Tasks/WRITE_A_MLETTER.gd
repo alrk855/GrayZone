@@ -1,11 +1,13 @@
 extends Control
 
 @onready var lab : Label = $"a"
-@onready var text_library : Array[String] = ["Dear Committee, I come from a modest background, but I've worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community. Thank you for the opportunity. Sincerely, Me"
-, "Dear Committee, I'm the first in my family to attend college. This scholarship would let me keep my grades up and continue mentoring local kids. Thank you. Sincerely, Me"
-, "Dear Committee, Hard work lifted my GPA to 3.9 despite tight finances. Your support keeps me in school and giving back. Thanks. Best, Me"
-, "Dear Esteemed Committee, My journey began at a kitchen table where bills often outnumbered paychecks. From that table, I learned that perseverance is a currency more reliable than cash. It bought me top grades, leadership roles in two campus clubs, and the chance every Saturday to serve meals at the youth shelter."
-, "Dear Committee, I juggle jobs and classes to stay on the Dean's List. Help me finish my degree and keep tutoring teens. Thank you."]
+@onready var text_library : Array[String] = [
+	"Dear Committee, I come from a modest background, but I've worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community. Thank you for the opportunity. Sincerely, Me",
+	"Dear Committee, I'm the first in my family to attend college. This scholarship would let me keep my grades up and continue mentoring local kids. Thank you. Sincerely, Me",
+	"Dear Committee, Hard work lifted my GPA to 3.9 despite tight finances. Your support keeps me in school and giving back. Thanks. Best, Me",
+	"Dear Esteemed Committee, My journey began at a kitchen table where bills often outnumbered paychecks. From that table, I learned that perseverance is a currency more reliable than cash. It bought me top grades, leadership roles in two campus clubs, and the chance every Saturday to serve meals at the youth shelter.",
+	"Dear Committee, I juggle jobs and classes to stay on the Dean's List. Help me finish my degree and keep tutoring teens. Thank you."
+]
 @onready var header : Label = $"gamebox/Header"
 @onready var edit : LineEdit = $"gamebox/LineEdit"
 @onready var debLabel : Label = $"outrobox/DebugLabel"
@@ -48,23 +50,21 @@ func _ready() -> void:
 	await $SceneAnimation.animation_finished
 
 func _on_line_edit_text_submitted(new_text) -> void:
-	if(new_text == header.text):
-		current_word+=1
-		correct+=1
+	if (new_text == header.text):
+		current_word += 1
+		correct += 1
 		edit.text = ""
 		SFX_play()
 	else:
-		wrong+=1
-		current_word+=1
+		wrong += 1
+		current_word += 1
 		edit.grab_focus()
 		edit.text = ""
 		if !zvuk_wrong.playing:
 			zvuk_wrong.play()
 
 func _process(_delta: float) -> void:
-	debLabel.text = "Correct: %d" %correct + "
-	Errors: %d" %wrong + "
-	Status:"
+	debLabel.text = "Correct: %d\nErrors: %d\nStatus:" % [correct, wrong]
 	if current_word < words.size():
 		header.text = words[current_word]
 
@@ -92,11 +92,11 @@ func outro() -> void:
 	var tween : Tween = create_tween()
 	status.text = "Fuck you"
 	outrobox.visible = true
-	if(wrong == 0):
+	if (wrong == 0):
 		status.text = "Perfect"
-	elif(wrong > 0 && wrong < 4):
+	elif (wrong > 0 and wrong < 4):
 		status.text = "Almost Perfect"
-	elif(wrong > 3 && wrong < 7):
+	elif (wrong > 3 and wrong < 7):
 		status.text = "Mid"
 	else:
 		status.text = "Bad"
@@ -128,7 +128,7 @@ func exit():
 		GameState.ensure_task("motivation")
 		if GameState.get_task_progress("motivation") < 2:
 			GameState.update_task_step("motivation")  # step 2 (draft)
-		GameState.set_flag("motivation_written", true)
+		GameState.set_flag("printed_motivation", true)
 
 	var tween : Tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0, 1).set_trans(Tween.TRANS_CUBIC)

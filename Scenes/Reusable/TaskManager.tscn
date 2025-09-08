@@ -73,9 +73,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -654.0
+offset_left = -743.0
 offset_top = -304.0
-offset_right = 642.0
+offset_right = 724.0
 offset_bottom = 400.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -89,7 +89,7 @@ theme = ExtResource("4_tv6op")
 columns = 4
 
 [node name="Task1" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -97,7 +97,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task2" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -106,7 +106,7 @@ text_overrun_behavior = 4
 autowrap_mode = 3
 
 [node name="Task3" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -114,7 +114,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task4" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -122,7 +122,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task5" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -130,7 +130,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task6" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -138,7 +138,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task7" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -146,7 +146,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task8" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -154,7 +154,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task9" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -162,7 +162,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task10" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -171,7 +171,7 @@ text_overrun_behavior = 4
 autowrap_mode = 3
 
 [node name="Task11" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -179,7 +179,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task12" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -187,7 +187,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task13" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -195,7 +195,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task14" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -203,7 +203,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task15" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -211,7 +211,7 @@ theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
 [node name="Task16" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0

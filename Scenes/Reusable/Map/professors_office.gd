@@ -148,16 +148,18 @@ func _on_prof_menu_choice(id: String) -> void:
 			_clear_panel()
 
 func _project_ready_for_submit() -> bool:
-	# Must not have submitted already
 	if GameState.has_flag("project_submitted"):
 		return false
-	# Bought project bypasses print requirement
 	if GameState.has_flag("bought_project"):
 		return true
-	# Self-written path requires the printed copy
 	if GameState.has_flag("project_written") and GameState.has_flag("printed_project"):
 		return true
 	return false
+
+# Helper: start a dialogue and wait for it to finish
+func _start_and_wait(json_path: String) -> void:
+	DialogueManager.start_dialogue(json_path, self)
+	await DialogueManager.dialogue_finished
 
 func _handle_project_submission() -> void:
 	# 1) Promise side-effects FIRST (praise/scold), then grading
@@ -165,11 +167,12 @@ func _handle_project_submission() -> void:
 	_clear_promise_flags()
 
 	if side == "praise":
-		DialogueManager.start_dialogue(JSON_PRAISE_INIT, self)
-		await DialogueManager.dialogue_finished
+		await _start_and_wait(JSON_PRAISE_INIT)
 	elif side == "scold":
-		DialogueManager.start_dialogue(JSON_SCOLD_MISSED, self)
-		await DialogueManager.dialogue_finished
+		await _start_and_wait(JSON_SCOLD_MISSED)
+
+	# small buffer to let the dialogue system fully close before chaining
+	await get_tree().process_frame
 
 	# 2) Grading logic
 	var score: int = GameState.get_int("project_score", 0)
@@ -177,46 +180,59 @@ func _handle_project_submission() -> void:
 	var caught_plag: bool = false
 
 	if is_bought:
-		GameState.set_flag("project_plagiarized", true)
+		# Decide now, but apply penalties/flags after the message is shown
 		var rng := RandomNumberGenerator.new()
 		rng.randomize()
 		caught_plag = rng.randf() < PLAGIARISM_CATCH_CHANCE
-		if caught_plag:
+
+	# --- Plagiarized & caught ---
+	if is_bought and caught_plag:
+		if GameState.day < 5:
+			await _start_and_wait(JSON_FAIL_SECOND_CHANCE)
+			# apply effects AFTER the dialogue
+			GameState.set_flag("project_plagiarized", true)
 			GameState.adjust_integrity(-10)
 			print("[Integrity] Plagiarism detected at submission. -10 integrity.")
-
-	if caught_plag:
-		if GameState.day < 5:
 			_reset_project_for_second_chance()
-			DialogueManager.start_dialogue(JSON_FAIL_SECOND_CHANCE, self)
 			GameState.set_flag("project_second_chance", true)
-			return
-		DialogueManager.start_dialogue(JSON_GRADE_F_PLAG, self)
-		_mark_submitted_no_task_increment()
+		else:
+			await _start_and_wait(JSON_GRADE_F_PLAG)
+			GameState.set_flag("project_plagiarized", true)
+			GameState.adjust_integrity(-10)
+			print("[Integrity] Plagiarism detected at submission. -10 integrity.")
+			_mark_submitted_no_task_increment()
 		return
 
+	# --- Plagiarized but NOT caught => auto A path per your rules ---
 	if is_bought and not caught_plag:
-		DialogueManager.start_dialogue(JSON_GRADE_A, self)
+		await _start_and_wait(JSON_GRADE_A)
+		# keep the persistent “plagiarized” flag for endings
+		GameState.set_flag("project_plagiarized", true)
 		_valid_submit_increment_task()
 		return
 
-	# Normal grading path (self-written)
+	# --- Normal (self-written) grading ---
 	var grade_id: String = _grade_from_score(score)
+
 	if grade_id == "F":
 		if GameState.day < 5:
+			await _start_and_wait(JSON_FAIL_SECOND_CHANCE)
 			_reset_project_for_second_chance()
-			DialogueManager.start_dialogue(JSON_FAIL_SECOND_CHANCE, self)
 			GameState.set_flag("project_second_chance", true)
-			return
-		DialogueManager.start_dialogue(JSON_GRADE_F, self)
-		_mark_submitted_no_task_increment()
+		else:
+			await _start_and_wait(JSON_GRADE_F)
+			_mark_submitted_no_task_increment()
 		return
 
-	match grade_id:
-		"A": DialogueManager.start_dialogue(JSON_GRADE_A, self)
-		"B": DialogueManager.start_dialogue(JSON_GRADE_B, self)
-		"C": DialogueManager.start_dialogue(JSON_GRADE_C, self)
-		"D": DialogueManager.start_dialogue(JSON_GRADE_D, self) 
+	if grade_id == "A":
+		await _start_and_wait(JSON_GRADE_A)
+	elif grade_id == "B":
+		await _start_and_wait(JSON_GRADE_B)
+	elif grade_id == "C":
+		await _start_and_wait(JSON_GRADE_C)
+	else: # "D"
+		await _start_and_wait(JSON_GRADE_D)
+
 	_valid_submit_increment_task()
 
 func _grade_from_score(score: int) -> String:
@@ -238,12 +254,10 @@ func _valid_submit_increment_task() -> void:
 	_clear_panel()
 
 func _reset_project_for_second_chance() -> void:
-	# Reset task back to step 1
 	GameState.ensure_task(TASK_PROJECT)
 	GameState.task_step_index[TASK_PROJECT] = 1
 	print("[Task] Project reset to step 1 for second chance.")
 
-	# Clear states so player can choose either path again (write OR buy)
 	GameState.clear_flag("project_written")
 	GameState.clear_flag("printed_project")
 	GameState.clear_flag("bought_project")
@@ -252,7 +266,6 @@ func _reset_project_for_second_chance() -> void:
 	GameState.set_flag("project_accepted", true)
 
 func _promise_reward_or_penalty() -> String:
-	# Returns "praise", "scold", or ""
 	var promised: bool = GameState.has_flag("project_promise_tomorrow")
 	var prom_day: int = GameState.get_int("project_promise_day", 0)
 	if not promised:
@@ -316,9 +329,8 @@ func _on_prof_intro_option(id: String) -> void:
 			GameState.set_int("project_promise_day", GameState.day)
 			DialogueManager.start_dialogue(JSON_PROF_TOMORROW, self)
 		"prof_nevermind":
-			DialogueManager.start_dialogue(JSON_PROF_DECLINE, self) # flavor
+			DialogueManager.start_dialogue(JSON_PROF_DECLINE, self)
 			await get_tree().create_timer(0.2).timeout
-			 # loop until accepted
 		_:
 			DialogueManager.end_active_dialogue()
 
@@ -335,8 +347,8 @@ func _on_janitor_pressed() -> void:
 		DialogueManager.start_dialogue(JSON_JANITOR_TIPPED_INTRO, self)
 	else:
 		DialogueManager.start_dialogue(JSON_JANITOR_NOTIP_INTRO, self)
+
 func _show_janitor_office_options() -> void:
-	
 	if GameState.has_flag("bought_project"):
 		DialogueManager.end_active_dialogue()
 		return
@@ -345,8 +357,6 @@ func _show_janitor_office_options() -> void:
 	_janitor_panel_shown = true
 
 	var options: Array[Dictionary] = []
-	 # tip flow not implemented; default to 500
-
 	if has_tip:
 		options.append({ "text": "Deal (300 денари)", "id": "janitor_buy_300" })
 	else:
@@ -398,7 +408,6 @@ func _handle_janitor_purchase(tipped: bool) -> void:
 		GameState.add_task("Visit the Classroom")
 	GameState.adjust_time(15)
 
-	# FIX: no ternary operator; use if/else to pick the dialogue
 	var dlg_path: String = JSON_JANITOR_DEAL_500
 	if tipped:
 		dlg_path = JSON_JANITOR_DEAL_300

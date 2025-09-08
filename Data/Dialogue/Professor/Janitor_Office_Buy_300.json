@@ -2,8 +2,7 @@
   "id": "Janitor_Office_Buy_300",
   "lines": [
 	{ "speaker": "Janitor", "text": "Pleasure doing business." },
-	{ "action": "money", "delta": -300 },
 	{ "action": "adjust_time", "value": 15 },
-	{ "speaker": "Janitor", "text": "Maybe try the classroom later this week… if you’re the type who studies answer sheets instead of books." },
+	{ "speaker": "Janitor", "text": "Maybe try the classroom later this week… if you’re the type who studies answer sheets instead of books." }
   ]
 }
