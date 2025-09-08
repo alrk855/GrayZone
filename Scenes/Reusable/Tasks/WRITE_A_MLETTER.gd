@@ -37,6 +37,7 @@ var zvuci : Array[AudioStream] = [
 @onready var zvuk_wrong : AudioStreamPlayer2D = $"wrong"
 
 func _ready() -> void:
+	GameState.location = "Unknown"
 	finishbutt.modulate.a = 0
 	nevermind.pressed.connect(exit)
 	finishbutt.pressed.connect(exit)

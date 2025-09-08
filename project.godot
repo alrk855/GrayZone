@@ -28,6 +28,7 @@ UiTask="*res://Scripts/Singleton/ui_task.gd"
 A="*res://Scripts/Singleton/GameFlags.gd"
 GameUi="*res://Scenes/GAME_UI.tscn"
 SettingsOverlay="*res://Scripts/Singleton/SettingsOverlay.gd"
+TaskCatalog="*res://Scripts/Singleton/TaskCatalog.gd"
 
 [display]
 

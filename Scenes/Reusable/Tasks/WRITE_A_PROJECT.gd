@@ -69,6 +69,7 @@ var questions: Array[Dictionary] = [
 
 func _ready() -> void:
 	# Initial visibility
+	GameState.location = "Unknown"
 	for b in option_buttons:
 		b.visible = false
 	outro.visible = false
