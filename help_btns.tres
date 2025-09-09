@@ -1,0 +1,46 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://u70vyp214osp"]
+
+[ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="1_rf0ke"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rf0ke"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rf0ke"]
+bg_color = Color(1, 1, 1, 0.556863)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dk0mo"]
+bg_color = Color(0.32549, 0.329412, 0.737255, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1go8a"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.54902)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[resource]
+Button/font_sizes/font_size = 28
+Button/fonts/font = ExtResource("1_rf0ke")
+Button/styles/focus = SubResource("StyleBoxEmpty_rf0ke")
+Button/styles/hover = SubResource("StyleBoxFlat_rf0ke")
+Button/styles/normal = SubResource("StyleBoxFlat_dk0mo")
+Button/styles/pressed = SubResource("StyleBoxFlat_1go8a")

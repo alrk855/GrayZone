@@ -19,9 +19,5 @@
 	  "id": "submit",
 	  "text": "Submit the project"
 	},
-	{
-	  "id": "plagiarized_branch",
-	  "text": "If flagged as plagiarized before Friday → rewrite and resubmit by next day; grade must be C or higher"
-	}
   ]
 }

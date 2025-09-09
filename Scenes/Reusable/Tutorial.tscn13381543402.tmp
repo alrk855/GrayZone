@@ -1,10 +1,12 @@
-[gd_scene load_steps=25 format=3 uid="uid://8qjoeeq8i2cx"]
+[gd_scene load_steps=27 format=3 uid="uid://8qjoeeq8i2cx"]
 
 [ext_resource type="Texture2D" uid="uid://c480naqhjld4" path="res://Images/help.png" id="1_8ambu"]
 [ext_resource type="Script" uid="uid://dqst4g8s2rj12" path="res://Scenes/Reusable/CameraPager.gd" id="2_247o8"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="2_audo3"]
 [ext_resource type="Theme" uid="uid://c3m2tj02araod" path="res://button_back_h.tres" id="3_8or3i"]
-[ext_resource type="Theme" uid="uid://c560pxe12rted" path="res://Themes/button_next_h.tres" id="6_247o8"]
+[ext_resource type="Texture2D" uid="uid://dlge3k10i6b2" path="res://Images/Buttons/next_hover.png" id="4_ta1py"]
+[ext_resource type="Texture2D" uid="uid://d4dcfdbb3cixb" path="res://Images/Buttons/next.png" id="5_w10ii"]
+[ext_resource type="Texture2D" uid="uid://ogwyg0gahy76" path="res://Images/Buttons/next_pressed.png.png" id="6_3cdti"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="7_y7epe"]
 [ext_resource type="Theme" uid="uid://bmo2rrdsh5k1p" path="res://Themes/GameUipadding.tres" id="8_8ha71"]
 [ext_resource type="Script" uid="uid://q5hfisyawpc1" path="res://Scenes/Reusable/next.gd" id="9_5ifyu"]
@@ -14,11 +16,6 @@
 [ext_resource type="Texture2D" uid="uid://dgrannivbu2q" path="res://Icons/money.png" id="11_5ifyu"]
 [ext_resource type="Theme" uid="uid://bh02j7iutoche" path="res://Help2PADDING.tres" id="12_h4m7x"]
 [ext_resource type="Theme" uid="uid://u70vyp214osp" path="res://help_btns.tres" id="12_ksa5r"]
-[ext_resource type="Script" uid="uid://d1tgqoi4sx8j5" path="res://Scenes/Reusable/TriToggleManager.gd" id="14_5ifyu"]
-[ext_resource type="Texture2D" uid="uid://7ovsij24jbc7" path="res://Images/Screenshot 2025-09-09 180956.png" id="16_7ytw6"]
-[ext_resource type="Texture2D" uid="uid://dxh1g3udcnrc6" path="res://Icons/Screenshot 2025-09-09 183205.png" id="17_jwlx7"]
-[ext_resource type="Texture2D" uid="uid://4ljkjxp2e14s" path="res://Icons/Screenshot 2025-09-09 183329.png" id="18_gkd0y"]
-[ext_resource type="Texture2D" uid="uid://cxsdrqkwg2tr" path="res://Images/Screenshot 2025-09-09 183614.png" id="19_r25su"]
 
 [sub_resource type="Theme" id="Theme_5ifyu"]
 default_font = ExtResource("2_audo3")
@@ -43,6 +40,23 @@ content_margin_right = 1.0
 content_margin_bottom = 1.0
 texture = SubResource("GradientTexture2D_saobq")
 modulate_color = Color(0.411964, 0.597081, 1, 0.545098)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ha71"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h4m7x"]
+texture = ExtResource("4_ta1py")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_247o8"]
+texture = ExtResource("5_w10ii")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5ifyu"]
+texture = ExtResource("6_3cdti")
+
+[sub_resource type="Theme" id="Theme_ksa5r"]
+Button/styles/focus = SubResource("StyleBoxEmpty_8ha71")
+Button/styles/hover = SubResource("StyleBoxTexture_h4m7x")
+Button/styles/normal = SubResource("StyleBoxTexture_247o8")
+Button/styles/pressed = SubResource("StyleBoxTexture_5ifyu")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_247o8"]
 content_margin_left = 10.0
@@ -76,7 +90,9 @@ theme = SubResource("Theme_5ifyu")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(960, 540)
 script = ExtResource("2_247o8")
-move_duration = 1.0
+slide_width = null
+slide_count = 8
+move_duration = null
 
 [node name="Page1" type="TextureRect" parent="."]
 layout_mode = 1
@@ -146,7 +162,7 @@ offset_top = 0.0799561
 offset_right = -0.480103
 offset_bottom = 5.63995
 grow_vertical = 0
-theme = ExtResource("6_247o8")
+theme = SubResource("Theme_ksa5r")
 icon_alignment = 1
 expand_icon = true
 script = ExtResource("9_5ifyu")
@@ -264,7 +280,7 @@ offset_top = 0.0799561
 offset_right = -0.480103
 offset_bottom = 0.23999
 grow_vertical = 0
-theme = ExtResource("6_247o8")
+theme = SubResource("Theme_ksa5r")
 icon_alignment = 1
 expand_icon = true
 script = ExtResource("9_5ifyu")
@@ -444,7 +460,6 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="Money" type="Label" parent="Page2/Padding/Border"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.997
@@ -460,21 +475,6 @@ Spending wisely matters, but saving for its own sake won’t help you either."
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="Default" type="Label" parent="Page2/Padding/Border"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.997
-anchor_bottom = 0.937
-offset_left = 11.0
-offset_top = 6.0
-offset_right = 0.0219727
-offset_bottom = 18.547
-theme_override_font_sizes/font_size = 46
-text = "Click a button to show detailed info"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
 [node name="Btn" type="HBoxContainer" parent="Page2"]
 layout_mode = 0
 offset_left = 389.0
@@ -483,384 +483,39 @@ offset_right = 1492.0
 offset_bottom = 327.0
 theme_override_constants/separation = 26
 alignment = 1
-script = ExtResource("14_5ifyu")
 
 [node name="spacer" type="Control" parent="Page2/Btn"]
 custom_minimum_size = Vector2(2, 0)
 layout_mode = 2
 
-[node name="time" type="Button" parent="Page2/Btn"]
+[node name="Button" type="Button" parent="Page2/Btn"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme = ExtResource("12_ksa5r")
-toggle_mode = true
 text = "Time"
 
 [node name="spacer2" type="Control" parent="Page2/Btn"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="day" type="Button" parent="Page2/Btn"]
+[node name="Button2" type="Button" parent="Page2/Btn"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme = ExtResource("12_ksa5r")
-toggle_mode = true
 text = "Day"
 
 [node name="spacer3" type="Control" parent="Page2/Btn"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="money" type="Button" parent="Page2/Btn"]
+[node name="Button3" type="Button" parent="Page2/Btn"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme = ExtResource("12_ksa5r")
-toggle_mode = true
 text = "Money"
-
-[node name="Page3" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 3840.0
-offset_right = 3840.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_8ambu")
-
-[node name="Background" type="PanelContainer" parent="Page3"]
-z_index = -1
-custom_minimum_size = Vector2(1800, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxTexture_audo3")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Page3"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.335
-anchor_top = 0.045
-anchor_right = 0.665
-anchor_bottom = 0.115
-offset_left = 0.799988
-offset_top = 0.399998
-offset_right = -0.800049
-offset_bottom = -0.200005
-grow_horizontal = 2
-theme_override_fonts/normal_font = ExtResource("2_audo3")
-theme_override_font_sizes/normal_font_size = 40
-text = "Task Overview"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Back" type="Button" parent="Page3"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.056
-anchor_top = 0.824
-anchor_right = 0.126
-anchor_bottom = 0.942
-offset_left = 0.479996
-offset_top = 0.0799561
-offset_right = 0.0800018
-offset_bottom = 5.63995
-grow_vertical = 0
-theme = ExtResource("3_8or3i")
-icon_alignment = 1
-expand_icon = true
-script = ExtResource("9_ksa5r")
-
-[node name="Next" type="Button" parent="Page3"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.874
-anchor_top = 0.824
-anchor_right = 0.944
-anchor_bottom = 0.942
-offset_left = -0.0800781
-offset_top = 0.0799561
-offset_right = -0.480103
-offset_bottom = 5.63995
-grow_vertical = 0
-theme = ExtResource("6_247o8")
-icon_alignment = 1
-expand_icon = true
-script = ExtResource("9_5ifyu")
-
-[node name="Slide Num" type="Label" parent="Page3"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.125
-anchor_top = 0.816
-anchor_right = 0.876
-anchor_bottom = 0.955
-offset_top = -0.280029
-offset_right = -0.920044
-offset_bottom = -0.400024
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_fonts/font = ExtResource("7_y7epe")
-theme_override_font_sizes/font_size = 85
-text = "3/8"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Page3"]
-layout_mode = 0
-offset_left = 131.0
-offset_top = 199.0
-offset_right = 1080.0
-offset_bottom = 857.0
-texture = ExtResource("16_7ytw6")
-expand_mode = 1
-
-[node name="Padding" type="PanelContainer" parent="Page3"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.589
-anchor_top = 0.183
-anchor_right = 0.936
-anchor_bottom = 0.79
-offset_left = -0.880127
-offset_top = 0.359985
-offset_right = 0.879883
-offset_bottom = 0.799988
-theme = ExtResource("12_h4m7x")
-
-[node name="Border" type="Panel" parent="Page3/Padding"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_247o8")
-
-[node name="Label" type="Label" parent="Page3/Padding/Border"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.007
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 27.324
-offset_top = 9.0
-offset_right = -36.0
-offset_bottom = -1.0
-theme_override_font_sizes/font_size = 33
-text = "Your tasks are displayed on the board.
-
-Each card is a main objective you can work on.
-
-New tasks appear here as the story progresses.
-
-The board helps you track what’s important at a glance."
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="Page4" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 5760.0
-offset_right = 5760.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_8ambu")
-
-[node name="Background" type="PanelContainer" parent="Page4"]
-z_index = -1
-custom_minimum_size = Vector2(1800, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxTexture_audo3")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.335
-anchor_top = 0.045
-anchor_right = 0.665
-anchor_bottom = 0.115
-offset_left = 0.799988
-offset_top = 0.399998
-offset_right = -0.800049
-offset_bottom = -0.200005
-grow_horizontal = 2
-theme_override_fonts/normal_font = ExtResource("2_audo3")
-theme_override_font_sizes/normal_font_size = 40
-text = "Task Details
-"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Back" type="Button" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.056
-anchor_top = 0.824
-anchor_right = 0.126
-anchor_bottom = 0.942
-offset_left = 0.479996
-offset_top = 0.0799561
-offset_right = 0.0800018
-offset_bottom = 5.63995
-grow_vertical = 0
-theme = ExtResource("3_8or3i")
-icon_alignment = 1
-expand_icon = true
-script = ExtResource("9_ksa5r")
-
-[node name="Next" type="Button" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.874
-anchor_top = 0.824
-anchor_right = 0.944
-anchor_bottom = 0.942
-offset_left = -0.0800781
-offset_top = 0.0799561
-offset_right = -0.480103
-offset_bottom = 5.63995
-grow_vertical = 0
-theme = ExtResource("6_247o8")
-icon_alignment = 1
-expand_icon = true
-script = ExtResource("9_5ifyu")
-
-[node name="Slide Num" type="Label" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.125
-anchor_top = 0.816
-anchor_right = 0.876
-anchor_bottom = 0.955
-offset_top = -0.280029
-offset_right = -0.920044
-offset_bottom = -0.400024
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_fonts/font = ExtResource("7_y7epe")
-theme_override_font_sizes/font_size = 85
-text = "4/8"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Padding" type="PanelContainer" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.602
-anchor_top = 0.18
-anchor_right = 0.936
-anchor_bottom = 0.605
-offset_left = 0.159912
-offset_top = -0.400009
-offset_right = 0.879883
-offset_bottom = -0.400024
-theme = ExtResource("12_h4m7x")
-
-[node name="Border" type="Panel" parent="Page4/Padding"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_247o8")
-
-[node name="Completed" type="Sprite2D" parent="Page4"]
-position = Vector2(1271, 312)
-scale = Vector2(0.674194, 0.635135)
-texture = ExtResource("17_jwlx7")
-
-[node name="Failed" type="Sprite2D" parent="Page4"]
-position = Vector2(1680, 539.622)
-scale = Vector2(0.674194, 0.619893)
-texture = ExtResource("18_gkd0y")
-
-[node name="TextureRect" type="TextureRect" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.074
-anchor_top = 0.174
-anchor_right = 0.563
-anchor_bottom = 0.602
-offset_left = -4.08
-offset_top = 0.0799866
-offset_right = 4.03992
-offset_bottom = 4.83997
-texture = ExtResource("19_r25su")
-expand_mode = 1
-
-[node name="Padding2" type="PanelContainer" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.602
-anchor_top = 0.18
-anchor_right = 0.936
-anchor_bottom = 0.605
-offset_left = -1007.84
-offset_top = 511.6
-offset_right = 7.87988
-offset_bottom = 170.6
-theme = ExtResource("12_h4m7x")
-
-[node name="Border" type="Panel" parent="Page4/Padding2"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_247o8")
-
-[node name="Passed" type="Label" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.732
-anchor_top = 0.209
-anchor_right = 0.923
-anchor_bottom = 0.381
-offset_left = -0.440063
-offset_top = 0.279999
-offset_right = 0.839966
-offset_bottom = 0.519989
-theme_override_font_sizes/font_size = 33
-text = "✅ Green text = task completed."
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="Failed2" type="Label" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.614
-anchor_top = 0.404
-anchor_right = 0.805
-anchor_bottom = 0.576
-offset_left = 0.119995
-offset_top = -0.320007
-offset_right = 0.399902
-offset_bottom = -0.0800171
-theme_override_font_sizes/font_size = 33
-text = "❌ Red text = task failed (irreversible)."
-horizontal_alignment = 2
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="Label" type="Label" parent="Page4"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.083
-anchor_top = 0.672
-anchor_right = 0.932
-anchor_bottom = 0.75
-offset_left = 0.639984
-offset_top = 0.239929
-offset_right = 0.559937
-offset_bottom = -6.10352e-05
-theme_override_font_sizes/font_size = 46
-text = "Clicking a task opens its detailed view, showing every step clearly."
-horizontal_alignment = 1
-vertical_alignment = 1
