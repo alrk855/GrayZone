@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://oq5r73rgk5ps"]
+[gd_scene load_steps=40 format=3 uid="uid://oq5r73rgk5ps"]
 
 [ext_resource type="Texture2D" uid="uid://6aagdtaf1sfw" path="res://Images/MainMenu/BlueSky_HD.jpg" id="1_cp0ys"]
 [ext_resource type="Script" uid="uid://cultu8nfi3tif" path="res://Scripts/MainMenu/click_to_start_picture.gd" id="2_trj04"]
@@ -30,6 +30,8 @@
 [ext_resource type="Theme" uid="uid://de6isrgwoaxiw" path="res://Themes/mkdbutton.tres" id="22_6m47u"]
 [ext_resource type="Script" uid="uid://cylk18w3k86fu" path="res://Scripts/MainMenu/Settings/toggle_master.gd" id="22_fmarx"]
 [ext_resource type="Theme" uid="uid://d1c6ukpor1saj" path="res://Themes/engbutton.tres" id="23_84iac"]
+[ext_resource type="Script" uid="uid://cudlpyxu243gx" path="res://Scenes/gotohelpmainmenu.gd" id="23_msuys"]
+[ext_resource type="PackedScene" uid="uid://8qjoeeq8i2cx" path="res://Scenes/Reusable/Tutorial.tscn" id="24_aylim"]
 [ext_resource type="Script" uid="uid://cc1xjpneexjrs" path="res://Scripts/MainMenu/Settings/music_toggle.gd" id="25_jw7lb"]
 [ext_resource type="Script" uid="uid://dw4x15fvyclna" path="res://Scripts/MainMenu/Settings/mkd.gd" id="27_hkdq0"]
 [ext_resource type="Script" uid="uid://b7cs46p4tebqd" path="res://Scripts/MainMenu/Settings/eng.gd" id="29_xcoo4"]
@@ -442,6 +444,8 @@ size_flags_stretch_ratio = 0.1
 icon = ExtResource("15_ehtkc")
 icon_alignment = 1
 expand_icon = true
+script = ExtResource("23_msuys")
+target_scene = ExtResource("24_aylim")
 
 [node name="ExitSettings" type="Button" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/TitleRow"]
 custom_minimum_size = Vector2(140, 140)

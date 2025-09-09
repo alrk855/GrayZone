@@ -11,6 +11,20 @@ extends Control
 
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 
+# ---------- Background (FULL IMAGE VARIANTS) ----------
+# Point this to the TextureRect or Sprite2D that renders your whole office background.
+@export var background_node_path: NodePath = "background"
+@onready var _bg_node: Node = get_node_or_null(background_node_path)
+
+# Drop full-scene textures here:
+@export var bg_professor: Texture2D
+@export var bg_janitor_clean: Texture2D
+@export var bg_janitor_deal: Texture2D
+@export var bg_empty: Texture2D
+
+var _current_bg: Texture2D = null
+var _janitor_deal_active: bool = false
+
 # ---------- JSON paths ----------
 const D_PROF: String = "res://Data/Dialogue/Professor/"
 
@@ -80,19 +94,51 @@ func _update_presence() -> void:
 	var t: int = GameState.time
 
 	# Professor 13:00–15:00
+	var prof_visible := false
 	if professor_btn:
-		professor_btn.visible = _in(t, T_13_00, T_15_00)
+		prof_visible = _in(t, T_13_00, T_15_00)
+		professor_btn.visible = prof_visible
 
 	# Janitor 17:00–17:45 (D1 always; D2 if not bought)
+	var jan_visible := false
 	if janitor_btn:
 		var bought: bool = GameState.has_flag("bought_project")
-		var show: bool = false
 		if _in(t, T_17_00, T_17_45):
 			if d == 1:
-				show = true
+				jan_visible = true
 			elif d == 2 and not bought:
-				show = true
-		janitor_btn.visible = show
+				jan_visible = true
+		janitor_btn.visible = jan_visible
+
+	# If janitor isn't visible anymore, ensure we reset to cleaning for next time.
+	if not jan_visible and _janitor_deal_active:
+		_janitor_deal_active = false
+
+	# ---- FULL BACKGROUND SWAP ----
+	if prof_visible and bg_professor:
+		_set_bg(bg_professor)
+	elif jan_visible:
+		if _janitor_deal_active and bg_janitor_deal:
+			_set_bg(bg_janitor_deal)
+		elif bg_janitor_clean:
+			_set_bg(bg_janitor_clean)
+		else:
+			_set_bg(bg_empty) # fallback
+	elif bg_empty:
+		_set_bg(bg_empty)
+
+func _set_bg(tex: Texture2D) -> void:
+	if _bg_node == null or tex == null:
+		return
+	if _current_bg == tex:
+		return # avoid redundant assigns
+	_current_bg = tex
+	if _bg_node is TextureRect:
+		(_bg_node as TextureRect).texture = tex
+	elif _bg_node is Sprite2D:
+		(_bg_node as Sprite2D).texture = tex
+	elif _bg_node.has_method("set_texture"):
+		_bg_node.call("set_texture", tex)
 
 func _in(now: int, start_incl: int, end_excl: int) -> bool:
 	return now >= start_incl and now < end_excl
@@ -335,6 +381,8 @@ func _on_prof_intro_option(id: String) -> void:
 func _on_janitor_pressed() -> void:
 	_clear_panel()
 	_janitor_panel_shown = false
+	# opening talk: still cleaning pose
+	_janitor_deal_active = false
 
 	var rep: int = GameState.reputation
 	if rep >= 30 and FileAccess.file_exists(JSON_JANITOR_HIGHREP):
@@ -370,27 +418,33 @@ func _show_janitor_office_options() -> void:
 func _on_janitor_option(id: String) -> void:
 	match id:
 		"janitor_buy_300":
+			_janitor_deal_active = true
 			if GameState.money < 300:
 				DialogueManager.start_dialogue(JSON_JANITOR_NOMONEY, self)
 				return
 			GameState.add_money(-300)
 			_handle_janitor_purchase(true)
 		"janitor_buy_500":
+			_janitor_deal_active = true
 			if GameState.money < 500:
 				DialogueManager.start_dialogue(JSON_JANITOR_NOMONEY, self)
 				return
 			GameState.add_money(-500)
 			_handle_janitor_purchase(false)
 		"janitor_anything_else":
+			_janitor_deal_active = true
 			if not GameState.tasks.has("Visit the Classroom"):
 				GameState.add_task("Visit the Classroom")
 			DialogueManager.start_dialogue(JSON_JANITOR_ANYTHING_ELSE, self)
 		"janitor_pass":
+			_janitor_deal_active = false
 			DialogueManager.start_dialogue(JSON_JANITOR_PASS, self)
 		"back":
+			_janitor_deal_active = false
 			DialogueManager.end_active_dialogue()
 			_clear_panel()
 		_:
+			_janitor_deal_active = false
 			DialogueManager.end_active_dialogue()
 			_clear_panel()
 

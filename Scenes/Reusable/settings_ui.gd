@@ -2,10 +2,12 @@ extends CanvasLayer
 # Root is a CanvasLayer; there is another CanvasLayer inside for the Buttons.
 
 # --- Replace with your real paths ---
-const HELP_SCENE_PATH      := "res://SCENES/Help.tscn"
+const HELP_SCENE_PATH      := "res://Scenes/Reusable/Tutorial.tscn"
 const MAIN_MENU_SCENE_PATH := "res://Scenes/main_menu.tscn"
 const CLICK_SFX_PATH       := "res://Audio/u4.mp3"
 const HOVER_SFX_PATH       := "res://Audio/u1.mp3"
+# If your HUD (time/day/money) is an Autoload/CanvasLayer, set its path OR add it to the "hud" group.
+const HUD_NODEPATH         := ""  # e.g. "/root/HUD" or "/root/TopHUD" (leave "" to auto-find)
 # ------------------------------------
 
 # Layers
@@ -33,8 +35,10 @@ const HOVER_SFX_PATH       := "res://Audio/u1.mp3"
 
 func _ready() -> void:
 	# Keep layers above the world/HUD
-	if _root_layer.layer < 100: _root_layer.layer = 100
-	if _buttons_layer: _buttons_layer.layer = _root_layer.layer + 1
+	if _root_layer.layer < 100:
+		_root_layer.layer = 100
+	if _buttons_layer:
+		_buttons_layer.layer = _root_layer.layer + 1
 
 	# Start closed (autoload opens it)
 	hide_settings()
@@ -62,15 +66,21 @@ func _ready() -> void:
 
 func show_settings() -> void:
 	_root_layer.visible = true
-	if _buttons_layer: _buttons_layer.visible = true
+	if _buttons_layer:
+		_buttons_layer.visible = true
 	_show_menu_state()
 
 func hide_settings() -> void:
 	_root_layer.visible = false
-	if _buttons_layer: _buttons_layer.visible = false
+	if _buttons_layer:
+		_buttons_layer.visible = false
 
 func is_open() -> bool:
-	return _root_layer.visible or (_buttons_layer and _buttons_layer.visible)
+	if _root_layer.visible:
+		return true
+	if _buttons_layer and _buttons_layer.visible:
+		return true
+	return false
 
 # --------------- UI state -----------------
 
@@ -89,8 +99,47 @@ func _show_confirm_state() -> void:
 # --------------- Handlers -----------------
 
 func _on_help_pressed() -> void:
+	var tree := get_tree()
+
+	# Mark context BEFORE switching: opened from in-game, not menu
+	tree.set_meta("tutorial_from_menu", false)
+
+	# Remember previous scene path
+	var prev := ""
+	if tree.current_scene != null:
+		prev = tree.current_scene.scene_file_path
+	tree.set_meta("tutorial_prev_scene_path", prev)
+
+	# Hide persistent HUD while tutorial is open
+	_set_hud_visible(false)
+
+	# Save/lock previous location and switch to Unknown to block other windows
+	if Engine.has_singleton("GameState"):
+		var GS := Engine.get_singleton("GameState")
+		if GS and GS.has("location"):
+			var prev_loc := String(GS.location)
+			tree.set_meta("tutorial_prev_location", prev_loc)
+			GS.location = "Unknown"
+
+	# Freeze gameplay time WITHOUT pausing the whole engine.
+	# Prefer your GameState; if none, we will pause the tree and let the Tutorial process while paused.
+	var used_gamestate_freeze := false
+	if Engine.has_singleton("GameState"):
+		var GS2 := Engine.get_singleton("GameState")
+		if GS2 and GS2.has_method("push_freeze"):
+			GS2.push_freeze("tutorial")
+			used_gamestate_freeze = true
+		elif GS2 and GS2.has_method("freeze_time"):
+			GS2.freeze_time(true)
+			used_gamestate_freeze = true
+
+	if not used_gamestate_freeze:
+		# Fallback: pause the tree; Tutorial must have pause_mode=PROCESS (see TutorialBootstrap.gd)
+		tree.paused = true
+		tree.set_meta("paused_by_tutorial", true)
+
 	hide_settings() # optional: hide before switching
-	get_tree().change_scene_to_file(HELP_SCENE_PATH)
+	tree.change_scene_to_file(HELP_SCENE_PATH)
 
 func _on_exit_pressed() -> void:
 	hide_settings()
@@ -98,7 +147,7 @@ func _on_exit_pressed() -> void:
 func _on_main_menu_pressed() -> void:
 	# Block while dialogue is active (no UI change, just ignore)
 	if _is_dialogue_active():
-		_play_click_sfx() # (optional) soft feedback
+		_play_click_sfx() # optional soft feedback
 		return
 	_show_confirm_state()
 
@@ -123,22 +172,58 @@ func _is_dialogue_active() -> bool:
 
 	# 1) Our always-used choice UI
 	var ccb: Node = root.find_child("CharacterChoiceButtons", true, false)
-	if ccb is Control and (ccb as Control).visible:
-		return true
+	if ccb is Control:
+		var ccb_ctrl := ccb as Control
+		if ccb_ctrl.visible:
+			return true
 
 	# 2) Common dialogue groups (if you use them)
 	for group_name in ["dialogue", "dialogue_ui", "Dialogue", "DialogueUI"]:
 		var nodes := get_tree().get_nodes_in_group(group_name)
 		for n in nodes:
-			if n is Control and (n as Control).visible:
-				return true
+			if n is Control:
+				var ctrl := n as Control
+				if ctrl.visible:
+					return true
 
 	# 3) Common node names
 	var dlg: Node = root.find_child("Dialogue", true, false)
-	if dlg is Control and (dlg as Control).visible:
-		return true
+	if dlg is Control:
+		var dlg_ctrl := dlg as Control
+		if dlg_ctrl.visible:
+			return true
 
 	return false
+
+# ----------------- HUD helpers --------------------
+
+func _get_hud_node() -> CanvasItem:
+	var tree := get_tree()
+	if HUD_NODEPATH != "":
+		var node := tree.get_root().get_node_or_null(HUD_NODEPATH)
+		if node and node is CanvasItem:
+			return node as CanvasItem
+
+	# Fallbacks: try by common names / group
+	var hud := tree.get_root().find_child("HUD", true, false)
+	if hud and hud is CanvasItem:
+		return hud as CanvasItem
+
+	var top_hud := tree.get_root().find_child("TopHUD", true, false)
+	if top_hud and top_hud is CanvasItem:
+		return top_hud as CanvasItem
+
+	var group_nodes := tree.get_nodes_in_group("hud")
+	for n in group_nodes:
+		if n is CanvasItem:
+			return n as CanvasItem
+
+	return null
+
+func _set_hud_visible(v: bool) -> void:
+	var hud := _get_hud_node()
+	if hud:
+		hud.visible = v
 
 # ----------------- SFX --------------------
 
