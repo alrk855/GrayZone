@@ -23,6 +23,11 @@ const CLASSROOM_CLOSE := PROFESSOR_CLOSE
 var _panel: Control = null
 
 func _ready() -> void:
+	if GameState.subject1.strip_edges() == "":
+		GameState.subject1 = "Geography"
+	if GameState.subject2.strip_edges() == "":
+		GameState.subject2 = "Math"
+
 	GameUi.visible = true
 	GameState.location = "School"
 	popup_label.visible = false

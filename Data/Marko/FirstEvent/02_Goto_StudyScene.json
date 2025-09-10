@@ -21,7 +21,7 @@
 	},
 	{
 	  "action": "goto",
-	  "scene": "res://Scenes/Reusable/Events/MarkoStudy.tscn"
+	  "scene": "res://Scenes/Reusable/Events/StudyWithMarko.tscn"
 	}
   ]
 }
