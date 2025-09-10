@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://drp7tqnlm3vf2"]
+[gd_scene load_steps=5 format=3 uid="uid://drp7tqnlm3vf2"]
 
 [ext_resource type="Script" uid="uid://ckmplrqmouvgq" path="res://Scenes/Reusable/Tasks/study.gd" id="1_1wda2"]
 [ext_resource type="Texture2D" uid="uid://kne657xr38mi" path="res://Images/20250825_0850_Blank Paper Desk Scene_remix_01k3fzrc0vf4c9xkp7ym5br316.png" id="2_yfj26"]
+[ext_resource type="Theme" uid="uid://7ycapjlvlfln" path="res://studythm.tres" id="3_d12tk"]
 [ext_resource type="Texture2D" uid="uid://ns0vulj4vsut" path="res://Icons/arrow-right (1).png" id="3_yfj26"]
 
 [node name="Study" type="Control"]
@@ -18,84 +19,113 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -452.0
+offset_top = -320.0
+offset_right = 392.0
+offset_bottom = 166.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_yfj26")
+expand_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TextureRect"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -405.0
-offset_right = 300.0
-offset_bottom = 445.0
+anchors_preset = -1
+anchor_left = 0.329
+anchor_top = 0.127
+anchor_right = 0.678
+anchor_bottom = 0.922
+offset_left = -31.3561
+offset_top = 241.118
+offset_right = 8.00793
+offset_bottom = -64.8521
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 50
+theme = ExtResource("3_d12tk")
+theme_override_constants/separation = 33
 
 [node name="Question1" type="Label" parent="TextureRect/VBoxContainer"]
 custom_minimum_size = Vector2(600, 40)
 layout_mode = 2
+text = "Question 1"
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Answer1" type="Label" parent="TextureRect/VBoxContainer"]
-custom_minimum_size = Vector2(400, 40)
+custom_minimum_size = Vector2(800, 40)
 layout_mode = 2
 size_flags_horizontal = 4
+text = "Anwser"
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Question2" type="Label" parent="TextureRect/VBoxContainer"]
 custom_minimum_size = Vector2(600, 40)
 layout_mode = 2
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Answer2" type="Label" parent="TextureRect/VBoxContainer"]
-custom_minimum_size = Vector2(400, 40)
+custom_minimum_size = Vector2(800, 40)
 layout_mode = 2
 size_flags_horizontal = 4
+text = "s"
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Question3" type="Label" parent="TextureRect/VBoxContainer"]
 custom_minimum_size = Vector2(600, 40)
 layout_mode = 2
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Answer3" type="Label" parent="TextureRect/VBoxContainer"]
-custom_minimum_size = Vector2(400, 40)
+custom_minimum_size = Vector2(800, 40)
 layout_mode = 2
 size_flags_horizontal = 4
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Question4" type="Label" parent="TextureRect/VBoxContainer"]
 custom_minimum_size = Vector2(600, 40)
 layout_mode = 2
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Answer4" type="Label" parent="TextureRect/VBoxContainer"]
-custom_minimum_size = Vector2(400, 40)
+custom_minimum_size = Vector2(800, 40)
 layout_mode = 2
 size_flags_horizontal = 4
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Question5" type="Label" parent="TextureRect/VBoxContainer"]
 custom_minimum_size = Vector2(600, 40)
 layout_mode = 2
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Answer5" type="Label" parent="TextureRect/VBoxContainer"]
-custom_minimum_size = Vector2(400, 40)
+custom_minimum_size = Vector2(800, 40)
 layout_mode = 2
 size_flags_horizontal = 4
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Done" type="Button" parent="TextureRect"]
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 1
-anchors_preset = 3
+anchors_preset = 6
 anchor_left = 1.0
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -412.0
-offset_top = -607.0
-offset_right = -212.0
-offset_bottom = -507.0
+anchor_bottom = 0.5
+offset_left = -764.0
+offset_top = -50.0
+offset_right = -564.0
+offset_bottom = 50.0
 grow_horizontal = 0
-grow_vertical = 0
+grow_vertical = 2
 icon = ExtResource("3_yfj26")
 icon_alignment = 1
 expand_icon = true

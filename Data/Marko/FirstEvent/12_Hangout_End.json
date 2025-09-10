@@ -2,22 +2,31 @@
   "id": "Marko_Hangout_End",
   "lines": [
 	{
-	  "action": "adjust_reputation",
-	  "value": -5
+	  "speaker": "Marko",
+	  "text": "That was fun. You needed a break anyway."
 	},
 	{
 	  "speaker": "Marko",
-	  "text": "Not bad. Next time maybe we might actually study."
+	  "text": "Oh — before I forget. The janitor at school? Not just a mop and bucket guy.\nHe’s got… access. To things. Let’s just say: past projects live longer than you’d think."
+	},
+	{
+	  "action": "set_flag",
+	  "flag": "marko_tip",
+	  "value": true
+	},
+	{
+	  "speaker": "System",
+	  "text": "New task added: Visit the Professor’s Office between 17:00 and 17:45."
+	},
+	{
+	  "action": "add_task",
+	  "task": "visit_professor_office"
 	},
 	{
 	  "action": "set_flags",
 	  "flags": [
 		"marko_first_event_done"
 	  ]
-	},
-	{
-	  "action": "goto",
-	  "scene": "res://Scenes/Reusable/Map/Home.tscn"
 	}
   ]
 }

@@ -4,9 +4,6 @@ const LABELS_CONTAINER_PATH: NodePath = ^"TextureRect/VBoxContainer"
 const DONE_BUTTON_PATH: NodePath      = ^"TextureRect/Done"
 const HOME_SCENE_PATH: String         = "res://Scenes/Reusable/Map/Home.tscn"
 
-const FONT_SIZE: int = 45
-const TEXT_COLOR := Color.BLACK
-
 const KEY_STUDY_MODE: String   = "__study_mode"
 const KEY_SUBJECT_PICK: String = "__study_subject_pick"
 const KEY_RETURN_SCENE: String = "__study_return_scene"
@@ -39,12 +36,7 @@ func _ready() -> void:
 	for i in range(5):
 		var ql: Label = q_labels[i]
 		var al: Label = a_labels[i]
-		ql.add_theme_font_size_override("font_size", FONT_SIZE)
-		al.add_theme_font_size_override("font_size", FONT_SIZE)
-		ql.add_theme_color_override("font_color", TEXT_COLOR)
-		al.add_theme_color_override("font_color", TEXT_COLOR)
-		ql.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		al.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		# No font/size/color overrides; let your theme handle it.
 		ql.visible = false
 		al.visible = false
 		ql.text = ""

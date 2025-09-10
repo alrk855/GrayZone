@@ -7,8 +7,5 @@
 	{ "speaker": "Marko", "text": "Alright then, see you around." },
 
 	{ "action": "set_flags", "flags": ["marko_first_event_done"] },
-
-
-	{ "action": "goto", "scene": "res://Scenes/Reusable/Map/Home.tscn" }
   ]
 }

@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://jym8uv2ij5ac" path="res://Scenes/Reusable/Dialogue.gd" id="3_l7n5n"]
 [ext_resource type="Texture2D" uid="uid://oip0thgbr6fb" path="res://Images/Buttons/buttonhover.png" id="4_mdvt6"]
 [ext_resource type="Texture2D" uid="uid://6ikg5804ucfw" path="res://Images/Buttons/buttonpressed.png" id="5_nf0h5"]
+[ext_resource type="Texture2D" uid="uid://c4ie6t5o4ci1h" path="res://Images/CharacterFrames/secretaryframe.png" id="7_3mbu0"]
 [ext_resource type="Theme" uid="uid://cic3ab2y0afcf" path="res://Themes/1pxmarginVbox.tres" id="7_w3bqa"]
 [ext_resource type="Texture2D" uid="uid://c5jkto6cx7703" path="res://Images/Buttons/buttonunpressed.png" id="8_nf0h5"]
-[ext_resource type="Texture2D" uid="uid://dcn21tw4djt30" path="res://Images/CharacterFrames/20250729_1156_Decorative Empty Frame_remix_01k1asp7ezf5b98s7pd91qn311.png" id="14_ukpsn"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nf0h5"]
 texture = ExtResource("4_mdvt6")
@@ -118,13 +118,14 @@ anchor_left = 0.12
 anchor_top = -0.093
 anchor_right = 1.195
 anchor_bottom = 1.169
+offset_left = 13.0
 offset_top = -2.004
-offset_right = -1.52588e-05
+offset_right = 25.0
 offset_bottom = -0.0680084
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
-texture = ExtResource("14_ukpsn")
+texture = ExtResource("7_3mbu0")
 expand_mode = 1
 
 [node name="Control2" type="Control" parent="Dialogue Box"]
@@ -184,7 +185,7 @@ offset_bottom = 10.2211
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 37
-text = "A "
+text = "Professor"
 horizontal_alignment = 1
 vertical_alignment = 1
 

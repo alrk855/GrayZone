@@ -14,10 +14,6 @@
 	  "value": 5
 	},
 	{
-	  "action": "adjust_time",
-	  "value": 30
-	},
-	{
 	  "action": "set_flags",
 	  "flags": [
 		"marko_first_event_done"

@@ -1,0 +1,12 @@
+{
+  "id": "visit_professor_office",
+  "title": "Visit the Professor's Office",
+  "giver": "Marko",
+  "location": "School / Professor's Office",
+  "steps": [
+	{
+	  "id": "go_prof_office",
+	  "text": "Go to the Professor’s Office between 17:00 and 17:45"
+	}
+  ]
+}

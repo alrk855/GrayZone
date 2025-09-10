@@ -1,179 +1,100 @@
 extends Control
 
-@export var home_button: Button
-const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
+const LABELS_CONTAINER_PATH: NodePath = ^"TextureRect/VBoxContainer"
+const DONE_BUTTON_PATH: NodePath      = ^"TextureRect/Done"
+const HOME_SCENE_PATH: String         = "res://Scenes/Reusable/Map/Home.tscn"
 
-const CITY_SCENE_PATH := "res://Scenes/Reusable/Map/City.tscn"
-const STUDY_SCENE_PATH := "res://Scenes/Reusable/Tasks/Study.tscn"
-const WRITE_CV_SCENE_PATH := "res://Scenes/Reusable/Tasks/WRITE_A_CV.tscn"
-const WRITE_MOTIVATION_PATH := "res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn"
-const WRITE_PROJECT_PATH := "res://Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn"
-const MAILBOX_SCENE_PATH := "res://Scenes/Reusable/Tasks/MailboxCheck.tscn"
-const SOCIAL_SCENE_PATH := "res://Scenes/Reusable/Tasks/Social.tscn"
+const KEY_STUDY_MODE: String   = "__study_mode"
+const KEY_SUBJECT_PICK: String = "__study_subject_pick"
+const KEY_RETURN_SCENE: String = "__study_return_scene"
 
-var _panel: Control = null
-const SLEEP_AVAILABLE_MIN := 19 * 60
-const KEY_STUDY_MODE := "__study_mode"
-const KEY_SUBJECT_PICK := "__study_subject_pick"
+const REGULAR_STUDY_TIME_MIN: int = 45  # add 45 minutes per study session
 
 func _ready() -> void:
-	if GameState.get_task_progress("cv") == 0:
-		GameState.update_task_step("cv")  # step 1
-	if GameState.get_task_progress("motivation") == 0:
-		GameState.update_task_step("motivation")  # step 1
-		
-	GameState.location = "Home"
-	if home_button:
-		home_button.pressed.connect(_on_home_btn_pressed)
+	GameState.location = "Study"
 
-func _on_home_btn_pressed() -> void:
-	show_home_menu()
+	var container: Node = get_node_or_null(LABELS_CONTAINER_PATH)
+	if container == null:
+		push_error("StudyShell: LABELS_CONTAINER_PATH not found: " + str(LABELS_CONTAINER_PATH))
+		return
 
-# ---------------- Menus ----------------
+	var done_btn: Button = get_node_or_null(DONE_BUTTON_PATH) as Button
+	if done_btn and not done_btn.pressed.is_connected(Callable(self, "_on_done_pressed")):
+		done_btn.pressed.connect(_on_done_pressed)
 
-func show_home_menu() -> void:
-	var opts := [
-		{"id":"activities","text":"Activities"},
-		{"id":"city","text":"City"},
-	]
-	if GameState.time >= SLEEP_AVAILABLE_MIN and not GameState.is_time_frozen():
-		opts.append({"id":"sleep","text":"Sleep"})
+	var q_labels: Array[Label] = []
+	var a_labels: Array[Label] = []
+	for i in range(1, 6):
+		var ql := container.get_node_or_null("Question%d" % i) as Label
+		var al := container.get_node_or_null("Answer%d" % i)   as Label
+		if ql == null or al == null:
+			push_error("StudyShell: Need Question%d and Answer%d under %s" % [i, i, str(LABELS_CONTAINER_PATH)])
+			return
+		q_labels.append(ql)
+		a_labels.append(al)
+
+	for i in range(5):
+		var ql: Label = q_labels[i]
+		var al: Label = a_labels[i]
+		ql.visible = false
+		al.visible = false
+		ql.text = ""
+		al.text = ""
+
+	var mode: String = String(GameState.features_unlocked.get(KEY_STUDY_MODE, "regular")).to_lower()
+	var pick: String = String(GameState.features_unlocked.get(KEY_SUBJECT_PICK, "subject1")).to_lower()
+
+	var subject_raw: String = ""
+	if pick == "subject2":
+		subject_raw = GameState.subject2
 	else:
-		opts.append({"id":"sleep_locked","text":"Sleep (Locked)"})
-	opts.append({"id":"back","text":"Back"})
-	_show_choices(opts, Callable(self,"_on_home_choice"))
+		subject_raw = GameState.subject1
 
-func _on_home_choice(id: String) -> void:
-	match id:
-		"activities":
-			_show_activities_menu()
-		"city":
-			_change_scene(CITY_SCENE_PATH)
-		"sleep":
-			_do_sleep()
-		"sleep_locked":
-			show_home_menu()
-		"back":
-			_clear_panel()
+	if subject_raw.strip_edges() == "":
+		subject_raw = GameState.subject1
 
-func _show_activities_menu() -> void:
-	var opts := [
-		{"id":"study","text":"Study"},
-		{"id":"schoolwork","text":"Schoolwork"},
-		{"id":"mailbox","text":"Check Mailbox"},
-		{"id":"social","text":"Social Media"},
-		{"id":"back","text":"Back"}
-	]
-	_show_choices(opts, Callable(self,"_on_activities_choice"))
+	if mode == "marko":
+		var pair_q: Array[Dictionary] = []
+		var finals_pair: Array[String] = GameState.get_today_finals_pair_ids(subject_raw)
+		for id in finals_pair:
+			var qd: Dictionary = GameState.get_question_by_id(subject_raw, id)
+			if not qd.is_empty():
+				pair_q.append(qd)
+		if pair_q.size() < 2:
+			var paper := GameState.build_exam_paper(subject_raw)
+			for i in range(paper.size()):
+				if pair_q.size() >= 2:
+					break
+				var pid := String((paper[i] as Dictionary).get("id",""))
+				var qd2 := GameState.get_question_by_id(subject_raw, pid)
+				if not qd2.is_empty():
+					pair_q.append(qd2)
+		if pair_q.size() == 0:
+			q_labels[2].text = "No questions available."
+			a_labels[2].text = ""
+			q_labels[2].visible = true
+		elif pair_q.size() == 1:
+			_fill_slot(q_labels[2], a_labels[2], pair_q[0])
+		else:
+			_fill_slot(q_labels[1], a_labels[1], pair_q[0])
+			_fill_slot(q_labels[3], a_labels[3], pair_q[1])
+	else:
+		var daily_batch: Array = GameState.get_daily_study_sheet(subject_raw)
+		for i in range(min(5, daily_batch.size())):
+			_fill_slot(q_labels[i], a_labels[i], daily_batch[i])
 
-func _on_activities_choice(id: String) -> void:
-	match id:
-		"study":
-			_show_study_menu()
-		"schoolwork":
-			_show_schoolwork_menu()
-		"mailbox":
-			_change_scene(MAILBOX_SCENE_PATH)
-		"social":
-			_change_scene(SOCIAL_SCENE_PATH)
-		"back":
-			show_home_menu()
+	# Count study & advance time when the session opens
+	GameState.count_study_if_new(subject_raw, REGULAR_STUDY_TIME_MIN)
+	GameState.adjust_time(REGULAR_STUDY_TIME_MIN)
 
-func _show_study_menu() -> void:
-	var s1 := GameState.subject1 if GameState.subject1.strip_edges() != "" else "[Subject 1]"
-	var s2 := GameState.subject2 if GameState.subject2.strip_edges() != "" else "[Subject 2]"
-	var opts := [
-		{"id":"s1","text":"Study " + s1},
-		{"id":"s2","text":"Study " + s2},
-		{"id":"back","text":"Back"}
-	]
-	_show_choices(opts, Callable(self,"_on_study_choice"))
+func _fill_slot(ql: Label, al: Label, qd: Dictionary) -> void:
+	ql.text = String(qd.get("q",""))
+	al.text = "Answer: " + String(qd.get("correct",""))
+	ql.visible = true
+	al.visible = true
 
-func _on_study_choice(id: String) -> void:
-	match id:
-		"s1":
-			GameState.features_unlocked[KEY_STUDY_MODE] = "regular"
-			GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject1"
-			_change_scene(STUDY_SCENE_PATH)
-		"s2":
-			GameState.features_unlocked[KEY_STUDY_MODE] = "regular"
-			GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject2"
-			_change_scene(STUDY_SCENE_PATH)
-		"back":
-			_show_activities_menu()
-
-func _show_schoolwork_menu() -> void:
-	var opts := []
-
-	# unlocked after meeting secretary
-	if GameState.has_flag("secretary_met"):
-		opts.append({"id":"cv","text":"Write CV"})
-		opts.append({"id":"motivation","text":"Write Motivation Letter"})
-
-	# project gated
-	if _is_project_available_now():
-		opts.append({"id":"project","text":"Write Project"})
-
-	opts.append({"id":"back","text":"Back"})
-	_show_choices(opts, Callable(self,"_on_schoolwork_choice"))
-
-func _on_schoolwork_choice(id: String) -> void:
-	match id:
-		"cv":
-			_change_scene(WRITE_CV_SCENE_PATH)
-		"motivation":
-			_change_scene(WRITE_MOTIVATION_PATH)
-		"project":
-			_change_scene(WRITE_PROJECT_PATH)
-		"back":
-			_show_activities_menu()
-
-# --------------- helpers ----------------
-
-func _show_choices(opts: Array, cb: Callable) -> void:
-	_clear_panel()
-	var ps := load(CCB_SCENE_PATH) as PackedScene
-	if ps == null:
-		push_error("CharacterChoiceButtons not found: " + CCB_SCENE_PATH)
-		return
-	_panel = ps.instantiate()
-	add_child(_panel)
-	_panel.call("show_options", opts, cb)
-
-func _clear_panel() -> void:
-	if _panel and is_instance_valid(_panel):
-		_panel.queue_free()
-	_panel = null
-
-func _change_scene(path: String) -> void:
-	if GameState.is_time_frozen():
-		print("⏸️ Finish the conversation first.")
-		return
-	_clear_panel()
-	if path != "" and ResourceLoader.exists(path):
-		get_tree().change_scene_to_file(path)
-
-func _do_sleep() -> void:
-	if GameState.is_time_frozen():
-		print("⏸️ Finish the conversation first.")
-		return
-	if GameState.time < SLEEP_AVAILABLE_MIN:
-		show_home_menu()
-		return
-	GameState.sleep_now()
-	_clear_panel()
-
-# ——— availability logic ———
-func _is_project_available_now() -> bool:
-	# Otherwise it’s available only if:
-	# - not already submitted
-	# - not already written (until printed & submitted)
-	# - not bought from janitor (bought skips writing)
-	# - professor has accepted the assignment
-	if GameState.has_flag("project_submitted"):
-		return false
-	if GameState.has_flag("project_written"):
-		return false
-	if GameState.has_flag("bought_project"):
-		return false
-	return GameState.has_flag("project_accepted")
+func _on_done_pressed() -> void:
+	var return_path: String = String(GameState.features_unlocked.get(KEY_RETURN_SCENE, HOME_SCENE_PATH))
+	if return_path.strip_edges() == "":
+		return_path = HOME_SCENE_PATH
+	get_tree().change_scene_to_file(return_path)
