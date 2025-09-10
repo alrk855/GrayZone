@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://dk4oomrw4r2r"]
 
 [ext_resource type="Script" uid="uid://id2q7hwo013j" path="res://Scenes/Reusable/Events/start_event.gd" id="1_33p7c"]
+[ext_resource type="Texture2D" uid="uid://c88r7fxubxtrr" path="res://Images/classroom_profesor.png" id="2_6mhsx"]
 [ext_resource type="Texture2D" uid="uid://b2ewotw87jjtg" path="res://Images/classroom.png" id="2_k4npa"]
-[ext_resource type="Texture2D" uid="uid://cc5btkfygxwbe" path="res://Images/Characters/klasenchopped.png" id="3_k4npa"]
-[ext_resource type="Texture2D" uid="uid://degyqjdnkcr2f" path="res://Images/Characters/direktorchopped.png" id="3_vie7q"]
+[ext_resource type="Texture2D" uid="uid://sp1syac5qg46" path="res://Images/classroom_so_ridektor.png" id="3_dnix2"]
 
 [node name="main" type="Control"]
 layout_mode = 3
@@ -13,6 +13,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_33p7c")
+bg_teacher = ExtResource("2_6mhsx")
+bg_principal = ExtResource("3_dnix2")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 modulate = Color(1, 1, 1, 0)
@@ -51,38 +53,3 @@ custom_minimum_size = Vector2(150, 250)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-
-[node name="principal" type="TextureRect" parent="background/Control/Control"]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = -0.093
-anchor_top = 0.3
-anchor_right = 1.127
-anchor_bottom = 1.0
-offset_left = -0.0499992
-offset_right = -0.0500183
-offset_bottom = -1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-texture = ExtResource("3_vie7q")
-expand_mode = 1
-
-[node name="teacher2" type="TextureRect" parent="background/Control/Control"]
-clip_contents = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.147
-anchor_top = 0.08
-anchor_right = 0.98
-anchor_bottom = 0.996
-offset_left = -0.0499992
-offset_bottom = -1.52588e-05
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-texture = ExtResource("3_k4npa")
-expand_mode = 1

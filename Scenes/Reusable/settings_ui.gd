@@ -1,14 +1,12 @@
 extends CanvasLayer
 # Root is a CanvasLayer; there is another CanvasLayer inside for the Buttons.
 
-# --- Replace with your real paths ---
+# --- Paths (adjust if needed) ---
 const HELP_SCENE_PATH      := "res://Scenes/Reusable/Tutorial.tscn"
 const MAIN_MENU_SCENE_PATH := "res://Scenes/main_menu.tscn"
 const CLICK_SFX_PATH       := "res://Audio/u4.mp3"
 const HOVER_SFX_PATH       := "res://Audio/u1.mp3"
-# If your HUD (time/day/money) is an Autoload/CanvasLayer, set its path OR add it to the "hud" group.
-const HUD_NODEPATH         := ""  # e.g. "/root/HUD" or "/root/TopHUD" (leave "" to auto-find)
-# ------------------------------------
+# --------------------------------
 
 # Layers
 @onready var _root_layer    : CanvasLayer = self
@@ -23,15 +21,15 @@ const HUD_NODEPATH         := ""  # e.g. "/root/HUD" or "/root/TopHUD" (leave ""
 
 @onready var _padding_container : HBoxContainer = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/PaddingContainer
 
-@onready var _buttons_box       : VBoxContainer = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons
-@onready var _btn_main_menu     : Button       = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/MainMenu
-@onready var _btn_save          : Button       = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Save
-@onready var _btn_load          : Button       = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Load
+@onready var _buttons_box       : VBoxContainer   = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons
+@onready var _btn_main_menu     : Button          = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/MainMenu
+@onready var _btn_save          : Button          = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Save
+@onready var _btn_load          : Button          = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Load
 
-@onready var _warning_box       : HBoxContainer = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Warning
-@onready var _yesno_box         : HBoxContainer = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"
-@onready var _btn_yes           : Button       = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container/Yes"
-@onready var _btn_no            : Button       = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container/No"
+@onready var _warning_box       : HBoxContainer   = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Warning
+@onready var _yesno_box         : HBoxContainer   = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"
+@onready var _btn_yes           : Button          = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container/Yes"
+@onready var _btn_no            : Button          = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container/No"
 
 func _ready() -> void:
 	# Keep layers above the world/HUD
@@ -101,7 +99,7 @@ func _show_confirm_state() -> void:
 func _on_help_pressed() -> void:
 	var tree := get_tree()
 
-	# Mark context BEFORE switching: opened from in-game, not menu
+	# Mark context BEFORE switching: opened from in-game (not menu)
 	tree.set_meta("tutorial_from_menu", false)
 
 	# Remember previous scene path
@@ -110,35 +108,17 @@ func _on_help_pressed() -> void:
 		prev = tree.current_scene.scene_file_path
 	tree.set_meta("tutorial_prev_scene_path", prev)
 
-	# Hide persistent HUD while tutorial is open
-	_set_hud_visible(false)
+	# Hide your persistent game UI (Singleton)
+	GameUi.visible = false
 
-	# Save/lock previous location and switch to Unknown to block other windows
-	if Engine.has_singleton("GameState"):
-		var GS := Engine.get_singleton("GameState")
-		if GS and GS.has("location"):
-			var prev_loc := String(GS.location)
-			tree.set_meta("tutorial_prev_location", prev_loc)
-			GS.location = "Unknown"
+	# Lock location so nothing else opens over tutorial
+	tree.set_meta("tutorial_prev_location", String(GameState.location))
+	GameState.location = "Unknown"
 
-	# Freeze gameplay time WITHOUT pausing the whole engine.
-	# Prefer your GameState; if none, we will pause the tree and let the Tutorial process while paused.
-	var used_gamestate_freeze := false
-	if Engine.has_singleton("GameState"):
-		var GS2 := Engine.get_singleton("GameState")
-		if GS2 and GS2.has_method("push_freeze"):
-			GS2.push_freeze("tutorial")
-			used_gamestate_freeze = true
-		elif GS2 and GS2.has_method("freeze_time"):
-			GS2.freeze_time(true)
-			used_gamestate_freeze = true
+	# Freeze gameplay time WITHOUT pausing the engine
+	GameState.push_time_freeze("tutorial")
 
-	if not used_gamestate_freeze:
-		# Fallback: pause the tree; Tutorial must have pause_mode=PROCESS (see TutorialBootstrap.gd)
-		tree.paused = true
-		tree.set_meta("paused_by_tutorial", true)
-
-	hide_settings() # optional: hide before switching
+	hide_settings()  # optional: hide settings before switching
 	tree.change_scene_to_file(HELP_SCENE_PATH)
 
 func _on_exit_pressed() -> void:
@@ -194,36 +174,6 @@ func _is_dialogue_active() -> bool:
 			return true
 
 	return false
-
-# ----------------- HUD helpers --------------------
-
-func _get_hud_node() -> CanvasItem:
-	var tree := get_tree()
-	if HUD_NODEPATH != "":
-		var node := tree.get_root().get_node_or_null(HUD_NODEPATH)
-		if node and node is CanvasItem:
-			return node as CanvasItem
-
-	# Fallbacks: try by common names / group
-	var hud := tree.get_root().find_child("HUD", true, false)
-	if hud and hud is CanvasItem:
-		return hud as CanvasItem
-
-	var top_hud := tree.get_root().find_child("TopHUD", true, false)
-	if top_hud and top_hud is CanvasItem:
-		return top_hud as CanvasItem
-
-	var group_nodes := tree.get_nodes_in_group("hud")
-	for n in group_nodes:
-		if n is CanvasItem:
-			return n as CanvasItem
-
-	return null
-
-func _set_hud_visible(v: bool) -> void:
-	var hud := _get_hud_node()
-	if hud:
-		hud.visible = v
 
 # ----------------- SFX --------------------
 

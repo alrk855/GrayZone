@@ -1,20 +1,20 @@
 [gd_resource type="Theme" load_steps=8 format=3 uid="uid://uv5syh2wbonm"]
 
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="1_fld4v"]
-[ext_resource type="Texture2D" uid="uid://flo3b8vpv28" path="res://Images/Buttons/btn1.png" id="2_upor5"]
-[ext_resource type="Texture2D" uid="uid://dikv7ps6asrlu" path="res://Images/Buttons/btn2.png" id="3_60agu"]
+[ext_resource type="Texture2D" uid="uid://8oubq7fxien" path="res://Images/Buttons/BTN1.png" id="2_fld4v"]
+[ext_resource type="Texture2D" uid="uid://ff2s17wq3wph" path="res://Images/Buttons/BTN2.png" id="3_upor5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eluph"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k83tj"]
-texture = ExtResource("2_upor5")
+texture = ExtResource("2_fld4v")
+modulate_color = Color(1, 1, 1, 0.509804)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kd3py"]
-texture = ExtResource("3_60agu")
+texture = ExtResource("3_upor5")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3bur8"]
-texture = ExtResource("3_60agu")
-modulate_color = Color(0.233925, 0.233925, 0.233925, 0.482353)
+texture = ExtResource("2_fld4v")
 
 [resource]
 Button/colors/font_color = Color(0.353233, 0.193062, 0, 1)

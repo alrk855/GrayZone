@@ -1,13 +1,23 @@
 extends Control
 
-@onready var teacher_sprite: TextureRect = $background/Control/Control/teacher2
-@onready var principal_sprite: TextureRect = $background/Control/Control/principal
+# ---------- Background (full-scene) ----------
+# Point this to your TextureRect or Sprite2D that renders the whole classroom background.
+@export var background_node_path: NodePath = "background"
+@onready var _bg_node: Node = get_node_or_null(background_node_path)
+
+# Assign these in the Inspector (full backgrounds):
+@export var bg_teacher: Texture2D
+@export var bg_principal: Texture2D
+
+# ---------- Fade ----------
 @onready var screen_fader: ColorRect = $ColorRect
 
 func _ready():
 	GameUi.visible = true
 	GameState.location = "Classroom"
-	principal_sprite.visible = false
+
+	# Start with the teacher background
+	_set_bg(bg_teacher)
 
 	# Start dialogue (pass self so callbacks still work)
 	var dialogue_ui = DialogueManager.start_dialogue("res://Data/StartEvent.json", self)
@@ -24,17 +34,26 @@ func _on_start_event_finished(_dlg_id: String = "", _payload: Variant = null):
 	await fade_out()
 	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/School.tscn")
 
+# Called by DialogueManager via action: {"action":"principal_enters"}
 func on_scene_transition(namee: String):
 	match namee:
 		"principal_enters":
 			await fade_out()
-			_swap_to_principal()
+			_set_bg(bg_principal)
 			await fade_in()
 
-func _swap_to_principal():
-	teacher_sprite.visible = false
-	principal_sprite.visible = true
+# ---------- BG setter ----------
+func _set_bg(tex: Texture2D) -> void:
+	if _bg_node == null or tex == null:
+		return
+	if _bg_node is TextureRect:
+		(_bg_node as TextureRect).texture = tex
+	elif _bg_node is Sprite2D:
+		(_bg_node as Sprite2D).texture = tex
+	elif _bg_node.has_method("set_texture"):
+		_bg_node.call("set_texture", tex)
 
+# ---------- Fade helpers ----------
 func fade_out():
 	screen_fader.visible = true
 	screen_fader.modulate.a = 0.0
