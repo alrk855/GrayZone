@@ -1,0 +1,16 @@
+{
+  "id": "Marko_Study_Continue",
+  "lines": [
+	{
+	  "speaker": "Narrator",
+	  "text": "Back from {subject1}."
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "Do you want to go over {subject2} as well?"
+	},
+	{
+	  "action": "marko_study_show_choices_s2"
+	}
+  ]
+}

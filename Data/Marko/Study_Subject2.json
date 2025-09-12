@@ -1,0 +1,13 @@
+{
+  "id": "Study_Subject2",
+  "lines": [
+	{
+	  "speaker": "Narrator",
+	  "text": "You sit down with Marko to go over {subject2}."
+	},
+	{
+	  "speaker": "Marko",
+	  "text": "Solid effort. For {subject2}, watch out for these questions:"
+	}
+  ]
+}

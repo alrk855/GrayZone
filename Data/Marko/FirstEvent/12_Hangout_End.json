@@ -15,14 +15,6 @@
 	  "value": true
 	},
 	{
-	  "speaker": "System",
-	  "text": "New task added: Visit the Professor’s Office between 17:00 and 17:45."
-	},
-	{
-	  "action": "add_task",
-	  "task": "visit_professor_office"
-	},
-	{
 	  "action": "set_flags",
 	  "flags": [
 		"marko_first_event_done"

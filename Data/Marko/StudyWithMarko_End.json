@@ -14,13 +14,6 @@
 	  "flags": [
 		"marko_first_event_done"
 	  ]
-	},
-	{
-	  "action": "goto",
-	  "scene": "res://Scenes/Reusable/Map/Home.tscn"
-	},
-	{
-	  "action": "end_event"
 	}
   ]
 }
