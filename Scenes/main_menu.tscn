@@ -643,6 +643,8 @@ volume_db = -2.0
 stream = ExtResource("14_fmarx")
 volume_db = -6.0
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
 [connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper1/Play" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper1/Play" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper2/Settings" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper2/Settings" method="_on_mouse_entered"]
 [connection signal="mouse_entered" from="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper3/Quit" to="Main_Menu_Control/Main_Menu_Picture/V_Button_Container/ButtonWrapper3/Quit" method="_on_mouse_entered"]

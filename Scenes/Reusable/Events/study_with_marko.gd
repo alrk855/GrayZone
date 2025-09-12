@@ -6,10 +6,10 @@ const RETURN_SCENE_FALLBACK: String  = "res://Scenes/Reusable/Events/MarkoFirstE
 const HOME_SCENE_PATH: String        = "res://Scenes/Reusable/Map/Home.tscn"
 
 # --- JSONs (placed under Data/Marko/Study) ---
-const JSON_S1_START: String    = "res://Data/Marko/Study/StudyWithMarko_Start.json"
-const JSON_CONTINUE: String    = "res://Data/Marko/Study/Marko_Study_Continue.json"
-const JSON_S2_START: String    = "res://Data/Marko/Study/Study_Subject2.json"
-const JSON_END: String         = "res://Data/Marko/Study/StudyWithMarko_End.json"
+const JSON_S1_START: String    = "res://Data/Marko/StudyWithMarko_Start.json"
+const JSON_CONTINUE: String    = "res://Data/Marko/Marko_Study_Continue.json"
+const JSON_S2_START: String    = "res://Data/Marko/Study_Subject2.json"
+const JSON_END: String         = "res://Data/Marko/StudyWithMarko_End.json"
 
 # --- Feature flags for Study scene ---
 const KEY_STUDY_MODE: String     = "__study_mode"          # "marko"

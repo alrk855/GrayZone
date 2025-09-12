@@ -1,0 +1,20 @@
+{
+  "id": "Classroom_Morning_OnTime",
+  "lines": [
+    {
+      "speaker": "Narrator",
+      "text": "You made it just in time. You sit through the morning block of classes without incident."
+    },
+    {
+      "speaker": "Narrator",
+      "text": "(At least you’re showing up.)"
+    },
+    {
+      "action": "adjust_reputation",
+      "value": 5
+    },
+    {
+      "action": "classroom_morning_complete"
+    }
+  ]
+}

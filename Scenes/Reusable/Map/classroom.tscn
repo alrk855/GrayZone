@@ -1,4 +1,17 @@
-[gd_scene load_steps=0 format=3 uid="uid://vgvcoj82tega"]
+[gd_scene load_steps=9 format=3 uid="uid://vgvcoj82tega"]
+
+[ext_resource type="Script" uid="uid://7vfbgf40e6he" path="res://Scenes/Reusable/Map/classroom.gd" id="1_yveh8"]
+[ext_resource type="Texture2D" uid="uid://b2ewotw87jjtg" path="res://Images/classroom.png" id="2_gabx6"]
+[ext_resource type="Texture2D" uid="uid://cm325m6fyve02" path="res://Images/classroom_profesor_kratok.png" id="2_ywqm7"]
+[ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_yhsr7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yhsr7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gk26m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ywqm7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n5es2"]
 
 [node name="Classroom" type="Control"]
 layout_mode = 3
@@ -7,6 +20,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_yveh8")
+background_texrect_path = NodePath("TextureRect")
+teacher_button_path = NodePath("TextureRect/Teacher")
+janitor_button_path = NodePath("TextureRect/Janitor")
+back_button_path = NodePath("TextureRect/Back")
+choice_panel_scene = null
+bg_teacher_morning = ExtResource("2_ywqm7")
+bg_empty = ExtResource("2_gabx6")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -15,3 +36,43 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("2_gabx6")
+
+[node name="Teacher" type="Button" parent="TextureRect"]
+layout_mode = 0
+offset_left = 658.0
+offset_top = 351.0
+offset_right = 1230.0
+offset_bottom = 741.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yhsr7")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_gk26m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ywqm7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n5es2")
+
+[node name="Janitor" type="Button" parent="TextureRect"]
+layout_mode = 0
+offset_left = 658.0
+offset_top = 351.0
+offset_right = 1230.0
+offset_bottom = 741.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yhsr7")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_gk26m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ywqm7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n5es2")
+
+[node name="Back" type="Button" parent="TextureRect"]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("3_yhsr7")
+text = "GO BACK
+"

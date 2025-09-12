@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dk4oomrw4r2r"]
 
 [ext_resource type="Script" uid="uid://id2q7hwo013j" path="res://Scenes/Reusable/Events/start_event.gd" id="1_33p7c"]
-[ext_resource type="Texture2D" uid="uid://c88r7fxubxtrr" path="res://Images/classroom_profesor.png" id="2_6mhsx"]
+[ext_resource type="Texture2D" uid="uid://cm325m6fyve02" path="res://Images/classroom_profesor_kratok.png" id="2_5em0o"]
 [ext_resource type="Texture2D" uid="uid://b2ewotw87jjtg" path="res://Images/classroom.png" id="2_k4npa"]
 [ext_resource type="Texture2D" uid="uid://sp1syac5qg46" path="res://Images/classroom_so_ridektor.png" id="3_dnix2"]
 
@@ -13,7 +13,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_33p7c")
-bg_teacher = ExtResource("2_6mhsx")
+bg_teacher = ExtResource("2_5em0o")
 bg_principal = ExtResource("3_dnix2")
 
 [node name="ColorRect" type="ColorRect" parent="."]

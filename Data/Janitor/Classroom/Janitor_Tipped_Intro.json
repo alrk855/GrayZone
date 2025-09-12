@@ -1,0 +1,32 @@
+{
+  "id": "Janitor_Tipped_Intro",
+  "lines": [
+    {
+      "speaker": "Narrator",
+      "text": "(The Janitor smirks as soon as he sees you.)"
+    },
+    {
+      "speaker": "Janitor",
+      "text": "Marko’s little friend. I figured you'd show up eventually."
+    },
+    {
+      "speaker": "Narrator",
+      "text": "(He pulls a crumpled paper from beneath his cart.)"
+    },
+    {
+      "speaker": "Janitor",
+      "text": "Friday’s answers, all questions. Spotless copy."
+    },
+    {
+      "speaker": "Janitor",
+      "text": "400 денари per subject — friends of Marko get the friendly rate."
+    },
+    {
+      "speaker": "Janitor",
+      "text": "So — what’s the subject?"
+    },
+    {
+      "action": "janitor_offer_subjects"
+    }
+  ]
+}

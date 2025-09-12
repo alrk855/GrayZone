@@ -2,20 +2,19 @@ extends Control
 
 signal dialogue_finished
 
-@onready var dialogue_label: RichTextLabel   = $"Dialogue Box/Control2/Dialogue"
-@onready var speaker_label: Label    = $"Speaker Box/SpeakerLABEL"
-@onready var portrait: TextureRect   = $"Dialogue Box/Control/PlaceHolderFrame"
-@onready var choices_box: Control    = $"Choice Control Node/ChoiceBox"
+@onready var dialogue_label: RichTextLabel = $"Dialogue Box/Control2/Dialogue"
+@onready var speaker_label: Label = $"Speaker Box/SpeakerLABEL"
+@onready var portrait: TextureRect = $"Dialogue Box/Control/PlaceHolderFrame"
+@onready var choices_box: Control = $"Choice Control Node/ChoiceBox"
 
 @onready var choice_buttons: Array[Button] = [
-	choices_box.get_node("Button")  as Button,
+	choices_box.get_node("Button") as Button,
 	choices_box.get_node("Button2") as Button,
 	choices_box.get_node("Button3") as Button,
 	choices_box.get_node("Button4") as Button,
 	choices_box.get_node("Button5") as Button
 ]
 
-# Keep as Dictionary to avoid export typing headaches
 @export var portraits: Dictionary = {
 	"teacher":   preload("res://Images/CharacterFrames/KlasenFrame.png"),
 	"principal": preload("res://Images/CharacterFrames/direktorframe.png"),
@@ -26,11 +25,10 @@ signal dialogue_finished
 	"mvrclerk":  preload("res://Images/CharacterFrames/MvrClerkFrame.png")
 }
 
-var dialogue_data: Array = []  # array of Dictionary lines
+var dialogue_data: Array = []
 var line_index: int = 0
 var is_typing: bool = false
 var typing_speed: float = 0.04
-
 var selected_ids: Array[String] = []
 var max_select: int = 1
 var caller: Node = null
@@ -56,7 +54,7 @@ func display_next() -> void:
 
 	# Scene transition (standalone)
 	if line.has("scene_transition") and not line.has("text"):
-		if caller:
+		if caller and caller.has_method("on_scene_transition"):
 			await caller.call("on_scene_transition", String(line["scene_transition"]))
 		line_index += 1
 		display_next()
@@ -64,11 +62,11 @@ func display_next() -> void:
 
 	# Spoken line
 	if line.has("text"):
-		var raw_speaker: String = String(line.get("speaker", ""))
-		var raw_text: String = String(line.get("text", ""))
+		var raw_speaker := String(line.get("speaker", ""))
+		var raw_text := String(line.get("text", ""))
 
-		var show_speaker: String = GameState.format_placeholders(raw_speaker)
-		var show_text: String = GameState.format_placeholders(raw_text)
+		var show_speaker := GameState.format_placeholders(raw_speaker)
+		var show_text := GameState.format_placeholders(raw_text)
 
 		speaker_label.text = show_speaker
 		_update_portrait(speaker_label.text)
@@ -86,7 +84,7 @@ func display_next() -> void:
 
 	# Action
 	if line.has("action"):
-		if caller:
+		if caller and caller.has_method("on_dialogue_action"):
 			caller.call("on_dialogue_action", line)
 		line_index += 1
 		display_next()
@@ -108,31 +106,26 @@ func show_choices(line: Dictionary) -> void:
 	selected_ids.clear()
 	max_select = int(line.get("max_select", 1))
 
-	# Reset buttons & disconnect previous handlers
 	for btn in choice_buttons:
 		btn.hide()
 		btn.text = ""
 		btn.disabled = true
-		var conns: Array = btn.pressed.get_connections()
-		for conn_d in conns:
-			var c: Callable = conn_d["callable"]
-			btn.pressed.disconnect(c)
+		for conn in btn.pressed.get_connections():
+			btn.pressed.disconnect(conn.callable)
 
 	var options: Array = line["options"]
 	var num_options: int = min(options.size(), choice_buttons.size())
 
-	# Fill from the bottom up (to match your original UI)
+	# Fill from bottom up
 	for i in range(num_options):
 		var btn: Button = choice_buttons[choice_buttons.size() - 1 - i]
 		var opt: Dictionary = options[i]
-
-		var opt_text: String = GameState.format_placeholders(String(opt.get("text", "")))
-		btn.text = opt_text
+		btn.text = GameState.format_placeholders(String(opt.get("text","")))
 		btn.disabled = false
 		btn.show()
 
 		btn.pressed.connect(func() -> void:
-			var opt_id: String = String(opt.get("id", ""))
+			var opt_id := String(opt.get("id",""))
 			if selected_ids.has(opt_id):
 				return
 			selected_ids.append(opt_id)
@@ -147,9 +140,8 @@ func show_choices(line: Dictionary) -> void:
 		)
 
 func _update_portrait(speaker: String) -> void:
-	var key: String = speaker.strip_edges().to_lower()
+	var key := speaker.strip_edges().to_lower()
 	if portraits.has(key):
-		var tex: Texture2D = portraits[key]
-		portrait.texture = tex
+		portrait.texture = portraits[key]
 	else:
 		portrait.texture = null

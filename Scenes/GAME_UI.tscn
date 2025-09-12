@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dla5bjdlqyvsk"]
+[gd_scene load_steps=13 format=3 uid="uid://dla5bjdlqyvsk"]
 
 [ext_resource type="Script" uid="uid://28kpowfhgtu6" path="res://Scripts/Singleton/UI.gd" id="1_8wimu"]
 [ext_resource type="Theme" uid="uid://bmo2rrdsh5k1p" path="res://Themes/GameUipadding.tres" id="1_ip11e"]
@@ -7,8 +7,38 @@
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_j8nkt"]
 [ext_resource type="Texture2D" uid="uid://dgrannivbu2q" path="res://Icons/money.png" id="5_435u1"]
 
+[sub_resource type="Gradient" id="Gradient_8wimu"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6e7eo"]
+gradient = SubResource("Gradient_8wimu")
+use_hdr = true
+fill_from = Vector2(0, 1)
+fill_to = Vector2(1, 0.5)
+metadata/_snap_enabled = true
+metadata/_snap_count = 2
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h8tdh"]
+texture = SubResource("GradientTexture2D_6e7eo")
+modulate_color = Color(0.856208, 0.543734, 0.356373, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8wimu"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.49, 0.204167, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 9.0
+expand_margin_bottom = 10.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bwqbu"]
-bg_color = Color(0.687735, 0.283508, 0.3012, 1)
+bg_color = Color(0.867237, 0.466063, 0.383568, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
@@ -30,6 +60,7 @@ time = NodePath("Padding/Contents/HBoxContainer/Time")
 money = NodePath("Padding/Contents/HBoxContainer/Value")
 day = NodePath("Padding/Contents/HBoxContainer/Day")
 notification_nodes = [NodePath("Notification"), NodePath("Notification2"), NodePath("Notification3"), NodePath("Notification4"), NodePath("Notification5"), NodePath("Notification6")]
+anchor_y = 58
 slide_dur = 1.0
 stay_dur = 4.0
 fade_dur = 0.5
@@ -38,14 +69,20 @@ notif_font = ExtResource("4_j8nkt")
 [node name="Padding" type="PanelContainer" parent="."]
 z_index = 100
 custom_minimum_size = Vector2(1000, 90)
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -500.0
-offset_right = 500.0
-offset_bottom = 98.0
+anchors_preset = -1
+anchor_left = 0.231771
+anchor_right = 0.768229
+anchor_bottom = 0.0907407
+offset_left = 15.0
+offset_right = -15.0
 grow_horizontal = 2
 theme = ExtResource("1_ip11e")
+theme_override_styles/panel = SubResource("StyleBoxTexture_h8tdh")
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Padding"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8wimu")
 
 [node name="Contents" type="VBoxContainer" parent="Padding"]
 custom_minimum_size = Vector2(0, 90)

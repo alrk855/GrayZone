@@ -11,9 +11,9 @@ const JSON_HANGOUT_END: String  = "res://Data/Marko/FirstEvent/12_Hangout_End.js
 const FALLBACK_HOME: String     = "res://Scenes/Reusable/Map/Home.tscn"
 
 # ---- Hangout scene (lightweight time-waster) ----
-const HANGOUT_SCENE: String     = "res://Scenes/Reusable/Events/MarkoHangout.tscn"
+const HANGOUT_SCENE: String     = "res://Scenes/Reusable/Tasks/Hangout.tscn"
 
-# keys shared with Study/MarkoStudy
+# keys shared with Study/MarkoStudy (ephemeral “feature” keys per your design)
 const KEY_STUDY_MODE: String    = "__study_mode"
 const KEY_SUBJECT_PICK: String  = "__study_subject_pick"
 const KEY_RETURN_SCENE: String  = "__study_return_scene"
@@ -30,10 +30,13 @@ var _panel: Control = null
 var _transitioning: bool = false
 
 func _ready() -> void:
+	# Ensure this controller still ticks even if the tree is paused by Dialogue UI
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
 	GameState.location = "MarkoFirstEvent"
 	_clear_panel()
 
-	# Make sure we always have a valid return path stored (used by Hangout scene)
+	# Store a valid return path for round-trips (Hangout / Study)
 	var ret_path: String = ""
 	if get_tree() and get_tree().current_scene:
 		ret_path = String(get_tree().current_scene.get_scene_file_path())
@@ -59,21 +62,24 @@ func _clear_panel() -> void:
 func _safe_end_dialogue() -> void:
 	if _transitioning:
 		return
-	DialogueManager.end_active_dialogue()
+	if Engine.has_singleton("DialogueManager"):
+		DialogueManager.end_active_dialogue()
 
 func _safe_change_scene(path: String) -> void:
 	if _transitioning:
 		return
 	_transitioning = true
-	await get_tree().process_frame
+	var tree := get_tree()
+	if tree.paused:
+		tree.paused = false
 	call_deferred("_do_change_scene", path)
 
 func _do_change_scene(path: String) -> void:
-	_transitioning = false
 	if path != "" and ResourceLoader.exists(path):
 		get_tree().change_scene_to_file(path)
 	else:
 		push_warning("MarkoFirstEvent: invalid scene path: " + path)
+	_transitioning = false
 
 func _start_json(path: String, finish_cb: String) -> void:
 	var ui: Control = DialogueManager.start_dialogue(path, self)
@@ -90,18 +96,23 @@ func on_dialogue_action(line: Dictionary) -> void:
 	match act:
 		"marko_show_entry_choices":
 			_show_entry_choices()
+
 		"marko_show_study_sway_choices":
 			_show_study_sway_choices()
+
 		"marko_show_alone_push_choices":
 			_show_alone_push_choices()
+
 		"goto":
 			var scene_path: String = String(line.get("scene", ""))
 			if scene_path != "":
 				_safe_end_dialogue()
 				_safe_change_scene(scene_path)
+
 		"end_event":
 			_safe_end_dialogue()
 			_safe_change_scene(FALLBACK_HOME)
+
 		_:
 			GameState.apply_action(line)
 
@@ -123,15 +134,15 @@ func _on_entry_choice(id: String) -> void:
 			_clear_panel()
 			_safe_end_dialogue()
 			_start_json(JSON_STUDY_SWAY, "")
+
 		"study_alone":
 			_clear_panel()
 			_safe_end_dialogue()
 			_start_json(JSON_ALONE_PUSH, "")
+
 		"hangout":
 			_clear_panel()
 			_safe_end_dialogue()
-			# Round-trip via Hangout scene:
-			# - store return path (already set), set a comeback flag, jump to Hangout scene
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
 			_safe_change_scene(HANGOUT_SCENE)
 
@@ -148,7 +159,6 @@ func _show_study_sway_choices() -> void:
 func _on_study_sway_choice(id: String) -> void:
 	match id:
 		"study_now":
-			# Prepare Marko study (Subject 1) with a valid return path
 			GameState.features_unlocked[KEY_STUDY_MODE] = "marko"
 			GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject1"
 
@@ -161,14 +171,12 @@ func _on_study_sway_choice(id: String) -> void:
 
 			_clear_panel()
 			_safe_end_dialogue()
-			# Your JSON can still perform the 'goto' to StudyWithMarko.tscn
-			_start_json(JSON_STUDY_SWAY, "")
-			# or use the dedicated one:
-			# _start_json(JSON_GOTO_STUDY, "")
+			# ✅ Correct: Use the GOTO JSON (contains action to jump to StudyWithMarko.tscn)
+			_start_json(JSON_GOTO_STUDY, "")
+
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
-			# Same round-trip logic for hangout from the sway branch
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
 			_safe_change_scene(HANGOUT_SCENE)
 
@@ -188,6 +196,7 @@ func _on_alone_push_choice(id: String) -> void:
 			_clear_panel()
 			_safe_end_dialogue()
 			_start_json(JSON_SOLO_END, "_on_solo_end_finished")
+
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
@@ -196,7 +205,6 @@ func _on_alone_push_choice(id: String) -> void:
 
 # ---- JSON finish handlers ----
 func _on_hangout_json_finished() -> void:
-	# Add the task after the hangout-end dialogue, then go Home.
 	GameState.ensure_task(TASK_VISIT_PROF)
 	_safe_change_scene(FALLBACK_HOME)
 

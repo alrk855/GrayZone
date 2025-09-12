@@ -1,0 +1,35 @@
+{
+  "id": "Classroom_Catchup",
+  "lines": [
+	{
+	  "speaker": "Homeroom Teacher",
+	  "text": "So, you missed a full day of class. We don’t exactly hand out scholarships to no-shows."
+	},
+	{
+	  "speaker": "Narrator",
+	  "text": "(She sighs.)"
+	},
+	{
+	  "speaker": "Homeroom Teacher",
+	  "text": "Look, if you want to catch up — volunteer, prepare your CV, and at least try to show up. Understood?"
+	},
+	{
+	  "speaker": "Homeroom Teacher",
+	  "text": "That’s N late arrival and N absence already. We barely started the week."
+	},
+	{
+	  "speaker": "Narrator",
+	  "text": "(He shakes his head.)"
+	},
+	{
+	  "speaker": "Homeroom Teacher",
+	  "text": "This isn’t optional. Next time you miss class, it will go on your record."
+	},
+	{
+	  "action": "set_flags",
+	  "flags": [
+		"discipline_warning"
+	  ]
+	}
+  ]
+}
