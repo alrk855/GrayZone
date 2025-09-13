@@ -1,6 +1,6 @@
 extends Control
 
-# ---- JSON paths ----
+# ---------- JSON paths ----------
 const JSON_ENTRY: String        = "res://Data/Marko/FirstEvent/00_Entry.json"
 const JSON_STUDY_SWAY: String   = "res://Data/Marko/FirstEvent/01_Study_Sway.json"
 const JSON_GOTO_STUDY: String   = "res://Data/Marko/FirstEvent/02_Goto_StudyScene.json"
@@ -17,6 +17,7 @@ const HANGOUT_SCENE: String     = "res://Scenes/Reusable/Tasks/Hangout.tscn"
 const KEY_STUDY_MODE: String    = "__study_mode"
 const KEY_SUBJECT_PICK: String  = "__study_subject_pick"
 const KEY_RETURN_SCENE: String  = "__study_return_scene"
+const KEY_HANGOUT_CONTEXT: String = "__hangout_context" # "event" | ""
 
 # task we add after hangout (done in code, not JSON)
 const TASK_VISIT_PROF: String   = "visit_professor_office"
@@ -144,6 +145,7 @@ func _on_entry_choice(id: String) -> void:
 			_clear_panel()
 			_safe_end_dialogue()
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
+			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event" # ensure Hangout skips REP penalty
 			_safe_change_scene(HANGOUT_SCENE)
 
 func _show_study_sway_choices() -> void:
@@ -171,13 +173,14 @@ func _on_study_sway_choice(id: String) -> void:
 
 			_clear_panel()
 			_safe_end_dialogue()
-			# ✅ Correct: Use the GOTO JSON (contains action to jump to StudyWithMarko.tscn)
+			# Use the GOTO JSON (contains action to jump to StudyWithMarko.tscn)
 			_start_json(JSON_GOTO_STUDY, "")
 
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
+			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event" # ensure Hangout skips REP penalty
 			_safe_change_scene(HANGOUT_SCENE)
 
 func _show_alone_push_choices() -> void:
@@ -201,6 +204,7 @@ func _on_alone_push_choice(id: String) -> void:
 			_clear_panel()
 			_safe_end_dialogue()
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
+			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event" # ensure Hangout skips REP penalty
 			_safe_change_scene(HANGOUT_SCENE)
 
 # ---- JSON finish handlers ----

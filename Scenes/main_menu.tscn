@@ -1,16 +1,17 @@
-[gd_scene load_steps=40 format=3 uid="uid://oq5r73rgk5ps"]
+[gd_scene load_steps=41 format=3 uid="uid://oq5r73rgk5ps"]
 
-[ext_resource type="Texture2D" uid="uid://6aagdtaf1sfw" path="res://Images/MainMenu/BlueSky_HD.jpg" id="1_cp0ys"]
+[ext_resource type="Texture2D" uid="uid://djuajki81ehnr" path="res://Images/main_menu_gore.png" id="1_y82t1"]
 [ext_resource type="Script" uid="uid://cultu8nfi3tif" path="res://Scripts/MainMenu/click_to_start_picture.gd" id="2_trj04"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_yhxw7"]
 [ext_resource type="Script" uid="uid://cfr3yjgmec82l" path="res://Scripts/MainMenu/click_to_start_button.gd" id="3_16hvj"]
 [ext_resource type="AudioStream" uid="uid://bjhan6vo2jpdi" path="res://Audio/swoosh-6-351021.mp3" id="3_trj04"]
-[ext_resource type="Texture2D" uid="uid://ceiuc4uujrby0" path="res://Images/MainMenu/IMG.png" id="4_16hvj"]
 [ext_resource type="Script" uid="uid://5r16rbsuwemb" path="res://Scripts/MainMenu/text.gd" id="5_t1dhk"]
 [ext_resource type="Theme" uid="uid://cc80vt60acelx" path="res://Themes/Main_Menu_Buttons.tres" id="5_vr1f0"]
 [ext_resource type="Texture2D" uid="uid://dd58on0xjg4tl" path="res://Images/MainMenu/imgSIVA.jpg" id="6_t1dhk"]
 [ext_resource type="Texture2D" uid="uid://b805xlr5mghjj" path="res://Icons/arrows.png" id="7_5egv6"]
 [ext_resource type="FontFile" uid="uid://de647gnm3sexo" path="res://Fonts/BergamotOrnaments-3oK6.ttf" id="7_16hvj"]
+[ext_resource type="Texture2D" uid="uid://b2ams56toc38o" path="res://Images/main_menu_sredina.png" id="7_bmhhk"]
+[ext_resource type="Texture2D" uid="uid://ds27ecvepd7yk" path="res://Images/main_menu_angliski.png" id="8_pddej"]
 [ext_resource type="Theme" uid="uid://cj3djhcerx2sa" path="res://Themes/MainOrn.tres" id="10_aylim"]
 [ext_resource type="Script" uid="uid://bk0shcf3ul7ob" path="res://Scripts/MainMenu/play.gd" id="10_vtepg"]
 [ext_resource type="Script" uid="uid://d3sojpw0ye6wd" path="res://Scripts/MainMenu/Settings/settings.gd" id="11_jr6u5"]
@@ -82,8 +83,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -1080.0
 offset_right = 1920.0
-offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -94,8 +95,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_cp0ys")
-expand_mode = 1
+texture = ExtResource("1_y82t1")
 script = ExtResource("2_trj04")
 
 [node name="Click_To_Start_Button" type="Button" parent="Click_to_Start_Control/Click_To_Start_Picture"]
@@ -136,6 +136,27 @@ libraries = {
 &"": SubResource("AnimationLibrary_t1dhk")
 }
 
+[node name="Filler" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Filler"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_bmhhk")
+expand_mode = 1
+
 [node name="Main_Menu_Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -148,24 +169,23 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("4_16hvj")
+texture = ExtResource("8_pddej")
 expand_mode = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Main_Menu_Control/Main_Menu_Picture"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.395
-anchor_top = 0.134
-anchor_right = 0.612
-anchor_bottom = 0.398
-offset_left = 0.599976
-offset_top = 0.279999
-offset_right = 1.95996
-offset_bottom = 7.15997
+anchor_left = 0.390104
+anchor_top = 0.134135
+anchor_right = 0.61875
+anchor_bottom = 0.433858
+offset_top = -1.52588e-05
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="MainOrnament" type="RichTextLabel" parent="Main_Menu_Control/Main_Menu_Picture/HBoxContainer"]
 self_modulate = Color(0, 0, 0, 1)
@@ -173,7 +193,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
 theme = ExtResource("10_aylim")
-text = "l"
+text = "o"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0

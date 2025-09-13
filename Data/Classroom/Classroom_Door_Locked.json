@@ -1,9 +1,9 @@
 {
   "id": "Classroom_Door_Locked",
   "lines": [
-    {
-      "speaker": "Narrator",
-      "text": "Class is already in session. The door's locked. There’s no getting in now."
-    }
+	{
+	  "speaker": "Narrator",
+	  "text": "Class is already in session. The door's locked. There’s no getting in now."
+	}
   ]
 }

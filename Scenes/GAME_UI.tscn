@@ -8,18 +8,21 @@
 [ext_resource type="Texture2D" uid="uid://dgrannivbu2q" path="res://Icons/money.png" id="5_435u1"]
 
 [sub_resource type="Gradient" id="Gradient_8wimu"]
+offsets = PackedFloat32Array(0, 0.811024, 1)
+colors = PackedColorArray(0.699653, 0.699653, 0.699653, 1, 0.787759, 0.787759, 0.787759, 1, 0.68, 0.68, 0.68, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_6e7eo"]
 gradient = SubResource("Gradient_8wimu")
 use_hdr = true
-fill_from = Vector2(0, 1)
-fill_to = Vector2(1, 0.5)
-metadata/_snap_enabled = true
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 1)
 metadata/_snap_count = 2
+metadata/_snap_enabled = true
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h8tdh"]
 texture = SubResource("GradientTexture2D_6e7eo")
-modulate_color = Color(0.856208, 0.543734, 0.356373, 1)
+modulate_color = Color(1, 0.623833, 0.39, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8wimu"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -27,7 +30,7 @@ border_width_left = 10
 border_width_top = 10
 border_width_right = 10
 border_width_bottom = 10
-border_color = Color(0.49, 0.204167, 0, 1)
+border_color = Color(0.61074, 0.236907, 0.0372339, 1)
 corner_radius_top_left = 30
 corner_radius_top_right = 30
 corner_radius_bottom_right = 30
@@ -60,7 +63,7 @@ time = NodePath("Padding/Contents/HBoxContainer/Time")
 money = NodePath("Padding/Contents/HBoxContainer/Value")
 day = NodePath("Padding/Contents/HBoxContainer/Day")
 notification_nodes = [NodePath("Notification"), NodePath("Notification2"), NodePath("Notification3"), NodePath("Notification4"), NodePath("Notification5"), NodePath("Notification6")]
-anchor_y = 58
+anchor_y = 68
 slide_dur = 1.0
 stay_dur = 4.0
 fade_dur = 0.5
@@ -73,8 +76,10 @@ anchors_preset = -1
 anchor_left = 0.231771
 anchor_right = 0.768229
 anchor_bottom = 0.0907407
-offset_left = 15.0
-offset_right = -15.0
+offset_left = -0.000335693
+offset_top = 10.0
+offset_right = 0.000244141
+offset_bottom = 10.0
 grow_horizontal = 2
 theme = ExtResource("1_ip11e")
 theme_override_styles/panel = SubResource("StyleBoxTexture_h8tdh")

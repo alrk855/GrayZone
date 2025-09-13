@@ -1,0 +1,17 @@
+{
+  "id": "DocReview_Suspicion_Prompt",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "…Hmm. This part here…"
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "This sounds extremely generic. Did you write this yourself?"
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Be honest. It matters."
+    }
+  ]
+}

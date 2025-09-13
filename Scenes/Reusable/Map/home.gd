@@ -270,7 +270,7 @@ func _ensure_fader() -> void:
 	_fade_rect.modulate = Color(1, 1, 1, 0) # start transparent
 	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_fade_rect.z_index = 9999
+	_fade_rect.z_index = 100
 	add_child(_fade_rect)
 
 func _fade_to(alpha: float, duration: float) -> void:
@@ -287,7 +287,7 @@ func _do_sleep() -> void:
 
 	await _fade_to(1.0, 3.9)
 	GameState.sleep_now()
-	await _fade_to(0.0,3.9)
+	await _fade_to(0.0,6.0)
 
 	# Optional wake-up nudge
 	if FileAccess.file_exists(WAKEUP_JSON):

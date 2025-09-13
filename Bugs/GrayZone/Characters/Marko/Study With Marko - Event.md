@@ -1,4 +1,4 @@
-- **Status**: Open  
+- **Status**: Closed 
 - **Priority**: **High**
 - **Location/Scene**:  Home/City , Day 1 , "StudyWithMarko.tscn"
 - **Quick Notes**:The script is not complete - no reliable event

@@ -52,7 +52,7 @@ func display_next() -> void:
 
 	var line: Dictionary = dialogue_data[line_index]
 
-	# Scene transition (standalone)
+	# Scene transition (rare)
 	if line.has("scene_transition") and not line.has("text"):
 		if caller and caller.has_method("on_scene_transition"):
 			await caller.call("on_scene_transition", String(line["scene_transition"]))
@@ -82,10 +82,12 @@ func display_next() -> void:
 		show_choices(line)
 		return
 
-	# Action
+	# Action (let caller handle; fallback to GameState)
 	if line.has("action"):
 		if caller and caller.has_method("on_dialogue_action"):
 			caller.call("on_dialogue_action", line)
+		else:
+			GameState.apply_action(line)
 		line_index += 1
 		display_next()
 		return
@@ -116,7 +118,6 @@ func show_choices(line: Dictionary) -> void:
 	var options: Array = line["options"]
 	var num_options: int = min(options.size(), choice_buttons.size())
 
-	# Fill from bottom up
 	for i in range(num_options):
 		var btn: Button = choice_buttons[choice_buttons.size() - 1 - i]
 		var opt: Dictionary = options[i]
@@ -130,7 +131,6 @@ func show_choices(line: Dictionary) -> void:
 				return
 			selected_ids.append(opt_id)
 			btn.disabled = true
-
 			if selected_ids.size() == max_select:
 				if caller and caller.has_method("on_choices_selected"):
 					caller.on_choices_selected(selected_ids)

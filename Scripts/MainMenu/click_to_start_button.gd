@@ -21,12 +21,12 @@ func _pressed():
 	triggered = true
 	swoosh.play(0)
 
-	var target_position = camera.position + Vector2(0, 1080)
+	var target_position = camera.position + Vector2(0, 2160)
 
 	var tween = create_tween()
 
 	# Step 1: Move camera down
-	tween.tween_property(camera, "position", target_position, 1.0).set_trans(transit)
+	tween.tween_property(camera, "position", target_position, 3.5).set_trans(transit)
 
 	# Step 2: Ornaments slide in AFTER camera
 	tween = tween.chain()

@@ -1,0 +1,17 @@
+{
+  "id": "DocReview_Resubmit_Accepted",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Let’s see what you’ve done with it."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Now this sounds like you. Good job. I’ll sign off on this."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "You’re ready to submit."
+    }
+  ]
+}

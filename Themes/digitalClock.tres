@@ -5,7 +5,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ojtw5"]
 
 [resource]
-RichTextLabel/colors/default_color = Color(0.188069, 0.299909, 0.421927, 1)
+RichTextLabel/colors/default_color = Color(1, 1, 1, 1)
 RichTextLabel/font_sizes/normal_font_size = 85
 RichTextLabel/fonts/normal_font = ExtResource("1_gmxn5")
 RichTextLabel/styles/focus = SubResource("StyleBoxEmpty_ojtw5")

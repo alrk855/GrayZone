@@ -14,9 +14,15 @@ const PROFESSOR_CLOSE := 18 * 60
 const SECRETARY_OPEN := 13 * 60
 const SECRETARY_CLOSE := 18 * 60
 
-# Classroom has custom rules (handled in _try_enter_classroom)
-const CLASS_LOCK_START := 8 * 60 + 30    # 08:30
-const CLASS_LOCK_END := 12 * 60 + 30     # 12:30
+# Classroom lock window (Days 2–4) for morning classes
+const CLASS_LOCK_START := 8 * 60 + 30   # 08:30
+const CLASS_LOCK_END   := 12 * 60 + 30  # 12:30
+
+# Campus hard close (everything)
+const CAMPUS_CLOSE := 19 * 60           # 19:00
+
+# Narrated “locked” dialogue (only for 08:30–12:30 tries)
+const CLASS_LOCKED_JSON := "res://Data/Classroom/Classroom_Door_Locked.json"
 
 @onready var popup_label: Label = $PopUp
 @onready var show_menu_button: Button = $background/ShowMenuButton
@@ -24,15 +30,15 @@ const CLASS_LOCK_END := 12 * 60 + 30     # 12:30
 var _panel: Control = null
 
 func _ready() -> void:
-	if GameState.subject1.strip_edges() == "":
-		GameState.subject1 = "Geography"
-	if GameState.subject2.strip_edges() == "":
-		GameState.subject2 = "Math"
-
 	GameUi.visible = true
 	GameState.location = "School"
 	popup_label.visible = false
 	show_menu_button.pressed.connect(_show_menu)
+
+	# If campus is closed already, kick out immediately
+	if GameState.time >= CAMPUS_CLOSE:
+		_kick_out_of_school()
+		return
 
 func _show_menu() -> void:
 	_clear_panel()
@@ -52,18 +58,22 @@ func _on_choice(id: String) -> void:
 		"classroom":
 			_try_enter_classroom()
 		"prof_office":
-			_try_enter_generic(PROFESSOR_OFFICE_SCENE, PROFESSOR_OPEN, PROFESSOR_CLOSE,
-				"The professor's office is closed.")
+			_try_enter_generic(PROFESSOR_OFFICE_SCENE, PROFESSOR_OPEN, PROFESSOR_CLOSE, "The professor's office is closed.")
 		"sec_office":
-			_try_enter_generic(SECRETARY_OFFICE_SCENE, SECRETARY_OPEN, SECRETARY_CLOSE,
-				"The secretary's office is closed.")
+			_try_enter_generic(SECRETARY_OFFICE_SCENE, SECRETARY_OPEN, SECRETARY_CLOSE, "The secretary's office is closed.")
 		"city":
 			get_tree().change_scene_to_file(CITY_SCENE)
 		"back":
 			_clear_panel()
 
 func _try_enter_generic(scene_path: String, open_time: int, close_time: int, closed_msg: String) -> void:
-	var now: int = GameState.time
+	var now := GameState.time
+
+	if now >= CAMPUS_CLOSE:
+		_kick_out_of_school()
+		_clear_panel()
+		return
+
 	if now >= open_time and now < close_time:
 		get_tree().change_scene_to_file(scene_path)
 	else:
@@ -74,34 +84,62 @@ func _try_enter_generic(scene_path: String, open_time: int, close_time: int, clo
 	_clear_panel()
 
 func _try_enter_classroom() -> void:
-	var d: int = GameState.day
-	var t: int = GameState.time
+	var d := GameState.day
+	var t := GameState.time
 
-	# Day 1: allow 12:30–18:00 so the Classroom scene can show the "empty classroom" JSON inside.
+	if t >= CAMPUS_CLOSE:
+		_kick_out_of_school()
+		_clear_panel()
+		return
+
+	# Day 1: allow only 12:30–18:00 so Classroom scene can show “empty classroom” JSON itself
 	if d == 1:
 		if t >= 12 * 60 + 30 and t < 18 * 60:
 			get_tree().change_scene_to_file(CLASSROOM_SCENE)
 		else:
-			# still closed; just inform
-			var ui := DialogueManager.start_dialogue("res://Data/Classroom/Class_Locked.json", self)
+			popup_label.text = "The classroom is closed. (Open after 12:30 on Day 1.)"
+			popup_label.visible = true
 		_clear_panel()
 		return
 
-	# Day 2–4: lock during 08:30–12:30 (run the Narrator lock JSON instead of popup)
-	if t >= (8 * 60 + 30) and t < (12 * 60 + 30):
-		DialogueManager.start_dialogue("res://Data/Classroom/Class_Locked.json", self)
+	# Days 2–4: block only during 08:30–12:30 with a LOCKED dialogue; no locked JSON outside that window
+	if d >= 2 and d <= 4:
+		# After-hours classroom closure (18:00–19:00): plain message, no locked JSON
+		if t >= 18 * 60 and t < CAMPUS_CLOSE:
+			popup_label.text = "The classroom is closed for the day."
+			popup_label.visible = true
+			_clear_panel()
+			return
+
+		# Morning class in session → play the lock narration JSON
+		if t >= CLASS_LOCK_START and t < CLASS_LOCK_END:
+			if FileAccess.file_exists(CLASS_LOCKED_JSON):
+				DialogueManager.start_dialogue(CLASS_LOCKED_JSON, self)
+			else:
+				popup_label.text = "Class is in session. The door's locked."
+				popup_label.visible = true
+			_clear_panel()
+			return
+
+		# Otherwise allowed (including early <08:30 or afternoon)
+		get_tree().change_scene_to_file(CLASSROOM_SCENE)
 		_clear_panel()
 		return
 
-	# Otherwise allowed (morning 08:00–08:30; afternoons/evenings)
+	# Day 5+ (your finals logic may override later); allow for now
 	get_tree().change_scene_to_file(CLASSROOM_SCENE)
 	_clear_panel()
-
 
 func _minutes_to_time_str(minutes: int) -> String:
 	var hours := int(minutes / 60)
 	var mins := int(minutes % 60)
 	return "%02d:%02d" % [hours, mins]
+
+func _kick_out_of_school() -> void:
+	popup_label.text = "School is closed for the day."
+	popup_label.visible = true
+	await get_tree().process_frame
+	get_tree().change_scene_to_file(CITY_SCENE)
 
 func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):

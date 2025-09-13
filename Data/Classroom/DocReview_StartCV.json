@@ -1,0 +1,17 @@
+{
+  "id": "DocReview_StartCV",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Sure. Let’s take a look. Start with the CV…"
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Clean layout. You’ve kept it simple. Good. It might be short, but at least it’s honest."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Now, the motivational letter…"
+    }
+  ]
+}
