@@ -1,4 +1,4 @@
-# Central flag catalog + legacy aliases
+# Central flag catalog + legacy aliases 
 extends Node
 class_name GameFlags
 
@@ -11,6 +11,13 @@ const NOTARIZED_BIRTH            := "notarized_birth"
 const PRINTED_CV                 := "printed_cv"
 const PRINTED_MOTIVATION         := "printed_motivation"
 const PRINTED_PROJECT            := "printed_project"
+
+# MVR / Birth Certificate flow
+const MVR_BCERT_STARTED          := "mvr_bcert_started"       # chose a path (any)
+const MVR_BCERT_STANDARD         := "mvr_bcert_standard"      # chose standard flow
+const MVR_BCERT_EXPEDITED        := "mvr_bcert_expedited"     # chose expedited flow
+const MVR_BCERT_BRIBERY          := "mvr_bcert_bribery"       # paid the bribe (same-day)
+const MVR_BCERT_READY_DAY        := "mvr_bcert_ready_day"     # int: calendar day when pickup allowed
 
 # Project / Professor / Janitor
 const BOUGHT_PROJECT             := "bought_project"
@@ -67,6 +74,13 @@ const DEFAULTS := {
 	PRINTED_CV: false,
 	PRINTED_MOTIVATION: false,
 	PRINTED_PROJECT: false,
+
+	# MVR
+	MVR_BCERT_STARTED: false,
+	MVR_BCERT_STANDARD: false,
+	MVR_BCERT_EXPEDITED: false,
+	MVR_BCERT_BRIBERY: false,
+	MVR_BCERT_READY_DAY: 0,
 
 	BOUGHT_PROJECT: false,
 	PROJECT_WRITTEN: false,

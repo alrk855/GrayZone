@@ -1,7 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://dnvnpxlfvrjgx"]
+[gd_scene load_steps=9 format=3 uid="uid://dnvnpxlfvrjgx"]
 
 [ext_resource type="Texture2D" uid="uid://mlxwb7a78sey" path="res://Images/mvr_shalter.png" id="1_7e1ok"]
+[ext_resource type="Script" uid="uid://dtbg16pdp3ppj" path="res://Scenes/Reusable/Map/mvr.gd" id="1_sgyk1"]
 [ext_resource type="Script" uid="uid://c763p6eaw512u" path="res://Scenes/Reusable/Map/gocity.gd" id="2_7e1ok"]
+[ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_jo7j4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8hi63"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f5ryh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ftrfd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cbybm"]
 
 [node name="Mvr" type="Control"]
 layout_mode = 3
@@ -10,6 +20,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_sgyk1")
+background_path = NodePath("TextureRect")
+talk_button_path = NodePath("TextureRect/Clerk")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -33,6 +46,17 @@ offset_top = -8.0
 offset_right = 4.0
 grow_horizontal = 2
 grow_vertical = 0
+theme = ExtResource("3_jo7j4")
 text = "City"
 script = ExtResource("2_7e1ok")
 target_scene = "uid://bdwff2rioevg3"
+
+[node name="Clerk" type="Button" parent="TextureRect"]
+offset_left = 658.0
+offset_top = 85.0
+offset_right = 1230.0
+offset_bottom = 782.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8hi63")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_f5ryh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ftrfd")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cbybm")

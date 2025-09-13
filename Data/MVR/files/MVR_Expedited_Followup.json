@@ -1,0 +1,12 @@
+{
+  "lines": [
+	{
+	  "speaker": "Clerk",
+	  "text": "The expedited request is logged. It will be ready tomorrow."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "Pickup after 13:00. Keep your receipt."
+	}
+  ]
+}
