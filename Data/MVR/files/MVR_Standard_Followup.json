@@ -1,12 +1,12 @@
 {
   "lines": [
-    {
-      "speaker": "Clerk",
-      "text": "Your request is still in process."
-    },
-    {
-      "speaker": "Clerk",
-      "text": "Come back in {NDAYS} days during office hours."
-    }
+	{
+	  "speaker": "Clerk",
+	  "text": "Your request is still in process."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "Come back in {NDAYS} days during office hours."
+	}
   ]
 }

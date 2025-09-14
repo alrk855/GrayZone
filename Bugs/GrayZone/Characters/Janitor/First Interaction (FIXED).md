@@ -1,4 +1,4 @@
-- **Status**: Open  
+- **Status**: Closed
 - **Priority**: Medium
 - **Location/Scene**:  Professors Office , Day 1 , "ProfessorsOffice.tscn"
 - **Quick Notes**: Janitor offers the project , skips the integrity/reputation/marko tip checks, Doesn't require having a project but should.

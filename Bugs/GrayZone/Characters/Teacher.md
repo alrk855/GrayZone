@@ -1,0 +1,4 @@
+- **Status**: Open
+- **Priority**: Medium
+- **Location/Scene**:  School , Day 2+ , "classroom.tscn"
+- **Quick Notes**: bg is empty , button works should change on teacher bg not empty bg

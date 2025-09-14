@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Characters/Marko/Study With Marko - Event.md",
+                "file": "Characters/Teacher.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Study With Marko - Event"
+              "title": "Teacher"
             }
           }
         ]
@@ -166,19 +166,24 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "7a315e95e77437db",
+  "active": "7394bc74979c49ff",
   "lastOpenFiles": [
-    "Characters/Professor/Never Mind (FIXED).md",
-    "Characters/Marko/Study With Marko - Event.md",
-    "Home/Study.md",
-    "UI/Character Frame.md",
-    "UI/Task Overview.md",
+    "Home/Study.md29911052321.tmp",
+    "Characters/Marko/Study With Marko - (FIXED).md",
+    "Characters/Teacher.md",
+    "Characters/MVR Clerk/Time Skip bug.md",
+    "Characters/MVR Clerk/UI Showing before dialogue is done.md",
     "UI/Time.md",
-    "UI/Untitled.md",
+    "UI/UI BUG.md",
+    "UI/Task Overview (FIXED).md",
+    "UI/Character Frame (FIXED).md",
+    "Home/Study.md",
+    "Characters/Professor/Second Dialogue bug (FIXED).md",
+    "Characters/Janitor/First Interaction (FIXED).md",
+    "Characters/Professor/Never Mind (FIXED).md",
+    "Characters/MVR Clerk",
     "Home",
-    "Characters/Professor/Second Dialogue bug.md",
     "Characters/Secretary/Untitled.md",
-    "Characters/Janitor/First Interaction.md",
     "Characters/Janitor",
     "Characters/Marko",
     "Characters/Professor",

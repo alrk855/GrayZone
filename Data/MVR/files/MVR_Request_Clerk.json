@@ -1,7 +1,5 @@
 {
   "lines": [
-	{ "speaker": "Player", "text": "I need a copy of my birth certificate." },
-
 	{ "speaker": "Clerk", "text": "Birth certificate… alright." },
 	{ "speaker": "Clerk", "text": "Standard processing is the usual. It goes through the ledger, then the archive. Takes three days." },
 	{ "speaker": "Clerk", "text": "Fee is 150 денари. You come back during office hours and pick it up." },
@@ -14,7 +12,6 @@
 	{ "speaker": "Clerk", "text": "No queue, no stamps. You come after 16:00 and it’s done." },
 	{ "speaker": "Clerk", "text": "That one is 1,000 денари." },
 
-	{ "speaker": "Narrator", "text": "Her voice softens, just enough not to carry." },
 	{ "speaker": "Clerk", "text": "If you choose that last one, don’t wait in line. Just come to the counter. Quietly." },
 
 	{ "speaker": "Narrator", "text": "She taps the counter once, then slides a form across to you." }

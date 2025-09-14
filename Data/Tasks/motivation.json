@@ -14,11 +14,6 @@
 	{
 	  "id": "print_letter",
 	  "text": "Print the Motivation Letter"
-	},
-	{
-	  "id": "optional_rewrite",
-	  "text": "OPTIONAL (if teacher checked the work & you used GPT): Rewrite the letter yourself and have the Homeroom Teacher check it",
-	  "optional": true
 	}
   ]
 }

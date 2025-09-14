@@ -1,12 +1,12 @@
 {
   "lines": [
-    {
-      "speaker": "Clerk",
-      "text": "Everything’s being handled."
-    },
-    {
-      "speaker": "Clerk",
-      "text": "Come back later today, after 16:00."
-    }
+	{
+	  "speaker": "Clerk",
+	  "text": "Everything’s being handled."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "Come back later today, after 17:00."
+	}
   ]
 }

@@ -52,6 +52,7 @@ script = ExtResource("2_7e1ok")
 target_scene = "uid://bdwff2rioevg3"
 
 [node name="Clerk" type="Button" parent="TextureRect"]
+layout_mode = 0
 offset_left = 658.0
 offset_top = 85.0
 offset_right = 1230.0

@@ -1,16 +1,16 @@
 {
   "lines": [
-    {
-      "speaker": "Clerk",
-      "text": "Expedited service is 500 денари."
-    },
-    {
-      "speaker": "Clerk",
-      "text": "We’ll push it through. It will be ready tomorrow."
-    },
-    {
-      "speaker": "Clerk",
-      "text": "Pick it up after 13:00. Keep your receipt."
-    }
+	{
+	  "speaker": "Clerk",
+	  "text": "Expedited service is 500 денари."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "We’ll push it through. It will be ready tomorrow."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "Pick it up after 13:00. Keep your receipt."
+	}
   ]
 }

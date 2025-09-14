@@ -1,0 +1,23 @@
+{
+  "lines": [
+	{ "speaker": "Clerk", "text": "You’re late. Same-day pickups are strictly between 17:00 and 18:00." },
+	{ "speaker": "Clerk", "text": "Your file was returned to the queue overnight. If you still want a birth certificate, you’ll need to reapply through the regular channels." },
+	{ "speaker": "Clerk", "text": "And no—there won’t be any more ‘special handling’ for you." },
+	{ "speaker": "Narrator", "text": "She stamps the paperwork hard and slides it aside." },
+	{ "speaker": "Clerk", "text": "Standard (3 days) or Expedited (tomorrow). Those are your options." },
+	{
+	  "speaker": "System",
+	  "text": "",
+	  "action": {
+		"set_flags": {
+		  "MVR_BRIBE_PERMA_LOCK": true,
+		  "MVR_BCERT_BRIBERY": false,
+		  "MVR_BCERT_STARTED": false
+		},
+		"set_int": {
+		  "MVR_BCERT_READY_DAY": 0
+		}
+	  }
+	}
+  ]
+}

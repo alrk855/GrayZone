@@ -179,6 +179,9 @@ func _on_study_sway_choice(id: String) -> void:
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
+			# Integrity penalty only for second-choice hangout
+			GameState.adjust_integrity(-10)
+
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
 			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event" # ensure Hangout skips REP penalty
 			_safe_change_scene(HANGOUT_SCENE)
@@ -203,6 +206,9 @@ func _on_alone_push_choice(id: String) -> void:
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
+			# Integrity penalty only for second-choice hangout
+			GameState.adjust_integrity(-10)
+
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
 			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event" # ensure Hangout skips REP penalty
 			_safe_change_scene(HANGOUT_SCENE)

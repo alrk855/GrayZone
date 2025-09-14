@@ -1,16 +1,16 @@
 {
   "lines": [
-    {
-      "speaker": "Clerk",
-      "text": "You came back. Good."
-    },
-    {
-      "speaker": "Clerk",
-      "text": "No lines, no stamps—just what you asked for."
-    },
-    {
-      "speaker": "Clerk",
-      "text": "Keep this between us."
-    }
+	{
+	  "speaker": "Clerk",
+	  "text": "You came back. Good."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "No lines, no stamps—just what you asked for."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "Keep this between us."
+	}
   ]
 }

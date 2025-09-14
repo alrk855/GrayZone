@@ -24,6 +24,7 @@ const KEY_STUDY_SESSION: String = "__study_session_index"
 
 # Fade overlay
 var _fade_rect: ColorRect = null
+var _ui_was_visible: bool = false
 
 func _ready() -> void:
 	GameState.location = "Home"
@@ -266,8 +267,8 @@ func _ensure_fader() -> void:
 	if _fade_rect:
 		return
 	_fade_rect = ColorRect.new()
-	_fade_rect.color = Color(0, 0, 0, 1) # will drive alpha via modulate, keep color black
-	_fade_rect.modulate = Color(1, 1, 1, 0) # start transparent
+	_fade_rect.color = Color(0, 0, 0, 1)
+	_fade_rect.modulate = Color(1, 1, 1, 0)
 	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fade_rect.z_index = 100
@@ -279,15 +280,36 @@ func _fade_to(alpha: float, duration: float) -> void:
 	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
 	await tw.finished
 
+func _block_ui(lock: bool) -> void:
+	_ensure_fader()
+	if lock:
+		# Hide current options (incl. Activities) and block clicks
+		_ui_was_visible = _panel != null and _panel.visible
+		if _panel:
+			_panel.visible = false
+		if home_button:
+			home_button.disabled = true
+		_fade_rect.mouse_filter = Control.MOUSE_FILTER_STOP
+	else:
+		# Re-enable input and restore menu visibility
+		if home_button:
+			home_button.disabled = false
+		if _panel and _ui_was_visible:
+			_panel.visible = true
+		_ui_was_visible = false
+		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 func _do_sleep() -> void:
 	if GameState.is_time_frozen():
 		return
 	if GameState.time < SLEEP_AVAILABLE_MIN:
 		return
 
+	_block_ui(true)
 	await _fade_to(1.0, 3.9)
 	GameState.sleep_now()
-	await _fade_to(0.0,6.0)
+	await _fade_to(0.0, 6.0)
+	_block_ui(false)
 
 	# Optional wake-up nudge
 	if FileAccess.file_exists(WAKEUP_JSON):

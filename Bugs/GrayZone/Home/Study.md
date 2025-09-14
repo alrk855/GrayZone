@@ -1,8 +1,7 @@
 # Bug: {Home study system}
 
 - **Status**: Open  
-- **Priority**: Low   
+- **Priority**: Medium   
 - **Location/Scene**:  "home.tscn"
-- **Quick Notes**:  studying the same ntoes from day1 on day2 increments day2 as done and advances task aswell.
+- **Quick Notes**:  studying the same notes from day1 on day2 increments day2 as done and advances task as well.
 ---
-

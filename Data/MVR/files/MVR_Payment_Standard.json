@@ -1,16 +1,16 @@
 {
   "lines": [
-    {
-      "speaker": "Clerk",
-      "text": "Standard procedure. Fee is 150 денари."
-    },
-    {
-      "speaker": "Clerk",
-      "text": "Alright, noted. Your request is logged. Ready in three days."
-    },
-    {
-      "speaker": "Clerk",
-      "text": "Keep your receipt and bring an ID when you return."
-    }
+	{
+	  "speaker": "Clerk",
+	  "text": "Standard procedure. Fee is 150 денари."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "Alright, noted. Your request is logged. Ready in three days."
+	},
+	{
+	  "speaker": "Clerk",
+	  "text": "Keep your receipt and bring an ID when you return."
+	}
   ]
 }

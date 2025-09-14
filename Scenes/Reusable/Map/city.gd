@@ -5,11 +5,10 @@ extends Control
 @export var bg_day: Texture2D
 @export var bg_night: Texture2D
 
-# Click this button to open the city menu (set its path in the Inspector)
+# Click to open city menu
 @export var city_button_path: NodePath
 @onready var city_button: Button = get_node_or_null(city_button_path) as Button
 
-# Choice panel (spawned, used, freed)
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 var _panel: Control = null
 var _awaiting := ""   # "city_menu" | "activity_menu"
@@ -25,31 +24,31 @@ const MARKO_FIRST_EVENT_SCENE    := "res://Scenes/Reusable/Events/MarkoFirstEven
 const MARKO_FIRST_EVENT_DONE     := "marko_first_event_done"
 const YCO_INTERACTION_DONE       := "yco_interaction_done"
 
-# ===== MVR gating (handled here, not in MVR scene) =====
-const MVR_OPEN  := 13 * 60  # 13:00
-const MVR_CLOSE := 15 * 60  # 15:00
-const MVR_LOCKED_JSON := "res://Data/MVR/MVR_Locked.json"
+# ===== MVR gating =====
+const MVR_OPEN  := 13 * 60
+const MVR_CLOSE := 15 * 60
+
+# JSONs for gating
+const MVR_CLOSED_JSON := "res://Data/MVR/ MVR_Closed.json"          # outside hours
+const MVR_ALREADY_HAVE_JSON := "res://Data/MVR/MVR_AlreadyHave.json" # already have certificate
 
 # ===== Day/Night thresholds =====
-const NIGHT_START := 19 * 60  # 19:00 (inclusive → night)
-const DAY_START   := 7 * 60   # 07:00 (exclusive before → night)
+const NIGHT_START := 19 * 60
+const DAY_START   := 7 * 60
 
 var _bg: TextureRect
 var _last_is_night = null
 
 func _ready() -> void:
-	# Background ref
 	_bg = get_node_or_null(background_texrect_path) as TextureRect
 	_update_background(true)
 
-	# Wire the button that should pop the city menu
 	if city_button and city_button.has_signal("pressed"):
 		city_button.connect("pressed", Callable(self, "_on_city_button_pressed"))
 	else:
-		push_warning("City.gd: city_button_path is not set or not a Button. Set it in the Inspector.")
+		push_warning("City.gd: city_button_path is not set or not a Button.")
 
 func _process(_dt: float) -> void:
-	# If time changes while idling in City, update bg automatically
 	_update_background(false)
 
 func _on_city_button_pressed() -> void:
@@ -97,12 +96,11 @@ func _on_city_choice(id: String) -> void:
 		"school":
 			_go_to(SCHOOL_SCENE_PATH, "School")
 		"mvr":
-			_try_enter_mvr() # gated here by time; MVR scene assumes you’re allowed in
+			_try_enter_mvr()
 		"yco":
 			if _is_yco_available():
 				_go_to(YCO_SCENE_PATH, "YCO")
 			else:
-				print("YCO locked: Day ≥ 2 + interaction needed.")
 				_show_city_menu()
 		"activity":
 			_show_activity_menu()
@@ -115,19 +113,15 @@ func _on_activity_choice(id: String) -> void:
 			if _is_marko_unlocked():
 				_start_scene("res://Scenes/Reusable/Tasks/Hangout.tscn")
 			else:
-				print("Hangout locked until MarkoFirstEvent is done.")
 				_show_activity_menu()
 		"tutoring":
 			if _is_tutoring_unlocked():
 				_start_scene("res://Scenes/Reusable/Tasks/Tutoring.tscn")
 			else:
-				print("Tutoring locked until you spend money once.")
 				_show_activity_menu()
 		"hangout_locked":
-			print("Locked: finish MarkoFirstEvent first.")
 			_show_activity_menu()
 		"tutoring_locked":
-			print("Locked: spend money at least once.")
 			_show_activity_menu()
 		"back":
 			_show_city_menu()
@@ -135,10 +129,8 @@ func _on_activity_choice(id: String) -> void:
 # ========= ACTIONS =========
 func _go_home() -> void:
 	GameState.location = "Home"
-	# Day 1 first time going Home -> start Marko First Event
 	if GameState.day == 1 and not GameState.has_flag(MARKO_FIRST_EVENT_DONE):
 		GameState.set_flag(MARKO_FIRST_EVENT_DONE, true)
-		print("Auto-starting MarkoFirstEvent (Day 1, first Home).")
 		_start_scene(MARKO_FIRST_EVENT_SCENE)
 		_clear_panel()
 		return
@@ -158,19 +150,26 @@ func _start_scene(path: String) -> void:
 
 # ========= MVR GATING (CITY-LEVEL) =========
 func _try_enter_mvr() -> void:
-	var now := GameState.time
+	# If we already have the certificate, don't allow entering; show “already have” JSON.
+	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
+		_play_city_json_or_fallback(MVR_ALREADY_HAVE_JSON, "You already have the certificate. No need to go back.")
+		_show_city_menu()
+		return
+
+	var now = GameState.time
 	if now >= MVR_OPEN and now < MVR_CLOSE:
 		_go_to(MVR_SCENE_PATH, "MVR")
 		return
 
-	# Outside hours → narrative “no use in going” JSON; fallback to console if missing
-	if FileAccess.file_exists(MVR_LOCKED_JSON):
-		DialogueManager.start_dialogue(MVR_LOCKED_JSON, self)
-	else:
-		var os := _minutes_to_time_str(MVR_OPEN)
-		var cs := _minutes_to_time_str(MVR_CLOSE)
-		print("No use in going there — it's locked from %s to %s." % [os, cs])
+	# Outside hours → use closed JSON
+	_play_city_json_or_fallback(MVR_CLOSED_JSON, "It's closed right now.")
 	_show_city_menu()
+
+func _play_city_json_or_fallback(path: String, fallback_msg: String) -> void:
+	if FileAccess.file_exists(path):
+		DialogueManager.start_dialogue(path, self)
+	else:
+		print(fallback_msg)
 
 # ========= UNLOCK CHECKS =========
 func _is_yco_available() -> bool:
@@ -184,7 +183,7 @@ func _is_tutoring_unlocked() -> bool:
 
 # ========= BACKGROUND UTILS =========
 func _is_night_time() -> bool:
-	var t := GameState.time
+	var t = GameState.time
 	return (t >= NIGHT_START) or (t < DAY_START)
 
 func _update_background(force := false) -> void:
@@ -192,7 +191,7 @@ func _update_background(force := false) -> void:
 		_bg = get_node_or_null(background_texrect_path) as TextureRect
 		if not _bg:
 			return
-	var night := _is_night_time()
+	var night = _is_night_time()
 	if force or _last_is_night == null or _last_is_night != night:
 		_last_is_night = night
 		if night:
@@ -205,7 +204,7 @@ func _update_background(force := false) -> void:
 # ========= HELPERS =========
 func _spawn_options_panel(options: Array, cb: Callable) -> void:
 	_clear_panel()
-	var panel := choice_panel_scene.instantiate()
+	var panel = choice_panel_scene.instantiate()
 	_panel = panel
 	add_child(panel)
 	panel.call("show_options", options, cb)
@@ -216,6 +215,6 @@ func _clear_panel() -> void:
 	_panel = null
 
 func _minutes_to_time_str(minutes: int) -> String:
-	var hours := int(minutes / 60)
-	var mins := int(minutes % 60)
+	var hours = int(minutes / 60)
+	var mins = int(minutes % 60)
 	return "%02d:%02d" % [hours, mins]

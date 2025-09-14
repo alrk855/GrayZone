@@ -9,7 +9,11 @@ const KEY_SUBJECT_PICK: String   = "__study_subject_pick"  # "subject1" | "subje
 const KEY_RETURN_SCENE: String   = "__study_return_scene"  # where Done returns
 const KEY_SESSION_INDEX: String  = "__study_session_index" # 0 = today; 1..4 = specific session
 
-const REGULAR_STUDY_TIME_MIN: int = 45  # Study owns +45 min per session
+const REGULAR_STUDY_TIME_MIN: int = 45  # +45 minutes per session (every time)
+
+# ---- locals to commit correct session on exit ----
+var _subject_raw: String = ""
+var _effective_session: int = 0    # 1..4
 
 func _ready() -> void:
 	GameState.location = "Study"
@@ -36,47 +40,49 @@ func _ready() -> void:
 		q_labels.append(ql)
 		a_labels.append(al)
 
-	# --- clear labels (no theme overrides) ---
+	# --- clear labels ---
 	for i in range(5):
-		var ql: Label = q_labels[i]
-		var al: Label = a_labels[i]
-		ql.visible = false
-		al.visible = false
-		ql.text = ""
-		al.text = ""
+		q_labels[i].visible = false
+		a_labels[i].visible = false
+		q_labels[i].text = ""
+		a_labels[i].text = ""
 
 	# --- resolve subject from feature flag ---
 	var pick: String = String(GameState.features_unlocked.get(KEY_SUBJECT_PICK, "subject1")).to_lower()
-	var subject_raw: String = ""
 	if pick == "subject2":
-		subject_raw = GameState.subject2
+		_subject_raw = GameState.subject2
 	else:
-		subject_raw = GameState.subject1
-	if subject_raw.strip_edges() == "":
-		subject_raw = GameState.subject1
+		_subject_raw = GameState.subject1
+	if _subject_raw.strip_edges() == "":
+		_subject_raw = GameState.subject1
 
-	# --- choose the sheet: explicit session (1..4) or today's ---
-	var session_idx: int = int(GameState.features_unlocked.get(KEY_SESSION_INDEX, 0))
-	var batch: Array
-	if session_idx >= 1 and session_idx <= 4:
-		batch = GameState.get_study_sheet_for_session(subject_raw, session_idx)
+	# --- compute effective session index (1..4) ---
+	var requested_idx: int = int(GameState.features_unlocked.get(KEY_SESSION_INDEX, 0))
+	if requested_idx >= 1 and requested_idx <= 4:
+		_effective_session = requested_idx
 	else:
-		batch = GameState.get_daily_study_sheet(subject_raw)
+		# fallback to today's day clamped to 1..4
+		_effective_session = clamp(GameState.day, 1, 4)
+
+	# --- choose the sheet: explicit session or today's sheet ---
+	var batch: Array
+	if requested_idx >= 1 and requested_idx <= 4:
+		batch = GameState.get_study_sheet_for_session(_subject_raw, _effective_session)
+	else:
+		batch = GameState.get_daily_study_sheet(_subject_raw)
 
 	# --- render ---
 	if batch.size() == 0:
-		# Friendly placeholder instead of a blank screen
-		var mid: int = 2
+		var mid := 2
 		q_labels[mid].text = "No questions available."
 		a_labels[mid].text = ""
 		q_labels[mid].visible = true
 	else:
-		var n: int = min(5, batch.size())
+		var n = min(5, batch.size())
 		for i in range(n):
 			_fill_slot(q_labels[i], a_labels[i], batch[i])
 
-	# --- once-per-day count (+45 min inside) ---
-	GameState.count_study_if_new(subject_raw, REGULAR_STUDY_TIME_MIN)
+	# NOTE: no time added on enter; time is added on Done every time.
 
 func _fill_slot(ql: Label, al: Label, qd: Dictionary) -> void:
 	ql.text = String(qd.get("q",""))
@@ -85,7 +91,23 @@ func _fill_slot(ql: Label, al: Label, qd: Dictionary) -> void:
 	al.visible = true
 
 func _on_done_pressed() -> void:
+	_commit_study_session()  # awards time every session; marks session as done once
+
 	var return_path: String = String(GameState.features_unlocked.get(KEY_RETURN_SCENE, HOME_SCENE_PATH))
 	if return_path.strip_edges() == "":
 		return_path = HOME_SCENE_PATH
 	get_tree().change_scene_to_file(return_path)
+
+func _commit_study_session() -> void:
+	var subj_key: String = GameState._get_subject_key_from_choice(_subject_raw)
+	if subj_key.strip_edges() == "":
+		return
+
+	var guard_key := "%s|%d" % [subj_key, _effective_session]
+
+	# Always award time, even on repeats
+	GameState.adjust_time(REGULAR_STUDY_TIME_MIN)
+
+	# Mark the specific session as done the first time we ever complete it
+	if not GameState.study_guard.has(guard_key):
+		GameState.study_guard[guard_key] = true
