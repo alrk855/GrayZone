@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://coanffbur1o0l"]
 
-[ext_resource type="Texture2D" uid="uid://dp58ywitfyhh6" path="res://Images/MainMenu/BlueSky_HD2.png" id="1_4kpyb"]
 [ext_resource type="Script" uid="uid://bxkf2746r0g6c" path="res://Scenes/Reusable/Tasks/hangout.gd" id="1_ollcb"]
+[ext_resource type="Texture2D" uid="uid://c1aldxrvvcc24" path="res://Images/ploshtad_marko.png" id="2_ollcb"]
 
 [node name="Hangout" type="Control"]
 layout_mode = 3
@@ -19,4 +19,4 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_4kpyb")
+texture = ExtResource("2_ollcb")

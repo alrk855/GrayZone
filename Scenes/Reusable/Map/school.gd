@@ -1,4 +1,4 @@
-extends Control
+extends Control 
 
 const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
 
@@ -29,7 +29,16 @@ const CLASS_LOCKED_JSON := "res://Data/Classroom/Classroom_Door_Locked.json"
 
 var _panel: Control = null
 
+# Fade overlay
+var _fade_layer: CanvasLayer = null
+var _fade_rect: ColorRect = null
+
 func _ready() -> void:
+	if GameState.subject1.strip_edges() == "":
+		GameState.subject1 = "math"
+	if GameState.subject2.strip_edges() == "":
+		GameState.subject2 = "geography"
+
 	GameUi.visible = true
 	GameState.location = "School"
 	popup_label.visible = false
@@ -62,7 +71,7 @@ func _on_choice(id: String) -> void:
 		"sec_office":
 			_try_enter_generic(SECRETARY_OFFICE_SCENE, SECRETARY_OPEN, SECRETARY_CLOSE, "The secretary's office is closed.")
 		"city":
-			get_tree().change_scene_to_file(CITY_SCENE)
+			_fade_and_change_scene(CITY_SCENE)
 		"back":
 			_clear_panel()
 
@@ -75,7 +84,7 @@ func _try_enter_generic(scene_path: String, open_time: int, close_time: int, clo
 		return
 
 	if now >= open_time and now < close_time:
-		get_tree().change_scene_to_file(scene_path)
+		_fade_and_change_scene(scene_path)
 	else:
 		var open_str := _minutes_to_time_str(open_time)
 		var close_str := _minutes_to_time_str(close_time)
@@ -92,26 +101,22 @@ func _try_enter_classroom() -> void:
 		_clear_panel()
 		return
 
-	# Day 1: allow only 12:30–18:00 so Classroom scene can show “empty classroom” JSON itself
 	if d == 1:
 		if t >= 12 * 60 + 30 and t < 18 * 60:
-			get_tree().change_scene_to_file(CLASSROOM_SCENE)
+			_fade_and_change_scene(CLASSROOM_SCENE)
 		else:
 			popup_label.text = "The classroom is closed. (Open after 12:30 on Day 1.)"
 			popup_label.visible = true
 		_clear_panel()
 		return
 
-	# Days 2–4: block only during 08:30–12:30 with a LOCKED dialogue; no locked JSON outside that window
 	if d >= 2 and d <= 4:
-		# After-hours classroom closure (18:00–19:00): plain message, no locked JSON
 		if t >= 18 * 60 and t < CAMPUS_CLOSE:
 			popup_label.text = "The classroom is closed for the day."
 			popup_label.visible = true
 			_clear_panel()
 			return
 
-		# Morning class in session → play the lock narration JSON
 		if t >= CLASS_LOCK_START and t < CLASS_LOCK_END:
 			if FileAccess.file_exists(CLASS_LOCKED_JSON):
 				DialogueManager.start_dialogue(CLASS_LOCKED_JSON, self)
@@ -121,13 +126,11 @@ func _try_enter_classroom() -> void:
 			_clear_panel()
 			return
 
-		# Otherwise allowed (including early <08:30 or afternoon)
-		get_tree().change_scene_to_file(CLASSROOM_SCENE)
+		_fade_and_change_scene(CLASSROOM_SCENE)
 		_clear_panel()
 		return
 
-	# Day 5+ (your finals logic may override later); allow for now
-	get_tree().change_scene_to_file(CLASSROOM_SCENE)
+	_fade_and_change_scene(CLASSROOM_SCENE)
 	_clear_panel()
 
 func _minutes_to_time_str(minutes: int) -> String:
@@ -139,9 +142,37 @@ func _kick_out_of_school() -> void:
 	popup_label.text = "School is closed for the day."
 	popup_label.visible = true
 	await get_tree().process_frame
-	get_tree().change_scene_to_file(CITY_SCENE)
+	_fade_and_change_scene(CITY_SCENE)
 
 func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
+
+# ================= Fade helpers =================
+func _ensure_fader() -> void:
+	if _fade_layer == null or not is_instance_valid(_fade_layer):
+		_fade_layer = CanvasLayer.new()
+		_fade_layer.layer = 100
+		add_child(_fade_layer)
+	if _fade_rect == null or not is_instance_valid(_fade_rect):
+		_fade_rect = ColorRect.new()
+		_fade_rect.color = Color(0, 0, 0, 1)
+		_fade_rect.modulate = Color(1, 1, 1, 0)
+		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_fade_layer.add_child(_fade_rect)
+
+func _fade_to(alpha: float, duration: float) -> void:
+	_ensure_fader()
+	var tw := create_tween()
+	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
+	await tw.finished
+
+func _fade_and_change_scene(path: String) -> void:
+	if path == "":
+		return
+	await _fade_to(1.0, 0.4)
+	if ResourceLoader.exists(path):
+		get_tree().change_scene_to_file(path)
+	await _fade_to(0.0, 0.4)

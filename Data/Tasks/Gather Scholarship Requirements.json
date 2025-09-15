@@ -33,10 +33,6 @@
 	  "optional": true
 	},
 	{
-	  "text": "Maintain a Good Reputation",
-	  "id": "reputation"
-	},
-	{
 	  "text": "Avoid Serious Disciplinary Reports",
 	  "id": "discipline"
 	}

@@ -15,7 +15,7 @@ const VISIT_SEC_ID := "Visit the Secretary"
 
 var _bg_current: Texture2D = null
 
-# Hours (change close to 17*60 if needed)
+# Hours
 const T_13_00: int = 13 * 60
 const T_16_00: int = 16 * 60
 
@@ -32,6 +32,10 @@ var _print_cfg: Dictionary = {}
 var _allow_auto_close := false
 var _not_here_fired_on_enter := false
 
+# Fade overlay
+var _fade_layer: CanvasLayer = null
+var _fade_rect: ColorRect = null
+
 func _ready() -> void:
 	GameState.location = "SecretaryOffice"
 	GameState.ensure_task(VISIT_SEC_ID)
@@ -41,19 +45,15 @@ func _ready() -> void:
 
 	# ENTER LOGIC:
 	if _is_open_now():
-		# First-time intro only during working hours
 		if GameState.get_task_progress(VISIT_SEC_ID) == 0:
 			GameState.update_task_step(VISIT_SEC_ID)
 			GameState.set_flag("secretary_met", true)
 			DialogueManager.start_dialogue(JSON_SEC_INITIAL, self)
 	else:
-		# After-hours: ALWAYS show NotHere on enter (deferred so it never gets skipped)
 		call_deferred("_start_not_here_on_enter")
 
 func _process(_delta: float) -> void:
 	_update_background()
-
-	# Auto-close only if we were here before close and time passes closing
 	if _allow_auto_close and GameState.time >= T_16_00 and not GameState.is_time_frozen():
 		_close_to_school()
 
@@ -82,7 +82,6 @@ func _set_bg(tex: Texture2D) -> void:
 func _start_not_here_on_enter() -> void:
 	if _not_here_fired_on_enter: return
 	_not_here_fired_on_enter = true
-	# one extra frame to be extra-safe on slow loads
 	await get_tree().process_frame
 	_start_not_here_dialogue()
 
@@ -93,12 +92,11 @@ func _start_not_here_dialogue() -> void:
 		print("Secretary not here (missing JSON): ", JSON_SEC_NOT_HERE)
 
 func _close_to_school() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/School.tscn")
+	_fade_and_change_scene("res://Scenes/Reusable/Map/School.tscn")
 
 # ----- UI flow -----
 func start_interaction() -> void:
 	_clear_panel()
-	# After-hours -> show NotHere on click too
 	if not _is_open_now():
 		_start_not_here_dialogue()
 		return
@@ -128,7 +126,7 @@ func _on_choice_selected(id: String) -> void:
 		"notarization":
 			DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Notarization.json", self)
 		"print":
-			DialogueManager.start_dialogue(PRINT_MENU_JSON, self) # wrapper -> sec_show_print_menu
+			DialogueManager.start_dialogue(PRINT_MENU_JSON, self)
 		"submit":
 			if GameState.day < 5:
 				DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Submit_PreFriday.json", self)
@@ -226,3 +224,31 @@ func _clear_panel() -> void:
 	if _active_panel and is_instance_valid(_active_panel):
 		_active_panel.queue_free()
 	_active_panel = null
+
+# ============ Fade helpers ============
+func _ensure_fader() -> void:
+	if _fade_layer == null or not is_instance_valid(_fade_layer):
+		_fade_layer = CanvasLayer.new()
+		_fade_layer.layer = 100
+		add_child(_fade_layer)
+	if _fade_rect == null or not is_instance_valid(_fade_rect):
+		_fade_rect = ColorRect.new()
+		_fade_rect.color = Color(0, 0, 0, 1)
+		_fade_rect.modulate = Color(1, 1, 1, 0)
+		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_fade_layer.add_child(_fade_rect)
+
+func _fade_to(alpha: float, duration: float) -> void:
+	_ensure_fader()
+	var tw := create_tween()
+	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
+	await tw.finished
+
+func _fade_and_change_scene(path: String) -> void:
+	if path == "":
+		return
+	await _fade_to(1.0, 0.4)
+	if ResourceLoader.exists(path):
+		get_tree().change_scene_to_file(path)
+	await _fade_to(0.0, 0.4)

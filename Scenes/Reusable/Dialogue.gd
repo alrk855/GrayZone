@@ -16,14 +16,15 @@ signal dialogue_finished
 ]
 
 @export var portraits: Dictionary = {
-	"teacher":   preload("res://Images/CharacterFrames/KlasenFrame.png"),
-	"principal": preload("res://Images/CharacterFrames/direktorframe.png"),
-	"secretary": preload("res://Images/CharacterFrames/secretaryframe.png"),
-	"janitor":   preload("res://Images/CharacterFrames/JanitorFrame.png"),
-	"professor": preload("res://Images/CharacterFrames/Prof1Frame.png"),
-	"marko":     preload("res://Images/CharacterFrames/MarkoFrame.png"),
-	"mvrclerk":  preload("res://Images/CharacterFrames/MvrClerkFrame.png")
+	"homeroom teacher": preload("res://Images/CharacterFrames/KlasenFrame.png"),
+	"principal":        preload("res://Images/CharacterFrames/direktorframe.png"),
+	"secretary":        preload("res://Images/CharacterFrames/secretaryframe.png"),
+	"janitor":          preload("res://Images/CharacterFrames/JanitorFrame.png"),
+	"professor":        preload("res://Images/CharacterFrames/Prof1Frame.png"),
+	"marko":            preload("res://Images/CharacterFrames/MarkoFrame.png"),
+	"mvrclerk":         preload("res://Images/CharacterFrames/MvrClerkFrame.png")
 }
+
 
 var dialogue_data: Array = []
 var line_index: int = 0

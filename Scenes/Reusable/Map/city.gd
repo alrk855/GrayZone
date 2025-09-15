@@ -27,10 +27,13 @@ const YCO_INTERACTION_DONE       := "yco_interaction_done"
 # ===== MVR gating =====
 const MVR_OPEN  := 13 * 60
 const MVR_CLOSE := 15 * 60
+const MVR_CLOSED_JSON        := "res://Data/MVR/MVR_Closed.json"
+const MVR_ALREADY_HAVE_JSON  := "res://Data/MVR/MVR_AlreadyHave.json"
 
-# JSONs for gating
-const MVR_CLOSED_JSON := "res://Data/MVR/ MVR_Closed.json"          # outside hours
-const MVR_ALREADY_HAVE_JSON := "res://Data/MVR/MVR_AlreadyHave.json" # already have certificate
+# ===== YCO gating =====
+const YCO_OPEN  := 9 * 60
+const YCO_CLOSE := 15 * 60 + 30
+const YCO_CLOSED_JSON := "res://Data/YCO/YCO_Closed.json"
 
 # ===== Day/Night thresholds =====
 const NIGHT_START := 19 * 60
@@ -39,6 +42,10 @@ const DAY_START   := 7 * 60
 var _bg: TextureRect
 var _last_is_night = null
 
+# ===== Fade overlay =====
+var _fade_layer: CanvasLayer = null
+var _fade_rect: ColorRect = null
+
 func _ready() -> void:
 	_bg = get_node_or_null(background_texrect_path) as TextureRect
 	_update_background(true)
@@ -46,7 +53,7 @@ func _ready() -> void:
 	if city_button and city_button.has_signal("pressed"):
 		city_button.connect("pressed", Callable(self, "_on_city_button_pressed"))
 	else:
-		push_warning("City.gd: city_button_path is not set or not a Button.")
+		push_warning("City.gd: city_button_path is not set or not a Button. Set it in the Inspector.")
 
 func _process(_dt: float) -> void:
 	_update_background(false)
@@ -92,16 +99,13 @@ func _build_activity_options() -> Array:
 func _on_city_choice(id: String) -> void:
 	match id:
 		"home":
-			_go_home()
+			await _go_home()
 		"school":
-			_go_to(SCHOOL_SCENE_PATH, "School")
+			await _go_to(SCHOOL_SCENE_PATH, "School")
 		"mvr":
-			_try_enter_mvr()
+			await _try_enter_mvr()
 		"yco":
-			if _is_yco_available():
-				_go_to(YCO_SCENE_PATH, "YCO")
-			else:
-				_show_city_menu()
+			await _try_enter_yco()
 		"activity":
 			_show_activity_menu()
 		"back":
@@ -111,12 +115,12 @@ func _on_activity_choice(id: String) -> void:
 	match id:
 		"hangout_marko":
 			if _is_marko_unlocked():
-				_start_scene("res://Scenes/Reusable/Tasks/Hangout.tscn")
+				await _start_scene("res://Scenes/Reusable/Tasks/Hangout.tscn") # fades
 			else:
 				_show_activity_menu()
 		"tutoring":
 			if _is_tutoring_unlocked():
-				_start_scene("res://Scenes/Reusable/Tasks/Tutoring.tscn")
+				await _start_scene("res://Scenes/Reusable/Tasks/Tutoring.tscn") # fades
 			else:
 				_show_activity_menu()
 		"hangout_locked":
@@ -131,43 +135,61 @@ func _go_home() -> void:
 	GameState.location = "Home"
 	if GameState.day == 1 and not GameState.has_flag(MARKO_FIRST_EVENT_DONE):
 		GameState.set_flag(MARKO_FIRST_EVENT_DONE, true)
-		_start_scene(MARKO_FIRST_EVENT_SCENE)
-		_clear_panel()
-		return
-	_start_scene(HOME_SCENE_PATH)
+		# No fade for the event trigger
+		await _start_scene(MARKO_FIRST_EVENT_SCENE, false)
+	else:
+		# No fade when going Home
+		await _start_scene(HOME_SCENE_PATH, false)
 	_clear_panel()
 
 func _go_to(scene_path: String, loc_name: String) -> void:
 	GameState.location = loc_name
-	_start_scene(scene_path)
+	await _start_scene(scene_path, true) # keep fades everywhere else
 	_clear_panel()
 
-func _start_scene(path: String) -> void:
-	if path != "" and ResourceLoader.exists(path):
-		get_tree().change_scene_to_file(path)
-	else:
+# use_fade controls whether we do the fade-out before scene change
+func _start_scene(path: String, use_fade: bool = true) -> void:
+	if path == "" or not ResourceLoader.exists(path):
 		push_warning("City.gd: Scene missing or path invalid: " + path)
+		return
+	if use_fade:
+		await _fade_to(1.0, 0.4)
+	get_tree().change_scene_to_file(path)
 
-# ========= MVR GATING (CITY-LEVEL) =========
+# ========= MVR GATING =========
 func _try_enter_mvr() -> void:
-	# If we already have the certificate, don't allow entering; show “already have” JSON.
 	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
-		_play_city_json_or_fallback(MVR_ALREADY_HAVE_JSON, "You already have the certificate. No need to go back.")
+		await _play_city_json_or_fallback(MVR_ALREADY_HAVE_JSON, "You already have the certificate. No need to go back.")
 		_show_city_menu()
 		return
 
 	var now = GameState.time
 	if now >= MVR_OPEN and now < MVR_CLOSE:
-		_go_to(MVR_SCENE_PATH, "MVR")
+		await _go_to(MVR_SCENE_PATH, "MVR") # fades
 		return
 
-	# Outside hours → use closed JSON
-	_play_city_json_or_fallback(MVR_CLOSED_JSON, "It's closed right now.")
+	await _play_city_json_or_fallback(MVR_CLOSED_JSON, "It's closed right now.")
+	_show_city_menu()
+
+# ========= YCO GATING =========
+func _try_enter_yco() -> void:
+	if not _is_yco_available():
+		_show_city_menu()
+		return
+
+	var now = GameState.time
+	if now >= YCO_OPEN and now < YCO_CLOSE:
+		await _go_to(YCO_SCENE_PATH, "YCO") # fades
+		return
+
+	await _play_city_json_or_fallback(YCO_CLOSED_JSON, "Not the best idea to go there now. The Youth Civil Office is closed between 09:00 and 15:30.")
 	_show_city_menu()
 
 func _play_city_json_or_fallback(path: String, fallback_msg: String) -> void:
 	if FileAccess.file_exists(path):
-		DialogueManager.start_dialogue(path, self)
+		var ui := DialogueManager.start_dialogue(path, self)
+		if ui and ui.has_signal("dialogue_finished"):
+			await ui.dialogue_finished
 	else:
 		print(fallback_msg)
 
@@ -194,12 +216,10 @@ func _update_background(force := false) -> void:
 	var night = _is_night_time()
 	if force or _last_is_night == null or _last_is_night != night:
 		_last_is_night = night
-		if night:
-			if bg_night:
-				_bg.texture = bg_night
-		else:
-			if bg_day:
-				_bg.texture = bg_day
+		if night and bg_night:
+			_bg.texture = bg_night
+		elif not night and bg_day:
+			_bg.texture = bg_day
 
 # ========= HELPERS =========
 func _spawn_options_panel(options: Array, cb: Callable) -> void:
@@ -214,7 +234,22 @@ func _clear_panel() -> void:
 		_panel.queue_free()
 	_panel = null
 
-func _minutes_to_time_str(minutes: int) -> String:
-	var hours = int(minutes / 60)
-	var mins = int(minutes % 60)
-	return "%02d:%02d" % [hours, mins]
+# ========= Fade helpers =========
+func _ensure_fader() -> void:
+	if _fade_layer == null or not is_instance_valid(_fade_layer):
+		_fade_layer = CanvasLayer.new()
+		_fade_layer.layer = 200
+		add_child(_fade_layer)
+	if _fade_rect == null or not is_instance_valid(_fade_rect):
+		_fade_rect = ColorRect.new()
+		_fade_rect.color = Color(0, 0, 0, 1)
+		_fade_rect.modulate = Color(1, 1, 1, 0)
+		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_fade_layer.add_child(_fade_rect)
+
+func _fade_to(alpha: float, duration: float) -> void:
+	_ensure_fader()
+	var tw := create_tween()
+	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
+	await tw.finished

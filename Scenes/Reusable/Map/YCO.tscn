@@ -1,7 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://c85ya7md0kuy3"]
+[gd_scene load_steps=9 format=3 uid="uid://c85ya7md0kuy3"]
 
-[ext_resource type="Texture2D" uid="uid://c4qgx6s6cp7kf" path="res://Images/MainMenu/BlueSky_HD3.png" id="1_7pkxn"]
-[ext_resource type="Script" uid="uid://c763p6eaw512u" path="res://Scenes/Reusable/Map/gocity.gd" id="2_a2mpb"]
+[ext_resource type="Script" uid="uid://dwq5awcorxxo4" path="res://Scenes/Reusable/Map/yco.gd" id="1_a2mpb"]
+[ext_resource type="Texture2D" uid="uid://vw1dhtj30301" path="res://Images/b7500904646b294d9b087886b204113a_t.jpeg" id="2_a2mpb"]
+[ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_4n16m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kfnul"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5tyei"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ffrf7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xrl65"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ebnsl"]
 
 [node name="Yco" type="Control"]
 layout_mode = 3
@@ -10,17 +21,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_a2mpb")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_7pkxn")
+texture = ExtResource("2_a2mpb")
 
-[node name="Button4" type="Button" parent="TextureRect"]
+[node name="back" type="Button" parent="background"]
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 1
 anchors_preset = 7
@@ -33,6 +45,17 @@ offset_top = -8.0
 offset_right = 4.0
 grow_horizontal = 2
 grow_vertical = 0
+theme = ExtResource("3_4n16m")
 text = "City"
-script = ExtResource("2_a2mpb")
-target_scene = "uid://bdwff2rioevg3"
+
+[node name="Daniel" type="Button" parent="background"]
+layout_mode = 0
+anchor_left = 0.296354
+anchor_right = 0.686979
+anchor_bottom = 0.889815
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kfnul")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_5tyei")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ffrf7")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_xrl65")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ebnsl")
+metadata/_edit_use_anchors_ = true

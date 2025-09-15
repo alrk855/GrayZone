@@ -20,8 +20,9 @@ const J_D2_MORNING_ON_TIME              := "res://Data/Classroom/Classroom_Morni
 const J_D2_MORNING_LATE                 := "res://Data/Classroom/Classroom_Morning_Late.json"
 const J_D2_NOON_ANNOUNCEMENT            := "res://Data/Classroom/Classroom_D2_Noon_Event.json"
 
-const J_CATCHUP_WARNING                 := "res://Data/Classroom/Classroom_Catchup.json"
-const J_SKIPPED_PENALTY                 := "res://Data/Classroom/Classroom_Skipped_Penalty.json"
+# Catch-up (skip-only, two variants)
+const J_CATCHUP_FIRST_SKIP              := "res://Data/Classroom/Classroom_Catchup_FirstSkip.json"
+const J_CATCHUP_REPEAT_SKIP             := "res://Data/Classroom/Classroom_Catchup_RepeatSkip.json"
 
 # Teacher: transcripts + doc review set
 const J_TEACHER_TRANSCRIPT_TOO_EARLY    := "res://Data/Classroom/Transcript_TooEarly.json"
@@ -75,18 +76,17 @@ var _doc_suspicious_this_review: bool = false
 # ------------------------ Flags (string keys) ------------------------
 # per-day flags
 const F_ATTENDED_PREFIX           := "attended_morning_day_"
-const F_LATE_PENALIZED_PREFIX     := "late_penalized_day_"
+const F_LATE_PENALIZED_PREFIX     := "late_penalized_day_"          # late is flavor-only now
 const F_SKIP_PENALIZED_PREFIX     := "skip_penalized_day_"
 const F_NOON_DAY2_DONE            := "noon_day2_announcement_done"
 const F_CATCHUP_SHOWN_PREFIX      := "catchup_shown_day_"
-const F_TRANSCRIPT_STEP1_DONE     := "transcript_step1_done"
-const F_DISCIPLINE_WARNED         := "discipline_warned"
-const F_DISCIPLINE_FAILED         := "discipline_failed"
-const F_MISSED_CNT                := "missed_morning_count"
+
+# counters
+const F_MISSED_CNT                := "missed_morning_count"         # ndays-skips source of truth
 
 # janitor flags
 const F_MARKO_TIP                 := "marko_tip"
-const F_ANS_SUBJ1                 := "bought_answers_s1"          # use canonical names you added
+const F_ANS_SUBJ1                 := "bought_answers_s1"
 const F_ANS_SUBJ2                 := "bought_answers_s2"
 const F_JANITOR_REJECTED_D3       := "janitor_offer_declined_d3"
 
@@ -99,7 +99,7 @@ const F_MLETTER_REWRITE_REQ       := "motivation_rewrite_required"
 const F_MLETTER_SECOND_CHANCE     := "motivation_second_chance"
 
 # tasks / navigation
-const TASK_VOLUNTEER              := "Volunteer for Community Work"
+const TASK_VOLUNTEER              := "Volunteer for Community Work" # not auto-bumped here
 const TASK_TRANSCRIPT             := "transcript"
 const SCHOOL_SCENE                := "res://Scenes/Reusable/Map/School.tscn"
 
@@ -216,7 +216,7 @@ func _handle_entry_flow() -> void:
 				GameState.adjust_reputation(-10)
 				GameState.set_flag(F_SKIP_PENALIZED_PREFIX + str(prev), true)
 				GameState.set_int(F_MISSED_CNT, GameState.get_int(F_MISSED_CNT, 0) + 1)
-				_start_and_chain(J_SKIPPED_PENALTY, "")
+				# No immediate catch-up JSON here; it will show in today's branch below
 
 	# Days 2–4 morning logic
 	if d >= 2 and d <= 4:
@@ -242,6 +242,7 @@ func _handle_entry_flow() -> void:
 				return
 
 			if t >= T_08_15 and t < T_08_30:
+				# Late is flavor-only; keep light rep effect but don't affect catch-up logic
 				var late_key := F_LATE_PENALIZED_PREFIX + str(d)
 				if not GameState.has_flag(late_key):
 					GameState.adjust_reputation(-5)
@@ -253,7 +254,7 @@ func _handle_entry_flow() -> void:
 			# 08:30–12:30 locked by School scene
 			return
 
-		# After 12:30 and didn’t attend → one-time penalty
+		# After 12:30 and didn’t attend → one-time skip penalty for TODAY
 		if t >= T_12_30:
 			var attended_key2 := F_ATTENDED_PREFIX + str(d)
 			var skip_pen_key := F_SKIP_PENALIZED_PREFIX + str(d)
@@ -261,7 +262,22 @@ func _handle_entry_flow() -> void:
 				GameState.adjust_reputation(-10)
 				GameState.set_flag(skip_pen_key, true)
 				GameState.set_int(F_MISSED_CNT, GameState.get_int(F_MISSED_CNT, 0) + 1)
-				_start_and_chain(J_SKIPPED_PENALTY, "")
+				# fall through to catch-up JSON below
+
+	# Catch-up branch (skip-only): show once per day if you've missed at least one
+	# This keeps original "after morning" placement behavior.
+	if d >= 2 and d <= 4:
+		var shown_key := F_CATCHUP_SHOWN_PREFIX + str(d)
+		if not GameState.has_flag(shown_key):
+			var total_skips := GameState.get_int(F_MISSED_CNT, 0)
+			if total_skips >= 1:
+				GameState.set_flag(shown_key, true)
+				if total_skips == 1:
+					_start_and_chain(J_CATCHUP_FIRST_SKIP, "_after_catchup")
+					return
+				else:
+					_start_and_chain(J_CATCHUP_REPEAT_SKIP, "_after_catchup")
+					return
 
 # after the morning (on-time/late) JSON finishes
 func _after_morning_dialogue() -> void:
@@ -276,21 +292,13 @@ func _after_morning_dialogue() -> void:
 		_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "_after_day2_noon")
 		return
 
-	# D3/D4 catch-up if they missed before
-	if GameState.day >= 3 and GameState.day <= 4:
-		if GameState.get_int(F_MISSED_CNT, 0) >= 1:
-			var shown_key := F_CATCHUP_SHOWN_PREFIX + str(GameState.day)
-			if not GameState.has_flag(shown_key):
-				_start_and_chain(J_CATCHUP_WARNING, "_after_catchup")
-				return
-
-	# nothing more → back to School
+	# D3/D4: catch-up handled by central branch in _handle_entry_flow after penalties
 	_update_presence_and_background()
 	_go_school()
 
 func _after_day2_noon() -> void:
 	GameState.set_flag(F_NOON_DAY2_DONE, true)
-	GameState.ensure_task(TASK_VOLUNTEER)
+	# No auto-ensures/bump for volunteering here; handled by Day2 noon JSON/actions or your TaskManager later.
 	GameState.set_flag("doc_review_unlocked", true)
 	GameState.set_flag("yco_interaction_done", true)
 	GameState.adjust_time(+10)
@@ -298,10 +306,7 @@ func _after_day2_noon() -> void:
 	_go_school()
 
 func _after_catchup() -> void:
-	if not GameState.has_flag(F_DISCIPLINE_WARNED):
-		GameState.set_flag(F_DISCIPLINE_WARNED, true)
-	else:
-		GameState.set_flag(F_DISCIPLINE_FAILED, true)
+	# No discipline flags; no task increments here by design.
 	_update_presence_and_background()
 	_go_school()
 
@@ -330,10 +335,10 @@ func _on_teacher_choice(id: String) -> void:
 		return
 	if id == "transcript":
 		_start_and_chain(J_TEACHER_TRANSCRIPT_TOO_EARLY, "")
-		if not GameState.has_flag(F_TRANSCRIPT_STEP1_DONE):
+		if not GameState.has_flag("transcript_step1_done"):
 			GameState.ensure_task(TASK_TRANSCRIPT)
 			GameState.update_task_step(TASK_TRANSCRIPT)
-			GameState.set_flag(F_TRANSCRIPT_STEP1_DONE, true)
+			GameState.set_flag("transcript_step1_done", true)
 		_clear_panel()
 		return
 	if id == "back":

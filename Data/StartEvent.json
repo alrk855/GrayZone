@@ -1,12 +1,12 @@
 {
   "id": "StartEvent",
   "lines": [
-	{ "speaker": "Narrator", "text": "The classroom grows quiet. The teacher enters briskly, dropping a folder on the desk." },
-	{ "speaker": "Teacher", "text": "Alright, listen up. This is important." },
-	{ "speaker": "Teacher", "text": "This Friday, you’ll be taking your Final Exams — standardized, written, no room for games." },
-	{ "speaker": "Teacher", "text": "You’ll get to pick two subjects. We’ve submitted your preferences, but the responsibility is yours." },
-	{ "speaker": "Teacher", "text": "Your results go directly on your Grade Transcript. These grades will affect your scholarship chances and more." },
-	{ "speaker": "Teacher", "text": "Choose wisely — and study. No second chances." },
+	{ "speaker": "Narrator", "text": "The classroom grows quiet. The Homeroom Teacher enters briskly, dropping a folder on the desk." },
+	{ "speaker": "Homeroom Teacher", "text": "Alright, listen up. This is important." },
+	{ "speaker": "Homeroom Teacher", "text": "This Friday, you’ll be taking your Final Exams — standardized, written, no room for games." },
+	{ "speaker": "Homeroom Teacher", "text": "You’ll get to pick two subjects. We’ve submitted your preferences, but the responsibility is yours." },
+	{ "speaker": "Homeroom Teacher", "text": "Your results go directly on your Grade Transcript. These grades will affect your scholarship chances and more." },
+	{ "speaker": "Homeroom Teacher", "text": "Choose wisely — and study. No second chances." },
 
 	{
 	  "choice_type": "multi_select",
@@ -26,7 +26,7 @@
 	{ "action": "unlock_feature", "feature": "study_sessions", "limit": 5, "info": "2 questions revealed per session" },
 	{ "action": "adjust_time", "value": 5 },
 
-	{ "speaker": "Teacher", "text": "And now... the Principal would like to have a few words." },
+	{ "speaker": "Homeroom Teacher", "text": "And now... the Principal would like to have a few words." },
 	{ "scene_transition": "principal_enters" },
 	{ "speaker": "Narrator", "text": "He steps aside as the Principal enters the classroom." },
 	{ "speaker": "Principal", "text": "Today we received a new call for a super scholarship to study at a prestigious university abroad. You’ll get free education and accommodation if you meet the following criteria:" },

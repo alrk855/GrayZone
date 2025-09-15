@@ -10,6 +10,15 @@ extends Control
 
 const MAIN_REQUIREMENTS_TASK_ID := "Gather Scholarship Requirements"
 
+# Volunteer constants (exclude from auto-add)
+const TASK_VOLUNTEER := "Volunteer for Community Work"
+const VOLUNTEER_ALIASES := [
+	"Volunteer for Community Work",
+	"volunteer for community work",
+	"volunteer",
+	"volunteering"
+]
+
 # ---------------- Fonts ----------------
 const OVERVIEW_FONT_PATH := "res://Fonts/Russo_One.ttf"          # buttons font
 const BODY_FONT_PATH     := "res://Fonts/Chalkboard-Regular.ttf" # title/meta/steps
@@ -29,6 +38,9 @@ var _task_cache: Dictionary = {}    # task_id -> parsed JSON
 # Track last seen day to detect rollover
 var _last_seen_day: int = 0
 
+# ---------------- Step state enum ----------------
+enum StepState { ONGOING, DONE, FAILED }
+
 func _ready() -> void:
 	if not GameState.task_added.is_connected(Callable(self, "_on_task_added")):
 		GameState.task_added.connect(Callable(self, "_on_task_added"))
@@ -40,6 +52,14 @@ func _ready() -> void:
 		GameState.time_changed.connect(Callable(self, "_on_time_changed"))
 
 	_last_seen_day = GameState.day
+
+	# --- Migration: if Volunteer was auto-added before the exclusion fix, remove it once.
+	if TASK_VOLUNTEER in GameState.tasks:
+		if GameState.has_method("remove_task"):
+			GameState.remove_task(TASK_VOLUNTEER)
+		else:
+			# fallback if tasks is a mutable Array
+			GameState.tasks.erase(TASK_VOLUNTEER)
 
 	_apply_title_meta_fonts()
 	_populate_tasks()
@@ -81,6 +101,8 @@ func _on_time_changed(_new_time: int, new_day: int) -> void:
 
 # ---------------- Overview population ----------------
 func _populate_tasks() -> void:
+	_synchronize_display_only_meta()
+
 	# 1) Collect task ids
 	var ids: Array = []
 	for t in GameState.tasks:
@@ -122,13 +144,24 @@ func _apply_overview_color(button: Button, task_id: String) -> void:
 	var steps_total := _get_steps_count(task_id)
 	var prog := GameState.get_task_progress(task_id)
 
+	# any explicit fail for this task?
+	if _has_failed_task(task_id):
+		button.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25)) # red
+		return
+
+	# completed -> green
 	if steps_total > 0 and prog >= steps_total:
 		button.add_theme_color_override("font_color", Color(0.2, 0.8, 0.2))   # green
-	elif _is_task_blocked(task_id):
+		return
+
+	# blocked -> red
+	if _is_task_blocked(task_id):
 		button.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25)) # red
-	else:
-		if button.has_theme_color_override("font_color"):
-			button.remove_theme_color_override("font_color")
+		return
+
+	# default
+	if button.has_theme_color_override("font_color"):
+		button.remove_theme_color_override("font_color")
 
 # ---------------- Sorting ----------------
 func _get_sorted_tasks(ids: Array) -> Array:
@@ -192,7 +225,13 @@ func _show_task_details(task_id: String) -> void:
 	var progress: int = GameState.get_task_progress(task_id)
 	var show_all_steps: bool = (task_id == MAIN_REQUIREMENTS_TASK_ID)
 
-	# Special rendering for study tasks: always show 4 steps with ✔ / ✘ / • per day
+	# Auto-add all requirement subtasks EXCEPT Volunteer (idempotent, runs once)
+	if task_id == MAIN_REQUIREMENTS_TASK_ID and not GameState.has_flag("req_subtasks_added"):
+		_add_requirement_subtasks_except(steps)
+		GameState.set_flag("req_subtasks_added", true)
+		_populate_tasks()  # refresh grid with newly added tasks
+
+	# Study tasks: render day-by-day with ✔ / ✘ / • and also obey miss>studied rule
 	if task_id == "study_subject1" or task_id == "study_subject2":
 		_render_study_steps(task_id, steps)
 	else:
@@ -203,29 +242,34 @@ func _show_task_details(task_id: String) -> void:
 			var raw_txt: String = String(step.get("text", "Unnamed Step"))
 			var txt: String = _format_placeholders(raw_txt)
 
-			if step.has("counter_key") and step.has("counter_goal"):
-				var key: String = String(step.get("counter_key"))
-				var goal: int = int(step.get("counter_goal"))
-				var count: int = int(GameState.get_task_counter(task_id, key, 0))
-				txt += " (%d/%d)" % [count, goal]
-
 			var label := Label.new()
 			label.add_theme_font_override("font", FONT_BODY)
 			label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
-			if i < progress:
-				label.add_theme_color_override("font_color", Color.DIM_GRAY)
-				label.text = "✔ " + txt
+
+			if task_id == MAIN_REQUIREMENTS_TASK_ID:
+				var st := _compute_requirement_step_state(step)
+				match st:
+					StepState.DONE:
+						label.add_theme_color_override("font_color", Color.DIM_GRAY)
+						label.text = "✔ " + txt
+					StepState.FAILED:
+						label.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
+						label.text = "✘ " + txt
+					_:
+						label.text = "• " + txt
 			else:
-				label.text = "• " + txt
+				# generic tasks: ✔ for completed steps, • otherwise
+				if i < progress:
+					label.add_theme_color_override("font_color", Color.DIM_GRAY)
+					label.text = "✔ " + txt
+				else:
+					label.text = "• " + txt
+
 			step_container.add_child(label)
 
-	if task_id == MAIN_REQUIREMENTS_TASK_ID and not GameState.has_flag("req_subtasks_added"):
-		_add_requirement_subtasks(steps)
-		GameState.set_flag("req_subtasks_added", true)
-		_populate_tasks()
-
+# ---------------- Study rendering ----------------
 func _render_study_steps(task_id: String, steps: Array) -> void:
-	# Determine which subject this task is for and render 4 daily steps.
+	# Determine which subject this task is for and render 4 daily steps with ✔ / ✘ / •
 	var subject_raw: String = ""
 	if task_id == "study_subject2":
 		subject_raw = GameState.subject2
@@ -233,16 +277,13 @@ func _render_study_steps(task_id: String, steps: Array) -> void:
 		subject_raw = GameState.subject1
 
 	var subj_key: String = GameState._get_subject_key_from_choice(subject_raw)
-	var today_index: int = GameState.day
-	if today_index < 1:
-		today_index = 1
-	if today_index > 4:
-		today_index = 4
-
 	# Always show up to min(4, steps.size()) lines
 	var max_steps: int = steps.size()
 	if max_steps > 4:
 		max_steps = 4
+
+	var studied_count := 0
+	var missed_count := 0
 
 	for i in range(max_steps):
 		var day_idx: int = i + 1
@@ -257,7 +298,6 @@ func _render_study_steps(task_id: String, steps: Array) -> void:
 				studied = true
 			else:
 				if day_idx < GameState.day:
-					# prior day not present in guard => missed
 					missed = true
 
 		var label := Label.new()
@@ -265,35 +305,17 @@ func _render_study_steps(task_id: String, steps: Array) -> void:
 		label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
 
 		if studied:
+			studied_count += 1
 			label.add_theme_color_override("font_color", Color.DIM_GRAY)
 			label.text = "✔ " + txt
 		elif missed:
+			missed_count += 1
 			label.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
 			label.text = "✘ " + txt
 		else:
 			label.text = "• " + txt
 
 		step_container.add_child(label)
-
-func _add_requirement_subtasks(steps: Array) -> void:
-	for s in steps:
-		var sub_id: String = String((s as Dictionary).get("id", "")).strip_edges()
-		if sub_id != "":
-			GameState.ensure_task(sub_id)
-
-func _on_back_pressed() -> void:
-	_clear_task_details()
-	_move_camera_up()
-
-func _clear_task_details() -> void:
-	for child in step_container.get_children():
-		child.queue_free()
-
-func _move_camera_down() -> void:
-	camera.position += Vector2(0, 1080)
-
-func _move_camera_up() -> void:
-	camera.position -= Vector2(0, 1080)
 
 # ---------------- Day rollover logic ----------------
 func _handle_study_day_rollover(prev_day: int) -> void:
@@ -325,6 +347,169 @@ func _mark_missed_if_needed_for_subject(day_index: int, task_id: String, subject
 	# If they did not study and progress is still behind this day, advance to mark as missed.
 	if not studied_today and current_prog < day_index:
 		GameState.update_task_step(task_id)
+
+# ---------------- Fail-state computation ----------------
+func _has_failed_task(task_id: String) -> bool:
+	# Study tasks fail if missed > studied
+	if task_id == "study_subject1" or task_id == "study_subject2":
+		return _is_study_failed(task_id)
+
+	# Project fail rule
+	if task_id.to_lower() == "project":
+		return _get_project_state() == StepState.FAILED
+
+	# Requirements: any failed sub-step?
+	if task_id == MAIN_REQUIREMENTS_TASK_ID:
+		return _has_failed_step_in_requirements()
+
+	# Default: no fail rule
+	return false
+
+func _has_failed_step_in_requirements() -> bool:
+	var d := _load_task_data(MAIN_REQUIREMENTS_TASK_ID)
+	var steps = d.get("steps", [])
+	if steps is Array:
+		for s in steps:
+			if typeof(s) == TYPE_DICTIONARY:
+				if _compute_requirement_step_state(s) == StepState.FAILED:
+					return true
+	return false
+
+func _is_study_failed(task_id: String) -> bool:
+	var subject_raw: String = ""
+	if task_id == "study_subject2":
+		subject_raw = GameState.subject2
+	else:
+		subject_raw = GameState.subject1
+
+	var subj_key := GameState._get_subject_key_from_choice(subject_raw)
+	if subj_key.strip_edges() == "":
+		return false # no subject chosen -> cannot fail visually
+
+	var studied := 0
+	var missed := 0
+	for day_idx in range(1, 5):
+		var guard_key := subj_key + "|" + str(day_idx)
+		var did := GameState.study_guard.has(guard_key)
+		if did:
+			studied += 1
+		else:
+			if day_idx < GameState.day:
+				missed += 1
+
+	# Fail rule: missed > studied
+	return missed > studied
+
+func _get_discipline_state() -> int:
+	var skips := GameState.get_int("missed_morning_count", 0)
+	# Before/at Day 5: two or more skips => FAILED
+	if skips >= 2 and GameState.day <= 5:
+		return StepState.FAILED
+	# At/after Day 5: if ≤1 skip by the end, it's DONE
+	if GameState.day >= 5 and skips <= 1:
+		return StepState.DONE
+	return StepState.ONGOING
+
+func _get_project_state() -> int:
+	# Respect second chance (do not show red while active)
+	var submitted := GameState.has_flag("project_submitted")
+	var second_chance := GameState.has_flag("project_second_chance")
+	var plag := GameState.has_flag("project_plagiarized")
+
+	var grade_str := ""
+	if GameState.has_method("get_project_grade"):
+		grade_str = String(GameState.get_project_grade())
+	elif "project_grade" in GameState:
+		grade_str = String(GameState.project_grade)
+	elif "project_score" in GameState:
+		# if you store numeric score, derive letter; adjust thresholds as needed
+		var sc := int(GameState.project_score)
+		if sc <= 50:
+			grade_str = "F"
+		elif sc < 60:
+			grade_str = "D"
+		else:
+			grade_str = "C" # generic pass bucket
+
+	# Fail cases
+	if submitted:
+		# plagiarism + submitted ⇒ fail (caught path should reflect as F anyway)
+		if plag:
+			return StepState.FAILED
+		# F with no second chance ⇒ fail
+		if grade_str.to_upper() == "F" and not second_chance:
+			return StepState.FAILED
+		# Passing grade submitted ⇒ done
+		if grade_str != "" and grade_str.to_upper() != "F":
+			return StepState.DONE
+
+	# Not submitted or second chance active ⇒ ongoing
+	return StepState.ONGOING
+
+func _compute_requirement_step_state(step: Dictionary) -> int:
+	# Discipline meta
+	if String(step.get("type","")) == "discipline":
+		return _get_discipline_state()
+
+	# Project meta
+	if String(step.get("type","")) == "project":
+		return _get_project_state()
+
+	# Linked task completion
+	var link_task := String(step.get("links_to_task","")).strip_edges()
+	if link_task != "":
+		var steps_total := _get_steps_count(link_task)
+		var prog := GameState.get_task_progress(link_task)
+		if steps_total > 0 and prog >= steps_total:
+			return StepState.DONE
+		return StepState.ONGOING
+
+	# Flag presence
+	var f := String(step.get("flag_key","")).strip_edges()
+	if f != "":
+		return StepState.DONE if GameState.has_flag(f) else StepState.ONGOING
+
+	# Default
+	return StepState.ONGOING
+
+# ---------------- Volunteer exclusion helpers ----------------
+func _is_volunteer_id(s: String) -> bool:
+	if s == null:
+		return false
+	var norm := String(s).strip_edges().to_lower()
+	if norm == "":
+		return false
+	for alias in VOLUNTEER_ALIASES:
+		if norm == String(alias).to_lower():
+			return true
+	return false
+
+func _add_requirement_subtasks_except(steps: Array) -> void:
+	for s in steps:
+		if typeof(s) != TYPE_DICTIONARY:
+			continue
+
+		# prefer explicit id, fall back to links_to_task
+		var sub_id: String = String(s.get("id", "")).strip_edges()
+		if sub_id == "":
+			sub_id = String(s.get("links_to_task", "")).strip_edges()
+
+		# semantic tag/type support
+		var is_volunteer_tag := String(s.get("type","")).to_lower() == "volunteer"
+		if not is_volunteer_tag and s.has("tags") and s["tags"] is Array:
+			for t in s["tags"]:
+				if String(t).to_lower() == "volunteer":
+					is_volunteer_tag = true
+					break
+
+		# skip volunteer by id/alias or semantic tag
+		if _is_volunteer_id(sub_id) or is_volunteer_tag:
+			continue
+
+		if sub_id == "" or bool(s.get("exclude_from_auto_add", false)):
+			continue
+
+		GameState.ensure_task(sub_id)
 
 # ---------------- Data access + helpers ----------------
 func _load_task_data(task_id: String) -> Dictionary:
@@ -381,3 +566,21 @@ func _format_placeholders(text: String) -> String:
 		s = s.replace("{subject2}", GameState.subject2.capitalize())
 		s = s.replace("[Subject 2]", GameState.subject2.capitalize())
 	return s
+
+func _synchronize_display_only_meta() -> void:
+	# Reserved for future lightweight UI syncs before drawing; currently no-op.
+	pass
+
+func _on_back_pressed() -> void:
+	_clear_task_details()
+	_move_camera_up()
+
+func _clear_task_details() -> void:
+	for child in step_container.get_children():
+		child.queue_free()
+
+func _move_camera_down() -> void:
+	camera.position += Vector2(0, 1080)
+
+func _move_camera_up() -> void:
+	camera.position -= Vector2(0, 1080)

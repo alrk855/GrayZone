@@ -1,4 +1,4 @@
-extends Control
+extends Control 
 
 # ---------- Scene Nodes ----------
 @export var professor_path: NodePath   = "background/Professor"
@@ -72,6 +72,10 @@ const PLAGIARISM_CATCH_CHANCE: float = 0.5
 var _panel: Control = null
 var _intro_panel_shown: bool = false
 var _janitor_panel_shown: bool = false
+
+# ---------- Fade (new) ----------
+var _fade_layer: CanvasLayer = null
+var _fade_rect: ColorRect = null
 
 func _ready() -> void:
 	GameState.location = "ProfessorOffice"
@@ -299,7 +303,7 @@ func _valid_submit_increment_task() -> void:
 func _reset_project_for_second_chance() -> void:
 	GameState.ensure_task(TASK_PROJECT)
 	GameState.task_step_index[TASK_PROJECT] = 1
-	print("[Task] Project reset to step 1 for second chance.")
+	print("[Task] Project reset to step 1 for second chance.]")
 
 	GameState.clear_flag("project_written")
 	GameState.clear_flag("printed_project")
@@ -467,16 +471,41 @@ func _handle_janitor_purchase(tipped: bool) -> void:
 
 # ---------- Back ----------
 func _on_back_pressed() -> void:
-	var tree := get_tree()
-	if tree == null:
-		return
 	if GameState.is_time_frozen():
 		print("⏸️ Finish the conversation first.")
 		return
-	tree.change_scene_to_file("res://Scenes/Reusable/Map/School.tscn")
+	_fade_and_change_scene("res://Scenes/Reusable/Map/School.tscn")
 
 # ---------- Utils ----------
 func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
+
+# ========== Fade helpers (new) ==========
+func _ensure_fader() -> void:
+	if _fade_layer == null or not is_instance_valid(_fade_layer):
+		_fade_layer = CanvasLayer.new()
+		_fade_layer.layer = 100
+		add_child(_fade_layer)
+	if _fade_rect == null or not is_instance_valid(_fade_rect):
+		_fade_rect = ColorRect.new()
+		_fade_rect.color = Color(0, 0, 0, 1)
+		_fade_rect.modulate = Color(1, 1, 1, 0)
+		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_fade_layer.add_child(_fade_rect)
+
+func _fade_to(alpha: float, duration: float) -> void:
+	_ensure_fader()
+	var tw := create_tween()
+	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
+	await tw.finished
+
+func _fade_and_change_scene(path: String) -> void:
+	if path == "":
+		return
+	await _fade_to(1.0, 0.4)
+	if ResourceLoader.exists(path):
+		get_tree().change_scene_to_file(path)
+	await _fade_to(0.0, 0.4)
