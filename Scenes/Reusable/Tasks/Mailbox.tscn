@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bo7ao61nvxm25"]
+[gd_scene load_steps=4 format=3 uid="uid://bo7ao61nvxm25"]
 
 [ext_resource type="Script" uid="uid://btjug1ohf7r4q" path="res://Scenes/Reusable/Tasks/mailbox.gd" id="1_c4lpv"]
+[ext_resource type="Texture2D" uid="uid://og52a8cn8rei" path="res://Images/Mail_box_bez_pismo.png" id="2_hm06k"]
+[ext_resource type="Texture2D" uid="uid://u404uw72jb8a" path="res://Images/Mail_box_so_pismo.png" id="3_vpf72"]
 
 [node name="Mailbox" type="Control"]
 layout_mode = 3
@@ -10,6 +12,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_c4lpv")
+background_path = NodePath("TextureRect")
+texture_empty = ExtResource("2_hm06k")
+texture_full = ExtResource("3_vpf72")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
