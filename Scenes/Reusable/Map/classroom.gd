@@ -154,10 +154,11 @@ func _update_presence_and_background() -> void:
 			show_janitor_btn = false
 			show_back = false
 		else:
-			# 12:30–14:30 → teacher button available
+			# 12:30–14:30 → teacher present during free time (CHANGED)
 			if t >= T_12_30 and t < T_14_30:
-				tex = bg_empty
+				tex = bg_teacher_morning if bg_teacher_morning else bg_empty
 				show_teacher_btn = true
+				show_janitor_btn = false
 				show_back = true
 			else:
 				# 17:00–17:45 on D3/D4 → janitor

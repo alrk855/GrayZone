@@ -15,6 +15,7 @@ script = ExtResource("1_c4lpv")
 background_path = NodePath("TextureRect")
 texture_empty = ExtResource("2_hm06k")
 texture_full = ExtResource("3_vpf72")
+home_scene_path = null
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1

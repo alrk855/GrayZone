@@ -107,6 +107,7 @@ func _ready() -> void:
 func _process(_dt) -> void:
 	var limit = _effective_after_hours_limit()
 	if GameState.time >= limit and not _dialogue_playing and _panel == null:
+		# Don't auto-leave on bribery day before pickup; only after we have the cert.
 		if _method() != METHOD_BRIBERY or GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
 			_go_city()
 
@@ -319,7 +320,7 @@ func _handle_followups_or_pickup() -> void:
 			await _play_and_wait(J_FOLLOW_EXPEDITED)
 		return
 
-# ========================= Bribery wait =========================
+# ========================= Bribery wait (auto-jump into pickup) =========================
 func _show_bribe_wait_menu() -> void:
 	var opts = []
 	if GameState.time < T_BRIBE_PICK:
@@ -330,26 +331,26 @@ func _show_bribe_wait_menu() -> void:
 func _on_bribe_wait_choice(id: String) -> void:
 	_clear_panel()
 	if id == "wait":
-		if GameState.time < T_BRIBE_PICK:
-			GameState.adjust_time(T_COST_PICKUP)
-			await _fade_in_out(0.35)
-			var delta = T_BRIBE_PICK - GameState.time
-			if delta > 0:
-				GameState.adjust_time(delta)
-		await _play_and_wait(J_BRIBE_WAIT)
+		# Jump time to 17:00 and flow straight into the pickup without extra clicks
+		await _fade_in_out(0.35)
+		var delta = T_BRIBE_PICK - GameState.time
+		if delta > 0:
+			GameState.adjust_time(delta)
+		await _play_and_wait(J_BRIBE_WAIT)     # “time passes” dialogue
+		await _do_pickup_bribery()              # immediately proceed to pickup
 		return
 	if id == "later":
 		await _play_and_wait(J_BRIBE_COME_LATER)
 		return
 
-# ========================= Pickups (now also advance task) =========================
-func _advance_birth_task_safely() -> void:
+# ========================= Pickups (each bumps task by +1) =========================
+func _advance_birth_task_by_one() -> void:
 	GameState.ensure_task("birth")
 	GameState.update_task_step("birth")
 
 func _do_pickup_legal() -> void:
 	GameState.set_flag(GameFlags.HAVE_BIRTH_CERTIFICATE, true)
-	_advance_birth_task_safely()
+	_advance_birth_task_by_one()               # +1 on pickup (legal)
 	await _play_and_wait(J_PICKUP_LEGAL)
 	await _fade_in_out(0.20)
 	_set_method(METHOD_NONE)
@@ -359,7 +360,7 @@ func _do_pickup_legal() -> void:
 func _do_pickup_bribery() -> void:
 	GameState.adjust_integrity(INTEGRITY_BRIBE_PICKUP)
 	GameState.set_flag(GameFlags.HAVE_BIRTH_CERTIFICATE, true)
-	_advance_birth_task_safely()
+	_advance_birth_task_by_one()               # +1 on pickup (bribery)
 	await _play_and_wait(J_PICKUP_BRIBERY)
 	await _fade_in_out(0.20)
 	GameState.set_flag(K_BRIBE_PERMA_LOCK, true)

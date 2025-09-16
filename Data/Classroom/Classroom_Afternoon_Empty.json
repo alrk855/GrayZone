@@ -1,9 +1,9 @@
 {
   "id": "Classroom_Afternoon_Empty",
   "lines": [
-    {
-      "speaker": "Narrator",
-      "text": "Class is over. The desks are empty, and there’s no one here anymore. You should probably head somewhere else."
-    }
+	{
+	  "speaker": "Narrator",
+	  "text": "Class is over. The desks are empty, and there’s no one here anymore. You should probably head somewhere else."
+	}
   ]
 }

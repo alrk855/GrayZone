@@ -1,0 +1,5 @@
+- **Status**: Open  
+- **Priority**: **High**
+- **Location/Scene**:  Task UI
+- **Quick Notes**: Incorrect Ordering based on priority.
+- Application: Godot

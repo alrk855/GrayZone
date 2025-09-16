@@ -14,8 +14,8 @@ const D_HOME := "res://Data/Home/"
 const J_MAIL_NOT_ARRIVED := D_HOME + "Mail_LangCert_Not_Arrived.json"
 const J_MAIL_ARRIVED     := D_HOME + "Mail_LangCert_Arrived.json"
 
-# -------- Task id used for progress --------
-const TASK_LANG_CERT := "language_certificate"
+# -------- Task id used for progress (matches file name language.json) --------
+const TASK_LANG_CERT := "language"  # <— fixed id
 
 @onready var _bg: TextureRect = get_node_or_null(background_path) as TextureRect
 var _returned := false
@@ -32,33 +32,64 @@ func _ready() -> void:
 		GameState.lang_cert_ready_day = rng.randi_range(1, 4)
 		print("[Mailbox] lang_cert_ready_day = Day %d" % GameState.lang_cert_ready_day)
 
-	var arrived: bool = false
-	if GameState.day >= GameState.lang_cert_ready_day or GameState.day > 4:
-		arrived = true
-
+	var arrived := (GameState.day >= GameState.lang_cert_ready_day) or (GameState.day > 4)
 	_set_bg(arrived)
 
-	var json_path := ""
-	if arrived:
-		json_path = J_MAIL_ARRIVED
-	else:
-		json_path = J_MAIL_NOT_ARRIVED
+	var json_path := arrived ? J_MAIL_ARRIVED : J_MAIL_NOT_ARRIVED
 
-	# On first arrival, set flag + ensure/advance task
-	if arrived and not GameState.has_flag(GF.HAVE_LANGUAGE_CERTIFICATE):
-		GameState.set_flag(GF.HAVE_LANGUAGE_CERTIFICATE, true)
-		if not GameState.tasks.has(TASK_LANG_CERT):
-			GameState.add_task(TASK_LANG_CERT)
-		GameState.ensure_task_progress_at_least(TASK_LANG_CERT, 1)
+	# If arrived: set flag (once) AND always ensure task exists + advance to final step
+	if arrived:
+		if not GameState.has_flag(GF.HAVE_LANGUAGE_CERTIFICATE):
+			GameState.set_flag(GF.HAVE_LANGUAGE_CERTIFICATE, true)
+		_ensure_task_and_finish(TASK_LANG_CERT)
 
 	await _play_dialogue_and_return(json_path)
 
+func _ensure_task_and_finish(task_id: String) -> void:
+	# Ensure the task exists
+	if GameState.has_method("ensure_task"):
+		GameState.ensure_task(task_id)
+	else:
+		if not GameState.tasks.has(task_id):
+			GameState.add_task(task_id)
+
+	# Read the task JSON to determine the final step index (assumes 1-based steps)
+	var final_idx := _get_task_final_step_index(task_id)
+	if final_idx > 0:
+		if GameState.has_method("ensure_task_progress_at_least"):
+			GameState.ensure_task_progress_at_least(task_id, final_idx)
+		else:
+			# Fallback: bump step once if the helper is missing
+			if GameState.has_method("update_task_step"):
+				while GameState.get_task_progress(task_id) < final_idx:
+					GameState.update_task_step(task_id)
+	else:
+		# If we couldn't read the JSON, still make sure the task is at least started
+		if GameState.has_method("ensure_task_progress_at_least"):
+			GameState.ensure_task_progress_at_least(task_id, 1)
+
+func _get_task_final_step_index(task_id: String) -> int:
+	var path := "res://Data/Tasks/%s.json" % task_id
+	if not FileAccess.file_exists(path):
+		var alt := "res://Data/Tasks/%s.json" % task_id.to_lower()
+		if FileAccess.file_exists(alt):
+			path = alt
+		else:
+			push_warning("[Mailbox] Task JSON not found for '%s' at %s" % [task_id, path])
+			return 0
+
+	var txt := FileAccess.get_file_as_string(path)
+	var parsed = JSON.parse_string(txt)
+	if typeof(parsed) == TYPE_DICTIONARY:
+		var steps = (parsed as Dictionary).get("steps", [])
+		if steps is Array and steps.size() > 0:
+			# Convention in your project: step indices are 1..N
+			return steps.size()
+	return 0
+
 func _set_bg(arrived: bool) -> void:
 	if _bg:
-		if arrived:
-			_bg.texture = texture_full
-		else:
-			_bg.texture = texture_empty
+		_bg.texture = texture_full if arrived else texture_empty
 
 func _play_dialogue_and_return(json_path: String) -> void:
 	# Start dialogue via your DialogueManager (simple narrator-only JSONs)
