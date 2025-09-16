@@ -17,7 +17,6 @@ const MVR_BCERT_STARTED          := "mvr_bcert_started"       # chose a path (an
 const MVR_BCERT_STANDARD         := "mvr_bcert_standard"      # chose standard flow
 const MVR_BCERT_EXPEDITED        := "mvr_bcert_expedited"     # chose expedited flow
 const MVR_BCERT_BRIBERY          := "mvr_bcert_bribery"       # paid the bribe (same-day)
-const MVR_BCERT_READY_DAY        := "mvr_bcert_ready_day"     # int: calendar day when pickup allowed
 
 # Project / Professor / Janitor
 const BOUGHT_PROJECT             := "bought_project"
@@ -65,6 +64,9 @@ const JANITOR_OFFER_DECLINED_D3  := "janitor_offer_declined_d3"   # outright ref
 const MLETTER_AI                 := "motivation_ai_generated"     # detected AI-y letter
 const MLETTER_REWRITE_REQUIRED   := "motivation_rewrite_required" # need rewrite; also implies reprint
 
+# Scholarship requirement: Language certificate (arrived via mailbox)
+const HAVE_LANGUAGE_CERTIFICATE  := "have_language_certificate"   # becomes true once the mail arrives
+
 # ===== Defaults (types are respected) =====
 const DEFAULTS := {
 	SECRETARY_MET: false,
@@ -75,12 +77,11 @@ const DEFAULTS := {
 	PRINTED_MOTIVATION: false,
 	PRINTED_PROJECT: false,
 
-	# MVR
+	# MVR (note: ready-day handled elsewhere)
 	MVR_BCERT_STARTED: false,
 	MVR_BCERT_STANDARD: false,
 	MVR_BCERT_EXPEDITED: false,
 	MVR_BCERT_BRIBERY: false,
-	MVR_BCERT_READY_DAY: 0,
 
 	BOUGHT_PROJECT: false,
 	PROJECT_WRITTEN: false,
@@ -122,6 +123,9 @@ const DEFAULTS := {
 	# Motivation letter review state
 	MLETTER_AI: false,
 	MLETTER_REWRITE_REQUIRED: false,
+
+	# Scholarship requirement
+	HAVE_LANGUAGE_CERTIFICATE: false,
 }
 
 # ===== Legacy → Canonical map =====

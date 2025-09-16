@@ -8,7 +8,7 @@ const STUDY_SCENE_PATH := "res://Scenes/Reusable/Tasks/Study.tscn"
 const WRITE_CV_SCENE_PATH := "res://Scenes/Reusable/Tasks/WRITE_A_CV.tscn"
 const WRITE_MOTIVATION_PATH := "res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn"
 const WRITE_PROJECT_PATH := "res://Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn"
-const MAILBOX_SCENE_PATH := "res://Scenes/Reusable/Tasks/MailboxCheck.tscn"
+const MAILBOX_SCENE_PATH := "res://Scenes/Reusable/Tasks/Mailbox.tscn"
 const SOCIAL_SCENE_PATH := "res://Scenes/Reusable/Tasks/Social.tscn"
 
 const WAKEUP_JSON := "res://Data/Home/WakeUp_Reminder.json"

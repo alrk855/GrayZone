@@ -24,7 +24,7 @@ var location: String = "Unknown"
 # Time
 # -----------------------------
 var time: int = 12 * 60 + 45
-var day: int = 1
+var day: int = 1          # <— persisted in GameState for saves
 var time_speed: float = 2.0
 var time_running: bool = false
 var _freeze_stack: Array[String] = []
@@ -44,6 +44,10 @@ var features_unlocked: Dictionary = {}
 var subject1: String = ""
 var subject2: String = ""
 var flags: Dictionary = {}   # canonicalized keys only (via Flags.canon)
+
+# Mailbox / Language Certificate
+# Randomized arrival day ∈ [1..4] stored HERE (not in flags) for easy save/load.
+var lang_cert_ready_day: int = 0
 
 # -----------------------------
 # Tasks
