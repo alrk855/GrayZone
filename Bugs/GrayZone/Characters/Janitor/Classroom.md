@@ -1,0 +1,5 @@
+- **Status**:Open
+- **Priority**: Medium
+- **Location/Scene**: Classroom.tscn
+- **Quick Notes**: Doesnt show
+- Application: Godot

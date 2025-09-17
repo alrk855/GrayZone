@@ -27,6 +27,10 @@ var correct : int = 0
 var wrong : int = 0
 var freed : bool = false
 
+# completion guards
+var _completed := false
+var _task_bumped := false
+
 # SFX
 var zvuci : Array[AudioStream] = [
 	preload("res://Audio/MotivLetterSounds/b1.mp3"),
@@ -41,8 +45,11 @@ var zvuci : Array[AudioStream] = [
 func _ready() -> void:
 	GameState.location = "Unknown"
 	finishbutt.modulate.a = 0
-	nevermind.pressed.connect(exit)
-	finishbutt.pressed.connect(exit)
+
+	# signals (explicit callables so they always connect)
+	nevermind.pressed.connect(Callable(self, "exit"))
+	finishbutt.pressed.connect(Callable(self, "exit"))
+
 	$SceneAnimation.play("LetterIntro")
 	current = randi() % 5
 	words = text_library[current].split(" ", false)
@@ -50,7 +57,7 @@ func _ready() -> void:
 	await $SceneAnimation.animation_finished
 
 func _on_line_edit_text_submitted(new_text) -> void:
-	if (new_text == header.text):
+	if new_text == header.text:
 		current_word += 1
 		correct += 1
 		edit.text = ""
@@ -67,7 +74,6 @@ func _process(_delta: float) -> void:
 	debLabel.text = "Correct: %d\nErrors: %d\nStatus:" % [correct, wrong]
 	if current_word < words.size():
 		header.text = words[current_word]
-
 		if edit.text == header.text:
 			current_word += 1
 			correct += 1
@@ -78,7 +84,7 @@ func _process(_delta: float) -> void:
 		gamebox.visible = false
 		outro()
 
-func _on_button_pressed() -> void: #Play option
+func _on_button_pressed() -> void: # Play option
 	gamebox.modulate.a = 0
 	create_tween().tween_property(gamebox, "modulate:a", 1, 2)
 	box.visible = false
@@ -86,17 +92,25 @@ func _on_button_pressed() -> void: #Play option
 	msg.play("mesg")
 
 func outro() -> void:
+	_completed = true
+	# === Bump the task by +1 exactly once when writing completes ===
+	if not _task_bumped:
+		GameState.ensure_task("motivation")
+		GameState.update_task_step("motivation")  # +1 from current progress
+		_task_bumped = true
+	# (do NOT set printed_motivation here; printing happens at Secretary)
+
 	zvuk_end.play()
 	debLabel.visible_ratio = 0
 	status.visible = false
 	var tween : Tween = create_tween()
 	status.text = "Fuck you"
 	outrobox.visible = true
-	if (wrong == 0):
+	if wrong == 0:
 		status.text = "Perfect"
-	elif (wrong > 0 and wrong < 4):
+	elif wrong > 0 and wrong < 4:
 		status.text = "Almost Perfect"
-	elif (wrong > 3 and wrong < 7):
+	elif wrong > 3 and wrong < 7:
 		status.text = "Mid"
 	else:
 		status.text = "Bad"
@@ -114,7 +128,7 @@ func SFX_play():
 	await sound.finished
 	sound.queue_free()
 
-func _on_button_2_pressed() -> void: #GPT Option
+func _on_button_2_pressed() -> void: # GPT Option
 	box.visible = false
 	$outroGPT.visible = true
 	gptanim.play("GPT")
@@ -123,15 +137,9 @@ func _on_button_2_pressed() -> void: #GPT Option
 	outro()
 
 func exit():
-	# If the player actually completed the letter, mark DRAFT done
-	if freed:
-		GameState.ensure_task("motivation")
-		if GameState.get_task_progress("motivation") < 2:
-			GameState.update_task_step("motivation")  # step 2 (draft)
-		GameState.set_flag("printed_motivation", true)
-
+	# No task logic here anymore; it's done in outro() on completion.
 	var tween : Tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0, 1).set_trans(Tween.TRANS_CUBIC)
 	await tween.finished
-	# Go to HOME (not City)
 	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/Home.tscn")
+ 

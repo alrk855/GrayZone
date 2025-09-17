@@ -1,0 +1,51 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://crigik0mi5w1y"]
+
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="1_2mr6a"]
+[ext_resource type="StyleBox" uid="uid://8ewwjv0b0fi0" path="res://Themes/deisgnbtndev.tres" id="1_mdil7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2mr6a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3i20"]
+bg_color = Color(0.5626, 0.5335, 0.97, 0.552941)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.692563, 0.851118, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b4uxg"]
+bg_color = Color(0.0760547, 0.0584713, 0.13417, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.692563, 0.851118, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f3i20"]
+
+[resource]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/font_sizes/font_size = 44
+Button/fonts/font = ExtResource("1_2mr6a")
+Button/styles/focus = SubResource("StyleBoxEmpty_2mr6a")
+Button/styles/hover = SubResource("StyleBoxFlat_f3i20")
+Button/styles/normal = ExtResource("1_mdil7")
+Button/styles/pressed = SubResource("StyleBoxFlat_b4uxg")
+ItemList/font_sizes/font_size = 44
+ItemList/fonts/font = ExtResource("1_2mr6a")
+ItemList/styles/focus = SubResource("StyleBoxEmpty_f3i20")
+ItemList/styles/panel = ExtResource("1_mdil7")
+ItemList/styles/selected = ExtResource("1_mdil7")
+Label/styles/normal = ExtResource("1_mdil7")
+LineEdit/colors/font_color = Color(1, 1, 1, 1)
+LineEdit/font_sizes/font_size = 44
+LineEdit/fonts/font = ExtResource("1_2mr6a")
+LineEdit/styles/normal = ExtResource("1_mdil7")

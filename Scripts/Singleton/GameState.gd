@@ -3,6 +3,16 @@ extends Node
 const Flags = preload("res://Scripts/Singleton/GameFlags.gd")
 
 # -----------------------------
+# Curfew / Teleport
+# -----------------------------
+const CURFEW_MINUTES := 60                        # 01:00
+const HOME_SCENE_PATH := "res://Scenes/Reusable/Map/Home.tscn"
+const J_CURFEW := "res://Data/System/Narrator_Curfew.json"
+const FLAG_CURFEW_LOCK := "curfew_lock"
+
+var _curfew_triggered: bool = false
+
+# -----------------------------
 # Signals
 # -----------------------------
 signal task_added(task_id: String)
@@ -87,6 +97,7 @@ func begin_game(day_start: int, time_start: int) -> void:
 	_init_default_flags()
 	day = day_start
 	time = time_start
+	_curfew_triggered = false
 	emit_signal("time_changed", time, day)
 	emit_signal("money_changed", money)
 	_start_time_simulation()
@@ -130,6 +141,10 @@ func _on_minute_passed() -> void:
 	if time >= 24 * 60:
 		time = 0
 		day += 1
+
+	# Curfew check/clamp/trigger
+	_check_curfew_and_trigger()
+
 	emit_signal("time_changed", time, day)
 
 func _format_time() -> String:
@@ -138,12 +153,30 @@ func _format_time() -> String:
 	return "%02d:%02d" % [hours, minutes]
 
 func adjust_time(value: int) -> void:
-	time += value
-	while time >= 24 * 60:
-		time -= 24 * 60
-		day += 1
-	if time < 0:
-		time = 0
+	# Once curfew is active, ignore any further time changes.
+	if _curfew_triggered:
+		return
+
+	var new_time := time + value
+	var new_day := day
+
+	# Handle wraparound first
+	while new_time >= 24 * 60:
+		new_time -= 24 * 60
+		new_day += 1
+	if new_time < 0:
+		new_time = 0
+
+	# If crossing/past curfew, clamp and trigger
+	if new_time >= CURFEW_MINUTES:
+		time = CURFEW_MINUTES
+		day = new_day
+		_check_curfew_and_trigger()
+		emit_signal("time_changed", time, day)
+		return
+
+	time = new_time
+	day = new_day
 	emit_signal("time_changed", time, day)
 
 func push_time_freeze(src: String) -> void:
@@ -174,6 +207,40 @@ func sleep_now() -> void:
 	day += 1
 	time = wake
 	print("🛌 Slept. Wake at %s (Day %d), penalty +%d min" % [_format_time(), day, penalty])
+
+# Curfew helper: clamp, freeze, play JSON, teleport to Home, set lock flag
+func _check_curfew_and_trigger() -> void:
+	if _curfew_triggered:
+		return
+	if time >= CURFEW_MINUTES:
+		time = CURFEW_MINUTES
+		_curfew_triggered = true
+		push_time_freeze("__curfew__")
+		call_deferred("_run_curfew_sequence")
+
+func _run_curfew_sequence() -> void:
+	var played := false
+	var dm := get_node_or_null("/root/DialogueManager")
+	if dm and (dm.has_method("play_json_blocking") or dm.has_method("play_json")):
+		played = true
+		if dm.has_method("play_json_blocking"):
+			await dm.play_json_blocking(J_CURFEW)
+		else:
+			await dm.play_json(J_CURFEW)
+	if not played:
+		var ad := AcceptDialog.new()
+		ad.dialog_text = "It's 1:00 AM. We should really go to sleep or we can't progress."
+		ad.title = "Narrator"
+		get_tree().root.add_child(ad)
+		ad.popup_centered()
+		await ad.confirmed
+		ad.queue_free()
+
+	set_flag(FLAG_CURFEW_LOCK, true)
+	location = "Home"
+	var err := get_tree().change_scene_to_file(HOME_SCENE_PATH)
+	if err != OK:
+		push_error("Curfew teleport failed with code: %s" % [str(err)])
 
 # -------------------------------------------------
 # Money / Stats
@@ -256,7 +323,7 @@ func update_task_step(task_id: String) -> void:
 func get_task_progress(task_id: String) -> int:
 	return int(task_step_index.get(task_id, 0))
 
-func get_task_counter(task_id: String, key: String, default_val: int = 0) -> int:
+func get_task_counter(task_id: String, key: String, default_val: int) -> int:
 	var bucket: Dictionary = _task_counters.get(task_id, {})
 	return int(bucket.get(key, default_val))
 

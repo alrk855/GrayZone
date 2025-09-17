@@ -47,6 +47,7 @@ var _fade_layer: CanvasLayer = null
 var _fade_rect: ColorRect = null
 
 func _ready() -> void:
+	GameUi.visible = false
 	_bg = get_node_or_null(background_texrect_path) as TextureRect
 	_update_background(true)
 

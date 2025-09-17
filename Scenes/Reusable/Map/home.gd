@@ -14,7 +14,7 @@ const SOCIAL_SCENE_PATH := "res://Scenes/Reusable/Tasks/Social.tscn"
 const WAKEUP_JSON := "res://Data/Home/WakeUp_Reminder.json"
 
 var _panel: Control = null
-const SLEEP_AVAILABLE_MIN := 19 * 60
+const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
 
 # Keys used by Study scene
 const KEY_STUDY_MODE: String    = "__study_mode"
@@ -22,9 +22,18 @@ const KEY_SUBJECT_PICK: String  = "__study_subject_pick"
 const KEY_RETURN_SCENE: String  = "__study_return_scene"
 const KEY_STUDY_SESSION: String = "__study_session_index"
 
-# Fade overlay
+# Fade overlay (temporary until Fade singleton wiring)
 var _fade_rect: ColorRect = null
 var _ui_was_visible: bool = false
+
+# ---------- helpers for curfew / midnight lock ----------
+func _night_lock_active() -> bool:
+	# Lock if curfew flag is set (teleport at 01:00) OR during midnight hour [00:00–00:59]
+	if GameState.has_flag("curfew_lock"):
+		return true
+	if GameState.time < 60:
+		return true
+	return false
 
 func _ready() -> void:
 	GameState.location = "Home"
@@ -46,13 +55,21 @@ func _on_home_btn_pressed() -> void:
 
 func show_home_menu() -> void:
 	var opts: Array = []
-	opts.append({"id":"activities","text":"Activities"})
-	opts.append({"id":"city","text":"City"})
+	var night_lock := _night_lock_active()
 
-	if GameState.time >= SLEEP_AVAILABLE_MIN and not GameState.is_time_frozen():
-		opts.append({"id":"sleep","text":"Sleep"})
-	else:
-		opts.append({"id":"sleep_locked","text":"Sleep (Locked)"})
+	opts.append({"id":"activities","text":"Activities"})
+
+	# City is hidden/blocked during midnight lock or curfew lock
+	if not night_lock:
+		opts.append({"id":"city","text":"City"})
+
+	# Top-level Sleep appears only in normal hours, like before.
+	# During lock window we keep Sleep ONLY inside Activities (per your request).
+	if not night_lock:
+		if GameState.time >= SLEEP_AVAILABLE_MIN and not GameState.is_time_frozen():
+			opts.append({"id":"sleep","text":"Sleep"})
+		else:
+			opts.append({"id":"sleep_locked","text":"Sleep (Locked)"})
 
 	opts.append({"id":"back","text":"Back"})
 	_show_choices(opts, Callable(self,"_on_home_choice"))
@@ -64,7 +81,7 @@ func _on_home_choice(id: String) -> void:
 		"city":
 			_change_scene(CITY_SCENE_PATH)
 		"sleep":
-			await _do_sleep()
+			await _do_sleep(false) # normal gating
 		"sleep_locked":
 			show_home_menu()
 		"back":
@@ -72,6 +89,16 @@ func _on_home_choice(id: String) -> void:
 
 func _show_activities_menu() -> void:
 	var opts: Array = []
+	var night_lock := _night_lock_active()
+
+	if night_lock:
+		# Lock window: ONLY sleep here
+		opts.append({"id":"sleep_force","text":"Sleep"})
+		opts.append({"id":"back","text":"Back"})
+		_show_choices(opts, Callable(self,"_on_activities_choice"))
+		return
+
+	# Normal menu
 	opts.append({"id":"study","text":"Study"})
 	opts.append({"id":"schoolwork","text":"Schoolwork"})
 	opts.append({"id":"mailbox","text":"Check Mailbox"})
@@ -81,6 +108,9 @@ func _show_activities_menu() -> void:
 
 func _on_activities_choice(id: String) -> void:
 	match id:
+		"sleep_force":
+			# Force sleep regardless of time-of-day / frozen clock
+			await _do_sleep(true)
 		"study":
 			_show_study_menu()
 		"schoolwork":
@@ -215,6 +245,13 @@ func _get_available_days_for_subject(subject_raw: String) -> Array[int]:
 
 func _show_schoolwork_menu() -> void:
 	var opts: Array = []
+	var night_lock := _night_lock_active()
+
+	if night_lock:
+		# During lock window, schoolwork is blocked entirely
+		opts.append({"id":"back","text":"Back"})
+		_show_choices(opts, Callable(self,"_on_schoolwork_choice"))
+		return
 
 	if GameState.has_flag("secretary_met"):
 		opts.append({"id":"cv","text":"Write CV"})
@@ -255,7 +292,8 @@ func _clear_panel() -> void:
 	_panel = null
 
 func _change_scene(path: String) -> void:
-	if GameState.is_time_frozen():
+	# Extra safety: during lock window, do not leave Home
+	if _night_lock_active():
 		return
 	_clear_panel()
 	if path != "" and ResourceLoader.exists(path):
@@ -283,7 +321,6 @@ func _fade_to(alpha: float, duration: float) -> void:
 func _block_ui(lock: bool) -> void:
 	_ensure_fader()
 	if lock:
-		# Hide current options (incl. Activities) and block clicks
 		_ui_was_visible = _panel != null and _panel.visible
 		if _panel:
 			_panel.visible = false
@@ -291,7 +328,6 @@ func _block_ui(lock: bool) -> void:
 			home_button.disabled = true
 		_fade_rect.mouse_filter = Control.MOUSE_FILTER_STOP
 	else:
-		# Re-enable input and restore menu visibility
 		if home_button:
 			home_button.disabled = false
 		if _panel and _ui_was_visible:
@@ -299,21 +335,38 @@ func _block_ui(lock: bool) -> void:
 		_ui_was_visible = false
 		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-func _do_sleep() -> void:
-	if GameState.is_time_frozen():
-		return
-	if GameState.time < SLEEP_AVAILABLE_MIN:
-		return
+func _do_sleep(force: bool) -> void:
+	# When force=true (midnight/curfew), bypass normal gating and frozen checks
+	if not force:
+		if GameState.is_time_frozen():
+			return
+		if GameState.time < SLEEP_AVAILABLE_MIN:
+			return
 
 	_block_ui(true)
-	await _fade_to(1.0, 3.9)
+	await _fade_to(1.0, 0.4)
+
+	# Apply sleep (GameState handles post-23:00 penalty internally)
 	GameState.sleep_now()
-	await _fade_to(0.0, 6.0)
+
+	# Clear curfew state so the new day runs normally
+	if GameState.has_flag("curfew_lock"):
+		GameState.clear_flag("curfew_lock")
+	# Release the specific curfew freeze (if present)
+	GameState.pop_time_freeze("__curfew__")
+	# Reset the curfew guard so adjust_time works again today
+	# (variable exists in the GameState I sent you)
+	GameState._curfew_triggered = false
+
+	await _fade_to(0.0, 0.6)
 	_block_ui(false)
 
 	# Optional wake-up nudge
 	if FileAccess.file_exists(WAKEUP_JSON):
-		DialogueManager.start_dialogue(WAKEUP_JSON, self)
+		if has_node("/root/DialogueManager"):
+			var dm = get_node("/root/DialogueManager")
+			if dm and dm.has_method("start_dialogue"):
+				dm.start_dialogue(WAKEUP_JSON, self)
 
 # ——— availability logic ———
 func _is_project_available_now() -> bool:

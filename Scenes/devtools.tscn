@@ -1,0 +1,435 @@
+[gd_scene load_steps=18 format=3 uid="uid://dnnlse414hpsk"]
+
+[ext_resource type="FontFile" uid="uid://cxij1hv6vfs8p" path="res://Fonts/digital-7.ttf" id="1_gdxhf"]
+[ext_resource type="Script" uid="uid://cgfjx2gbhtim8" path="res://Scenes/devtools.gd" id="1_umj1c"]
+[ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_58l2y"]
+[ext_resource type="Theme" uid="uid://crigik0mi5w1y" path="res://Themes/DEVTOOLSBTNS.tres" id="3_umj1c"]
+
+[sub_resource type="Gradient" id="Gradient_58l2y"]
+offsets = PackedFloat32Array(0, 0.645161)
+colors = PackedColorArray(0, 0, 0, 1, 1, 0.265011, 0.202581, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_umj1c"]
+gradient = SubResource("Gradient_58l2y")
+fill_from = Vector2(0.2, 0.8)
+metadata/_snap_enabled = true
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_spqj8"]
+texture = SubResource("GradientTexture2D_umj1c")
+modulate_color = Color(0.451529, 0.276447, 0.0676202, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_58l2y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_umj1c"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="Gradient" id="Gradient_spqj8"]
+offsets = PackedFloat32Array(0.0537634, 0.860215, 1)
+colors = PackedColorArray(0.938937, 0.689878, 0.607112, 1, 0, 0, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_gjxw7"]
+gradient = SubResource("Gradient_spqj8")
+fill_from = Vector2(1, 0)
+fill_to = Vector2(1, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_asw5d"]
+texture = SubResource("GradientTexture2D_gjxw7")
+modulate_color = Color(0.601261, 0.0772519, 0.925969, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_umj1c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_spqj8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gjxw7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_asw5d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spqj8"]
+bg_color = Color(0.35, 0, 0.0408334, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+
+[node name="devtools" type="Control"]
+z_index = 99
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_umj1c")
+bg_gate_path = NodePath("BG1")
+pin_line_path = NodePath("BG1/PIN")
+wrong_pin_path = NodePath("BG1/Wrong Pin")
+dev_tools_root_path = NodePath("DEV TOOLS")
+btn_city_path = NodePath("DEV TOOLS/HBoxContainer/Locations/City")
+btn_school_path = NodePath("DEV TOOLS/HBoxContainer/Locations/School")
+btn_home_path = NodePath("DEV TOOLS/HBoxContainer/Locations/Home")
+btn_mvr_path = NodePath("DEV TOOLS/HBoxContainer/Locations/MVR")
+btn_yco_path = NodePath("DEV TOOLS/HBoxContainer/Locations/YCO")
+day_minus_path = NodePath("DEV TOOLS/HBoxContainer/Locations/DayButtons/Minus")
+day_label_path = NodePath("DEV TOOLS/HBoxContainer/Locations/DayButtons/Time")
+day_plus_path = NodePath("DEV TOOLS/HBoxContainer/Locations/DayButtons/Plus")
+clock_label_path = NodePath("DEV TOOLS/HBoxContainer/TIME&STATS/CLOCK")
+tstep_minus_path = NodePath("DEV TOOLS/HBoxContainer/TIME&STATS/TimeButtons/Minus")
+tstep_edit_path = NodePath("DEV TOOLS/HBoxContainer/TIME&STATS/TimeButtons/Timevalue")
+tstep_plus_path = NodePath("DEV TOOLS/HBoxContainer/TIME&STATS/TimeButtons/Plus")
+pause_btn_path = NodePath("DEV TOOLS/HBoxContainer/TIME&STATS/PAUSE_UNPAUSE/PAUSE")
+unpause_btn_path = NodePath("DEV TOOLS/HBoxContainer/TIME&STATS/PAUSE_UNPAUSE/UNPAUSE")
+rep_edit_path = NodePath("DEV TOOLS/HBoxContainer/TIME&STATS/rep_value")
+int_edit_path = NodePath("DEV TOOLS/HBoxContainer/TIME&STATS/int_value")
+flag_list_path = NodePath("DEV TOOLS/HBoxContainer/Flags/ItemList")
+search_edit_path = NodePath("DEV TOOLS/HBoxContainer/Flags/Search & Toggle/Search")
+toggle_btn_path = NodePath("DEV TOOLS/HBoxContainer/Flags/Search & Toggle/TOGGLE")
+exit_btn_path = NodePath("DEV TOOLS/Exit")
+
+[node name="BG1" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_spqj8")
+metadata/_edit_use_anchors_ = true
+
+[node name="Text" type="Label" parent="BG1"]
+custom_minimum_size = Vector2(700, 200)
+layout_mode = 2
+offset_left = 443.5
+offset_top = 25.0
+offset_right = 1476.5
+offset_bottom = 225.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 0
+theme_override_fonts/font = ExtResource("1_gdxhf")
+theme_override_font_sizes/font_size = 140
+text = "DEV_MENU_V.01"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PIN" type="LineEdit" parent="BG1"]
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.34375
+anchor_top = 0.407407
+anchor_right = 0.65625
+anchor_bottom = 0.592593
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("1_gdxhf")
+theme_override_font_sizes/font_size = 130
+theme_override_styles/focus = SubResource("StyleBoxEmpty_58l2y")
+theme_override_styles/normal = SubResource("StyleBoxFlat_umj1c")
+placeholder_text = "ENTER PIN"
+alignment = 1
+max_length = 4
+metadata/_edit_use_anchors_ = true
+
+[node name="Wrong Pin" type="Label" parent="BG1"]
+visible = false
+custom_minimum_size = Vector2(700, 200)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.317708
+anchor_top = 0.637037
+anchor_right = 0.682292
+anchor_bottom = 0.822222
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("1_gdxhf")
+theme_override_font_sizes/font_size = 140
+text = "WRONG PIN!!!"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="DEV TOOLS" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_asw5d")
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DEV TOOLS"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.021875
+anchor_top = 0.0324074
+anchor_right = 0.979688
+anchor_bottom = 0.903704
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 100
+metadata/_edit_use_anchors_ = true
+
+[node name="Locations" type="VBoxContainer" parent="DEV TOOLS/HBoxContainer"]
+custom_minimum_size = Vector2(300, 600)
+layout_mode = 2
+theme_override_constants/separation = 25
+metadata/_edit_use_anchors_ = true
+
+[node name="TAG1" type="Label" parent="DEV TOOLS/HBoxContainer/Locations"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 33
+text = "LOCATIONS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="City" type="Button" parent="DEV TOOLS/HBoxContainer/Locations"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
+theme = ExtResource("3_umj1c")
+text = "City"
+
+[node name="School" type="Button" parent="DEV TOOLS/HBoxContainer/Locations"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
+theme = ExtResource("3_umj1c")
+text = "School"
+
+[node name="Home" type="Button" parent="DEV TOOLS/HBoxContainer/Locations"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
+theme = ExtResource("3_umj1c")
+text = "Home"
+
+[node name="MVR" type="Button" parent="DEV TOOLS/HBoxContainer/Locations"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
+theme = ExtResource("3_umj1c")
+text = "MVR"
+
+[node name="YCO" type="Button" parent="DEV TOOLS/HBoxContainer/Locations"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
+theme = ExtResource("3_umj1c")
+text = "YCO"
+
+[node name="DAY" type="Label" parent="DEV TOOLS/HBoxContainer/Locations"]
+custom_minimum_size = Vector2(0, 102)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 33
+text = "DAY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DayButtons" type="HBoxContainer" parent="DEV TOOLS/HBoxContainer/Locations"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Minus" type="Button" parent="DEV TOOLS/HBoxContainer/Locations/DayButtons"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("3_umj1c")
+text = "-"
+
+[node name="Time" type="Label" parent="DEV TOOLS/HBoxContainer/Locations/DayButtons"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 60
+text = " 0 "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Plus" type="Button" parent="DEV TOOLS/HBoxContainer/Locations/DayButtons"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("3_umj1c")
+text = "+"
+
+[node name="TIME&STATS" type="VBoxContainer" parent="DEV TOOLS/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="CLOCK" type="Label" parent="DEV TOOLS/HBoxContainer/TIME&STATS"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 33
+text = "00:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimeButtons" type="HBoxContainer" parent="DEV TOOLS/HBoxContainer/TIME&STATS"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Minus" type="Button" parent="DEV TOOLS/HBoxContainer/TIME&STATS/TimeButtons"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("3_umj1c")
+text = "-"
+
+[node name="Timevalue" type="LineEdit" parent="DEV TOOLS/HBoxContainer/TIME&STATS/TimeButtons"]
+layout_mode = 2
+theme = ExtResource("3_umj1c")
+placeholder_text = "VALUE"
+alignment = 1
+max_length = 2
+
+[node name="Plus" type="Button" parent="DEV TOOLS/HBoxContainer/TIME&STATS/TimeButtons"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("3_umj1c")
+text = "+"
+
+[node name="REPUTATION" type="Label" parent="DEV TOOLS/HBoxContainer/TIME&STATS"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 33
+text = "REPUTATION"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="rep_value" type="LineEdit" parent="DEV TOOLS/HBoxContainer/TIME&STATS"]
+layout_mode = 2
+theme = ExtResource("3_umj1c")
+placeholder_text = "VALUE"
+alignment = 1
+
+[node name="INTEGRITY" type="Label" parent="DEV TOOLS/HBoxContainer/TIME&STATS"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 33
+text = "INTEGRITY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="int_value" type="LineEdit" parent="DEV TOOLS/HBoxContainer/TIME&STATS"]
+layout_mode = 2
+theme = ExtResource("3_umj1c")
+placeholder_text = "VALUE"
+alignment = 1
+
+[node name="TIMEFLOW" type="Label" parent="DEV TOOLS/HBoxContainer/TIME&STATS"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 33
+text = "TIME FLOW"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PAUSE_UNPAUSE" type="HBoxContainer" parent="DEV TOOLS/HBoxContainer/TIME&STATS"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="PAUSE" type="Button" parent="DEV TOOLS/HBoxContainer/TIME&STATS/PAUSE_UNPAUSE"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("3_umj1c")
+text = "PAUSE"
+
+[node name="UNPAUSE" type="Button" parent="DEV TOOLS/HBoxContainer/TIME&STATS/PAUSE_UNPAUSE"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("3_umj1c")
+text = "UNPAUSE"
+
+[node name="Flags" type="VBoxContainer" parent="DEV TOOLS/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="FLAGS" type="Label" parent="DEV TOOLS/HBoxContainer/Flags"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 33
+text = "FLAGS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ItemList" type="ItemList" parent="DEV TOOLS/HBoxContainer/Flags"]
+custom_minimum_size = Vector2(600, 499)
+layout_mode = 2
+size_flags_vertical = 0
+theme = ExtResource("3_umj1c")
+item_count = 2
+item_0/text = "ITEM 1"
+
+[node name="TEXT" type="Label" parent="DEV TOOLS/HBoxContainer/Flags"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 33
+text = "SEARCH & SET VALUE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Search & Toggle" type="HBoxContainer" parent="DEV TOOLS/HBoxContainer/Flags"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TOGGLE" type="Button" parent="DEV TOOLS/HBoxContainer/Flags/Search & Toggle"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("3_umj1c")
+toggle_mode = true
+text = "TRUE"
+
+[node name="Search" type="LineEdit" parent="DEV TOOLS/HBoxContainer/Flags/Search & Toggle"]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_umj1c")
+placeholder_text = "SEARCH HERE"
+alignment = 1
+
+[node name="Exit" type="Button" parent="DEV TOOLS"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -8.0
+offset_right = 4.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_58l2y")
+theme_override_font_sizes/font_size = 70
+theme_override_styles/focus = SubResource("StyleBoxEmpty_umj1c")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_spqj8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_gjxw7")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_asw5d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_spqj8")
+text = "EXIT"

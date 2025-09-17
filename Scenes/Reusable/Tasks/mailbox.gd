@@ -13,9 +13,10 @@ const GF = preload("res://Scripts/Singleton/GameFlags.gd")
 const D_HOME := "res://Data/Home/"
 const J_MAIL_NOT_ARRIVED := D_HOME + "Mail_LangCert_Not_Arrived.json"
 const J_MAIL_ARRIVED     := D_HOME + "Mail_LangCert_Arrived.json"
+const J_MAIL_NOT_EXPECTING := D_HOME + "Mail_Not_Expecting.json"  # NEW
 
 # -------- Task id used for progress (matches file name language.json) --------
-const TASK_LANG_CERT := "language"  # <— fixed id
+const TASK_LANG_CERT := "language"
 
 @onready var _bg: TextureRect = get_node_or_null(background_path) as TextureRect
 var _returned := false
@@ -25,25 +26,38 @@ func _ready() -> void:
 	GameState.location = "Mailbox"
 	GameState.push_time_freeze("mailbox_scene")
 
-	# Initialize arrival day once (1..4) and persist in GameState
+	# Initialize arrival day once (1..4) and persist in GameState (only if not set)
 	if GameState.lang_cert_ready_day <= 0:
 		var rng := RandomNumberGenerator.new()
 		rng.randomize()
 		GameState.lang_cert_ready_day = rng.randi_range(1, 4)
 		print("[Mailbox] lang_cert_ready_day = Day %d" % GameState.lang_cert_ready_day)
 
-	var arrived := (GameState.day >= GameState.lang_cert_ready_day) or (GameState.day > 4)
-	_set_bg(arrived)
+	var arrived_by_date := false
+	if GameState.day >= GameState.lang_cert_ready_day:
+		arrived_by_date = true
+	if GameState.day > 4:
+		arrived_by_date = true
 
-	var json_path := arrived ? J_MAIL_ARRIVED : J_MAIL_NOT_ARRIVED
+	var claimed := GameState.has_flag(GF.HAVE_LANGUAGE_CERTIFICATE)
+	var json_path := ""
+	var claim_after := false
 
-	# If arrived: set flag (once) AND always ensure task exists + advance to final step
-	if arrived:
-		if not GameState.has_flag(GF.HAVE_LANGUAGE_CERTIFICATE):
-			GameState.set_flag(GF.HAVE_LANGUAGE_CERTIFICATE, true)
-		_ensure_task_and_finish(TASK_LANG_CERT)
+	# Decide BG + which JSON to show
+	if claimed:
+		_set_bg(false)
+		json_path = J_MAIL_NOT_EXPECTING
+	else:
+		if arrived_by_date:
+			_set_bg(true)
+			json_path = J_MAIL_ARRIVED
+			# Failsafe: do not auto-claim on arrival day; claim only when player visits.
+			claim_after = true
+		else:
+			_set_bg(false)
+			json_path = J_MAIL_NOT_ARRIVED
 
-	await _play_dialogue_and_return(json_path)
+	await _play_dialogue_and_return(json_path, claim_after)
 
 func _ensure_task_and_finish(task_id: String) -> void:
 	# Ensure the task exists
@@ -59,12 +73,10 @@ func _ensure_task_and_finish(task_id: String) -> void:
 		if GameState.has_method("ensure_task_progress_at_least"):
 			GameState.ensure_task_progress_at_least(task_id, final_idx)
 		else:
-			# Fallback: bump step once if the helper is missing
 			if GameState.has_method("update_task_step"):
 				while GameState.get_task_progress(task_id) < final_idx:
 					GameState.update_task_step(task_id)
 	else:
-		# If we couldn't read the JSON, still make sure the task is at least started
 		if GameState.has_method("ensure_task_progress_at_least"):
 			GameState.ensure_task_progress_at_least(task_id, 1)
 
@@ -83,15 +95,17 @@ func _get_task_final_step_index(task_id: String) -> int:
 	if typeof(parsed) == TYPE_DICTIONARY:
 		var steps = (parsed as Dictionary).get("steps", [])
 		if steps is Array and steps.size() > 0:
-			# Convention in your project: step indices are 1..N
 			return steps.size()
 	return 0
 
 func _set_bg(arrived: bool) -> void:
 	if _bg:
-		_bg.texture = texture_full if arrived else texture_empty
+		if arrived:
+			_bg.texture = texture_full
+		else:
+			_bg.texture = texture_empty
 
-func _play_dialogue_and_return(json_path: String) -> void:
+func _play_dialogue_and_return(json_path: String, claim_after: bool) -> void:
 	# Start dialogue via your DialogueManager (simple narrator-only JSONs)
 	if FileAccess.file_exists(json_path):
 		DialogueManager.start_dialogue(json_path, self)
@@ -106,6 +120,11 @@ func _play_dialogue_and_return(json_path: String) -> void:
 	else:
 		var sec := _estimate_dialogue_duration(json_path)
 		await get_tree().create_timer(sec).timeout
+
+	# Claim AFTER the dialogue if we had mail waiting and it wasn't claimed yet.
+	if claim_after and not GameState.has_flag(GF.HAVE_LANGUAGE_CERTIFICATE):
+		GameState.set_flag(GF.HAVE_LANGUAGE_CERTIFICATE, true)
+		_ensure_task_and_finish(TASK_LANG_CERT)
 
 	_go_home()
 
