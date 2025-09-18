@@ -13,8 +13,7 @@ const SOCIAL_SCENE_PATH := "res://Scenes/Reusable/Tasks/Social.tscn"
 
 const WAKEUP_JSON := "res://Data/Home/WakeUp_Reminder.json"
 
-# Sleep becomes selectable in normal flow at 19:00,
-# but during curfew/00:00–00:59 we force-enable sleep regardless.
+# Normal sleep availability outside midnight window
 const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
 
 var _panel: Control = null
@@ -45,29 +44,26 @@ func _ready() -> void:
 func _on_home_btn_pressed() -> void:
 	show_home_menu()
 
-# ---------- Lock helper ----------
-func _night_lock_active() -> bool:
-	# Lock if curfew was triggered (flag) OR during midnight hour [00:00–00:59]
-	if GameState.has_flag("curfew_lock"):
-		return true
-	if GameState.time < 60:
+# ---- Midnight window helper (00:00–01:00 inclusive of 01:00) ----
+func _is_midnight_window() -> bool:
+	if GameState.time <= 60:
 		return true
 	return false
 
 # ---------------- Menus ----------------
 func show_home_menu() -> void:
 	var opts: Array = []
-	var lock: bool = _night_lock_active()
+	var in_midnight: bool = _is_midnight_window()
 
 	opts.append({"id":"activities","text":"Activities"})
 
-	# City is hidden/blocked during lock window
-	if not lock:
+	# Hide / block City during midnight window
+	if not in_midnight:
 		opts.append({"id":"city","text":"City"})
 
-	# Keep top-level Sleep consistent with your normal gating.
-	# During lock window, Sleep is only shown inside Activities.
-	if not lock:
+	# Per request, during midnight window Sleep should only appear under Activities.
+	# So do not show a top-level Sleep when in midnight window.
+	if not in_midnight:
 		if GameState.time >= SLEEP_AVAILABLE_MIN and not GameState.is_time_frozen():
 			opts.append({"id":"sleep","text":"Sleep"})
 		else:
@@ -83,7 +79,7 @@ func _on_home_choice(id: String) -> void:
 		"city":
 			_change_scene(CITY_SCENE_PATH)
 		"sleep":
-			await _do_sleep(false) # normal gating
+			await _do_sleep(false) # normal gating when not midnight window
 		"sleep_locked":
 			show_home_menu()
 		"back":
@@ -91,9 +87,10 @@ func _on_home_choice(id: String) -> void:
 
 func _show_activities_menu() -> void:
 	var opts: Array = []
+	var in_midnight: bool = _is_midnight_window()
 
-	if _night_lock_active():
-		# Lock window: ONLY sleep here
+	if in_midnight:
+		# Between 00:00–01:00 (incl. 01:00 after warp): ONLY Sleep here
 		opts.append({"id":"sleep_force","text":"Sleep"})
 		opts.append({"id":"back","text":"Back"})
 		_show_choices(opts, Callable(self,"_on_activities_choice"))
@@ -109,7 +106,7 @@ func _show_activities_menu() -> void:
 func _on_activities_choice(id: String) -> void:
 	match id:
 		"sleep_force":
-			# Force sleep regardless of time-of-day / frozen clock
+			# Force sleep regardless of time-of-day/frozen/paused
 			await _do_sleep(true)
 		"study":
 			_show_study_menu()
@@ -240,9 +237,8 @@ func _get_available_days_for_subject(subject_raw: String) -> Array[int]:
 # ---- Schoolwork ----
 func _show_schoolwork_menu() -> void:
 	var opts: Array = []
-
-	if _night_lock_active():
-		# During lock window, schoolwork is blocked entirely
+	if _is_midnight_window():
+		# Midnight window → block schoolwork entirely
 		opts.append({"id":"back","text":"Back"})
 		_show_choices(opts, Callable(self,"_on_schoolwork_choice"))
 		return
@@ -285,8 +281,8 @@ func _clear_panel() -> void:
 	_panel = null
 
 func _change_scene(path: String) -> void:
-	# Extra safety: during lock window, do not leave Home
-	if _night_lock_active():
+	# During midnight window (00:00–01:00), do not leave Home
+	if _is_midnight_window():
 		return
 	_clear_panel()
 	if path != "" and ResourceLoader.exists(path):
@@ -328,7 +324,7 @@ func _block_ui(lock: bool) -> void:
 		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _do_sleep(force: bool) -> void:
-	# When force=true (midnight/curfew), bypass normal gating and frozen checks
+	# When force=true (midnight window), bypass normal gating and frozen checks
 	if not force:
 		if GameState.is_time_frozen():
 			return
@@ -338,11 +334,8 @@ func _do_sleep(force: bool) -> void:
 	_block_ui(true)
 	await _fade_to(1.0, 0.4)
 
-	# Apply sleep (GameState handles post-23:00 penalty internally)
+	# Apply sleep (GameState handles post-23:00 penalty + resumes ticking)
 	GameState.sleep_now()
-
-	# Clear curfew state so the new day runs normally
-	GameState.clear_curfew_after_sleep()
 
 	await _fade_to(0.0, 0.6)
 	_block_ui(false)

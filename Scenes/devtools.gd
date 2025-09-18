@@ -1,6 +1,9 @@
 extends Control
 # DevTools: PIN gate + live time/day + stats + flags + safe exit (NodePath-driven)
 
+# -------- Session PIN memory (per run only) --------
+static var SESSION_UNLOCKED: bool = false
+
 # -----------------------------
 # Scene targets (set now or later)
 # -----------------------------
@@ -45,7 +48,7 @@ var _unlocked: bool = false
 @export var btn_yco_path: NodePath
 
 @export var day_minus_path: NodePath
-@export var day_label_path: NodePath               # shows "Day X"
+@export var day_label_path: NodePath               # shows 1..5
 @export var day_plus_path: NodePath
 
 @onready var _btn_city: Button   = get_node_or_null(btn_city_path) as Button
@@ -118,14 +121,18 @@ func _ready() -> void:
 		gs.set("location", "Unknown")
 
 	_wire_signals()
-	_apply_unlock_state(false)     # start on PIN screen
 	_setup_field_limits()
 	_refresh_all_ui()
-	# Apply theme to toggle button
+
+	# Start in the right state: if unlocked earlier this run, skip the gate
+	_apply_unlock_state(SESSION_UNLOCKED)
+
+	# Optional: theme for the toggle button
 	if _toggle_btn:
 		var theme := load("res://Themes/DEVTOOLSBTNS.tres") as Theme
 		if theme:
 			_toggle_btn.theme = theme
+
 func _setup_field_limits() -> void:
 	if _tstep_edit:
 		_tstep_edit.max_length = 2
@@ -205,7 +212,7 @@ func _wire_signals() -> void:
 			gs.connect("flag_changed", Callable(self, "_on_flag_changed"))
 
 # -----------------------------
-# Unlock state (local)
+# Unlock state (local + session flag)
 # -----------------------------
 func apply_unlock_state(unlocked: bool) -> void:
 	_apply_unlock_state(unlocked)
@@ -215,6 +222,7 @@ func set_unlocked(unlocked: bool) -> void:
 
 func _apply_unlock_state(unlocked: bool) -> void:
 	_unlocked = unlocked
+	SESSION_UNLOCKED = unlocked
 	if _bg:
 		_bg.visible = not _unlocked
 	if _tools:
@@ -253,16 +261,11 @@ func _select_scene(path: String) -> void:
 
 func _set_location_button_states(path: String) -> void:
 	var buttons: Array[Button] = []
-	if _btn_city:
-		buttons.append(_btn_city)
-	if _btn_school:
-		buttons.append(_btn_school)
-	if _btn_home:
-		buttons.append(_btn_home)
-	if _btn_mvr:
-		buttons.append(_btn_mvr)
-	if _btn_yco:
-		buttons.append(_btn_yco)
+	if _btn_city:   buttons.append(_btn_city)
+	if _btn_school: buttons.append(_btn_school)
+	if _btn_home:   buttons.append(_btn_home)
+	if _btn_mvr:    buttons.append(_btn_mvr)
+	if _btn_yco:    buttons.append(_btn_yco)
 
 	for b in buttons:
 		b.disabled = false
@@ -323,18 +326,23 @@ func _emergency_close_interactions() -> void:
 			(node as Control).hide()
 
 # -----------------------------
-# Day / Time
+# Day / Time (Day wraps 1..5 and label shows just the number)
 # -----------------------------
+func _wrap_day_1_5(d: int) -> int:
+	var m := (d - 1) % 5
+	if m < 0:
+		m += 5
+	return m + 1
+
 func _nudge_day(delta: int) -> void:
 	var gs := _GS()
 	if gs == null:
 		return
-	var d: int = int(gs.get("day")) + delta
-	if d < 1:
-		d = 1
-	gs.set("day", d)
+	var cur: int = int(gs.get("day"))
+	var next: int = _wrap_day_1_5(cur + delta)
+	gs.set("day", next)
 	if gs.has_signal("time_changed"):
-		gs.emit_signal("time_changed", int(gs.get("time")), d)
+		gs.emit_signal("time_changed", int(gs.get("time")), next)
 
 func _read_step_minutes() -> int:
 	var step: int = 30
@@ -369,7 +377,7 @@ func _on_time_changed(new_time: int, new_day: int) -> void:
 
 func _update_day_label(d: int) -> void:
 	if _day_label:
-		_day_label.text = "Day " + str(d)
+		_day_label.text = str(_wrap_day_1_5(d))  # show just 1..5
 
 func _update_clock_label(t: int) -> void:
 	if _clock_label:
@@ -389,11 +397,11 @@ func _freeze_false() -> void:
 	var gs := _GS()
 	if gs:
 		gs.call("pop_time_freeze", "__devtools__")
-		# If clock isn't running at all, kick it on
-	if not gs.get("time_running"):
-		gs.set("time_running", true)
-		gs.call("_start_time_simulation")  # this creates the timer
-		gs.emit_signal("clock_started")
+		if not gs.get("time_running"):
+			gs.set("time_running", true)
+			gs.call("_start_time_simulation")  # creates the timer if missing
+			gs.emit_signal("clock_started")
+
 # -----------------------------
 # Rep / Integrity absolute set
 # -----------------------------
@@ -457,6 +465,7 @@ func _rebuild_flags_list(filter_text: String) -> void:
 		var val = flags_dict.get(key)
 		if typeof(val) != TYPE_BOOL:
 			continue
+
 		var passes := true
 		if f != "":
 			if not key.to_lower().contains(f):

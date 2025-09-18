@@ -3,14 +3,13 @@ extends Node
 const Flags = preload("res://Scripts/Singleton/GameFlags.gd")
 
 # -----------------------------
-# Curfew / Teleport
+# One-AM handling (no locks, no freezes)
 # -----------------------------
-const CURFEW_MINUTES := 1 * 60  # 01:00
+const ONE_AM_MINUTES := 60                       # 01:00
 const HOME_SCENE_PATH := "res://Scenes/Reusable/Map/Home.tscn"
-const J_CURFEW := "res://Data/System/Narrator_Curfew.json"
-const FLAG_CURFEW_LOCK := "curfew_lock"
+const J_ONE_AM := "res://Data/System/Narrator_Curfew.json"
 
-var _curfew_triggered: bool = false
+var _one_am_paused: bool = false                 # stops ticking/adjust_time after 01:00 only
 
 # -----------------------------
 # Signals
@@ -37,7 +36,7 @@ var time: int = 12 * 60 + 45
 var day: int = 1          # <— persisted in GameState for saves
 var time_speed: float = 2.0
 var time_running: bool = false
-var _freeze_stack: Array[String] = []
+var _freeze_stack: Array[String] = []            # keep available for other systems; not used by 01:00 logic
 
 # -----------------------------
 # Status
@@ -97,7 +96,7 @@ func begin_game(day_start: int, time_start: int) -> void:
 	_init_default_flags()
 	day = day_start
 	time = time_start
-	_curfew_triggered = false
+	_one_am_paused = false
 	emit_signal("time_changed", time, day)
 	emit_signal("money_changed", money)
 	_start_time_simulation()
@@ -135,50 +134,57 @@ func _start_time_simulation() -> void:
 	add_child(timer)
 
 func _on_minute_passed() -> void:
-	if not time_running or is_time_frozen() or _curfew_triggered:
+	if not time_running or is_time_frozen() or _one_am_paused:
 		return
 	time += 1
 	if time >= 24 * 60:
 		time = 0
 		day += 1
-	# only check curfew AFTER midnight rollover
-	if day > 1 and time >= CURFEW_MINUTES:
-		_check_curfew_and_trigger()
+	# Pause exactly at 01:00; do not lock or freeze UI
+	if time == ONE_AM_MINUTES:
+		_one_am_paused = true
+		call_deferred("_handle_one_am_sequence")
 	emit_signal("time_changed", time, day)
 
-
-
-	# Curfew check/clamp/trigger
-	_check_curfew_and_trigger()
-
-	emit_signal("time_changed", time, day)
 func _format_time() -> String:
-	var hours: int = int(time / 60) % 24
+	var hours: int = int(time / 60) % 24   # 24h loop, safe cast
 	var minutes: int = int(time % 60)
 	return "%02d:%02d" % [hours, minutes]
 
-
-
 func adjust_time(value: int) -> void:
-	# Once curfew is active, ignore any further time changes.
-	if _curfew_triggered:
+	# After 01:00 pause, ignore further time changes until you resume (e.g., after sleeping)
+	if _one_am_paused:
 		return
 
+	var orig_time := time
 	var new_time := time + value
 	var new_day := day
 
-	# Handle wraparound first
+	# Positive wraparound (keep 24h loop)
 	while new_time >= 24 * 60:
 		new_time -= 24 * 60
 		new_day += 1
+
+	# Negative clamp like the original (no going back days)
 	if new_time < 0:
 		new_time = 0
 
-	# If crossing/past curfew, clamp and trigger
-	if new_time >= CURFEW_MINUTES:
-		time = CURFEW_MINUTES
+	# If we were in/after midnight window and we pass 01:00, clamp + pause
+	var crossed_midnight: bool = (day != new_day)
+	var hit_pause: bool = false
+
+	# Case A: currently between 00:00..00:59 and jumping past 01:00
+	if orig_time < ONE_AM_MINUTES and new_time >= ONE_AM_MINUTES and not crossed_midnight:
+		hit_pause = true
+	# Case B: we crossed midnight and land at/after 01:00
+	if crossed_midnight and new_time >= ONE_AM_MINUTES:
+		hit_pause = true
+
+	if hit_pause:
+		time = ONE_AM_MINUTES
 		day = new_day
-		_check_curfew_and_trigger()
+		_one_am_paused = true
+		call_deferred("_handle_one_am_sequence")
 		emit_signal("time_changed", time, day)
 		return
 
@@ -186,6 +192,7 @@ func adjust_time(value: int) -> void:
 	day = new_day
 	emit_signal("time_changed", time, day)
 
+# NOTE: keep these available for other systems; NOT used by 01:00 pause flow
 func push_time_freeze(src: String) -> void:
 	if not _freeze_stack.has(src):
 		_freeze_stack.append(src)
@@ -213,37 +220,23 @@ func sleep_now() -> void:
 		wake -= 24 * 60
 	day += 1
 	time = wake
+	_one_am_paused = false  # new day resumes ticking
 	print("🛌 Slept. Wake at %s (Day %d), penalty +%d min" % [_format_time(), day, penalty])
 
-# Public helper to clear curfew/lock/freeze after sleeping (called by Home)
-func clear_curfew_after_sleep() -> void:
-	if has_flag(FLAG_CURFEW_LOCK):
-		clear_flag(FLAG_CURFEW_LOCK)
-	_curfew_triggered = false
-	# If you previously had any freeze logic, nuke it just in case:
-	_freeze_stack.clear()
-	emit_signal("clock_started")
+# Optional helper if you want to resume ticking without sleeping
+func resume_after_one_am() -> void:
+	_one_am_paused = false
 
-
-# Curfew helper: clamp, freeze, play JSON, teleport to Home, set lock flag
-func _check_curfew_and_trigger() -> void:
-	if _curfew_triggered:
-		return
-	if time >= CURFEW_MINUTES:
-		time = CURFEW_MINUTES
-		_curfew_triggered = true
-		call_deferred("_run_curfew_sequence")
-
-
-func _run_curfew_sequence() -> void:
+# 01:00 sequence: show JSON warning (Narrator), then go Home. No locks.
+func _handle_one_am_sequence() -> void:
 	var played := false
 	var dm := get_node_or_null("/root/DialogueManager")
 	if dm and (dm.has_method("play_json_blocking") or dm.has_method("play_json")):
 		played = true
 		if dm.has_method("play_json_blocking"):
-			await dm.play_json_blocking(J_CURFEW)
+			await dm.play_json_blocking(J_ONE_AM)
 		else:
-			await dm.play_json(J_CURFEW)
+			await dm.play_json(J_ONE_AM)
 	if not played:
 		var ad := AcceptDialog.new()
 		ad.dialog_text = "It's 1:00 AM. We should really go to sleep or we can't progress."
@@ -253,11 +246,10 @@ func _run_curfew_sequence() -> void:
 		await ad.confirmed
 		ad.queue_free()
 
-	set_flag(FLAG_CURFEW_LOCK, true)
 	location = "Home"
 	var err := get_tree().change_scene_to_file(HOME_SCENE_PATH)
 	if err != OK:
-		push_error("Curfew teleport failed with code: %s" % [str(err)])
+		push_error("01:00 teleport to Home failed with code: %s" % [str(err)])
 
 # -------------------------------------------------
 # Money / Stats
@@ -525,6 +517,7 @@ func mark_today_finals_revealed(subject_raw: String) -> void:
 	var m: Dictionary = study_reveal_days[subject]
 	m[str(d)] = true
 	study_reveal_days[subject] = m
+	# Invalidate today's cached sheet so it rebuilds as finals-only
 	if study_sheet_cache.has(subject):
 		var by_day: Dictionary = study_sheet_cache[subject]
 		var key: String = str(d)
@@ -660,6 +653,7 @@ func build_exam_paper(subject_raw: String) -> Array:
 		})
 	return paper
 
+# Legacy helper (kept for compatibility). Returns first two from today's triple.
 func get_today_finals_pair_ids(subject_raw: String) -> Array[String]:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	var d: int = day
@@ -675,6 +669,7 @@ func get_today_finals_pair_ids(subject_raw: String) -> Array[String]:
 		out.append(triple[1])
 	return out
 
+# Utility to fetch full question dict by ID
 func get_question_by_id(subject_raw: String, qid: String) -> Dictionary:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	var pool: Array = _load_pool(subject)
