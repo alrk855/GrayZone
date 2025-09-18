@@ -161,7 +161,6 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="DEV TOOLS" type="Panel" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

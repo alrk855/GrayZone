@@ -5,7 +5,7 @@ const Flags = preload("res://Scripts/Singleton/GameFlags.gd")
 # -----------------------------
 # Curfew / Teleport
 # -----------------------------
-const CURFEW_MINUTES := 60                        # 01:00
+const CURFEW_MINUTES := 1 * 60  # 01:00
 const HOME_SCENE_PATH := "res://Scenes/Reusable/Map/Home.tscn"
 const J_CURFEW := "res://Data/System/Narrator_Curfew.json"
 const FLAG_CURFEW_LOCK := "curfew_lock"
@@ -135,22 +135,29 @@ func _start_time_simulation() -> void:
 	add_child(timer)
 
 func _on_minute_passed() -> void:
-	if not time_running or is_time_frozen():
+	if not time_running or is_time_frozen() or _curfew_triggered:
 		return
 	time += 1
 	if time >= 24 * 60:
 		time = 0
 		day += 1
+	# only check curfew AFTER midnight rollover
+	if day > 1 and time >= CURFEW_MINUTES:
+		_check_curfew_and_trigger()
+	emit_signal("time_changed", time, day)
+
+
 
 	# Curfew check/clamp/trigger
 	_check_curfew_and_trigger()
 
 	emit_signal("time_changed", time, day)
-
 func _format_time() -> String:
-	var hours: int = time / 60
-	var minutes: int = time % 60
+	var hours: int = int(time / 60) % 24
+	var minutes: int = int(time % 60)
 	return "%02d:%02d" % [hours, minutes]
+
+
 
 func adjust_time(value: int) -> void:
 	# Once curfew is active, ignore any further time changes.
@@ -208,6 +215,16 @@ func sleep_now() -> void:
 	time = wake
 	print("🛌 Slept. Wake at %s (Day %d), penalty +%d min" % [_format_time(), day, penalty])
 
+# Public helper to clear curfew/lock/freeze after sleeping (called by Home)
+func clear_curfew_after_sleep() -> void:
+	if has_flag(FLAG_CURFEW_LOCK):
+		clear_flag(FLAG_CURFEW_LOCK)
+	_curfew_triggered = false
+	# If you previously had any freeze logic, nuke it just in case:
+	_freeze_stack.clear()
+	emit_signal("clock_started")
+
+
 # Curfew helper: clamp, freeze, play JSON, teleport to Home, set lock flag
 func _check_curfew_and_trigger() -> void:
 	if _curfew_triggered:
@@ -215,8 +232,8 @@ func _check_curfew_and_trigger() -> void:
 	if time >= CURFEW_MINUTES:
 		time = CURFEW_MINUTES
 		_curfew_triggered = true
-		push_time_freeze("__curfew__")
 		call_deferred("_run_curfew_sequence")
+
 
 func _run_curfew_sequence() -> void:
 	var played := false
@@ -439,7 +456,6 @@ func _load_pool(subject: String) -> Array:
 	study_pool_cache[subject] = pool
 	return pool
 
-# Pick 12 finals (3/day × 4 days)
 func _ensure_finals(subject: String) -> void:
 	if exam_finals.has(subject):
 		var existing: Array = exam_finals.get(subject, [])
@@ -479,7 +495,6 @@ func _pick_unique_indexes(n: int, k: int) -> Array[int]:
 		q += 1
 	return out
 
-# Finals triple for a given session/day index (1..4)
 func _finals_triple_for_day(subject: String, day_index: int) -> Array[String]:
 	_ensure_finals(subject)
 	var finals: Array = exam_finals.get(subject, [])
@@ -498,7 +513,6 @@ func _finals_triple_for_day(subject: String, day_index: int) -> Array[String]:
 		i += 1
 	return out
 
-# Mark today's session as finals-only (used by Marko)
 func mark_today_finals_revealed(subject_raw: String) -> void:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	var d: int = day
@@ -511,7 +525,6 @@ func mark_today_finals_revealed(subject_raw: String) -> void:
 	var m: Dictionary = study_reveal_days[subject]
 	m[str(d)] = true
 	study_reveal_days[subject] = m
-	# Invalidate today's cached sheet so it rebuilds as finals-only
 	if study_sheet_cache.has(subject):
 		var by_day: Dictionary = study_sheet_cache[subject]
 		var key: String = str(d)
@@ -519,7 +532,6 @@ func mark_today_finals_revealed(subject_raw: String) -> void:
 			by_day.erase(key)
 			study_sheet_cache[subject] = by_day
 
-# Build/return the sheet for a specific session (Home sub-menu uses this)
 func get_study_sheet_for_session(subject_raw: String, session_index: int) -> Array:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	var d: int = session_index
@@ -530,7 +542,6 @@ func get_study_sheet_for_session(subject_raw: String, session_index: int) -> Arr
 	var ids: Array[String] = _get_or_build_sheet_ids(subject, d)
 	return _ids_to_questions(subject_raw, ids)
 
-# Deterministic daily sheet for the current in-game day
 func get_daily_study_sheet(subject_raw: String) -> Array:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	var d: int = day
@@ -541,7 +552,6 @@ func get_daily_study_sheet(subject_raw: String) -> Array:
 	var ids: Array[String] = _get_or_build_sheet_ids(subject, d)
 	return _ids_to_questions(subject_raw, ids)
 
-# Internal: cache helper for session/day
 func _get_or_build_sheet_ids(subject: String, day_index: int) -> Array[String]:
 	if not study_sheet_cache.has(subject):
 		study_sheet_cache[subject] = {}
@@ -554,7 +564,6 @@ func _get_or_build_sheet_ids(subject: String, day_index: int) -> Array[String]:
 	study_sheet_cache[subject] = by_day
 	return built
 
-# Build a 5-card sheet: 3 finals + 2 non-finals (unless finals-only)
 func _build_sheet_ids_for_day(subject: String, day_index: int) -> Array[String]:
 	var out: Array[String] = []
 	var pool: Array = _load_pool(subject)
@@ -601,7 +610,6 @@ func _build_sheet_ids_for_day(subject: String, day_index: int) -> Array[String]:
 
 	return out
 
-# Turn id list into full question dicts
 func _ids_to_questions(subject_raw: String, ids: Array) -> Array:
 	var out: Array = []
 	for id in ids:
@@ -610,7 +618,6 @@ func _ids_to_questions(subject_raw: String, ids: Array) -> Array:
 			out.append(qd)
 	return out
 
-# Build the exam paper from all finals (12 if present)
 func build_exam_paper(subject_raw: String) -> Array:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	_ensure_finals(subject)
@@ -653,7 +660,6 @@ func build_exam_paper(subject_raw: String) -> Array:
 		})
 	return paper
 
-# Legacy helper (kept for compatibility). Returns first two from today's triple.
 func get_today_finals_pair_ids(subject_raw: String) -> Array[String]:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	var d: int = day
@@ -669,7 +675,6 @@ func get_today_finals_pair_ids(subject_raw: String) -> Array[String]:
 		out.append(triple[1])
 	return out
 
-# Utility to fetch full question dict by ID
 func get_question_by_id(subject_raw: String, qid: String) -> Dictionary:
 	var subject: String = _get_subject_key_from_choice(subject_raw)
 	var pool: Array = _load_pool(subject)

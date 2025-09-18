@@ -389,7 +389,11 @@ func _freeze_false() -> void:
 	var gs := _GS()
 	if gs:
 		gs.call("pop_time_freeze", "__devtools__")
-
+		# If clock isn't running at all, kick it on
+	if not gs.get("time_running"):
+		gs.set("time_running", true)
+		gs.call("_start_time_simulation")  # this creates the timer
+		gs.emit_signal("clock_started")
 # -----------------------------
 # Rep / Integrity absolute set
 # -----------------------------
