@@ -106,22 +106,31 @@ func _set_bg(arrived: bool) -> void:
 			_bg.texture = texture_empty
 
 func _play_dialogue_and_return(json_path: String, claim_after: bool) -> void:
-	# Start dialogue via your DialogueManager (simple narrator-only JSONs)
+	# Start dialogue and prefer waiting on the UI instance (not the singleton).
+	var ui: Node = null
 	if FileAccess.file_exists(json_path):
-		DialogueManager.start_dialogue(json_path, self)
+		ui = DialogueManager.start_dialogue(json_path, self)
 	else:
 		push_error("[Mailbox] Missing dialogue JSON: " + json_path)
 
-	# Wait for dialogue to end (common signals) or fallback timer.
-	if DialogueManager and DialogueManager.has_signal("dialogue_finished"):
-		await DialogueManager.dialogue_finished
-	elif DialogueManager and DialogueManager.has_signal("dialogue_closed"):
-		await DialogueManager.dialogue_closed
-	else:
-		var sec := _estimate_dialogue_duration(json_path)
-		await get_tree().create_timer(sec).timeout
+	var waited := false
 
-	# Claim AFTER the dialogue if we had mail waiting and it wasn't claimed yet.
+	# Prefer UI-level signals
+	if ui:
+		if ui.has_signal("dialogue_finished"):
+			await ui.dialogue_finished
+			waited = true
+		elif ui.has_signal("dialogue_closed"):
+			await ui.dialogue_closed
+			waited = true
+
+	# Fallback: pause-proof timer (in case the UI uses different signals)
+	if not waited:
+		var sec := _estimate_dialogue_duration(json_path)
+		var t := get_tree().create_timer(max(0.3, sec), false, true, true) # (time, physics=false, ignore_time_scale=true, process_always=true)
+		await t.timeout
+
+	# Claim AFTER the dialogue if mail was waiting and not yet claimed.
 	if claim_after and not GameState.has_flag(GF.HAVE_LANGUAGE_CERTIFICATE):
 		GameState.set_flag(GF.HAVE_LANGUAGE_CERTIFICATE, true)
 		_ensure_task_and_finish(TASK_LANG_CERT)
@@ -144,6 +153,13 @@ func _go_home() -> void:
 	if _returned:
 		return
 	_returned = true
+
+	# Unfreeze/unpause before switching scenes.
 	GameState.pop_time_freeze("mailbox_scene")
+	if get_tree().paused:
+		get_tree().paused = false
+
 	if home_scene_path != "" and ResourceLoader.exists(home_scene_path):
 		get_tree().change_scene_to_file(home_scene_path)
+	else:
+		push_warning("[Mailbox] Invalid home_scene_path: " + home_scene_path)
