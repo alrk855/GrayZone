@@ -15,13 +15,13 @@
 [ext_resource type="Theme" uid="uid://bh02j7iutoche" path="res://Help2PADDING.tres" id="12_h4m7x"]
 [ext_resource type="Theme" uid="uid://u70vyp214osp" path="res://help_btns.tres" id="12_ksa5r"]
 [ext_resource type="Script" uid="uid://d1tgqoi4sx8j5" path="res://Scenes/Reusable/TriToggleManager.gd" id="14_5ifyu"]
-[ext_resource type="Texture2D" uid="uid://dxxvys8kqhvac" path="res://Images/TutorialIMG/Screenshot 2025-09-18 164448.png" id="16_fs7fw"]
+[ext_resource type="Texture2D" uid="uid://7ovsij24jbc7" path="res://Images/Screenshot 2025-09-09 180956.png" id="16_7ytw6"]
 [ext_resource type="Texture2D" uid="uid://dxh1g3udcnrc6" path="res://Icons/Screenshot 2025-09-09 183205.png" id="17_jwlx7"]
 [ext_resource type="Texture2D" uid="uid://4ljkjxp2e14s" path="res://Icons/Screenshot 2025-09-09 183329.png" id="18_gkd0y"]
-[ext_resource type="Texture2D" uid="uid://bbveb2axs11t1" path="res://Images/TutorialIMG/Screenshot 2025-09-18 164500.png" id="19_fs7fw"]
+[ext_resource type="Texture2D" uid="uid://cxsdrqkwg2tr" path="res://Images/Screenshot 2025-09-09 183614.png" id="19_r25su"]
 [ext_resource type="Texture2D" uid="uid://bm5n0sbljhou4" path="res://Images/Secretary_office_so_sekretarka.png" id="20_jwlx7"]
-[ext_resource type="Texture2D" uid="uid://ctrihm0602ooo" path="res://Images/TutorialIMG/Screenshot 2025-09-19 003403.png" id="21_fs7fw"]
-[ext_resource type="Texture2D" uid="uid://cihp6lbn0vdfe" path="res://Images/TutorialIMG/Screenshot 2025-09-19 001827.png" id="22_mvse3"]
+[ext_resource type="Texture2D" uid="uid://415jn4b2ovco" path="res://Images/Screenshot 2025-09-09 221423.png" id="21_gkd0y"]
+[ext_resource type="Texture2D" uid="uid://cy715biwdnwhn" path="res://Images/Screenshot 2025-09-09 224313.png" id="22_hwblq"]
 [ext_resource type="Texture2D" uid="uid://dpmwdbsr8ywto" path="res://Images/Screenshot 2025-09-09 230138.png" id="23_1bc6l"]
 [ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="24_1bc6l"]
 [ext_resource type="Script" uid="uid://bnmcphtomfn43" path="res://Scenes/Reusable/button.gd" id="25_fs7fw"]
@@ -664,7 +664,7 @@ offset_left = 131.0
 offset_top = 199.0
 offset_right = 1080.0
 offset_bottom = 896.0
-texture = ExtResource("16_fs7fw")
+texture = ExtResource("16_7ytw6")
 expand_mode = 1
 
 [node name="Padding" type="PanelContainer" parent="Page3"]
@@ -839,7 +839,7 @@ offset_left = -4.08
 offset_top = 0.0799866
 offset_right = 4.03992
 offset_bottom = 4.83997
-texture = ExtResource("19_fs7fw")
+texture = ExtResource("19_r25su")
 expand_mode = 1
 
 [node name="Padding2" type="PanelContainer" parent="Page4"]
@@ -1013,7 +1013,7 @@ texture = ExtResource("20_jwlx7")
 [node name="Sprite2D2" type="Sprite2D" parent="Page5"]
 position = Vector2(1312, 465.125)
 scale = Vector2(0.500261, 0.502085)
-texture = ExtResource("21_fs7fw")
+texture = ExtResource("21_gkd0y")
 
 [node name="Padding" type="PanelContainer" parent="Page5"]
 layout_mode = 1
@@ -1179,9 +1179,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="pic2" type="Sprite2D" parent="Page6"]
-position = Vector2(1377.5, 512.745)
-scale = Vector2(0.451798, 0.594522)
-texture = ExtResource("22_mvse3")
+position = Vector2(1373.38, 512)
+scale = Vector2(0.6827, 0.595903)
+texture = ExtResource("22_hwblq")
 
 [node name="Padding" type="PanelContainer" parent="Page6"]
 layout_mode = 1

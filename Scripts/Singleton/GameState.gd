@@ -209,19 +209,48 @@ func pop_time_freeze(src: String) -> void:
 func is_time_frozen() -> bool:
 	return _freeze_stack.size() > 0
 
+# ...everything else in GameState.gd stays the same...
+
 func sleep_now() -> void:
-	var wake_base: int = 7 * 60 + 30
-	var penalty: int = 0
-	if time >= 23 * 60:
-		var after_23: int = time - 23 * 60
-		penalty = int(ceil(float(after_23) / 4.0))
-	var wake: int = wake_base + penalty
-	while wake >= 24 * 60:
-		wake -= 24 * 60
+	# Discrete wake times based on when you go to sleep
+	# 22:00–22:59  -> 08:00 (regular)
+	# 23:00–23:59  -> 08:15 (regular edge)
+	# 00:00–01:00  -> 08:30 (late; matches the midnight window & 01:00 pause)
+	# <22:00       -> 07:30 (default early wake)
+	var wake: int = 7 * 60 + 30
+
+	# 22:00–22:59
+	if time >= 22 * 60 and time < 23 * 60:
+		wake = 8 * 60
+	# 23:00–23:59
+	elif time >= 23 * 60 and time < 24 * 60:
+		wake = 8 * 60 + 15
+	# 00:00–01:00 (inclusive of exactly 01:00 = ONE_AM_MINUTES)
+	elif time >= 0 and time <= ONE_AM_MINUTES:
+		wake = 8 * 60 + 30
+	# else: keep 07:30 for earlier-than-22:00
+
+	# New day begins at the penalized wake time
 	day += 1
 	time = wake
-	_one_am_paused = false  # new day resumes ticking
-	print("🛌 Slept. Wake at %s (Day %d), penalty +%d min" % [_format_time(), day, penalty])
+
+	# Clear the 01:00 pause so the new day ticks normally
+	_one_am_paused = false
+	emit_signal("time_changed", time, day)
+	print("🛌 Slept. Wake at %s (Day %d)" % [_format_time(), day])
+
+# Optional: ask the GameState what today's school entry status is,
+# based on current clock (call this right after waking to decide UI locks).
+func morning_entry_status() -> String:
+	# < 08:15  -> "regular"
+	# < 08:30  -> "late"
+	# >=08:30  -> "closed"
+	var t := time
+	if t < 8 * 60 + 15:
+		return "regular"
+	elif t < 8 * 60 + 30:
+		return "late"
+	return "closed"
 
 # Optional helper if you want to resume ticking without sleeping
 func resume_after_one_am() -> void:
@@ -229,28 +258,45 @@ func resume_after_one_am() -> void:
 
 # 01:00 sequence: show JSON warning (Narrator), then go Home. No locks.
 func _handle_one_am_sequence() -> void:
-	var played := false
 	var dm := get_node_or_null("/root/DialogueManager")
-	if dm and (dm.has_method("play_json_blocking") or dm.has_method("play_json")):
-		played = true
-		if dm.has_method("play_json_blocking"):
-			await dm.play_json_blocking(J_ONE_AM)
-		else:
-			await dm.play_json(J_ONE_AM)
-	if not played:
-		var ad := AcceptDialog.new()
-		ad.dialog_text = "It's 1:00 AM. We should really go to sleep or we can't progress."
-		ad.title = "Narrator"
-		get_tree().root.add_child(ad)
-		ad.popup_centered()
-		await ad.confirmed
-		ad.queue_free()
+	if dm == null or not dm.has_method("start_dialogue"):
+		push_error("DialogueManager not found or missing start_dialogue; cannot show 01:00 JSON.")
+		# Still go Home to avoid softlock
+		location = "Home"
+		var err := get_tree().change_scene_to_file(HOME_SCENE_PATH)
+		if err != OK:
+			push_error("01:00 teleport to Home failed with code: %s" % [str(err)])
+		return
 
+	# Start the JSON dialogue exactly like the rest of your project
+	var ui = dm.start_dialogue(J_ONE_AM, self)
+
+	# Prefer awaiting the UI's own 'dialogue_finished' if present
+	var waited := false
+	if ui and ui.has_signal("dialogue_finished"):
+		await ui.dialogue_finished
+		waited = true
+	elif dm.has_signal("dialogue_finished"):
+		# Manager emits dialogue_finished(id). Await the next finish.
+		await dm.dialogue_finished
+		waited = true
+
+	# If nothing to await, just continue (dialogue may be non-blocking)
+	if not waited:
+		await get_tree().process_frame
+
+	# After the JSON is over, send the player Home
 	location = "Home"
-	var err := get_tree().change_scene_to_file(HOME_SCENE_PATH)
-	if err != OK:
-		push_error("01:00 teleport to Home failed with code: %s" % [str(err)])
-
+	var err2 := get_tree().change_scene_to_file(HOME_SCENE_PATH)
+	if err2 != OK:
+		push_error("01:00 teleport to Home failed with code: %s" % [str(err2)])
+	
+func apply_dialogue_time_cost(minutes: int, _dlg_id: String = "") -> void:
+	# Respect the 01:00 pause: if a dialogue ends after 01:00, keep time paused.
+	if _one_am_paused:
+		return
+	adjust_time(minutes)
+	
 # -------------------------------------------------
 # Money / Stats
 # -------------------------------------------------

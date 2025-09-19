@@ -1,10 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://dbmqljwa4bp7s"]
+[gd_scene load_steps=4 format=3 uid="uid://dbmqljwa4bp7s"]
 
 [ext_resource type="Theme" uid="uid://05x0jtoqf3eb" path="res://Themes/Dialouge theme.tres" id="1_oopix"]
 [ext_resource type="Script" uid="uid://jym8uv2ij5ac" path="res://Scenes/Reusable/Dialogue.gd" id="3_l7n5n"]
-[ext_resource type="Theme" uid="uid://bcpexnd6h0hk5" path="res://Scenes/Reusable/CharacterChoiceButtons.tres" id="4_ok6jt"]
 [ext_resource type="Texture2D" uid="uid://c4ie6t5o4ci1h" path="res://Images/CharacterFrames/secretaryframe.png" id="7_3mbu0"]
-[ext_resource type="Theme" uid="uid://cic3ab2y0afcf" path="res://Themes/1pxmarginVbox.tres" id="7_w3bqa"]
 
 [node name="Dialogue UI" type="Control"]
 z_index = 1
@@ -31,54 +29,6 @@ offset_right = 574.0
 grow_horizontal = 2
 grow_vertical = 0
 localize_numeral_system = false
-
-[node name="ChoiceBox" type="VBoxContainer" parent="Choice Control Node"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.195122
-anchor_top = -0.0119225
-anchor_right = 0.804878
-anchor_bottom = 0.701937
-offset_left = 1.52588e-05
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("7_w3bqa")
-metadata/_edit_use_anchors_ = true
-
-[node name="Button" type="Button" parent="Choice Control Node/ChoiceBox"]
-visible = false
-custom_minimum_size = Vector2(0, 38)
-layout_mode = 2
-theme = ExtResource("4_ok6jt")
-text = "Choice 1"
-
-[node name="Button2" type="Button" parent="Choice Control Node/ChoiceBox"]
-visible = false
-custom_minimum_size = Vector2(0, 38)
-layout_mode = 2
-theme = ExtResource("4_ok6jt")
-text = "Choice 2"
-
-[node name="Button3" type="Button" parent="Choice Control Node/ChoiceBox"]
-visible = false
-custom_minimum_size = Vector2(0, 38)
-layout_mode = 2
-theme = ExtResource("4_ok6jt")
-text = "Choice 3"
-
-[node name="Button4" type="Button" parent="Choice Control Node/ChoiceBox"]
-visible = false
-custom_minimum_size = Vector2(0, 38)
-layout_mode = 2
-theme = ExtResource("4_ok6jt")
-text = "Choice 4"
-
-[node name="Button5" type="Button" parent="Choice Control Node/ChoiceBox"]
-visible = false
-custom_minimum_size = Vector2(0, 38)
-layout_mode = 2
-theme = ExtResource("4_ok6jt")
-text = "Choice 5"
 
 [node name="Dialogue Box" type="PanelContainer" parent="."]
 z_index = 1

@@ -1,6 +1,10 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://bcpexnd6h0hk5"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bcpexnd6h0hk5"]
 
 [ext_resource type="Texture2D" uid="uid://mv6dqh4nuwmp" path="res://Images/Buttons/newbtn.png" id="1_b40o3"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b40o3"]
+texture = ExtResource("1_b40o3")
+modulate_color = Color(0.14, 0.14, 0.14, 0.847059)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gjc06"]
 
@@ -16,6 +20,7 @@ texture = ExtResource("1_b40o3")
 modulate_color = Color(0.336608, 0.336608, 0.336608, 1)
 
 [resource]
+Button/styles/disabled = SubResource("StyleBoxTexture_b40o3")
 Button/styles/focus = SubResource("StyleBoxEmpty_gjc06")
 Button/styles/hover = SubResource("StyleBoxTexture_nf0h5")
 Button/styles/normal = SubResource("StyleBoxTexture_mdvt6")
