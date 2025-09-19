@@ -1,4 +1,4 @@
-extends Node
+extends Node 
 
 const Flags = preload("res://Scripts/Singleton/GameFlags.gd")
 
@@ -8,6 +8,14 @@ const Flags = preload("res://Scripts/Singleton/GameFlags.gd")
 const ONE_AM_MINUTES := 60                       # 01:00
 const HOME_SCENE_PATH := "res://Scenes/Reusable/Map/Home.tscn"
 const J_ONE_AM := "res://Data/System/Narrator_Curfew.json"
+
+# MVR LOGIC KEYS / MARKERS
+const K_MVR_METHOD                := "MVR_METHOD"                # 0/1/2/3
+const K_MVR_READY_DAY             := "MVR_BCERT_READY_DAY"       # int day
+const K_MVR_LAST_WAIT_BUMP_DAY    := "__MVR_LAST_WAIT_BUMP_DAY"  # int day marker (last day we bumped "birth")
+const K_MVR_BRIBE_WAIT_BUMPED     := "__MVR_BRIBE_WAIT_BUMPED"   # bool marker (bumped at/after 17:00 on ready day)
+const K_MVR_LAST_CHECK_DAY        := "__MVR_LAST_CHECK_DAY"      # int day marker (last day reconcile saw)
+const T_BRIBE_PICK                := 17 * 60
 
 var _one_am_paused: bool = false                 # stops ticking/adjust_time after 01:00 only
 
@@ -97,7 +105,7 @@ func begin_game(day_start: int, time_start: int) -> void:
 	day = day_start
 	time = time_start
 	_one_am_paused = false
-	emit_signal("time_changed", time, day)
+	_emit_time_changed()               # <— wrapper ensures MVR reconcile happens
 	emit_signal("money_changed", money)
 	_start_time_simulation()
 	time_running = true
@@ -136,20 +144,28 @@ func _start_time_simulation() -> void:
 func _on_minute_passed() -> void:
 	if not time_running or is_time_frozen() or _one_am_paused:
 		return
+
 	time += 1
 	if time >= 24 * 60:
 		time = 0
 		day += 1
+
 	# Pause exactly at 01:00; do not lock or freeze UI
 	if time == ONE_AM_MINUTES:
 		_one_am_paused = true
 		call_deferred("_handle_one_am_sequence")
-	emit_signal("time_changed", time, day)
+
+	_emit_time_changed()  # <— unified emit (runs reconcile first)
 
 func _format_time() -> String:
 	var hours: int = int(time / 60) % 24   # 24h loop, safe cast
 	var minutes: int = int(time % 60)
 	return "%02d:%02d" % [hours, minutes]
+
+# ---- central wrapper: reconcile first, then emit ----
+func _emit_time_changed() -> void:
+	reconcile_mvr_wait_progress()
+	emit_signal("time_changed", time, day)
 
 func adjust_time(value: int) -> void:
 	# After 01:00 pause, ignore further time changes until you resume (e.g., after sleeping)
@@ -185,12 +201,12 @@ func adjust_time(value: int) -> void:
 		day = new_day
 		_one_am_paused = true
 		call_deferred("_handle_one_am_sequence")
-		emit_signal("time_changed", time, day)
+		_emit_time_changed()   # <— wrapper
 		return
 
 	time = new_time
 	day = new_day
-	emit_signal("time_changed", time, day)
+	_emit_time_changed()       # <— wrapper
 
 # NOTE: keep these available for other systems; NOT used by 01:00 pause flow
 func push_time_freeze(src: String) -> void:
@@ -213,30 +229,30 @@ func is_time_frozen() -> bool:
 
 func sleep_now() -> void:
 	# Discrete wake times based on when you go to sleep
-	# 22:00–22:59  -> 08:00 (regular)
-	# 23:00–23:59  -> 08:15 (regular edge)
-	# 00:00–01:00  -> 08:30 (late; matches the midnight window & 01:00 pause)
-	# <22:00       -> 07:30 (default early wake)
+	# 22:00–22:59  -> 08:00
+	# 23:00–23:59  -> 08:15
+	# 00:00–01:00  -> 08:30  (same calendar day; day already advanced at midnight)
+	# <22:00       -> 07:30
 	var wake: int = 7 * 60 + 30
 
-	# 22:00–22:59
 	if time >= 22 * 60 and time < 23 * 60:
 		wake = 8 * 60
-	# 23:00–23:59
 	elif time >= 23 * 60 and time < 24 * 60:
 		wake = 8 * 60 + 15
-	# 00:00–01:00 (inclusive of exactly 01:00 = ONE_AM_MINUTES)
 	elif time >= 0 and time <= ONE_AM_MINUTES:
 		wake = 8 * 60 + 30
-	# else: keep 07:30 for earlier-than-22:00
 
-	# New day begins at the penalized wake time
-	day += 1
+	# Advance the calendar ONLY if we are NOT already past midnight.
+	# If time is 00:00..01:00, the day has already rolled — don't add another.
+	var should_advance_day := time > ONE_AM_MINUTES
+	if should_advance_day:
+		day += 1
+
 	time = wake
 
 	# Clear the 01:00 pause so the new day ticks normally
 	_one_am_paused = false
-	emit_signal("time_changed", time, day)
+	_emit_time_changed()
 	print("🛌 Slept. Wake at %s (Day %d)" % [_format_time(), day])
 
 # Optional: ask the GameState what today's school entry status is,
@@ -296,7 +312,7 @@ func apply_dialogue_time_cost(minutes: int, _dlg_id: String = "") -> void:
 	if _one_am_paused:
 		return
 	adjust_time(minutes)
-	
+
 # -------------------------------------------------
 # Money / Stats
 # -------------------------------------------------
@@ -753,3 +769,41 @@ func count_study_if_new(subject_raw: String, add_time_minutes: int) -> bool:
 	if add_time_minutes > 0:
 		adjust_time(add_time_minutes)
 	return true
+
+# ------------------------ MVR reconcile (idempotent) ------------------------
+func reconcile_mvr_wait_progress() -> void:
+	var method := get_int(K_MVR_METHOD, 0)   # 1=Standard, 2=Expedited, 3=Bribery
+	var ready  := get_int(K_MVR_READY_DAY, 0)
+	var prev_check := get_int(K_MVR_LAST_CHECK_DAY, day)
+
+	# No active request or already finished → reset markers and exit.
+	if method == 0 or ready <= 0 or has_flag(Flags.HAVE_BIRTH_CERTIFICATE):
+		set_int(K_MVR_LAST_WAIT_BUMP_DAY, 0)
+		set_flag(K_MVR_BRIBE_WAIT_BUMPED, false)
+		set_int(K_MVR_LAST_CHECK_DAY, day)
+		return
+
+	# -------- Standard/Expedited: bump once per calendar day strictly before ready day --------
+	# We look at any whole days that elapsed since the last check (prev_check .. day-1)
+	# and bump for each such day if it is < ready, guarding with LAST_WAIT_BUMP_DAY.
+	if method == 1 or method == 2:
+		var last := get_int(K_MVR_LAST_WAIT_BUMP_DAY, 0)
+		if prev_check < day:
+			var d := prev_check
+			while d < day:
+				if d < ready and d > last:
+					ensure_task("birth")
+					update_task_step("birth")
+					last = d
+					set_int(K_MVR_LAST_WAIT_BUMP_DAY, last)
+				d += 1
+
+	# -------- Bribery: bump once at/after 17:00 on the ready day --------
+	if method == 3 and day == ready and time >= T_BRIBE_PICK:
+		if not has_flag(K_MVR_BRIBE_WAIT_BUMPED):
+			ensure_task("birth")
+			update_task_step("birth")
+			set_flag(K_MVR_BRIBE_WAIT_BUMPED, true)
+
+	# Record that we've reconciled for today's date
+	set_int(K_MVR_LAST_CHECK_DAY, day)

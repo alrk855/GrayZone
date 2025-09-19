@@ -59,6 +59,9 @@ var _dialogue_playing = false
 var _fade_layer_canvas
 var _fade_layer
 
+# Kick control: only kick after UI (dialogue/panel) is done
+var _pending_after_hours_kick := false
+
 # ---------- Day gates ----------
 func _can_standard_today() -> bool:
 	return GameState.day <= 2
@@ -86,6 +89,7 @@ func _days_remaining() -> int:
 	return 0
 
 func _effective_after_hours_limit() -> int:
+	# Extend to 18:00 ONLY for bribery on its ready day (pre-pickup).
 	if _method() == METHOD_BRIBERY and GameState.day == _ready_day():
 		return T_AFTER_HOURS_EXTENDED
 	return T_AFTER_HOURS_LIMIT
@@ -105,11 +109,16 @@ func _ready() -> void:
 	await _fade_out_only(0.6)
 
 func _process(_dt) -> void:
-	var limit = _effective_after_hours_limit()
-	if GameState.time >= limit and not _dialogue_playing and _panel == null:
-		# Don't auto-leave on bribery day before pickup; only after we have the cert.
-		if _method() != METHOD_BRIBERY or GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
+	# If we are past closing, prepare to kick.
+	if GameState.time >= _effective_after_hours_limit():
+		# If any UI is active, defer; otherwise, kick immediately.
+		if _dialogue_playing or _panel != null:
+			_pending_after_hours_kick = true
+		else:
 			_go_city()
+	else:
+		# If we're back under the limit (e.g., scene time manipulation), clear pending.
+		_pending_after_hours_kick = false
 
 # ========================= Fade =========================
 func _make_fade_layer() -> void:
@@ -161,12 +170,15 @@ func _play_and_wait(path: String) -> void:
 		await Signal(ui, "dialogue_finished")
 	_dialogue_playing = false
 	_set_talk_enabled(true)
+	# Do NOT kick here; let _process() handle it on the next frame
+	# so any post-dialogue flow (e.g., pickups) can finish neatly.
 
 # ========================= Panel helpers =========================
 func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
+	# Do NOT kick here; _process() will kick on the next frame if needed.
 
 func _show_menu(opts, cb: Callable) -> void:
 	_clear_panel()
@@ -178,6 +190,7 @@ func _show_menu(opts, cb: Callable) -> void:
 func _on_talk() -> void:
 	_clear_panel()
 
+	# Bribery expired check (came back after ready day without pickup)
 	if _method() == METHOD_BRIBERY and GameState.day > _ready_day() and not GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
 		if ResourceLoader.exists(J_BRIBERY_EXPIRED):
 			await _play_and_wait(J_BRIBERY_EXPIRED)
@@ -187,6 +200,7 @@ func _on_talk() -> void:
 		_show_method_menu()
 		return
 
+	# If there's an active method, handle followups/pickup
 	if _method() != METHOD_NONE:
 		await _handle_followups_or_pickup()
 		return
@@ -370,6 +384,7 @@ func _do_pickup_bribery() -> void:
 
 # ========================= Navigation =========================
 func _go_city() -> void:
+	_pending_after_hours_kick = false
 	if city_scene_path == "" or not ResourceLoader.exists(city_scene_path):
 		return
 	_clear_panel()

@@ -15,8 +15,9 @@ var _choice_panel: Control = null
 var _dialogue_ui: Node = null
 
 # subject multi-select state
-var _subject_all: Array[String] = []
-var _subject_selected: Array[String] = []
+var _subject_all_ids: Array[String] = []              # canonical IDs from JSON
+var _subject_selected_ids: Array[String] = []         # selected IDs
+var _subject_display: Dictionary = {}                 # id -> Capitalized display
 var _subject_max: int = 2
 
 func _ready() -> void:
@@ -33,10 +34,17 @@ func on_dialogue_action(line: Dictionary) -> void:
 	var act := String(line.get("action", ""))
 
 	match act:
+		# Background swaps (action-based)
 		"principal_enters":
-			await fade_out()
-			_set_bg(bg_principal)
-			await fade_in()
+			await _swap_bg_async("principal")
+		"bg_principal":
+			await _swap_bg_async("principal")
+		"bg_teacher":
+			await _swap_bg_async("teacher")
+		"set_bg":
+			var who := String(line.get("who", line.get("bg", ""))).strip_edges().to_lower()
+			if who != "":
+				await _swap_bg_async(who)
 
 		# Explicit subject two-pick
 		"show_subject_pick":
@@ -56,8 +64,17 @@ func on_dialogue_action(line: Dictionary) -> void:
 		_:
 			GameState.apply_action(line)
 
+# If your JSON uses scene_transition instead of action:
+func on_scene_transition(namee: String) -> void:
+	var key := String(namee).strip_edges().to_lower()
+	if key == "principal_enters":
+		await _swap_bg_async("principal")
+	elif key == "teacher_enters" or key == "teacher":
+		await _swap_bg_async("teacher")
+
 # Keep compatibility with your older flow
 func on_choices_selected(selected: Array) -> void:
+	# This receives DISPLAY NAMES (capitalized) from our finalize step
 	if selected.size() >= 2:
 		GameState.subject1 = String(selected[0])
 		GameState.subject2 = String(selected[1])
@@ -78,52 +95,67 @@ func _on_single_choice_clicked(id: String) -> void:
 	if _dialogue_ui and _dialogue_ui.has_method("apply_choices"):
 		_dialogue_ui.call("apply_choices", [id])
 
-# ---------- Subject multi-select (keeps panel visible) ----------
+# ---------- Subject multi-select (keeps panel visible, no dots/checks) ----------
 func _begin_subject_multiselect(options: Array, max_select: int) -> void:
-	_subject_all.clear()
-	_subject_selected.clear()
+	_subject_all_ids.clear()
+	_subject_selected_ids.clear()
+	_subject_display.clear()
 	_subject_max = max(2, max_select)
 
+	# Build ID + capitalized display map
 	for o in options:
-		_subject_all.append(String(o.get("id", "")))
+		var id := String(o.get("id", ""))
+		if id == "":
+			continue
+		_subject_all_ids.append(id)
+		_subject_display[id] = _capitalize_first(String(o.get("text", id)))
 
 	_render_subject_multiselect()
 
 func _render_subject_multiselect() -> void:
 	_ensure_choice_panel()
 
+	# Build options with clean, capitalized labels (no markers)
 	var options_for_panel: Array = []
-	for sid in _subject_all:
-		var picked := _subject_selected.has(sid)
-		var label_prefix := "✓ " if picked else "• "
-		var label := label_prefix + sid
-		options_for_panel.append({"id": sid, "text": label})
+	for id in _subject_all_ids:
+		var label := String(_subject_display.get(id, id))
+		options_for_panel.append({"id": id, "text": label})
 
-	# Re-bind the SAME panel; do not destroy between clicks
 	_choice_panel.call("show_options", options_for_panel, Callable(self, "_on_subject_toggle"))
+
+	# If your CharacterChoiceButtons supports highlighting, sync selection
+	if _choice_panel and _choice_panel.has_method("set_selected_ids"):
+		_choice_panel.call("set_selected_ids", _subject_selected_ids)
 
 func _on_subject_toggle(id: String) -> void:
 	var sid := String(id)
 
 	# toggle selection
-	if _subject_selected.has(sid):
-		_subject_selected.erase(sid)
+	if _subject_selected_ids.has(sid):
+		_subject_selected_ids.erase(sid)
 	else:
-		if _subject_selected.size() < _subject_max:
-			_subject_selected.append(sid)
+		if _subject_selected_ids.size() < _subject_max:
+			_subject_selected_ids.append(sid)
 
 	# finalize once quota is met
-	if _subject_selected.size() == _subject_max:
+	if _subject_selected_ids.size() == _subject_max:
 		_finalize_subject_selection()
 		return
 
 	_render_subject_multiselect()
 
 func _finalize_subject_selection() -> void:
-	on_choices_selected(_subject_selected.duplicate())
+	# Build DISPLAY names for GameState (capitalized)
+	var picked_display: Array = []
+	for sid in _subject_selected_ids:
+		picked_display.append(String(_subject_display.get(sid, sid)))
 
+	# Old hook (so your GameState.subject1/2 get set nicely)
+	on_choices_selected(picked_display)
+
+	# Pass canonical IDs back to Dialogue so it can branch on IDs
 	if _dialogue_ui and _dialogue_ui.has_method("apply_choices"):
-		_dialogue_ui.call("apply_choices", _subject_selected)
+		_dialogue_ui.call("apply_choices", _subject_selected_ids)
 
 	_hide_choice_panel()
 
@@ -154,6 +186,15 @@ func _normalize_options(raw: Variant) -> Array:
 				out.append({"id": s, "text": s})
 	return out
 
+func _capitalize_first(s: String) -> String:
+	if s.length() == 0:
+		return s
+	var head := s.substr(0, 1).to_upper()
+	var tail := ""
+	if s.length() > 1:
+		tail = s.substr(1, s.length() - 1) # keep original casing for the rest if you prefer: `.to_lower()` if needed
+	return head + tail
+
 # ---------- BG / Fade ----------
 func _set_bg(tex: Texture2D) -> void:
 	if _bg_node == null or tex == null:
@@ -164,6 +205,17 @@ func _set_bg(tex: Texture2D) -> void:
 		(_bg_node as Sprite2D).texture = tex
 	elif _bg_node.has_method("set_texture"):
 		_bg_node.call("set_texture", tex)
+
+func _bg_for_key(key: String) -> Texture2D:
+	var k := key.strip_edges().to_lower()
+	if k == "principal":
+		return bg_principal
+	return bg_teacher
+
+func _swap_bg_async(who: String) -> void:
+	await fade_out()
+	_set_bg(_bg_for_key(who))
+	await fade_in()
 
 func fade_out() -> void:
 	screen_fader.visible = true

@@ -25,10 +25,11 @@ const MARKO_FIRST_EVENT_DONE     := "marko_first_event_done"
 const YCO_INTERACTION_DONE       := "yco_interaction_done"
 
 # ===== MVR gating =====
-const MVR_OPEN  := 13 * 60
-const MVR_CLOSE := 15 * 60
-const MVR_CLOSED_JSON        := "res://Data/MVR/MVR_Closed.json"
-const MVR_ALREADY_HAVE_JSON  := "res://Data/MVR/MVR_AlreadyHave.json"
+const MVR_OPEN        := 13 * 60
+const MVR_CLOSE_BASE  := 17 * 60
+const MVR_CLOSE_EXT   := 18 * 60
+const MVR_CLOSED_JSON       := "res://Data/MVR/MVR_Closed.json"
+const MVR_ALREADY_HAVE_JSON := "res://Data/MVR/MVR_AlreadyHave.json"
 
 # ===== YCO gating =====
 const YCO_OPEN  := 9 * 60
@@ -49,7 +50,7 @@ var _fade_rect: ColorRect = null
 func _ready() -> void:
 	_bg = get_node_or_null(background_texrect_path) as TextureRect
 	_update_background(true)
-
+	GameState.location="CITY"
 	if city_button and city_button.has_signal("pressed"):
 		city_button.connect("pressed", Callable(self, "_on_city_button_pressed"))
 	else:
@@ -157,14 +158,33 @@ func _start_scene(path: String, use_fade: bool = true) -> void:
 	get_tree().change_scene_to_file(path)
 
 # ========= MVR GATING =========
+func _mvr_is_same_day_bribe_active() -> bool:
+	# Same-day (bribery) flow active only on ready day, before pickup
+	var method := GameState.get_int("MVR_METHOD", 0)              # 3 = Bribery
+	var ready  := GameState.get_int("MVR_BCERT_READY_DAY", 0)
+	if method != 3:
+		return false
+	if GameState.day != ready:
+		return false
+	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
+		return false
+	return true
+
+func _mvr_close_time() -> int:
+	# If same-day bribe is active, entry allowed until 18:00 (matches MVR scene logic)
+	if _mvr_is_same_day_bribe_active():
+		return MVR_CLOSE_EXT
+	return MVR_CLOSE_BASE
+
 func _try_enter_mvr() -> void:
 	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
 		await _play_city_json_or_fallback(MVR_ALREADY_HAVE_JSON, "You already have the certificate. No need to go back.")
 		_show_city_menu()
 		return
 
-	var now = GameState.time
-	if now >= MVR_OPEN and now < MVR_CLOSE:
+	var now := GameState.time
+	var close_time := _mvr_close_time()
+	if now >= MVR_OPEN and now < close_time:
 		await _go_to(MVR_SCENE_PATH, "MVR") # fades
 		return
 
@@ -177,7 +197,7 @@ func _try_enter_yco() -> void:
 		_show_city_menu()
 		return
 
-	var now = GameState.time
+	var now := GameState.time
 	if now >= YCO_OPEN and now < YCO_CLOSE:
 		await _go_to(YCO_SCENE_PATH, "YCO") # fades
 		return
@@ -205,7 +225,7 @@ func _is_tutoring_unlocked() -> bool:
 
 # ========= BACKGROUND UTILS =========
 func _is_night_time() -> bool:
-	var t = GameState.time
+	var t := GameState.time
 	return (t >= NIGHT_START) or (t < DAY_START)
 
 func _update_background(force := false) -> void:
@@ -213,7 +233,7 @@ func _update_background(force := false) -> void:
 		_bg = get_node_or_null(background_texrect_path) as TextureRect
 		if not _bg:
 			return
-	var night = _is_night_time()
+	var night := _is_night_time()
 	if force or _last_is_night == null or _last_is_night != night:
 		_last_is_night = night
 		if night and bg_night:

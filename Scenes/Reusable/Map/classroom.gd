@@ -1,4 +1,4 @@
-extends Control
+extends Control 
 
 # ------------------------ Node Paths ------------------------
 @export var background_texrect_path: NodePath = ^"background"
@@ -27,7 +27,7 @@ const J_CATCHUP_REPEAT_SKIP             := "res://Data/Classroom/Classroom_Catch
 # Teacher: transcripts + doc review set
 const J_TEACHER_TRANSCRIPT_TOO_EARLY    := "res://Data/Classroom/Transcript_TooEarly.json"
 
-const J_DOC_REVIEW_BANNED               := "res://Data/Classroom/DocReview_Banned.json"             # optional
+const J_DOC_REVIEW_BANNED               := "res://Data/Classroom/DocReview_Banned.json"
 const J_DOC_NEED_BOTH                   := "res://Data/Classroom/DocReview_NeedBoth.json"
 const J_DOC_NEED_PRINT                  := "res://Data/Classroom/DocReview_NeedPrint.json"
 const J_DOC_START_CV                    := "res://Data/Classroom/DocReview_StartCV.json"
@@ -63,10 +63,6 @@ var _panel: Control = null
 var _nav_pending: bool = false
 var _janitor_papers_mode: bool = false
 
-# Fade overlay
-var _fade_layer: CanvasLayer = null
-var _fade_rect: ColorRect = null
-
 # chain state for dialogue
 var _next_cb: String = ""
 
@@ -76,13 +72,13 @@ var _doc_suspicious_this_review: bool = false
 # ------------------------ Flags (string keys) ------------------------
 # per-day flags
 const F_ATTENDED_PREFIX           := "attended_morning_day_"
-const F_LATE_PENALIZED_PREFIX     := "late_penalized_day_"          # late is flavor-only now
+const F_LATE_PENALIZED_PREFIX     := "late_penalized_day_"
 const F_SKIP_PENALIZED_PREFIX     := "skip_penalized_day_"
 const F_NOON_DAY2_DONE            := "noon_day2_announcement_done"
 const F_CATCHUP_SHOWN_PREFIX      := "catchup_shown_day_"
 
 # counters
-const F_MISSED_CNT                := "missed_morning_count"         # ndays-skips source of truth
+const F_MISSED_CNT                := "missed_morning_count"
 
 # janitor flags
 const F_MARKO_TIP                 := "marko_tip"
@@ -99,7 +95,7 @@ const F_MLETTER_REWRITE_REQ       := "motivation_rewrite_required"
 const F_MLETTER_SECOND_CHANCE     := "motivation_second_chance"
 
 # tasks / navigation
-const TASK_VOLUNTEER              := "Volunteer for Community Work" # not auto-bumped here
+const TASK_VOLUNTEER              := "Volunteer for Community Work"
 const TASK_TRANSCRIPT             := "transcript"
 const SCHOOL_SCENE                := "res://Scenes/Reusable/Map/School.tscn"
 
@@ -154,7 +150,7 @@ func _update_presence_and_background() -> void:
 			show_janitor_btn = false
 			show_back = false
 		else:
-			# 12:30–14:30 → teacher present during free time (CHANGED)
+			# 12:30–14:30 → teacher present during free time
 			if t >= T_12_30 and t < T_14_30:
 				tex = bg_teacher_morning if bg_teacher_morning else bg_empty
 				show_teacher_btn = true
@@ -243,7 +239,7 @@ func _handle_entry_flow() -> void:
 				return
 
 			if t >= T_08_15 and t < T_08_30:
-				# Late is flavor-only; keep light rep effect but don't affect catch-up logic
+				# Late is flavor-only; light rep effect
 				var late_key := F_LATE_PENALIZED_PREFIX + str(d)
 				if not GameState.has_flag(late_key):
 					GameState.adjust_reputation(-5)
@@ -266,7 +262,6 @@ func _handle_entry_flow() -> void:
 				# fall through to catch-up JSON below
 
 	# Catch-up branch (skip-only): show once per day if you've missed at least one
-	# This keeps original "after morning" placement behavior.
 	if d >= 2 and d <= 4:
 		var shown_key := F_CATCHUP_SHOWN_PREFIX + str(d)
 		if not GameState.has_flag(shown_key):
@@ -288,18 +283,17 @@ func _after_morning_dialogue() -> void:
 
 	# Day 2 → noon announcement (only once)
 	if GameState.day == 2 and not GameState.has_flag(F_NOON_DAY2_DONE):
-		# fade between dialogues
-		await _fade_flash(1.0, 1.0)
+		# FLASH via global fade (out then in)
+		await fade.fade_out(1.0)
+		await fade.fade_in(1.0)
 		_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "_after_day2_noon")
 		return
 
-	# D3/D4: catch-up handled by central branch in _handle_entry_flow after penalties
 	_update_presence_and_background()
 	_go_school()
 
 func _after_day2_noon() -> void:
 	GameState.set_flag(F_NOON_DAY2_DONE, true)
-	# No auto-ensures/bump for volunteering here; handled by Day2 noon JSON/actions or your TaskManager later.
 	GameState.set_flag("doc_review_unlocked", true)
 	GameState.set_flag("yco_interaction_done", true)
 	GameState.adjust_time(+10)
@@ -307,7 +301,6 @@ func _after_day2_noon() -> void:
 	_go_school()
 
 func _after_catchup() -> void:
-	# No discipline flags; no task increments here by design.
 	_update_presence_and_background()
 	_go_school()
 
@@ -534,15 +527,10 @@ func _go_school() -> void:
 		_btn_back.visible = false
 	_clear_panel()
 	await get_tree().process_frame
-	# small fade-out before warp
-	await _fade_to(1.0, 0.4)
-	call_deferred("_deferred_change_scene", SCHOOL_SCENE)
-
-func _deferred_change_scene(path: String) -> void:
+	# Global fade-based scene change
+	if ResourceLoader.exists(SCHOOL_SCENE):
+		await fade.fade_to_scene(SCHOOL_SCENE, 0.4, 0.35)
 	_nav_pending = false
-	var tree := get_tree()
-	if tree and path != "" and ResourceLoader.exists(path):
-		tree.change_scene_to_file(path)
 
 # ------------------------ Helpers ------------------------
 func _clear_panel() -> void:
@@ -562,27 +550,3 @@ func _on_dm_finished(_id: String) -> void:
 	_next_cb = ""
 	if cb != "":
 		call_deferred(cb)
-
-# ------------------------ Fade helpers ------------------------
-func _ensure_fader() -> void:
-	if _fade_layer == null or not is_instance_valid(_fade_layer):
-		_fade_layer = CanvasLayer.new()
-		_fade_layer.layer = 100
-		add_child(_fade_layer)
-	if _fade_rect == null or not is_instance_valid(_fade_rect):
-		_fade_rect = ColorRect.new()
-		_fade_rect.color = Color(0, 0, 0, 1)     # black
-		_fade_rect.modulate = Color(1, 1, 1, 0)  # start transparent
-		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-		_fade_layer.add_child(_fade_rect)
-
-func _fade_to(alpha: float, duration: float) -> void:
-	_ensure_fader()
-	var tw := create_tween()
-	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
-	await tw.finished
-
-func _fade_flash(out_dur: float, in_dur: float) -> void:
-	await _fade_to(1.0, out_dur)
-	await _fade_to(0.0, in_dur)
