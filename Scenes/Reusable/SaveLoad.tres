@@ -1,0 +1,40 @@
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://b1x4t7e1tl83o"]
+
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="1_rg0qv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5tey4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7h8mt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fyw05"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_knwmu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d26wh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ok3bm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7h8mt"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sqk7i"]
+bg_color = Color(0.231373, 0.219608, 0.686275, 0.47451)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[resource]
+Button/styles/disabled = SubResource("StyleBoxEmpty_5tey4")
+Button/styles/focus = SubResource("StyleBoxEmpty_7h8mt")
+Button/styles/hover = SubResource("StyleBoxEmpty_fyw05")
+Button/styles/normal = SubResource("StyleBoxEmpty_knwmu")
+Button/styles/pressed = SubResource("StyleBoxEmpty_d26wh")
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/font_sizes/font_size = 90
+Label/fonts/font = ExtResource("1_rg0qv")
+LineEdit/font_sizes/font_size = 90
+LineEdit/fonts/font = ExtResource("1_rg0qv")
+LineEdit/styles/focus = SubResource("StyleBoxEmpty_ok3bm")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_7h8mt")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_sqk7i")

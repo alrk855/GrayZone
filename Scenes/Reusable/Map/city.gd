@@ -13,28 +13,45 @@ extends Control
 var _panel: Control = null
 var _awaiting := ""   # "city_menu" | "activity_menu"
 
-# Scene paths
+# ===== Scene paths =====
 const HOME_SCENE_PATH            := "res://Scenes/Reusable/Map/Home.tscn"
 const SCHOOL_SCENE_PATH          := "res://Scenes/Reusable/Map/School.tscn"
 const MVR_SCENE_PATH             := "res://Scenes/Reusable/Map/MVR.tscn"
 const YCO_SCENE_PATH             := "res://Scenes/Reusable/Map/YCO.tscn"
+const HANGOUT_SCENE_PATH         := "res://Scenes/Reusable/Tasks/Hangout.tscn"
+const TUTORING_SCENE_PATH        := "res://Scenes/Reusable/Tasks/Tutoring.tscn"
 const MARKO_FIRST_EVENT_SCENE    := "res://Scenes/Reusable/Events/MarkoFirstEvent.tscn"
 
-# Flags
+# ===== Flags =====
 const MARKO_FIRST_EVENT_DONE     := "marko_first_event_done"
 const YCO_INTERACTION_DONE       := "yco_interaction_done"
+
+# ===== Once-per-day keys =====
+const K_HANGOUT_LAST_DAY := "__CITY_HANGOUT_LAST_DAY"
+const K_TUTOR_LAST_DAY   := "__CITY_TUTOR_LAST_DAY"
+
+# ===== School gating =====
+const SCHOOL_OPEN  := 7 * 60 + 30    # 07:30
+const SCHOOL_CLOSE := 18 * 60 + 30   # 18:30
+const SCHOOL_CLOSED_JSON := "res://Data/School/School_Closed.json"
 
 # ===== MVR gating =====
 const MVR_OPEN        := 13 * 60
 const MVR_CLOSE_BASE  := 17 * 60
 const MVR_CLOSE_EXT   := 18 * 60
-const MVR_CLOSED_JSON       := "res://Data/MVR/MVR_Closed.json"
-const MVR_ALREADY_HAVE_JSON := "res://Data/MVR/MVR_AlreadyHave.json"
+const MVR_CLOSED_JSON       := "res://Data/city/MVR_Closed.json"
+const MVR_ALREADY_HAVE_JSON := "res://Data/city/MVR_AlreadyHave.json"
 
 # ===== YCO gating =====
 const YCO_OPEN  := 9 * 60
 const YCO_CLOSE := 15 * 60 + 30
-const YCO_CLOSED_JSON := "res://Data/YCO/YCO_Closed.json"
+const YCO_CLOSED_JSON := "res://Data/city/YCO_Closed.json"
+
+# ===== Activity JSONs (custom) =====
+const HANGOUT_LOCKED_JSON      := "res://Data/City/Hangout_Locked.json"
+const HANGOUT_DAILY_JSON       := "res://Data/City/Hangout_OnlyOncePerDay.json"
+const TUTORING_LOCKED_JSON     := "res://Data/City/Tutoring_Locked.json"
+const TUTORING_DAILY_JSON      := "res://Data/City/Tutoring_OnlyOncePerDay.json"
 
 # ===== Day/Night thresholds =====
 const NIGHT_START := 19 * 60
@@ -43,14 +60,11 @@ const DAY_START   := 7 * 60
 var _bg: TextureRect
 var _last_is_night = null
 
-# ===== Fade overlay =====
-var _fade_layer: CanvasLayer = null
-var _fade_rect: ColorRect = null
-
 func _ready() -> void:
 	_bg = get_node_or_null(background_texrect_path) as TextureRect
 	_update_background(true)
-	GameState.location="CITY"
+	GameState.location = "CITY"
+
 	if city_button and city_button.has_signal("pressed"):
 		city_button.connect("pressed", Callable(self, "_on_city_button_pressed"))
 	else:
@@ -89,10 +103,12 @@ func _build_activity_options() -> Array:
 		options.append({ "text": "Hang Out with Marko", "id": "hangout_marko" })
 	else:
 		options.append({ "text": "Hang Out with Marko (Locked)", "id": "hangout_locked" })
+
 	if _is_tutoring_unlocked():
 		options.append({ "text": "Tutoring", "id": "tutoring" })
 	else:
 		options.append({ "text": "Tutoring (Locked)", "id": "tutoring_locked" })
+
 	options.append({ "text": "Back", "id": "back" })
 	return options
 
@@ -102,7 +118,7 @@ func _on_city_choice(id: String) -> void:
 		"home":
 			await _go_home()
 		"school":
-			await _go_to(SCHOOL_SCENE_PATH, "School")
+			await _try_enter_school()
 		"mvr":
 			await _try_enter_mvr()
 		"yco":
@@ -115,66 +131,99 @@ func _on_city_choice(id: String) -> void:
 func _on_activity_choice(id: String) -> void:
 	match id:
 		"hangout_marko":
-			if _is_marko_unlocked():
-				await _start_scene("res://Scenes/Reusable/Tasks/Hangout.tscn") # fades
-			else:
+			if not _is_marko_unlocked():
+				await _play_city_json_or_fallback(HANGOUT_LOCKED_JSON, "You can't hang out with Marko yet.")
 				_show_activity_menu()
+				return
+			if not _once_per_day_allowed(K_HANGOUT_LAST_DAY):
+				await _play_city_json_or_fallback(HANGOUT_DAILY_JSON, "You already hung out with Marko today.")
+				_show_activity_menu()
+				return
+			_mark_once_per_day(K_HANGOUT_LAST_DAY)
+			await _go_to(HANGOUT_SCENE_PATH, "Hangout")
+
 		"tutoring":
-			if _is_tutoring_unlocked():
-				await _start_scene("res://Scenes/Reusable/Tasks/Tutoring.tscn") # fades
-			else:
+			if not _is_tutoring_unlocked():
+				await _play_city_json_or_fallback(TUTORING_LOCKED_JSON, "Tutoring isn't available yet.")
 				_show_activity_menu()
+				return
+			if not _once_per_day_allowed(K_TUTOR_LAST_DAY):
+				await _play_city_json_or_fallback(TUTORING_DAILY_JSON, "You've already done tutoring today.")
+				_show_activity_menu()
+				return
+			_mark_once_per_day(K_TUTOR_LAST_DAY)
+			await _go_to(TUTORING_SCENE_PATH, "Tutoring")
+
 		"hangout_locked":
+			await _play_city_json_or_fallback(HANGOUT_LOCKED_JSON, "You can't hang out with Marko yet.")
 			_show_activity_menu()
+
 		"tutoring_locked":
+			await _play_city_json_or_fallback(TUTORING_LOCKED_JSON, "Tutoring isn't available yet.")
 			_show_activity_menu()
+
 		"back":
 			_show_city_menu()
+
+# ========= ONCE-PER-DAY HELPERS =========
+func _once_per_day_allowed(key: String) -> bool:
+	return GameState.get_int(key, 0) < GameState.day
+
+func _mark_once_per_day(key: String) -> void:
+	GameState.set_int(key, GameState.day)
 
 # ========= ACTIONS =========
 func _go_home() -> void:
 	GameState.location = "Home"
 	if GameState.day == 1 and not GameState.has_flag(MARKO_FIRST_EVENT_DONE):
 		GameState.set_flag(MARKO_FIRST_EVENT_DONE, true)
-		# No fade for the event trigger
-		await _start_scene(MARKO_FIRST_EVENT_SCENE, false)
+		# No fade for the event trigger (kept original feel)
+		await _change_scene(HOME_SCENE_PATH, false)
+		await _change_scene(MARKO_FIRST_EVENT_SCENE, false)
 	else:
-		# No fade when going Home
-		await _start_scene(HOME_SCENE_PATH, false)
+		await _change_scene(HOME_SCENE_PATH, false)
 	_clear_panel()
 
 func _go_to(scene_path: String, loc_name: String) -> void:
 	GameState.location = loc_name
-	await _start_scene(scene_path, true) # keep fades everywhere else
+	await _change_scene(scene_path, true) # fade for non-home moves
 	_clear_panel()
 
-# use_fade controls whether we do the fade-out before scene change
-func _start_scene(path: String, use_fade: bool = true) -> void:
+# Centralized scene change using the 'fade' singleton (lowercase)
+func _change_scene(path: String, use_fade: bool = true) -> void:
 	if path == "" or not ResourceLoader.exists(path):
 		push_warning("City.gd: Scene missing or path invalid: " + path)
 		return
 	if use_fade:
-		await _fade_to(1.0, 0.4)
+		var f = get_tree().get_node_or_null("/root/fade")
+		if f and f.has_method("fade_to_scene"):
+			await f.fade_to_scene(path)
+			return
+	# fallback (no fade autoload found)
 	get_tree().change_scene_to_file(path)
+
+# ========= SCHOOL GATING =========
+func _try_enter_school() -> void:
+	var now := GameState.time
+	if now >= SCHOOL_OPEN and now < SCHOOL_CLOSE:
+		await _go_to(SCHOOL_SCENE_PATH, "School")
+		return
+
+	var hours_text := _fmt_time(SCHOOL_OPEN) + "–" + _fmt_time(SCHOOL_CLOSE)
+	await _play_city_json_or_fallback(SCHOOL_CLOSED_JSON, "School is closed right now. Open " + hours_text + ".")
+	_show_city_menu()
 
 # ========= MVR GATING =========
 func _mvr_is_same_day_bribe_active() -> bool:
-	# Same-day (bribery) flow active only on ready day, before pickup
 	var method := GameState.get_int("MVR_METHOD", 0)              # 3 = Bribery
 	var ready  := GameState.get_int("MVR_BCERT_READY_DAY", 0)
-	if method != 3:
-		return false
-	if GameState.day != ready:
-		return false
-	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
-		return false
+	if method != 3: return false
+	if GameState.day != ready: return false
+	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE): return false
 	return true
 
 func _mvr_close_time() -> int:
-	# If same-day bribe is active, entry allowed until 18:00 (matches MVR scene logic)
-	if _mvr_is_same_day_bribe_active():
-		return MVR_CLOSE_EXT
-	return MVR_CLOSE_BASE
+	return MVR_CLOSE_EXT if _mvr_is_same_day_bribe_active() else MVR_CLOSE_BASE
 
 func _try_enter_mvr() -> void:
 	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
@@ -185,7 +234,7 @@ func _try_enter_mvr() -> void:
 	var now := GameState.time
 	var close_time := _mvr_close_time()
 	if now >= MVR_OPEN and now < close_time:
-		await _go_to(MVR_SCENE_PATH, "MVR") # fades
+		await _go_to(MVR_SCENE_PATH, "MVR")
 		return
 
 	await _play_city_json_or_fallback(MVR_CLOSED_JSON, "It's closed right now.")
@@ -199,15 +248,17 @@ func _try_enter_yco() -> void:
 
 	var now := GameState.time
 	if now >= YCO_OPEN and now < YCO_CLOSE:
-		await _go_to(YCO_SCENE_PATH, "YCO") # fades
+		await _go_to(YCO_SCENE_PATH, "YCO")
 		return
 
 	await _play_city_json_or_fallback(YCO_CLOSED_JSON, "Not the best idea to go there now. The Youth Civil Office is closed between 09:00 and 15:30.")
 	_show_city_menu()
 
+# ========= JSON RUNNER =========
 func _play_city_json_or_fallback(path: String, fallback_msg: String) -> void:
-	if FileAccess.file_exists(path):
-		var ui := DialogueManager.start_dialogue(path, self)
+	var dm := get_node_or_null("/root/DialogueManager")
+	if FileAccess.file_exists(path) and dm and dm.has_method("start_dialogue"):
+		var ui = dm.start_dialogue(path, self)
 		if ui and ui.has_signal("dialogue_finished"):
 			await ui.dialogue_finished
 	else:
@@ -215,6 +266,7 @@ func _play_city_json_or_fallback(path: String, fallback_msg: String) -> void:
 
 # ========= UNLOCK CHECKS =========
 func _is_yco_available() -> bool:
+	# If you want YCO on Day 1, drop the day gate.
 	return GameState.day >= 2 and GameState.has_flag(YCO_INTERACTION_DONE)
 
 func _is_marko_unlocked() -> bool:
@@ -254,22 +306,7 @@ func _clear_panel() -> void:
 		_panel.queue_free()
 	_panel = null
 
-# ========= Fade helpers =========
-func _ensure_fader() -> void:
-	if _fade_layer == null or not is_instance_valid(_fade_layer):
-		_fade_layer = CanvasLayer.new()
-		_fade_layer.layer = 200
-		add_child(_fade_layer)
-	if _fade_rect == null or not is_instance_valid(_fade_rect):
-		_fade_rect = ColorRect.new()
-		_fade_rect.color = Color(0, 0, 0, 1)
-		_fade_rect.modulate = Color(1, 1, 1, 0)
-		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-		_fade_layer.add_child(_fade_rect)
-
-func _fade_to(alpha: float, duration: float) -> void:
-	_ensure_fader()
-	var tw := create_tween()
-	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
-	await tw.finished
+func _fmt_time(m: int) -> String:
+	var h := int(m / 60) % 24
+	var mm := int(m % 60)
+	return "%02d:%02d" % [h, mm]
