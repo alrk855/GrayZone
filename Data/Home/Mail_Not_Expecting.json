@@ -1,0 +1,7 @@
+{
+  "id": "Mail_Not_Expecting",
+  "lines": [
+	{ "speaker": "Narrator", "text": "The mailbox sits quiet—no letters due today." },
+	{ "speaker": "Narrator", "text": "Nothing to pick up here. Maybe tomorrow." }
+  ]
+}

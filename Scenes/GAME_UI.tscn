@@ -11,7 +11,7 @@
 offsets = PackedFloat32Array(0, 0.811024, 1)
 colors = PackedColorArray(0.699653, 0.699653, 0.699653, 1, 0.787759, 0.787759, 0.787759, 1, 0.68, 0.68, 0.68, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6e7eo"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8wimu"]
 gradient = SubResource("Gradient_8wimu")
 use_hdr = true
 fill = 1
@@ -21,7 +21,7 @@ metadata/_snap_count = 2
 metadata/_snap_enabled = true
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h8tdh"]
-texture = SubResource("GradientTexture2D_6e7eo")
+texture = SubResource("GradientTexture2D_8wimu")
 modulate_color = Color(1, 0.623833, 0.39, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8wimu"]
