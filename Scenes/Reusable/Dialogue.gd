@@ -1,11 +1,19 @@
 extends Control
 
 signal dialogue_finished
-signal choices_requested(options: Array, max_select: int) # external UI can listen
 
 @onready var dialogue_label: RichTextLabel = $"Dialogue Box/Control2/Dialogue"
 @onready var speaker_label: Label = $"Speaker Box/SpeakerLABEL"
 @onready var portrait: TextureRect = $"Dialogue Box/Control/PlaceHolderFrame"
+@onready var choices_box: Control = $"Choice Control Node/ChoiceBox"
+
+@onready var choice_buttons: Array[Button] = [
+	choices_box.get_node("Button") as Button,
+	choices_box.get_node("Button2") as Button,
+	choices_box.get_node("Button3") as Button,
+	choices_box.get_node("Button4") as Button,
+	choices_box.get_node("Button5") as Button
+]
 
 @export var portraits: Dictionary = {
 	"homeroom teacher": preload("res://Images/CharacterFrames/KlasenFrame.png"),
@@ -17,15 +25,14 @@ signal choices_requested(options: Array, max_select: int) # external UI can list
 	"mvrclerk":         preload("res://Images/CharacterFrames/MvrClerkFrame.png")
 }
 
+
 var dialogue_data: Array = []
 var line_index: int = 0
 var is_typing: bool = false
 var typing_speed: float = 0.04
+var selected_ids: Array[String] = []
+var max_select: int = 1
 var caller: Node = null
-
-var _waiting_for_external_choice := false
-var _pending_choice_options: Array = []
-var _pending_max_select: int = 1
 
 func start(lines: Array, caller_node: Node = null) -> void:
 	dialogue_data = lines
@@ -35,7 +42,7 @@ func start(lines: Array, caller_node: Node = null) -> void:
 	display_next()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept") and not is_typing and not _waiting_for_external_choice:
+	if event.is_action_pressed("ui_accept") and not choices_box.visible and not is_typing:
 		display_next()
 
 func display_next() -> void:
@@ -46,7 +53,7 @@ func display_next() -> void:
 
 	var line: Dictionary = dialogue_data[line_index]
 
-	# Scene transition (no text)
+	# Scene transition (rare)
 	if line.has("scene_transition") and not line.has("text"):
 		if caller and caller.has_method("on_scene_transition"):
 			await caller.call("on_scene_transition", String(line["scene_transition"]))
@@ -71,9 +78,9 @@ func display_next() -> void:
 		display_next()
 		return
 
-	# Choice request → hand off to external UI and pause here
+	# Choices
 	if line.has("choice_type"):
-		_request_external_choices(line)
+		show_choices(line)
 		return
 
 	# Action (let caller handle; fallback to GameState)
@@ -98,61 +105,41 @@ func _type_text(text: String) -> void:
 		await get_tree().create_timer(typing_speed).timeout
 	is_typing = false
 
-# ---------- External choices flow ----------
+func show_choices(line: Dictionary) -> void:
+	selected_ids.clear()
+	max_select = int(line.get("max_select", 1))
 
-func _request_external_choices(line: Dictionary) -> void:
-	_pending_choice_options = []
-	_pending_max_select = int(line.get("max_select", 1))
+	for btn in choice_buttons:
+		btn.hide()
+		btn.text = ""
+		btn.disabled = true
+		for conn in btn.pressed.get_connections():
+			btn.pressed.disconnect(conn.callable)
 
-	# Accept "options": [{id,text}, ...] or ["Math","Physics",...]
-	var opt_raw = line.get("options", [])
-	if opt_raw is Array:
-		for o in opt_raw:
-			if typeof(o) == TYPE_DICTIONARY:
-				var id := String(o.get("id",""))
-				var text := String(o.get("text", id))
-				if id == "" and text != "":
-					id = text
-				_pending_choice_options.append({"id": id, "text": text})
-			else:
-				var s := String(o)
-				_pending_choice_options.append({"id": s, "text": s})
+	var options: Array = line["options"]
+	var num_options: int = min(options.size(), choice_buttons.size())
 
-	_waiting_for_external_choice = true
+	for i in range(num_options):
+		var btn: Button = choice_buttons[choice_buttons.size() - 1 - i]
+		var opt: Dictionary = options[i]
+		btn.text = GameState.format_placeholders(String(opt.get("text","")))
+		btn.disabled = false
+		btn.show()
 
-	# 1) Emit a signal any controller can listen to
-	emit_signal("choices_requested", _pending_choice_options, _pending_max_select)
+		btn.pressed.connect(func() -> void:
+			var opt_id := String(opt.get("id",""))
+			if selected_ids.has(opt_id):
+				return
+			selected_ids.append(opt_id)
+			btn.disabled = true
+			if selected_ids.size() == max_select:
+				if caller and caller.has_method("on_choices_selected"):
+					caller.on_choices_selected(selected_ids)
+				choices_box.hide()
+				line_index += 1
+				display_next()
+		)
 
-	# 2) Also normalize into an action for controllers that prefer on_dialogue_action
-	if caller and caller.has_method("on_dialogue_action"):
-		var normalized := {
-			"action": "show_choices",
-			"options": _pending_choice_options,
-			"max_select": _pending_max_select
-		}
-		caller.call("on_dialogue_action", normalized)
-
-	# Do NOT advance here; wait for apply_choices()/receive_choice()
-
-# Call this from your controller after the player picks via CharacterChoiceButtons
-func apply_choices(selected: Array) -> void:
-	if not _waiting_for_external_choice:
-		return
-	_waiting_for_external_choice = false
-
-	# Preserve old contract if your controller relies on it
-	if caller and caller.has_method("on_choices_selected"):
-		caller.call("on_choices_selected", selected)
-
-	# Continue the dialogue after the choice line
-	line_index += 1
-	display_next()
-
-# Alias for controllers that call "receive_choice(...)"
-func receive_choice(selected: Array) -> void:
-	apply_choices(selected)
-
-# ---------- Portraits ----------
 func _update_portrait(speaker: String) -> void:
 	var key := speaker.strip_edges().to_lower()
 	if portraits.has(key):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://8qjoeeq8i2cx"]
+[gd_scene load_steps=31 format=3 uid="uid://8qjoeeq8i2cx"]
 
 [ext_resource type="Texture2D" uid="uid://c480naqhjld4" path="res://Images/help.png" id="1_8ambu"]
 [ext_resource type="Script" uid="uid://dqst4g8s2rj12" path="res://Scenes/Reusable/CameraPager.gd" id="2_247o8"]
@@ -15,13 +15,13 @@
 [ext_resource type="Theme" uid="uid://bh02j7iutoche" path="res://Help2PADDING.tres" id="12_h4m7x"]
 [ext_resource type="Theme" uid="uid://u70vyp214osp" path="res://help_btns.tres" id="12_ksa5r"]
 [ext_resource type="Script" uid="uid://d1tgqoi4sx8j5" path="res://Scenes/Reusable/TriToggleManager.gd" id="14_5ifyu"]
-[ext_resource type="Texture2D" uid="uid://dxxvys8kqhvac" path="res://Images/TutorialIMG/Screenshot 2025-09-18 164448.png" id="16_fs7fw"]
+[ext_resource type="Texture2D" uid="uid://7ovsij24jbc7" path="res://Images/Screenshot 2025-09-09 180956.png" id="16_7ytw6"]
 [ext_resource type="Texture2D" uid="uid://dxh1g3udcnrc6" path="res://Icons/Screenshot 2025-09-09 183205.png" id="17_jwlx7"]
 [ext_resource type="Texture2D" uid="uid://4ljkjxp2e14s" path="res://Icons/Screenshot 2025-09-09 183329.png" id="18_gkd0y"]
-[ext_resource type="Texture2D" uid="uid://bbveb2axs11t1" path="res://Images/TutorialIMG/Screenshot 2025-09-18 164500.png" id="19_fs7fw"]
+[ext_resource type="Texture2D" uid="uid://cxsdrqkwg2tr" path="res://Images/Screenshot 2025-09-09 183614.png" id="19_r25su"]
 [ext_resource type="Texture2D" uid="uid://bm5n0sbljhou4" path="res://Images/Secretary_office_so_sekretarka.png" id="20_jwlx7"]
-[ext_resource type="Texture2D" uid="uid://ctrihm0602ooo" path="res://Images/TutorialIMG/Screenshot 2025-09-19 003403.png" id="21_fs7fw"]
-[ext_resource type="Texture2D" uid="uid://cihp6lbn0vdfe" path="res://Images/TutorialIMG/Screenshot 2025-09-19 001827.png" id="22_mvse3"]
+[ext_resource type="Texture2D" uid="uid://415jn4b2ovco" path="res://Images/Screenshot 2025-09-09 221423.png" id="21_gkd0y"]
+[ext_resource type="Texture2D" uid="uid://cy715biwdnwhn" path="res://Images/Screenshot 2025-09-09 224313.png" id="22_hwblq"]
 [ext_resource type="Texture2D" uid="uid://dpmwdbsr8ywto" path="res://Images/Screenshot 2025-09-09 230138.png" id="23_1bc6l"]
 [ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="24_1bc6l"]
 [ext_resource type="Script" uid="uid://bnmcphtomfn43" path="res://Scenes/Reusable/button.gd" id="25_fs7fw"]
@@ -69,39 +69,6 @@ expand_margin_left = 3.0
 expand_margin_top = 3.0
 expand_margin_right = 3.0
 expand_margin_bottom = 3.0
-
-[sub_resource type="Gradient" id="Gradient_fs7fw"]
-offsets = PackedFloat32Array(0, 0.811024, 1)
-colors = PackedColorArray(0.699653, 0.699653, 0.699653, 1, 0.787759, 0.787759, 0.787759, 1, 0.68, 0.68, 0.68, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6e7eo"]
-gradient = SubResource("Gradient_fs7fw")
-use_hdr = true
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(0.5, 1)
-metadata/_snap_count = 2
-metadata/_snap_enabled = true
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mvse3"]
-texture = SubResource("GradientTexture2D_6e7eo")
-modulate_color = Color(1, 0.623833, 0.39, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xsp5n"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 10
-border_width_top = 10
-border_width_right = 10
-border_width_bottom = 10
-border_color = Color(0.61074, 0.236907, 0.0372339, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
-expand_margin_left = 10.0
-expand_margin_top = 10.0
-expand_margin_right = 9.0
-expand_margin_bottom = 10.0
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -326,6 +293,109 @@ text = "2/8"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="PROP" type="PanelContainer" parent="Page2"]
+z_index = 100
+custom_minimum_size = Vector2(1000, 90)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -529.0
+offset_top = -390.0
+offset_right = 509.0
+offset_bottom = -290.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_8ha71")
+
+[node name="Contents" type="VBoxContainer" parent="Page2/PROP"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Page2/PROP/Contents"]
+layout_mode = 2
+
+[node name="spacer" type="Control" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="TimeIcon" type="TextureRect" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("9_h4m7x")
+expand_mode = 1
+
+[node name="spacer5" type="Control" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Time" type="RichTextLabel" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(180, 80)
+layout_mode = 2
+theme = ExtResource("10_247o8")
+bbcode_enabled = true
+text = "19:00"
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="spacer6" type="Control" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Day" type="RichTextLabel" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(230, 92)
+layout_mode = 2
+theme = ExtResource("10_247o8")
+theme_override_fonts/normal_font = ExtResource("2_audo3")
+theme_override_font_sizes/normal_font_size = 80
+bbcode_enabled = true
+text = "DAY 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="spacer3" type="Control" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Value" type="RichTextLabel" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(180, 90)
+layout_mode = 2
+theme = ExtResource("10_247o8")
+text = "1000"
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="spacer4" type="Control" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="money" type="TextureRect" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+texture = ExtResource("11_5ifyu")
+expand_mode = 1
+
+[node name="spacer2" type="Control" parent="Page2/PROP/Contents/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
 [node name="Padding" type="PanelContainer" parent="Page2"]
 layout_mode = 1
 anchors_preset = -1
@@ -461,110 +531,6 @@ theme = ExtResource("12_ksa5r")
 toggle_mode = true
 text = "Money"
 
-[node name="Prop" type="PanelContainer" parent="Page2"]
-z_index = 100
-custom_minimum_size = Vector2(1000, 90)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.231771
-anchor_top = 0.140741
-anchor_right = 0.768229
-anchor_bottom = 0.231481
-grow_horizontal = 2
-theme = ExtResource("8_8ha71")
-theme_override_styles/panel = SubResource("StyleBoxTexture_mvse3")
-metadata/_edit_use_anchors_ = true
-
-[node name="Panel" type="Panel" parent="Page2/Prop"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xsp5n")
-
-[node name="Contents" type="VBoxContainer" parent="Page2/Prop"]
-custom_minimum_size = Vector2(0, 90)
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Page2/Prop/Contents"]
-layout_mode = 2
-
-[node name="spacer" type="Control" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-
-[node name="TimeIcon" type="TextureRect" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(100, 80)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("9_h4m7x")
-expand_mode = 1
-
-[node name="spacer5" type="Control" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-
-[node name="Time" type="RichTextLabel" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(180, 80)
-layout_mode = 2
-theme = ExtResource("10_247o8")
-bbcode_enabled = true
-text = "19:00"
-autowrap_mode = 0
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="spacer6" type="Control" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-
-[node name="Day" type="RichTextLabel" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(230, 92)
-layout_mode = 2
-theme = ExtResource("10_247o8")
-theme_override_fonts/normal_font = ExtResource("2_audo3")
-theme_override_font_sizes/normal_font_size = 80
-bbcode_enabled = true
-text = "DAY 1"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="spacer3" type="Control" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-
-[node name="Value" type="RichTextLabel" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(180, 90)
-layout_mode = 2
-theme = ExtResource("10_247o8")
-text = "1000"
-autowrap_mode = 0
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="spacer4" type="Control" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-
-[node name="money" type="TextureRect" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-texture = ExtResource("11_5ifyu")
-expand_mode = 1
-
-[node name="spacer2" type="Control" parent="Page2/Prop/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-
 [node name="Page3" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -664,7 +630,7 @@ offset_left = 131.0
 offset_top = 199.0
 offset_right = 1080.0
 offset_bottom = 896.0
-texture = ExtResource("16_fs7fw")
+texture = ExtResource("16_7ytw6")
 expand_mode = 1
 
 [node name="Padding" type="PanelContainer" parent="Page3"]
@@ -839,7 +805,7 @@ offset_left = -4.08
 offset_top = 0.0799866
 offset_right = 4.03992
 offset_bottom = 4.83997
-texture = ExtResource("19_fs7fw")
+texture = ExtResource("19_r25su")
 expand_mode = 1
 
 [node name="Padding2" type="PanelContainer" parent="Page4"]
@@ -1013,7 +979,7 @@ texture = ExtResource("20_jwlx7")
 [node name="Sprite2D2" type="Sprite2D" parent="Page5"]
 position = Vector2(1312, 465.125)
 scale = Vector2(0.500261, 0.502085)
-texture = ExtResource("21_fs7fw")
+texture = ExtResource("21_gkd0y")
 
 [node name="Padding" type="PanelContainer" parent="Page5"]
 layout_mode = 1
@@ -1179,9 +1145,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="pic2" type="Sprite2D" parent="Page6"]
-position = Vector2(1377.5, 512.745)
-scale = Vector2(0.451798, 0.594522)
-texture = ExtResource("22_mvse3")
+position = Vector2(1373.38, 512)
+scale = Vector2(0.6827, 0.595903)
+texture = ExtResource("22_hwblq")
 
 [node name="Padding" type="PanelContainer" parent="Page6"]
 layout_mode = 1

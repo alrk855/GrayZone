@@ -17,13 +17,16 @@ const WAKEUP_JSON := "res://Data/Home/WakeUp_Reminder.json"
 const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
 
 var _panel: Control = null
-var _ui_was_visible: bool = false
 
 # Keys used by Study scene
 const KEY_STUDY_MODE: String    = "__study_mode"
 const KEY_SUBJECT_PICK: String  = "__study_subject_pick"
 const KEY_RETURN_SCENE: String  = "__study_return_scene"
 const KEY_STUDY_SESSION: String = "__study_session_index"
+
+# Fade overlay
+var _fade_rect: ColorRect = null
+var _ui_was_visible: bool = false
 
 func _ready() -> void:
 	GameState.location = "Home"
@@ -58,7 +61,8 @@ func show_home_menu() -> void:
 	if not in_midnight:
 		opts.append({"id":"city","text":"City"})
 
-	# During midnight window, Sleep should only appear under Activities.
+	# Per request, during midnight window Sleep should only appear under Activities.
+	# So do not show a top-level Sleep when in midnight window.
 	if not in_midnight:
 		if GameState.time >= SLEEP_AVAILABLE_MIN and not GameState.is_time_frozen():
 			opts.append({"id":"sleep","text":"Sleep"})
@@ -102,6 +106,7 @@ func _show_activities_menu() -> void:
 func _on_activities_choice(id: String) -> void:
 	match id:
 		"sleep_force":
+			# Force sleep regardless of time-of-day/frozen/paused
 			await _do_sleep(true)
 		"study":
 			_show_study_menu()
@@ -233,6 +238,7 @@ func _get_available_days_for_subject(subject_raw: String) -> Array[int]:
 func _show_schoolwork_menu() -> void:
 	var opts: Array = []
 	if _is_midnight_window():
+		# Midnight window → block schoolwork entirely
 		opts.append({"id":"back","text":"Back"})
 		_show_choices(opts, Callable(self,"_on_schoolwork_choice"))
 		return
@@ -275,48 +281,50 @@ func _clear_panel() -> void:
 	_panel = null
 
 func _change_scene(path: String) -> void:
+	# During midnight window (00:00–01:00), do not leave Home
 	if _is_midnight_window():
 		return
 	_clear_panel()
 	if path != "" and ResourceLoader.exists(path):
 		get_tree().change_scene_to_file(path)
 
-# --------------- Sleep with Fade singleton ---------------
-func _fade_out(dur: float) -> void:
-	var f := get_node_or_null("/root/Fade")
-	if f:
-		if f.has_method("out"):
-			await f.out(dur)
-			return
-		if f.has_method("fade_out"):
-			await f.fade_out(dur)
-			return
+# --------------- Fade + Sleep ----------------
+func _ensure_fader() -> void:
+	if _fade_rect:
+		return
+	_fade_rect = ColorRect.new()
+	_fade_rect.color = Color(0, 0, 0, 1)
+	_fade_rect.modulate = Color(1, 1, 1, 0)
+	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_fade_rect.z_index = 100
+	add_child(_fade_rect)
 
-func _fade_in(dur: float) -> void:
-	var f := get_node_or_null("/root/Fade")
-	if f:
-		if f.has_method("in"):
-			await f.in(dur)
-			return
-		if f.has_method("fade_in"):
-			await f.fade_in(dur)
-			return
+func _fade_to(alpha: float, duration: float) -> void:
+	_ensure_fader()
+	var tw := create_tween()
+	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
+	await tw.finished
 
 func _block_ui(lock: bool) -> void:
-	_ui_was_visible = _panel != null and _panel.visible
+	_ensure_fader()
 	if lock:
+		_ui_was_visible = _panel != null and _panel.visible
 		if _panel:
 			_panel.visible = false
 		if home_button:
 			home_button.disabled = true
+		_fade_rect.mouse_filter = Control.MOUSE_FILTER_STOP
 	else:
 		if home_button:
 			home_button.disabled = false
 		if _panel and _ui_was_visible:
 			_panel.visible = true
 		_ui_was_visible = false
+		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _do_sleep(force: bool) -> void:
+	# When force=true (midnight window), bypass normal gating and frozen checks
 	if not force:
 		if GameState.is_time_frozen():
 			return
@@ -324,20 +332,21 @@ func _do_sleep(force: bool) -> void:
 			return
 
 	_block_ui(true)
-	await _fade_out(0.35)
+	await _fade_to(1.0, 0.4)
 
-	# 👉 Move time FIRST so HUD updates immediately
+	# Apply sleep (GameState handles post-23:00 penalty + resumes ticking)
 	GameState.sleep_now()
 
-	await _fade_in(0.6)
+	await _fade_to(0.0, 0.6)
 	_block_ui(false)
 
-	# Optional wake-up nudge (non-blocking preferred)
+	# Optional wake-up nudge
 	if FileAccess.file_exists(WAKEUP_JSON):
-		var dm := get_node_or_null("/root/DialogueManager")
+		var dm = get_node_or_null("/root/DialogueManager")
 		if dm and dm.has_method("start_dialogue"):
 			dm.start_dialogue(WAKEUP_JSON, self)
-			
+
+# ——— availability logic ———
 func _is_project_available_now() -> bool:
 	if GameState.has_flag("project_submitted"):
 		return false
