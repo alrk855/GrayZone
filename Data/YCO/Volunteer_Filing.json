@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "id": "Volunteer_Filing"
+  },
+  "lines": [
+    {
+      "speaker": "Narrator",
+      "text": "Dusty folders. Faded labels. You reorganize the archive until the alphabet finally makes sense again."
+    },
+    {
+      "speaker": "Narrator",
+      "text": "Someone leaves a juice box on your desk. Small mercies."
+    },
+    {
+      "action": [
+        {
+          "type": "adjust_time",
+          "minutes": 60
+        }
+      ]
+    }
+  ]
+}

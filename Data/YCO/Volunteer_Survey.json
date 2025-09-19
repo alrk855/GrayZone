@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "id": "Volunteer_Survey"
+  },
+  "lines": [
+    {
+      "speaker": "Narrator",
+      "text": "A youth feedback survey drags on. You help collect responses and stack clipboards in neat rows."
+    },
+    {
+      "speaker": "Narrator",
+      "text": "You try not to fall asleep. You succeed. Barely."
+    },
+    {
+      "action": [
+        {
+          "type": "adjust_time",
+          "minutes": 60
+        }
+      ]
+    }
+  ]
+}

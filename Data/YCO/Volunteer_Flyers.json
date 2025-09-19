@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "id": "Volunteer_Flyers"
+  },
+  "lines": [
+    {
+      "speaker": "Narrator",
+      "text": "You spend an hour handing out flyers about civic engagement. A few people smile; most ignore you."
+    },
+    {
+      "speaker": "Narrator",
+      "text": "Your feet ache, but you feel a tiny ripple of good done."
+    },
+    {
+      "action": [
+        {
+          "type": "adjust_time",
+          "minutes": 60
+        }
+      ]
+    }
+  ]
+}
