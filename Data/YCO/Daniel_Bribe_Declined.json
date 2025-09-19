@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "id": "Daniel_Bribe_Declined"
+  },
+  "post_time_cost_minutes": 2,
+  "lines": [
+    {
+      "speaker": "Daniel",
+      "text": "If you’re not willing to pay, then forget the letter."
+    },
+    {
+      "speaker": "Daniel",
+      "text": "Come back if you change your mind."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "id": "Daniel_Bribe_Granted"
+  },
+  "post_time_cost_minutes": 3,
+  "lines": [
+    {
+      "speaker": "Daniel",
+      "text": "Alright. Here’s your letter."
+    },
+    {
+      "speaker": "Daniel",
+      "text": "Let’s keep this between us."
+    }
+  ]
+}

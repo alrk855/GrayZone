@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "id": "Daniel_Bribe_NoMoney"
+  },
+  "post_time_cost_minutes": 1,
+  "lines": [
+    {
+      "speaker": "Daniel",
+      "text": "You don’t have the funds. It’s {price} ден. Come back when you do."
+    }
+  ]
+}

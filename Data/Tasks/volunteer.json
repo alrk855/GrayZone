@@ -7,7 +7,6 @@
 	{ "id": "visit_office", "text": "Visit the Youth Civil Office" },
 	{ "id": "talk_daniel", "text": "Talk to Daniel the supervisor" },
 	{ "id": "accept", "text": "Accept volunteering task" },
-	{ "id": "shifts_0", "text": "Complete volunteering shifts (0/3)" },
 	{ "id": "shifts_1", "text": "Complete volunteering shifts (1/3)" },
 	{ "id": "shifts_2", "text": "Complete volunteering shifts (2/3)" },
 	{ "id": "shifts_3", "text": "Complete volunteering shifts (3/3) — Talk to Daniel" },

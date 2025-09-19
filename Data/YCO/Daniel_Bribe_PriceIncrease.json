@@ -1,0 +1,16 @@
+{
+  "meta": {
+	"id": "Daniel_Bribe_PriceIncrease"
+  },
+  "post_time_cost_minutes": 1,
+  "lines": [
+	{
+	  "speaker": "Daniel",
+	  "text": "Last time you refused. Price’s gone up to 1500 ден."
+	},
+	{
+	  "speaker": "Daniel",
+	  "text": "Do you want it or not?"
+	}
+  ]
+}
