@@ -4,8 +4,8 @@
   "location": "Classroom",
   "optional": true,
   "steps": [
-	{ "id": "checks", "text": "Check the classroom between 17:00 and 17:45on Days 3 or 4" },
-	{ "id": "buy_subj1", "text": "Bought the Finals Answers [{subject1}] (optional)" },
-	{ "id": "buy_subj2", "text": "Bought the Finals Answers [{subject2}] (optional)" },
+	{ "id": "checks", "text": "Check the classroom between 17:00 and 17:45 on Days 3 or 4" },
+	{ "id": "buy_subj1", "text": "Bought the First Finals Answers" },
+	{ "id": "buy_subj2", "text": "Bought the Second Finals Answers" },
   ]
 }

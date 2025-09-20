@@ -1,20 +1,20 @@
 {
   "id": "Classroom_Morning_Late",
   "lines": [
-    {
-      "speaker": "Homeroom Teacher",
-      "text": "Nice of you to join us. Hopefully, your future employer won’t mind tardiness either."
-    },
-    {
-      "speaker": "Narrator",
-      "text": "You quietly take your seat and try to catch up."
-    },
-    {
-      "action": "adjust_reputation",
-      "value": -5
-    },
-    {
-      "action": "classroom_morning_complete"
-    }
+	{
+	  "speaker": "Homeroom Teacher",
+	  "text": "Nice of you to join us. Hopefully, your future employer won’t mind tardiness either."
+	},
+	{
+	  "speaker": "Narrator",
+	  "text": "You quietly take your seat and try to catch up."
+	},
+	{
+	  "action": "adjust_reputation",
+	  "value": -5
+	},
+	{
+	  "action": "classroom_morning_complete"
+	}
   ]
 }

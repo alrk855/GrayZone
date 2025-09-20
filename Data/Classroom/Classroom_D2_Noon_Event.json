@@ -7,7 +7,7 @@
 	},
 	{
 	  "speaker": "Narrator",
-	  "text": "(She straightens a few papers.)"
+	  "text": "(He straightens a few papers.)"
 	},
 	{
 	  "speaker": "Homeroom Teacher",
@@ -28,7 +28,6 @@
 	{
 	  "action": "set_flags",
 	  "flags": [
-		"teacher_event_done",
 		"yco_interaction_done"
 	  ]
 	},

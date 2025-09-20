@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://vgvcoj82tega"]
+[gd_scene load_steps=11 format=3 uid="uid://vgvcoj82tega"]
 
 [ext_resource type="Script" uid="uid://7vfbgf40e6he" path="res://Scenes/Reusable/Map/classroom.gd" id="1_yveh8"]
 [ext_resource type="Texture2D" uid="uid://b2ewotw87jjtg" path="res://Images/classroom.png" id="2_gabx6"]
 [ext_resource type="Texture2D" uid="uid://cm325m6fyve02" path="res://Images/classroom_profesor_kratok.png" id="2_ywqm7"]
 [ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_yhsr7"]
+[ext_resource type="Texture2D" uid="uid://cr0qmn5yqxic8" path="res://Images/classroom_cistac_bez_list.png" id="4_n5es2"]
+[ext_resource type="Texture2D" uid="uid://d3bm5hulnvfji" path="res://Images/classroom_cistac_so_list.png" id="5_osm7r"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yhsr7"]
 
@@ -25,9 +27,10 @@ background_texrect_path = NodePath("TextureRect")
 teacher_button_path = NodePath("TextureRect/Teacher")
 janitor_button_path = NodePath("TextureRect/Janitor")
 back_button_path = NodePath("TextureRect/Back")
-choice_panel_scene = null
 bg_teacher_morning = ExtResource("2_ywqm7")
 bg_empty = ExtResource("2_gabx6")
+bg_janitor_cleaning = ExtResource("4_n5es2")
+bg_janitor_papers = ExtResource("5_osm7r")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
