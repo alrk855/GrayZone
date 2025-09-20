@@ -4,8 +4,7 @@
   "location": "Classroom",
   "optional": true,
   "steps": [
-	{ "id": "janitor_line", "text": "Janitor: “Try the classroom later this week… if you prefer answer sheets over books.”" },
-	{ "id": "checks", "text": "Check the classroom before closing hours (0/3 attempts over the week)" },
+	{ "id": "checks", "text": "Check the classroom between 17:00 and 17:45on Days 3 or 4" },
 	{ "id": "buy_subj1", "text": "Bought the Finals Answers [{subject1}] (optional)" },
 	{ "id": "buy_subj2", "text": "Bought the Finals Answers [{subject2}] (optional)" },
   ]

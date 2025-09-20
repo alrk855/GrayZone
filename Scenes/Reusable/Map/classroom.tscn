@@ -25,6 +25,7 @@ background_texrect_path = NodePath("TextureRect")
 teacher_button_path = NodePath("TextureRect/Teacher")
 janitor_button_path = NodePath("TextureRect/Janitor")
 back_button_path = NodePath("TextureRect/Back")
+choice_panel_scene = null
 bg_teacher_morning = ExtResource("2_ywqm7")
 bg_empty = ExtResource("2_gabx6")
 

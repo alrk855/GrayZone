@@ -1,4 +1,4 @@
-extends Control 
+extends Control  
 
 # ------------------------ Node Paths ------------------------
 @export var background_texrect_path: NodePath = ^"background"
@@ -46,13 +46,19 @@ const J_JANITOR_CONFIRM                 := "res://Data/Classroom/Janitor_Confirm
 const J_JANITOR_D4_FALLBACK             := "res://Data/Classroom/Janitor_D4_Fallback.json"
 
 # ------------------------ Time Gates ------------------------
+const T_07_00 := 7 * 60
 const T_08_00 := 8 * 60
 const T_08_15 := 8 * 60 + 15
 const T_08_30 := 8 * 60 + 30
 const T_12_30 := 12 * 60 + 30
 const T_14_30 := 14 * 60 + 30
+const T_15_00 := 15 * 60
 const T_17_00 := 17 * 60
 const T_17_45 := 17 * 60 + 45
+
+# catch-up window (requested)
+const CATCHUP_START := T_07_00
+const CATCHUP_END   := T_15_00
 
 # ------------------------ Internals ------------------------
 var _bg: TextureRect
@@ -99,6 +105,13 @@ const TASK_VOLUNTEER              := "Volunteer for Community Work"
 const TASK_TRANSCRIPT             := "transcript"
 const SCHOOL_SCENE                := "res://Scenes/Reusable/Map/School.tscn"
 
+# ---------- Classroom Answers task ----------
+const TASK_CLASSROOM_ANS          := "Classroom Answers Lead"
+const K_CLASSROOM_CHECK_DONE      := "__CLASSROOM_ANS_CHECK_DONE"  # one-time guard for 'checks' step
+
+# Track what was bought (s1/s2) so we can update steps after JSON
+var _last_bought_flag: String = ""
+
 func _ready() -> void:
 	GameState.location = "Classroom"
 
@@ -119,6 +132,15 @@ func _ready() -> void:
 
 	_update_presence_and_background()
 	_handle_entry_flow()
+
+	# Auto-mark "checks" if we're already within 17:00–17:45 on D3/4, and listen while here
+	_maybe_mark_classroom_answers_check()
+	if not GameState.time_changed.is_connected(Callable(self, "_on_time_changed_classroom")):
+		GameState.time_changed.connect(_on_time_changed_classroom)
+
+func _exit_tree() -> void:
+	if GameState.time_changed.is_connected(Callable(self, "_on_time_changed_classroom")):
+		GameState.time_changed.disconnect(_on_time_changed_classroom)
 
 # ------------------------ Presence / Background ------------------------
 func _update_presence_and_background() -> void:
@@ -142,10 +164,7 @@ func _update_presence_and_background() -> void:
 	if d >= 2 and d <= 4:
 		# before 12:30 show teacher bg (also before 08:00)
 		if t < T_12_30:
-			if bg_teacher_morning:
-				tex = bg_teacher_morning
-			else:
-				tex = bg_empty
+			tex = bg_teacher_morning if bg_teacher_morning else bg_empty
 			show_teacher_btn = false
 			show_janitor_btn = false
 			show_back = false
@@ -213,7 +232,7 @@ func _handle_entry_flow() -> void:
 				GameState.adjust_reputation(-10)
 				GameState.set_flag(F_SKIP_PENALIZED_PREFIX + str(prev), true)
 				GameState.set_int(F_MISSED_CNT, GameState.get_int(F_MISSED_CNT, 0) + 1)
-				# No immediate catch-up JSON here; it will show in today's branch below
+				# NOTE: do NOT start catch-up JSON here
 
 	# Days 2–4 morning logic
 	if d >= 2 and d <= 4:
@@ -230,16 +249,13 @@ func _handle_entry_flow() -> void:
 		if t >= T_08_00 and t < T_12_30:
 			var attended_key := F_ATTENDED_PREFIX + str(d)
 			if GameState.has_flag(attended_key):
-				return
-
-			if t < T_08_15:
+				pass
+			elif t < T_08_15:
 				GameState.adjust_reputation(+5)
 				GameState.set_flag(attended_key, true)
 				_start_and_chain(J_D2_MORNING_ON_TIME, "_after_morning_dialogue")
 				return
-
-			if t >= T_08_15 and t < T_08_30:
-				# Late is flavor-only; light rep effect
+			elif t >= T_08_15 and t < T_08_30:
 				var late_key := F_LATE_PENALIZED_PREFIX + str(d)
 				if not GameState.has_flag(late_key):
 					GameState.adjust_reputation(-5)
@@ -247,7 +263,6 @@ func _handle_entry_flow() -> void:
 				GameState.set_flag(attended_key, true)
 				_start_and_chain(J_D2_MORNING_LATE, "_after_morning_dialogue")
 				return
-
 			# 08:30–12:30 locked by School scene
 			return
 
@@ -259,31 +274,31 @@ func _handle_entry_flow() -> void:
 				GameState.adjust_reputation(-10)
 				GameState.set_flag(skip_pen_key, true)
 				GameState.set_int(F_MISSED_CNT, GameState.get_int(F_MISSED_CNT, 0) + 1)
-				# fall through to catch-up JSON below
+				# fall through; catch-up JSON may run later (see below)
 
-	# Catch-up branch (skip-only): show once per day if you've missed at least one
+	# Catch-up branch (skip-only): **only** within 07:00–15:00
 	if d >= 2 and d <= 4:
 		var shown_key := F_CATCHUP_SHOWN_PREFIX + str(d)
 		if not GameState.has_flag(shown_key):
 			var total_skips := GameState.get_int(F_MISSED_CNT, 0)
 			if total_skips >= 1:
-				GameState.set_flag(shown_key, true)
-				if total_skips == 1:
-					_start_and_chain(J_CATCHUP_FIRST_SKIP, "_after_catchup")
+				if GameState.time >= CATCHUP_START and GameState.time < CATCHUP_END:
+					GameState.set_flag(shown_key, true)
+					# Force teacher background while this runs
+					_apply_vis(bg_teacher_morning if bg_teacher_morning else bg_empty, false, false, true)
+					if total_skips == 1:
+						_start_and_chain(J_CATCHUP_FIRST_SKIP, "_after_catchup")
+					else:
+						_start_and_chain(J_CATCHUP_REPEAT_SKIP, "_after_catchup")
 					return
-				else:
-					_start_and_chain(J_CATCHUP_REPEAT_SKIP, "_after_catchup")
-					return
+				# outside catch-up hours → do nothing now
 
 # after the morning (on-time/late) JSON finishes
 func _after_morning_dialogue() -> void:
-	# jump to 12:30
 	if GameState.time < T_12_30:
 		GameState.adjust_time(T_12_30 - GameState.time)
 
-	# Day 2 → noon announcement (only once)
 	if GameState.day == 2 and not GameState.has_flag(F_NOON_DAY2_DONE):
-		# FLASH via global fade (out then in)
 		await fade.fade_out(1.0)
 		await fade.fade_in(1.0)
 		_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "_after_day2_noon")
@@ -341,12 +356,10 @@ func _on_teacher_choice(id: String) -> void:
 
 # ----- Doc Review flow -----
 func _try_doc_review() -> void:
-	# banned?
 	if GameState.has_flag(F_DOC_REVIEW_BANNED):
 		_start_and_chain(J_DOC_REVIEW_BANNED, "")
 		return
 
-	# Need both tasks started (secretary met + some progress)
 	var has_both_started := false
 	var sec_met := GameState.has_flag("secretary_met")
 	if sec_met:
@@ -358,27 +371,22 @@ func _try_doc_review() -> void:
 		_start_and_chain(J_DOC_NEED_BOTH, "")
 		return
 
-	# Need both printed
 	var printed_cv := GameState.has_flag(F_PRINTED_CV)
 	var printed_ml := GameState.has_flag(F_PRINTED_MOTIVATION)
 	if not printed_cv or not printed_ml:
 		_start_and_chain(J_DOC_NEED_PRINT, "")
 		return
 
-	# Resubmit path (second chance, rewritten + reprinted)
 	if GameState.has_flag(F_MLETTER_REWRITE_REQ) and printed_ml and GameState.has_flag(F_MLETTER_SECOND_CHANCE):
 		_start_and_chain(J_DOC_RESUBMIT_ACCEPTED, "_after_resubmit_accept")
 		return
 
-	# Normal review: CV quick pass, then ML suspicion prompt
 	_start_and_chain(J_DOC_START_CV, "_after_cv_review")
 
 func _after_cv_review() -> void:
-	# roll 50% suspicion
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	_doc_suspicious_this_review = rng.randi() % 100 < 50
-
 	_start_and_chain(J_DOC_SUSPICION_PROMPT, "_show_doc_suspicion_choices")
 
 func _show_doc_suspicion_choices() -> void:
@@ -394,13 +402,10 @@ func _on_doc_suspicion_choice(id: String) -> void:
 	_clear_panel()
 	if id == "admit":
 		GameState.adjust_integrity(+3)
-		# require rewrite + reprint, give second chance
 		GameState.set_flag(F_MLETTER_REWRITE_REQ, true)
 		GameState.set_flag(F_MLETTER_SECOND_CHANCE, true)
-		# clear printed flag so they must print again
 		if GameState.has_flag(F_PRINTED_MOTIVATION):
 			GameState.clear_flag(F_PRINTED_MOTIVATION)
-		# Try to reset motivation task progress if API available
 		if GameState.has_method("reset_task_progress"):
 			GameState.reset_task_progress("motivation")
 		elif GameState.has_method("reset_task"):
@@ -413,24 +418,20 @@ func _on_doc_suspicion_choice(id: String) -> void:
 	if id == "lie":
 		GameState.adjust_integrity(-5)
 		if _doc_suspicious_this_review:
-			# Caught lying → banned + extra rep hit, locked into AI route
 			GameState.adjust_reputation(-10)
 			GameState.set_flag(F_DOC_REVIEW_BANNED, true)
 			GameState.set_flag(F_MLETTER_AI, true)
 			_start_and_chain(J_DOC_LIE_CAUGHT, "")
 			return
 		else:
-			# Not suspected → passes as "excellent"
 			_start_and_chain(J_DOC_LIE_PASSED, "")
 			return
 
-# resubmit accepted → consume second chance, clear rewrite requirement, mark not-AI
 func _after_resubmit_accept() -> void:
 	if GameState.has_flag(F_MLETTER_REWRITE_REQ):
 		GameState.clear_flag(F_MLETTER_REWRITE_REQ)
 	if GameState.has_flag(F_MLETTER_SECOND_CHANCE):
 		GameState.clear_flag(F_MLETTER_SECOND_CHANCE)
-	# ensure AI flag is not forced if player rewrote genuinely
 	if GameState.has_flag(F_MLETTER_AI):
 		GameState.clear_flag(F_MLETTER_AI)
 
@@ -444,12 +445,7 @@ func _on_janitor_pressed() -> void:
 		return
 
 	var has_tip := GameState.has_flag(F_MARKO_TIP)
-	var can_deal := false
-	if has_tip:
-		can_deal = true
-	else:
-		if GameState.reputation < 30:
-			can_deal = true
+	var can_deal := has_tip or (GameState.reputation < 30)
 
 	if not can_deal:
 		_start_and_chain(J_JANITOR_LOWREP_INTRO, "")
@@ -493,8 +489,6 @@ func _on_janitor_choice(id: String) -> void:
 		bought_flag = F_ANS_SUBJ1
 	elif id == "buy_s2":
 		bought_flag = F_ANS_SUBJ2
-	else:
-		bought_flag = ""
 
 	if bought_flag == "":
 		return
@@ -506,12 +500,41 @@ func _on_janitor_choice(id: String) -> void:
 	GameState.add_money(-price)
 	GameState.adjust_integrity(-10)
 	GameState.set_flag(bought_flag, true)
-	_start_and_chain(J_JANITOR_CONFIRM, "")
 
+	_last_bought_flag = bought_flag
+	_start_and_chain(J_JANITOR_CONFIRM, "_after_janitor_confirm")
+	_update_presence_and_background()
+
+func _after_janitor_confirm() -> void:
+	# ensure the “checks” step is credited if within D3/D4 17:00–17:45
+	_maybe_mark_classroom_answers_check()
+
+	# Advance purchase steps in 'Classroom Answers Lead'
+	GameState.ensure_task(TASK_CLASSROOM_ANS)
+
+	var prog := GameState.get_task_progress(TASK_CLASSROOM_ANS)
+	if prog < 1:
+		GameState.update_task_step(TASK_CLASSROOM_ANS)  # 'checks' baseline
+		prog = GameState.get_task_progress(TASK_CLASSROOM_ANS)
+
+	var have_s1 := GameState.has_flag(F_ANS_SUBJ1)
+	var have_s2 := GameState.has_flag(F_ANS_SUBJ2)
+
+	var unique_buys := 0
+	if have_s1:
+		unique_buys += 1
+	if have_s2:
+		unique_buys += 1
+
+	var target := 1 + unique_buys
+	if target > prog:
+		GameState.ensure_task_progress_at_least(TASK_CLASSROOM_ANS, target)
+
+	# jump to 17:45 AFTER JSON if earlier
 	if GameState.time < T_17_45:
-		var to_1745 := T_17_45 - GameState.time
-		if to_1745 > 0:
-			GameState.adjust_time(to_1745)
+		var delta := T_17_45 - GameState.time
+		if delta > 0:
+			GameState.adjust_time(delta)
 
 	_update_presence_and_background()
 
@@ -527,7 +550,6 @@ func _go_school() -> void:
 		_btn_back.visible = false
 	_clear_panel()
 	await get_tree().process_frame
-	# Global fade-based scene change
 	if ResourceLoader.exists(SCHOOL_SCENE):
 		await fade.fade_to_scene(SCHOOL_SCENE, 0.4, 0.35)
 	_nav_pending = false
@@ -550,3 +572,18 @@ func _on_dm_finished(_id: String) -> void:
 	_next_cb = ""
 	if cb != "":
 		call_deferred(cb)
+
+# ---------- Time-window auto marker for "Classroom Answers Lead" ----------
+func _on_time_changed_classroom(_new_time: int, _new_day: int) -> void:
+	_maybe_mark_classroom_answers_check()
+
+func _maybe_mark_classroom_answers_check() -> void:
+	if GameState.has_flag(K_CLASSROOM_CHECK_DONE):
+		return
+	var d := GameState.day
+	var t := GameState.time
+	if (d == 3 or d == 4) and t >= T_17_00 and t < T_17_45:
+		GameState.ensure_task(TASK_CLASSROOM_ANS)
+		GameState.update_task_step(TASK_CLASSROOM_ANS)
+		GameState.set_flag(K_CLASSROOM_CHECK_DONE, true)
+		print("[Task] Classroom Answers Lead — 'checks' completed at %02d:%02d on Day %d" % [t/60, t%60, d])

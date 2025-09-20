@@ -1,10 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://dqtg23x1jiecc"]
+[gd_scene load_steps=20 format=3 uid="uid://dqtg23x1jiecc"]
 
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="1_jnu2l"]
 [ext_resource type="Theme" uid="uid://b1x4t7e1tl83o" path="res://Scenes/Reusable/SaveLoad.tres" id="1_knwmu"]
 [ext_resource type="Texture2D" uid="uid://d1665k70fxlne" path="res://Images/CharacterFrames/ZenskoFrame.png" id="2_5tey4"]
-[ext_resource type="Texture2D" uid="uid://blk88uyybrcha" path="res://Icons/reply.png" id="2_fyw05"]
 [ext_resource type="Texture2D" uid="uid://bw1tbs8i3pvmu" path="res://Icons/delete.png" id="3_fyw05"]
+[ext_resource type="Texture2D" uid="uid://pw3fk0x20tdw" path="res://Icons/back.png" id="3_knwmu"]
 
 [sub_resource type="Gradient" id="Gradient_hm4ee"]
 colors = PackedColorArray(0.350331, 1, 0.962012, 1, 0.794255, 0.332714, 1, 1)
@@ -27,8 +27,19 @@ corner_radius_top_right = 22
 corner_radius_bottom_right = 22
 corner_radius_bottom_left = 22
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d26wh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ok3bm"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sqk7i"]
+texture = ExtResource("3_knwmu")
+modulate_color = Color(1, 1, 1, 0.662745)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oia41"]
+texture = ExtResource("3_knwmu")
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_knwmu"]
-texture = ExtResource("2_fyw05")
+texture = ExtResource("3_knwmu")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sqk7i"]
 
@@ -52,7 +63,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="SaveBackground" type="Panel" parent="."]
+[node name="Background" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -62,7 +73,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_yibhn")
 metadata/_edit_use_anchors_ = true
 
-[node name="PanelContainer" type="PanelContainer" parent="SaveBackground"]
+[node name="Shade" type="PanelContainer" parent="Background"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0166667
@@ -73,16 +84,26 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_yibhn")
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SaveBackground/PanelContainer"]
+[node name="Layout" type="VBoxContainer" parent="Background/Shade"]
 layout_mode = 2
 theme = ExtResource("1_knwmu")
 theme_override_constants/separation = 20
 
-[node name="Title" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer"]
+[node name="Title" type="HBoxContainer" parent="Background/Shade/Layout"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="Save" type="RichTextLabel" parent="SaveBackground/PanelContainer/VBoxContainer/Title"]
+[node name="LOAD" type="RichTextLabel" parent="Background/Shade/Layout/Title"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/normal_font = ExtResource("1_jnu2l")
+theme_override_font_sizes/normal_font_size = 77
+theme_override_styles/normal = SubResource("StyleBoxFlat_oqej8")
+text = "LOAD FROM SLOT"
+horizontal_alignment = 1
+
+[node name="SAVE" type="RichTextLabel" parent="Background/Shade/Layout/Title"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/normal_font = ExtResource("1_jnu2l")
@@ -91,85 +112,81 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_oqej8")
 text = "SAVE TO SLOT "
 horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="SaveBackground/PanelContainer/VBoxContainer/Title"]
-custom_minimum_size = Vector2(200, 0)
+[node name="BACK" type="Button" parent="Background/Shade/Layout/Title"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_d26wh")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ok3bm")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sqk7i")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_oia41")
 theme_override_styles/normal = SubResource("StyleBoxTexture_knwmu")
 
-[node name="Save1" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer"]
+[node name="Save1" type="HBoxContainer" parent="Background/Shade/Layout"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 
-[node name="Passive" type="PanelContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save1"]
+[node name="SaveBackground" type="PanelContainer" parent="Background/Shade/Layout/Save1"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Empty" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive"]
-visible = false
+[node name="Default" type="MarginContainer" parent="Background/Shade/Layout/Save1/SaveBackground"]
+layout_mode = 2
+
+[node name="Empty" type="Label" parent="Background/Shade/Layout/Save1/SaveBackground/Default"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 text = "EMPTY"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Save" type="Button" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive"]
-visible = false
+[node name="Save" type="Button" parent="Background/Shade/Layout/Save1/SaveBackground/Default"]
 layout_mode = 2
 
-[node name="INFO" type="MarginContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive"]
+[node name="Save Info" type="MarginContainer" parent="Background/Shade/Layout/Save1/SaveBackground"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 15
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/INFO"]
-visible = false
+[node name="Line" type="HBoxContainer" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info"]
 layout_mode = 2
 theme_override_constants/separation = 100
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/INFO/HBoxContainer"]
+[node name="IconContainer" type="VBoxContainer" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info/Line"]
 custom_minimum_size = Vector2(268, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Icon" type="TextureRect" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/INFO/HBoxContainer/VBoxContainer"]
+[node name="Icon" type="TextureRect" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info/Line/IconContainer"]
 custom_minimum_size = Vector2(0, 268)
 layout_mode = 2
 texture = ExtResource("2_5tey4")
 expand_mode = 1
 
-[node name="Name&Stats" type="VBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/INFO/HBoxContainer"]
+[node name="Name&Stats" type="VBoxContainer" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info/Line"]
 custom_minimum_size = Vector2(1100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 40
 
-[node name="Control" type="Control" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/INFO/HBoxContainer/Name&Stats"]
+[node name="Spacer" type="Control" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info/Line/Name&Stats"]
 layout_mode = 2
 
-[node name="TimeDayMoney" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/INFO/HBoxContainer/Name&Stats"]
+[node name="TimeDayMoney" type="Label" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info/Line/Name&Stats"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
 text = "19:00 | DAY 2 | 1500 $"
 vertical_alignment = 1
 
-[node name="NameDate" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/INFO/HBoxContainer/Name&Stats"]
+[node name="NameDate" type="Label" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info/Line/Name&Stats"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
 text = "NAME. - 27.09.2025          "
 vertical_alignment = 1
 
-[node name="Removal" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive"]
-layout_mode = 2
-
-[node name="Warning" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/Removal"]
-custom_minimum_size = Vector2(1600, 0)
-layout_mode = 2
-text = "THE SAVE WILL BE DELETED
-PRESS AGAIN TO CONFIRM"
-
-[node name="Delete" type="Button" parent="SaveBackground/PanelContainer/VBoxContainer/Save1/Passive/Removal"]
+[node name="DeletePrompt" type="Button" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info/Line"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_sqk7i")
@@ -178,80 +195,22 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_ok3bm")
 theme_override_styles/normal = SubResource("StyleBoxTexture_7h8mt")
 icon_alignment = 1
 
-[node name="Save2" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 300)
-layout_mode = 2
-
-[node name="Passive" type="PanelContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Empty" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive"]
-visible = false
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-text = "EMPTY"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Save" type="Button" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive"]
-visible = false
-layout_mode = 2
-
-[node name="INFO" type="MarginContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive"]
-layout_mode = 2
-theme_override_constants/margin_left = 25
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 25
-theme_override_constants/margin_bottom = 15
-
-[node name="HBoxContainer" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/INFO"]
-visible = false
-layout_mode = 2
-theme_override_constants/separation = 100
-
-[node name="VBoxContainer" type="VBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/INFO/HBoxContainer"]
-custom_minimum_size = Vector2(268, 0)
+[node name="Load" type="Button" parent="Background/Shade/Layout/Save1/SaveBackground/Save Info"]
+custom_minimum_size = Vector2(1600, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Icon" type="TextureRect" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/INFO/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 268)
-layout_mode = 2
-texture = ExtResource("2_5tey4")
-expand_mode = 1
-
-[node name="Name&Stats" type="VBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/INFO/HBoxContainer"]
-custom_minimum_size = Vector2(1100, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_constants/separation = 40
-
-[node name="Control" type="Control" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/INFO/HBoxContainer/Name&Stats"]
+[node name="Removal" type="HBoxContainer" parent="Background/Shade/Layout/Save1/SaveBackground"]
+visible = false
 layout_mode = 2
 
-[node name="TimeDayMoney" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/INFO/HBoxContainer/Name&Stats"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 70
-text = "19:00 | DAY 2 | 1500 $"
-vertical_alignment = 1
-
-[node name="NameDate" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/INFO/HBoxContainer/Name&Stats"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 70
-text = "NAME. - 27.09.2025          "
-vertical_alignment = 1
-
-[node name="Removal" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive"]
-layout_mode = 2
-
-[node name="Warning" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/Removal"]
+[node name="Warning" type="Label" parent="Background/Shade/Layout/Save1/SaveBackground/Removal"]
 custom_minimum_size = Vector2(1600, 0)
 layout_mode = 2
 text = "THE SAVE WILL BE DELETED
 PRESS AGAIN TO CONFIRM"
 
-[node name="Delete" type="Button" parent="SaveBackground/PanelContainer/VBoxContainer/Save2/Passive/Removal"]
+[node name="Delete" type="Button" parent="Background/Shade/Layout/Save1/SaveBackground/Removal"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_sqk7i")
@@ -260,80 +219,194 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_ok3bm")
 theme_override_styles/normal = SubResource("StyleBoxTexture_7h8mt")
 icon_alignment = 1
 
-[node name="Save3" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer"]
+[node name="Save2" type="HBoxContainer" parent="Background/Shade/Layout"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 
-[node name="Passive" type="PanelContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save3"]
+[node name="SaveBackground" type="PanelContainer" parent="Background/Shade/Layout/Save2"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Empty" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive"]
-visible = false
+[node name="Default" type="MarginContainer" parent="Background/Shade/Layout/Save2/SaveBackground"]
+layout_mode = 2
+
+[node name="Empty" type="Label" parent="Background/Shade/Layout/Save2/SaveBackground/Default"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 text = "EMPTY"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Save" type="Button" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive"]
-visible = false
+[node name="Save" type="Button" parent="Background/Shade/Layout/Save2/SaveBackground/Default"]
 layout_mode = 2
 
-[node name="INFO" type="MarginContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive"]
+[node name="Save Info" type="MarginContainer" parent="Background/Shade/Layout/Save2/SaveBackground"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 15
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/INFO"]
-visible = false
+[node name="Line" type="HBoxContainer" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info"]
 layout_mode = 2
 theme_override_constants/separation = 100
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/INFO/HBoxContainer"]
+[node name="IconContainer" type="VBoxContainer" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info/Line"]
 custom_minimum_size = Vector2(268, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Icon" type="TextureRect" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/INFO/HBoxContainer/VBoxContainer"]
+[node name="Icon" type="TextureRect" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info/Line/IconContainer"]
 custom_minimum_size = Vector2(0, 268)
 layout_mode = 2
 texture = ExtResource("2_5tey4")
 expand_mode = 1
 
-[node name="Name&Stats" type="VBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/INFO/HBoxContainer"]
+[node name="Name&Stats" type="VBoxContainer" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info/Line"]
 custom_minimum_size = Vector2(1100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 40
 
-[node name="Control" type="Control" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/INFO/HBoxContainer/Name&Stats"]
+[node name="Spacer" type="Control" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info/Line/Name&Stats"]
 layout_mode = 2
 
-[node name="TimeDayMoney" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/INFO/HBoxContainer/Name&Stats"]
+[node name="TimeDayMoney" type="Label" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info/Line/Name&Stats"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
 text = "19:00 | DAY 2 | 1500 $"
 vertical_alignment = 1
 
-[node name="NameDate" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/INFO/HBoxContainer/Name&Stats"]
+[node name="NameDate" type="Label" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info/Line/Name&Stats"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
 text = "NAME. - 27.09.2025          "
 vertical_alignment = 1
 
-[node name="Removal" type="HBoxContainer" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive"]
+[node name="DeletePrompt" type="Button" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info/Line"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_sqk7i")
+theme_override_styles/hover = SubResource("StyleBoxTexture_d26wh")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ok3bm")
+theme_override_styles/normal = SubResource("StyleBoxTexture_7h8mt")
+icon_alignment = 1
+
+[node name="Load" type="Button" parent="Background/Shade/Layout/Save2/SaveBackground/Save Info"]
+custom_minimum_size = Vector2(1600, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Removal" type="HBoxContainer" parent="Background/Shade/Layout/Save2/SaveBackground"]
+visible = false
 layout_mode = 2
 
-[node name="Warning" type="Label" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/Removal"]
+[node name="Warning" type="Label" parent="Background/Shade/Layout/Save2/SaveBackground/Removal"]
 custom_minimum_size = Vector2(1600, 0)
 layout_mode = 2
 text = "THE SAVE WILL BE DELETED
 PRESS AGAIN TO CONFIRM"
 
-[node name="Delete" type="Button" parent="SaveBackground/PanelContainer/VBoxContainer/Save3/Passive/Removal"]
+[node name="Delete" type="Button" parent="Background/Shade/Layout/Save2/SaveBackground/Removal"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_sqk7i")
+theme_override_styles/hover = SubResource("StyleBoxTexture_d26wh")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ok3bm")
+theme_override_styles/normal = SubResource("StyleBoxTexture_7h8mt")
+icon_alignment = 1
+
+[node name="Save3" type="HBoxContainer" parent="Background/Shade/Layout"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+
+[node name="SaveBackground" type="PanelContainer" parent="Background/Shade/Layout/Save3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Default" type="MarginContainer" parent="Background/Shade/Layout/Save3/SaveBackground"]
+layout_mode = 2
+
+[node name="Empty" type="Label" parent="Background/Shade/Layout/Save3/SaveBackground/Default"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Save" type="Button" parent="Background/Shade/Layout/Save3/SaveBackground/Default"]
+layout_mode = 2
+
+[node name="Save Info" type="MarginContainer" parent="Background/Shade/Layout/Save3/SaveBackground"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 15
+
+[node name="Line" type="HBoxContainer" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info"]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="IconContainer" type="VBoxContainer" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info/Line"]
+custom_minimum_size = Vector2(268, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Icon" type="TextureRect" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info/Line/IconContainer"]
+custom_minimum_size = Vector2(0, 268)
+layout_mode = 2
+texture = ExtResource("2_5tey4")
+expand_mode = 1
+
+[node name="Name&Stats" type="VBoxContainer" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info/Line"]
+custom_minimum_size = Vector2(1100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 40
+
+[node name="Spacer" type="Control" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info/Line/Name&Stats"]
+layout_mode = 2
+
+[node name="TimeDayMoney" type="Label" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info/Line/Name&Stats"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+text = "19:00 | DAY 2 | 1500 $"
+vertical_alignment = 1
+
+[node name="NameDate" type="Label" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info/Line/Name&Stats"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+text = "NAME. - 27.09.2025          "
+vertical_alignment = 1
+
+[node name="DeletePrompt" type="Button" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info/Line"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_sqk7i")
+theme_override_styles/hover = SubResource("StyleBoxTexture_d26wh")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ok3bm")
+theme_override_styles/normal = SubResource("StyleBoxTexture_7h8mt")
+icon_alignment = 1
+
+[node name="Load" type="Button" parent="Background/Shade/Layout/Save3/SaveBackground/Save Info"]
+custom_minimum_size = Vector2(1600, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Removal" type="HBoxContainer" parent="Background/Shade/Layout/Save3/SaveBackground"]
+visible = false
+layout_mode = 2
+
+[node name="Warning" type="Label" parent="Background/Shade/Layout/Save3/SaveBackground/Removal"]
+custom_minimum_size = Vector2(1600, 0)
+layout_mode = 2
+text = "THE SAVE WILL BE DELETED
+PRESS AGAIN TO CONFIRM"
+
+[node name="Delete" type="Button" parent="Background/Shade/Layout/Save3/SaveBackground/Removal"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_sqk7i")

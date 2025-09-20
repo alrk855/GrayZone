@@ -6,7 +6,12 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7h8mt"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fyw05"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rg0qv"]
+bg_color = Color(1, 1, 1, 0.396078)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_knwmu"]
 
@@ -27,7 +32,7 @@ corner_radius_bottom_left = 22
 [resource]
 Button/styles/disabled = SubResource("StyleBoxEmpty_5tey4")
 Button/styles/focus = SubResource("StyleBoxEmpty_7h8mt")
-Button/styles/hover = SubResource("StyleBoxEmpty_fyw05")
+Button/styles/hover = SubResource("StyleBoxFlat_rg0qv")
 Button/styles/normal = SubResource("StyleBoxEmpty_knwmu")
 Button/styles/pressed = SubResource("StyleBoxEmpty_d26wh")
 Label/colors/font_color = Color(1, 1, 1, 1)

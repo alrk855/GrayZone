@@ -6,7 +6,7 @@
   "steps": [
 	{
 	  "id": "go_prof_office",
-	  "text": "Go to the Professor’s Office between 17:00 and 17:45"
+	  "text": "Go to the Professor’s Office between 17:00 and 17:45 on days 1 or 2"
 	}
   ]
 }

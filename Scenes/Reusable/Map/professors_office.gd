@@ -12,11 +12,9 @@ extends Control
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 
 # ---------- Background (FULL IMAGE VARIANTS) ----------
-# Point this to the TextureRect or Sprite2D that renders your whole office background.
 @export var background_node_path: NodePath = "background"
 @onready var _bg_node: Node = get_node_or_null(background_node_path)
 
-# Drop full-scene textures here:
 @export var bg_professor: Texture2D
 @export var bg_janitor_clean: Texture2D
 @export var bg_janitor_deal: Texture2D
@@ -57,6 +55,7 @@ const JSON_JANITOR_DEAL_300: String      = D_PROF + "Janitor_Deal_300.json"
 const JSON_JANITOR_DEAL_500: String      = D_PROF + "Janitor_Deal_500.json"
 const JSON_JANITOR_PASS: String          = D_PROF + "Janitor_Pass.json"
 const JSON_JANITOR_NOMONEY: String       = D_PROF + "Janitor_NotEnoughMoney.json"
+const JSON_JANITOR_DONE: String          = D_PROF + "Janitor_Done.json"
 
 # ---------- Time gates ----------
 const T_13_00: int = 13 * 60
@@ -68,14 +67,17 @@ const T_17_45: int = 17 * 60 + 45
 const TASK_PROJECT: String = "project"
 const PLAGIARISM_CATCH_CHANCE: float = 0.5
 
+# ---------- Visit-Professor task gate ----------
+const TASK_VISIT_PROF := "visit_professor_office"
+const K_VISIT_PROF_DONE := "__VISIT_PROF_OFFICE_DONE"  # one-time guard
+
+# ---------- Other ----------
+const SCHOOL_SCENE_PATH := "res://Scenes/Reusable/Map/School.tscn"
+
 # ---------- Internals ----------
 var _panel: Control = null
 var _intro_panel_shown: bool = false
 var _janitor_panel_shown: bool = false
-
-# ---------- Fade (new) ----------
-var _fade_layer: CanvasLayer = null
-var _fade_rect: ColorRect = null
 
 func _ready() -> void:
 	GameState.location = "ProfessorOffice"
@@ -89,6 +91,15 @@ func _ready() -> void:
 
 	_update_presence()
 	_maybe_show_not_here_on_enter()
+
+	# Visit-Professor task window auto-mark (Days 1/2, 17:00–17:45)
+	_maybe_mark_visit_prof_office()
+	if not GameState.time_changed.is_connected(Callable(self, "_on_time_changed_visit_prof")):
+		GameState.time_changed.connect(_on_time_changed_visit_prof)
+
+func _exit_tree() -> void:
+	if GameState.time_changed.is_connected(Callable(self, "_on_time_changed_visit_prof")):
+		GameState.time_changed.disconnect(_on_time_changed_visit_prof)
 
 func _process(_delta: float) -> void:
 	_update_presence()
@@ -114,7 +125,7 @@ func _update_presence() -> void:
 				jan_visible = true
 		janitor_btn.visible = jan_visible
 
-	# If janitor isn't visible anymore, ensure we reset to cleaning for next time.
+	# Reset janitor state when not visible
 	if not jan_visible and _janitor_deal_active:
 		_janitor_deal_active = false
 
@@ -127,7 +138,7 @@ func _update_presence() -> void:
 		elif bg_janitor_clean:
 			_set_bg(bg_janitor_clean)
 		else:
-			_set_bg(bg_empty) # fallback
+			_set_bg(bg_empty)
 	elif bg_empty:
 		_set_bg(bg_empty)
 
@@ -135,7 +146,7 @@ func _set_bg(tex: Texture2D) -> void:
 	if _bg_node == null or tex == null:
 		return
 	if _current_bg == tex:
-		return # avoid redundant assigns
+		return
 	_current_bg = tex
 	if _bg_node is TextureRect:
 		(_bg_node as TextureRect).texture = tex
@@ -221,7 +232,6 @@ func _handle_project_submission() -> void:
 	elif side == "scold":
 		await _start_and_wait(JSON_SCOLD_MISSED)
 
-	# small buffer to let the dialogue system fully close before chaining
 	await get_tree().process_frame
 
 	# 2) Grading logic
@@ -277,7 +287,7 @@ func _handle_project_submission() -> void:
 		await _start_and_wait(JSON_GRADE_B)
 	elif grade_id == "C":
 		await _start_and_wait(JSON_GRADE_C)
-	else: # "D"
+	else:
 		await _start_and_wait(JSON_GRADE_D)
 
 	_valid_submit_increment_task()
@@ -296,7 +306,7 @@ func _mark_submitted_no_task_increment() -> void:
 
 func _valid_submit_increment_task() -> void:
 	GameState.set_flag("project_submitted", true)
-	GameState.update_task_step(TASK_PROJECT) # +1 on valid submit
+	GameState.update_task_step(TASK_PROJECT)
 	GameState.adjust_time(15)
 	_clear_panel()
 
@@ -335,8 +345,10 @@ func _clear_promise_flags() -> void:
 	if GameState.flags.has("project_promise_day"):
 		GameState.flags.erase("project_promise_day")
 
+# ---------- Dialogue action hook ----------
 func on_dialogue_action(line: Dictionary) -> void:
 	var act: String = String(line.get("action", ""))
+
 	if act == "show_prof_intro_choices":
 		if GameState.has_flag("project_accepted"):
 			DialogueManager.end_active_dialogue()
@@ -346,6 +358,7 @@ func on_dialogue_action(line: Dictionary) -> void:
 			_intro_panel_shown = true
 			_show_prof_intro_options()
 		return
+
 	if act == "show_janitor_office_options":
 		await get_tree().create_timer(0.20).timeout
 		_show_janitor_office_options()
@@ -353,6 +366,7 @@ func on_dialogue_action(line: Dictionary) -> void:
 
 	GameState.apply_action(line)
 
+# ---------- Professor intro choices ----------
 func _show_prof_intro_options() -> void:
 	_clear_panel()
 	var options: Array[Dictionary] = [
@@ -385,8 +399,15 @@ func _on_prof_intro_option(id: String) -> void:
 func _on_janitor_pressed() -> void:
 	_clear_panel()
 	_janitor_panel_shown = false
-	# opening talk: still cleaning pose
 	_janitor_deal_active = false
+ 
+	# Already bought? Only show the short “done” JSON.
+	if GameState.has_flag("bought_project"):
+		if FileAccess.file_exists(JSON_JANITOR_DONE):
+			DialogueManager.start_dialogue(JSON_JANITOR_DONE, self)
+		else:
+			DialogueManager.end_active_dialogue()
+		return
 
 	var rep: int = GameState.reputation
 	if rep >= 30 and FileAccess.file_exists(JSON_JANITOR_HIGHREP):
@@ -397,8 +418,11 @@ func _on_janitor_pressed() -> void:
 		DialogueManager.start_dialogue(JSON_JANITOR_NOTIP_INTRO, self)
 
 func _show_janitor_office_options() -> void:
+	# Guard options after purchase
 	if GameState.has_flag("bought_project"):
 		DialogueManager.end_active_dialogue()
+		if FileAccess.file_exists(JSON_JANITOR_DONE):
+			DialogueManager.start_dialogue(JSON_JANITOR_DONE, self)
 		return
 	if _janitor_panel_shown:
 		return
@@ -428,6 +452,7 @@ func _on_janitor_option(id: String) -> void:
 				return
 			GameState.add_money(-300)
 			_handle_janitor_purchase(true)
+
 		"janitor_buy_500":
 			_janitor_deal_active = true
 			if GameState.money < 500:
@@ -435,18 +460,22 @@ func _on_janitor_option(id: String) -> void:
 				return
 			GameState.add_money(-500)
 			_handle_janitor_purchase(false)
+
 		"janitor_anything_else":
 			_janitor_deal_active = true
 			if not GameState.tasks.has("Visit the Classroom"):
 				GameState.add_task("Visit the Classroom")
 			DialogueManager.start_dialogue(JSON_JANITOR_ANYTHING_ELSE, self)
+
 		"janitor_pass":
 			_janitor_deal_active = false
 			DialogueManager.start_dialogue(JSON_JANITOR_PASS, self)
+
 		"back":
 			_janitor_deal_active = false
 			DialogueManager.end_active_dialogue()
 			_clear_panel()
+
 		_:
 			_janitor_deal_active = false
 			DialogueManager.end_active_dialogue()
@@ -454,27 +483,40 @@ func _on_janitor_option(id: String) -> void:
 
 func _handle_janitor_purchase(tipped: bool) -> void:
 	GameState.set_flag("bought_project", true)
-	GameState.set_flag("project_plagiarized", true) # persist for endings
-	GameState.adjust_integrity(-5)                  # buying penalty
+	GameState.set_flag("project_plagiarized", true)
+	GameState.adjust_integrity(-5)
 	print("[Integrity] Bought project from janitor. -5 integrity.")
 	GameState.ensure_task_progress_at_least(TASK_PROJECT, 2)
 	if not GameState.tasks.has("Visit the Classroom"):
 		GameState.add_task("Visit the Classroom")
-	GameState.adjust_time(15)
 
+	# Choose dialogue; do NOT advance time yet — wait for JSON to finish
 	var dlg_path: String = JSON_JANITOR_DEAL_500
 	if tipped:
 		dlg_path = JSON_JANITOR_DEAL_300
-	DialogueManager.start_dialogue(dlg_path, self)
+
+	var ui := DialogueManager.start_dialogue(dlg_path, self)
+	if ui and ui.has_signal("dialogue_finished"):
+		ui.connect("dialogue_finished", Callable(self, "_on_janitor_purchase_dialogue_finished"), CONNECT_ONE_SHOT)
+	else:
+		_on_janitor_purchase_dialogue_finished()
 
 	_clear_panel()
+
+# Time bump AFTER the purchase JSON finishes
+func _on_janitor_purchase_dialogue_finished() -> void:
+	GameState.adjust_time(15)
+	# Optional: hide janitor button afterwards
+	# var btn := get_node_or_null("%JanitorButton")
+	# if btn: btn.visible = false; btn.disabled = true
 
 # ---------- Back ----------
 func _on_back_pressed() -> void:
 	if GameState.is_time_frozen():
 		print("⏸️ Finish the conversation first.")
 		return
-	_fade_and_change_scene("res://Scenes/Reusable/Map/School.tscn")
+	if ResourceLoader.exists(SCHOOL_SCENE_PATH):
+		await fade.fade_to_scene(SCHOOL_SCENE_PATH, 0.4, 0.35)
 
 # ---------- Utils ----------
 func _clear_panel() -> void:
@@ -482,30 +524,17 @@ func _clear_panel() -> void:
 		_panel.queue_free()
 	_panel = null
 
-# ========== Fade helpers (new) ==========
-func _ensure_fader() -> void:
-	if _fade_layer == null or not is_instance_valid(_fade_layer):
-		_fade_layer = CanvasLayer.new()
-		_fade_layer.layer = 100
-		add_child(_fade_layer)
-	if _fade_rect == null or not is_instance_valid(_fade_rect):
-		_fade_rect = ColorRect.new()
-		_fade_rect.color = Color(0, 0, 0, 1)
-		_fade_rect.modulate = Color(1, 1, 1, 0)
-		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-		_fade_layer.add_child(_fade_rect)
+# ---------- Visit-Professor task auto mark ----------
+func _on_time_changed_visit_prof(_new_time: int, _new_day: int) -> void:
+	_maybe_mark_visit_prof_office()
 
-func _fade_to(alpha: float, duration: float) -> void:
-	_ensure_fader()
-	var tw := create_tween()
-	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
-	await tw.finished
-
-func _fade_and_change_scene(path: String) -> void:
-	if path == "":
+func _maybe_mark_visit_prof_office() -> void:
+	if GameState.has_flag(K_VISIT_PROF_DONE):
 		return
-	await _fade_to(1.0, 0.4)
-	if ResourceLoader.exists(path):
-		get_tree().change_scene_to_file(path)
-	await _fade_to(0.0, 0.4)
+	var d := GameState.day
+	var t := GameState.time
+	if (d == 1 or d == 2) and t >= T_17_00 and t < T_17_45:
+		GameState.ensure_task(TASK_VISIT_PROF)
+		GameState.update_task_step(TASK_VISIT_PROF)
+		GameState.set_flag(K_VISIT_PROF_DONE, true)
+		print("[Task] visit_professor_office advanced at %02d:%02d on Day %d" % [t/60, t%60, d])

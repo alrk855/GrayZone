@@ -10,7 +10,7 @@
 	  "text": "Oh — before I forget. The janitor at school? Not just a mop and bucket guy.\nHe’s got… access. To things. Let’s just say: past projects live longer than you’d think."
 	},
 	{
-	  "action": "set_flag",
+	  "action": "set_flags",
 	  "flag": "marko_tip",
 	  "value": true
 	},
