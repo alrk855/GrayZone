@@ -1,9 +1,10 @@
 extends Button
 
+@export var enable_delay: float = 8.0   # match Overlay fade_duration
 @onready var camera: Camera2D = $"../../../Camera2D"
 @onready var menu_container: Control = $"../../../Main_Menu_Control/Main_Menu_Picture/V_Button_Container"
 @onready var orn1: Control = $"../../../Main_Menu_Control/Main_Menu_Picture/OrnamentsL"
-@onready var orn2: Control =$"../../../Main_Menu_Control/Main_Menu_Picture/OrnamentsR"
+@onready var orn2: Control = $"../../../Main_Menu_Control/Main_Menu_Picture/OrnamentsR"
 @onready var main_orn: Control = $"../../../Main_Menu_Control/Main_Menu_Picture/HBoxContainer/MainOrnament"
 @onready var swoosh: AudioStreamPlayer2D = $"../Swoosh"
 
@@ -11,9 +12,13 @@ extends Button
 var triggered: bool = false
 
 func _ready():
+	# Button starts disabled until fade is over
+	disabled = true
+	await get_tree().create_timer(enable_delay).timeout
+	disabled = false
+	
 	main_orn.modulate.a = 0.0
 	# FADE MAIN ORNAMENT INITIALLY INVISIBLE
-
 
 func _pressed():
 	if triggered:

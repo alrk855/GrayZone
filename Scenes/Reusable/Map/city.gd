@@ -31,14 +31,14 @@ const K_HANGOUT_LAST_DAY := "__CITY_HANGOUT_LAST_DAY"
 const K_TUTOR_LAST_DAY   := "__CITY_TUTOR_LAST_DAY"
 
 # ===== School gating =====
-const SCHOOL_OPEN  := 7 * 60 + 30    # 07:30
-const SCHOOL_CLOSE := 18 * 60 + 30   # 18:30
+const SCHOOL_OPEN  := 7 * 60 + 30
+const SCHOOL_CLOSE := 18 * 60 + 30
 const SCHOOL_CLOSED_JSON := "res://Data/School/School_Closed.json"
 
 # ===== MVR gating =====
-const MVR_OPEN        := 13 * 60
-const MVR_CLOSE_BASE  := 17 * 60
-const MVR_CLOSE_EXT   := 18 * 60
+const MVR_OPEN              := 13 * 60
+const MVR_CLOSE_BASE        := 17 * 60
+const MVR_CLOSE_EXT         := 18 * 60
 const MVR_CLOSED_JSON       := "res://Data/city/MVR_Closed.json"
 const MVR_ALREADY_HAVE_JSON := "res://Data/city/MVR_AlreadyHave.json"
 
@@ -174,33 +174,46 @@ func _mark_once_per_day(key: String) -> void:
 
 # ========= ACTIONS =========
 func _go_home() -> void:
-	GameState.location = "Home"
+	_clear_panel()
+
+	# Day 1 event jump (single hop via fade singleton so we don't chain after a freed node)
 	if GameState.day == 1 and not GameState.has_flag(MARKO_FIRST_EVENT_DONE):
 		GameState.set_flag(MARKO_FIRST_EVENT_DONE, true)
-		# No fade for the event trigger (kept original feel)
-		await _change_scene(HOME_SCENE_PATH, false)
-		await _change_scene(MARKO_FIRST_EVENT_SCENE, false)
-	else:
-		await _change_scene(HOME_SCENE_PATH, false)
-	_clear_panel()
+		GameState.location = "MarkoFirstEvent"
+		await fade.fade_to_scene(MARKO_FIRST_EVENT_SCENE)
+		return
+
+	GameState.location = "Home"
+	await _change_scene(HOME_SCENE_PATH, true)
+	# nothing after this line should rely on this node
 
 func _go_to(scene_path: String, loc_name: String) -> void:
-	GameState.location = loc_name
-	await _change_scene(scene_path, true) # fade for non-home moves
 	_clear_panel()
+	GameState.location = loc_name
+	await _change_scene(scene_path, true)
 
-# Centralized scene change using the 'fade' singleton (lowercase)
+# ======== CENTRALIZED SCENE CHANGE (fade singleton only) ========
 func _change_scene(path: String, use_fade: bool = true) -> void:
 	if path == "" or not ResourceLoader.exists(path):
 		push_warning("City.gd: Scene missing or path invalid: " + path)
 		return
+
+	_disable_self_inputs_temporarily()
+
 	if use_fade:
-		var f = get_tree().get_node_or_null("/root/fade")
-		if f and f.has_method("fade_to_scene"):
-			await f.fade_to_scene(path)
-			return
-	# fallback (no fade autoload found)
-	get_tree().change_scene_to_file(path)
+		await fade.fade_to_scene(path)
+	else:
+		get_tree().change_scene_to_file(path)
+	# do not access local nodes after awaiting fade_to_scene
+
+func _disable_self_inputs_temporarily() -> void:
+	if city_button:
+		city_button.disabled = true
+		call_deferred("_reenable_city_button")
+
+func _reenable_city_button() -> void:
+	if city_button:
+		city_button.disabled = false
 
 # ========= SCHOOL GATING =========
 func _try_enter_school() -> void:
@@ -217,9 +230,12 @@ func _try_enter_school() -> void:
 func _mvr_is_same_day_bribe_active() -> bool:
 	var method := GameState.get_int("MVR_METHOD", 0)              # 3 = Bribery
 	var ready  := GameState.get_int("MVR_BCERT_READY_DAY", 0)
-	if method != 3: return false
-	if GameState.day != ready: return false
-	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE): return false
+	if method != 3:
+		return false
+	if GameState.day != ready:
+		return false
+	if GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
+		return false
 	return true
 
 func _mvr_close_time() -> int:
@@ -266,7 +282,6 @@ func _play_city_json_or_fallback(path: String, fallback_msg: String) -> void:
 
 # ========= UNLOCK CHECKS =========
 func _is_yco_available() -> bool:
-	# If you want YCO on Day 1, drop the day gate.
 	return GameState.day >= 2 and GameState.has_flag(YCO_INTERACTION_DONE)
 
 func _is_marko_unlocked() -> bool:

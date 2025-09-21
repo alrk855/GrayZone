@@ -96,10 +96,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_y82t1")
-script = ExtResource("2_trj04")
 
 [node name="Click_To_Start_Button" type="Button" parent="Click_to_Start_Control/Click_To_Start_Picture"]
 self_modulate = Color(1, 1, 1, 0)
+z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -108,7 +108,9 @@ grow_horizontal = 2
 grow_vertical = 2
 action_mode = 0
 script = ExtResource("3_16hvj")
+enable_delay = 6.5
 transit = 5
+metadata/_edit_use_anchors_ = true
 
 [node name="Text" type="RichTextLabel" parent="Click_to_Start_Control/Click_To_Start_Picture"]
 layout_mode = 1
@@ -135,6 +137,20 @@ stream = ExtResource("3_trj04")
 libraries = {
 &"": SubResource("AnimationLibrary_t1dhk")
 }
+
+[node name="ColorRect" type="ColorRect" parent="Click_to_Start_Control" node_paths=PackedStringArray("menu_audio")]
+visible = false
+z_index = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("2_trj04")
+menu_audio = NodePath("../../AudioStreamPlayer2D")
+metadata/_edit_use_anchors_ = true
 
 [node name="Filler" type="Control" parent="."]
 layout_mode = 3
@@ -349,7 +365,6 @@ target_node = NodePath("../Click_to_Start_Control")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("12_t1dhk")
-autoplay = true
 bus = &"Music"
 parameters/looping = true
 

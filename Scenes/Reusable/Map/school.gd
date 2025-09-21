@@ -1,4 +1,4 @@
-extends Control 
+extends Control
 
 const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
 
@@ -14,24 +14,22 @@ const PROFESSOR_CLOSE := 19 * 60
 const SECRETARY_OPEN := 13 * 60
 const SECRETARY_CLOSE := 19 * 60
 
-# Classroom lock window (Days 2–4) for morning classes
-const CLASS_LOCK_START := 8 * 60 + 30   # 08:30
-const CLASS_LOCK_END   := 12 * 60 + 30  # 12:30
+# Classroom lock windows (Days 2–4)
+const CLASS_LOCK_START := 8 * 60 + 30     # 08:30
+const CLASS_LOCK_END_ATTENDED := 12 * 60 + 30  # 12:30 (if attended)
+const CLASS_LOCK_END_SKIPPED  := 13 * 60       # 13:00 (if skipped)
 
-# Campus hard close (everything)
-const CAMPUS_CLOSE := 19 * 60           # 19:00
+# Campus hard close
+const CAMPUS_CLOSE := 19 * 60              # 19:00
 
-# Narrated “locked” dialogue (only for 08:30–12:30 tries)
+# “Locked” dialogue for class in session
 const CLASS_LOCKED_JSON := "res://Data/Classroom/Classroom_Door_Locked.json"
 
 @onready var popup_label: Label = $PopUp
 @onready var show_menu_button: Button = $background/ShowMenuButton
 
 var _panel: Control = null
-
-# Fade overlay
-var _fade_layer: CanvasLayer = null
-var _fade_rect: ColorRect = null
+var _is_fading: bool = false   # guard only; no local fade UI
 
 func _ready() -> void:
 	if GameState.subject1.strip_edges() == "":
@@ -42,21 +40,23 @@ func _ready() -> void:
 	GameUi.visible = true
 	GameState.location = "School"
 	popup_label.visible = false
-	show_menu_button.pressed.connect(_show_menu)
+
+	if not show_menu_button.pressed.is_connected(Callable(self, "_show_menu")):
+		show_menu_button.pressed.connect(_show_menu)
 
 	# If campus is closed already, kick out immediately
 	if GameState.time >= CAMPUS_CLOSE:
-		_kick_out_of_school()
+		await _kick_out_of_school()
 		return
 
 func _show_menu() -> void:
 	_clear_panel()
 	var options = [
-		{ "text": "Classroom", "id": "classroom" },
+		{ "text": "Classroom",        "id": "classroom" },
 		{ "text": "Professor Office", "id": "prof_office" },
 		{ "text": "Secretary Office", "id": "sec_office" },
-		{ "text": "City", "id": "city" },
-		{ "text": "Back", "id": "back" }
+		{ "text": "City",             "id": "city" },
+		{ "text": "Back",             "id": "back" }
 	]
 	_panel = preload(CCB_SCENE_PATH).instantiate()
 	add_child(_panel)
@@ -65,73 +65,102 @@ func _show_menu() -> void:
 func _on_choice(id: String) -> void:
 	match id:
 		"classroom":
-			_try_enter_classroom()
+			await _try_enter_classroom()
 		"prof_office":
-			_try_enter_generic(PROFESSOR_OFFICE_SCENE, PROFESSOR_OPEN, PROFESSOR_CLOSE, "The professor's office is closed.")
+			await _try_enter_generic(PROFESSOR_OFFICE_SCENE, PROFESSOR_OPEN, PROFESSOR_CLOSE, "The professor's office is closed.", "ProfessorOffice")
 		"sec_office":
-			_try_enter_generic(SECRETARY_OFFICE_SCENE, SECRETARY_OPEN, SECRETARY_CLOSE, "The secretary's office is closed.")
+			await _try_enter_generic(SECRETARY_OFFICE_SCENE, SECRETARY_OPEN, SECRETARY_CLOSE, "The secretary's office is closed.", "SecretaryOffice")
 		"city":
-			_fade_and_change_scene(CITY_SCENE)
+			_clear_panel()
+			GameState.location = "CITY"
+			await _fade_and_change_scene(CITY_SCENE)
 		"back":
 			_clear_panel()
 
-func _try_enter_generic(scene_path: String, open_time: int, close_time: int, closed_msg: String) -> void:
+func _try_enter_generic(scene_path: String, open_time: int, close_time: int, closed_msg: String, loc_name: String) -> void:
 	var now := GameState.time
 
 	if now >= CAMPUS_CLOSE:
-		_kick_out_of_school()
-		_clear_panel()
+		await _kick_out_of_school()
 		return
 
 	if now >= open_time and now < close_time:
-		_fade_and_change_scene(scene_path)
+		_clear_panel()
+		GameState.location = loc_name
+		await _fade_and_change_scene(scene_path)
 	else:
 		var open_str := _minutes_to_time_str(open_time)
 		var close_str := _minutes_to_time_str(close_time)
 		popup_label.text = "%s (Open: %s – %s)" % [closed_msg, open_str, close_str]
 		popup_label.visible = true
-	_clear_panel()
+		_clear_panel()
 
 func _try_enter_classroom() -> void:
 	var d := GameState.day
 	var t := GameState.time
 
+	# Campus closed?
 	if t >= CAMPUS_CLOSE:
-		_kick_out_of_school()
-		_clear_panel()
+		await _kick_out_of_school()
 		return
 
+	# Day 1: open 12:30–18:00
 	if d == 1:
 		if t >= 12 * 60 + 30 and t < 18 * 60:
-			_fade_and_change_scene(CLASSROOM_SCENE)
+			_clear_panel()
+			GameState.location = "Classroom"
+			await _fade_and_change_scene(CLASSROOM_SCENE)
 		else:
 			popup_label.text = "The classroom is closed. (Open after 12:30 on Day 1.)"
 			popup_label.visible = true
-		_clear_panel()
+			_clear_panel()
 		return
 
+	# Days 2–4 rules
 	if d >= 2 and d <= 4:
+		# hard close after 18:00 (but before campus-wide 19:00)
 		if t >= 18 * 60 and t < CAMPUS_CLOSE:
 			popup_label.text = "The classroom is closed for the day."
 			popup_label.visible = true
 			_clear_panel()
 			return
 
-		if t >= CLASS_LOCK_START and t < CLASS_LOCK_END:
-			if FileAccess.file_exists(CLASS_LOCKED_JSON):
-				DialogueManager.start_dialogue(CLASS_LOCKED_JSON, self)
-			else:
-				popup_label.text = "Class is in session. The door's locked."
-				popup_label.visible = true
-			_clear_panel()
-			return
+		var attended_today := GameState.has_flag("attended_morning_day_" + str(d))
 
-		_fade_and_change_scene(CLASSROOM_SCENE)
+		# Gate:
+		# - before 08:30 => allowed (so you can be on time/late)
+		# - 08:30..12:30 => locked if attended; 08:30..13:00 => locked if skipped
+		if t >= CLASS_LOCK_START:
+			if attended_today:
+				if t < CLASS_LOCK_END_ATTENDED:
+					await _show_locked_dialogue()
+					_clear_panel()
+					return
+			else:
+				if t < CLASS_LOCK_END_SKIPPED:
+					await _show_locked_dialogue()
+					_clear_panel()
+					return
+
 		_clear_panel()
+		GameState.location = "Classroom"
+		await _fade_and_change_scene(CLASSROOM_SCENE)
 		return
 
-	_fade_and_change_scene(CLASSROOM_SCENE)
+	# Any other day (failsafe)
 	_clear_panel()
+	GameState.location = "Classroom"
+	await _fade_and_change_scene(CLASSROOM_SCENE)
+
+func _show_locked_dialogue() -> void:
+	if FileAccess.file_exists(CLASS_LOCKED_JSON):
+		var ui = DialogueManager.start_dialogue(CLASS_LOCKED_JSON, self)
+		if ui and ui.has_signal("dialogue_finished"):
+			await ui.dialogue_finished
+	else:
+		popup_label.text = "Class is in session. The door's locked."
+		popup_label.visible = true
+	await get_tree().process_frame
 
 func _minutes_to_time_str(minutes: int) -> String:
 	var hours := int(minutes / 60)
@@ -142,37 +171,24 @@ func _kick_out_of_school() -> void:
 	popup_label.text = "School is closed for the day."
 	popup_label.visible = true
 	await get_tree().process_frame
-	_fade_and_change_scene(CITY_SCENE)
+	_clear_panel()
+	GameState.location = "CITY"
+	await _fade_and_change_scene(CITY_SCENE)
 
 func _clear_panel() -> void:
-	if _panel and is_instance_valid(_panel):
+	if _panel != null and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
 
-# ================= Fade helpers =================
-func _ensure_fader() -> void:
-	if _fade_layer == null or not is_instance_valid(_fade_layer):
-		_fade_layer = CanvasLayer.new()
-		_fade_layer.layer = 100
-		add_child(_fade_layer)
-	if _fade_rect == null or not is_instance_valid(_fade_rect):
-		_fade_rect = ColorRect.new()
-		_fade_rect.color = Color(0, 0, 0, 1)
-		_fade_rect.modulate = Color(1, 1, 1, 0)
-		_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-		_fade_layer.add_child(_fade_rect)
-
-func _fade_to(alpha: float, duration: float) -> void:
-	_ensure_fader()
-	var tw := create_tween()
-	tw.tween_property(_fade_rect, "modulate:a", alpha, duration)
-	await tw.finished
-
+# ================= Scene change / fade (singleton only) =================
 func _fade_and_change_scene(path: String) -> void:
-	if path == "":
+	if path == "" or _is_fading:
 		return
-	await _fade_to(1.0, 0.4)
-	if ResourceLoader.exists(path):
-		get_tree().change_scene_to_file(path)
-	await _fade_to(0.0, 0.4)
+	if not ResourceLoader.exists(path):
+		push_warning("Invalid scene path: " + path)
+		return
+
+	_is_fading = true
+	# Use the autoloaded singleton directly (your API: fade_to_scene(path, out_dur, in_dur))
+	await fade.fade_to_scene(path, 0.4, 0.35)
+	_is_fading = false

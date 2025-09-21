@@ -12,8 +12,9 @@ config_version=5
 
 config/name="GrayZone"
 config/tags=PackedStringArray("2d", "official")
-run/main_scene="uid://hvfk26x78kj5"
+run/main_scene="uid://drxcg2tkp2a54"
 config/features=PackedStringArray("4.4", "GL Compatibility")
+boot_splash/show_image=false
 run/main_script="res://Scenes/main_run.gd"
 
 [audio]
@@ -70,3 +71,4 @@ dev={
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+viewport/transparent_background=true

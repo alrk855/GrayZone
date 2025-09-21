@@ -1,9 +1,21 @@
-extends TextureRect
+extends ColorRect
 
-@onready var pan : TextureRect = $"."
+@export var fade_duration: float = 6.5
+@export var menu_audio: AudioStreamPlayer
 
 func _ready() -> void:
-	pan.modulate.a = 0.0
+	# Start fully black and visible
+	modulate.a = 1.0
+	visible = true
+	
+	# Fade out over duration
+	var tween = create_tween()
+	tween.tween_property(self, "modulate:a", 0.0, fade_duration)
+	
+	# When done: hide and start audio
+	tween.finished.connect(_on_fade_done)
 
-	# Now fade in to alpha = 1 over 2 seconds
-	create_tween().tween_property(pan, "modulate:a", 1.0, 2)
+func _on_fade_done() -> void:
+	visible = false   # overlay no longer blocks input
+	if menu_audio:
+		menu_audio.play()

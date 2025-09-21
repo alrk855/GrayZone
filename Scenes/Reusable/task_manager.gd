@@ -19,6 +19,11 @@ const VOLUNTEER_ALIASES := [
 	"volunteering"
 ]
 
+# ---------- Attendance support ----------
+# The classroom sets these flags; we just read them.
+const ATTEND_PREFIX := "attended_morning_day_"   # e.g., attended_morning_day_2
+const DAYS_ATTENDABLE := [2, 3, 4]               # only days 2–4 count for attendance task
+
 # ---------------- Fonts ----------------
 const OVERVIEW_FONT_PATH := "res://Fonts/Russo_One.ttf"          # buttons font
 const BODY_FONT_PATH     := "res://Fonts/Chalkboard-Regular.ttf" # title/meta/steps
@@ -132,6 +137,16 @@ func _populate_tasks() -> void:
 
 				_apply_overview_color(button, task_id)
 
+				# ---- NEW: progress preview label (expects a child named "Label") ----
+				var steps_total := _get_steps_count(task_id)
+				var prog := GameState.get_task_progress(task_id)
+				var plabel := button.get_node_or_null("Label") as Label
+				if plabel:
+					if steps_total > 0:
+						plabel.text = "%d/%d" % [prog, steps_total]
+					else:
+						plabel.text = ""   # hide if no steps
+
 				var cb := Callable(self, "_on_task_button_pressed_internal").bind(button)
 				if not button.pressed.is_connected(cb):
 					button.pressed.connect(cb)
@@ -231,9 +246,11 @@ func _show_task_details(task_id: String) -> void:
 		GameState.set_flag("req_subtasks_added", true)
 		_populate_tasks()  # refresh grid with newly added tasks
 
-	# Study tasks: render day-by-day with ✔ / ✘ / • and also obey miss>studied rule
+	# Study-like tasks
 	if task_id == "study_subject1" or task_id == "study_subject2":
 		_render_study_steps(task_id, steps)
+	elif task_id == "attend_morning":
+		_render_attendance_steps(steps)
 	else:
 		for i in range(steps.size()):
 			if not show_all_steps and i > progress:
@@ -317,6 +334,38 @@ func _render_study_steps(task_id: String, steps: Array) -> void:
 
 		step_container.add_child(label)
 
+# ---------------- Attendance rendering (attend_morning) ----------------
+func _render_attendance_steps(steps: Array) -> void:
+	# Render 3 lines for days 2–4 with ✔ / ✘ / • based on attended_morning_day_{2..4}
+	var final_days: Array = DAYS_ATTENDABLE.duplicate()
+	var max_steps: int = min(steps.size(), final_days.size())
+
+	for i in range(max_steps):
+		var day_label = final_days[i]
+		var raw_txt: String = String(steps[i].get("text", "Morning Class Day %d" % day_label))
+		var txt: String = _format_placeholders(raw_txt)
+
+		var attended_flag := ATTEND_PREFIX + str(day_label)
+		var attended := GameState.has_flag(attended_flag)
+
+		# A day counts as "missed" only if it is in the past (strictly < current day) and not attended
+		var missed = (day_label < GameState.day and not attended)
+
+		var label := Label.new()
+		label.add_theme_font_override("font", FONT_BODY)
+		label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
+
+		if attended:
+			label.add_theme_color_override("font_color", Color.DIM_GRAY)
+			label.text = "✔ " + txt
+		elif missed:
+			label.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
+			label.text = "✘ " + txt
+		else:
+			label.text = "• " + txt
+
+		step_container.add_child(label)
+
 # ---------------- Day rollover logic ----------------
 func _handle_study_day_rollover(prev_day: int) -> void:
 	# If the day that just ended was 1..4, advance the study task step even if missed.
@@ -350,9 +399,13 @@ func _mark_missed_if_needed_for_subject(day_index: int, task_id: String, subject
 
 # ---------------- Fail-state computation ----------------
 func _has_failed_task(task_id: String) -> bool:
-	# Study tasks fail if missed > studied
+	# Study tasks fail if missed > studied — but only judge at or after Day 5
 	if task_id == "study_subject1" or task_id == "study_subject2":
 		return _is_study_failed(task_id)
+
+	# Attendance task: same rule (missed > attended), judged after Day 4
+	if task_id == "attend_morning":
+		return _is_attendance_failed()
 
 	# Project fail rule
 	if task_id.to_lower() == "project":
@@ -397,8 +450,28 @@ func _is_study_failed(task_id: String) -> bool:
 			if day_idx < GameState.day:
 				missed += 1
 
+	# Only decide pass/fail after day 4 is over
+	if GameState.day < 5:
+		return false
 	# Fail rule: missed > studied
 	return missed > studied
+
+func _is_attendance_failed() -> bool:
+	# Only judge after Day 4
+	if GameState.day < 5:
+		return false
+
+	var attended := 0
+	var missed := 0
+	for d in DAYS_ATTENDABLE:
+		var attended_flag := ATTEND_PREFIX + str(d)
+		if GameState.has_flag(attended_flag):
+			attended += 1
+		else:
+			missed += 1
+
+	# Fail rule at completion: missed > attended
+	return missed > attended
 
 func _get_discipline_state() -> int:
 	var skips := GameState.get_int("missed_morning_count", 0)

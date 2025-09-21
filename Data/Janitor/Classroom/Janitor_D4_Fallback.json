@@ -1,16 +1,13 @@
 {
   "id": "Janitor_D4_Fallback",
   "lines": [
-    {
-      "speaker": "Janitor",
-      "text": "Let’s get this over with — I’m in a hurry."
-    },
-    {
-      "speaker": "Janitor",
-      "text": "Do you have the money or not?"
-    },
-    {
-      "action": "janitor_offer_subjects"
-    }
+	{
+	  "speaker": "Janitor",
+	  "text": "Let’s get this over with — I’m in a hurry."
+	},
+	{
+	  "speaker": "Janitor",
+	  "text": "Do you have the money or not?"
+	}
   ]
 }

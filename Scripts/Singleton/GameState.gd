@@ -478,7 +478,15 @@ func format_placeholders(text: String) -> String:
 	var s2: String = subject2.capitalize()
 	s = s.replace("{subject1}", s1).replace("{subject2}", s2)
 	s = s.replace("[Subject 1]", s1).replace("[Subject 2]", s2)
+
+	# >>> NEW: missed days placeholder(s)
+	var ndays := str(get_missed_morning_count()) # or: str(get_int("missed_morning_count", 0))
+	s = s.replace("{ndays}", ndays)
+	# (optional synonyms)
+	s = s.replace("{missed_days}", ndays).replace("{skips}", ndays)
+
 	return s
+
 
 # -------------------------------------------------
 # Study/Exam helpers
@@ -807,3 +815,7 @@ func reconcile_mvr_wait_progress() -> void:
 
 	# Record that we've reconciled for today's date
 	set_int(K_MVR_LAST_CHECK_DAY, day)
+const KEY_MISSED_MORNING_COUNT := "missed_morning_count"
+
+func get_missed_morning_count() -> int:
+	return get_int(KEY_MISSED_MORNING_COUNT, 0)

@@ -1,0 +1,11 @@
+{
+  "title": "Attend Morning Classes",
+  "giver": "Homeroom Teacher",
+  "location": "School",
+  "steps": [
+	{ "id": "d1", "text": "Day 1 attendance" },
+	{ "id": "d2", "text": "Day 2 attendance" },
+	{ "id": "d3", "text": "Day 3 attendance" },
+	{ "id": "d4", "text": "Day 4 attendance" }
+  ]
+}

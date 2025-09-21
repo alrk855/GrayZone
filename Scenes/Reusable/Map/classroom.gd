@@ -15,33 +15,33 @@ extends Control
 @export var bg_janitor_papers: Texture2D
 
 # ------------------------ JSON paths ------------------------
-const J_EMPTY_CLASSROOM                    := "res://Data/Classroom/Classroom_Afternoon_Empty.json"
+const J_EMPTY_CLASSROOM              := "res://Data/Classroom/Classroom_Afternoon_Empty.json"
 
-const J_D2_MORNING_ON_TIME                 := "res://Data/Classroom/Classroom_Morning_OnTime.json"
-const J_D2_MORNING_LATE                    := "res://Data/Classroom/Classroom_Morning_Late.json"
-const J_D2_NOON_ANNOUNCEMENT               := "res://Data/Classroom/Classroom_D2_Noon_Event.json"
+const J_D2_MORNING_ON_TIME           := "res://Data/Classroom/Classroom_Morning_OnTime.json"
+const J_D2_MORNING_LATE              := "res://Data/Classroom/Classroom_Morning_Late.json"
+const J_D2_NOON_ANNOUNCEMENT         := "res://Data/Classroom/Classroom_D2_Noon_Event.json"
 
-const J_CATCHUP_FIRST_SKIP                 := "res://Data/Classroom/Classroom_Catchup_FirstSkip.json"
-const J_CATCHUP_REPEAT_SKIP                := "res://Data/Classroom/Classroom_Catchup_RepeatSkip.json"
+const J_CATCHUP_FIRST_SKIP           := "res://Data/Classroom/Classroom_Catchup_FirstSkip.json"
+const J_CATCHUP_REPEAT_SKIP          := "res://Data/Classroom/Classroom_Catchup_RepeatSkip.json"
 
-const J_TEACHER_TRANSCRIPT_TOO_EARLY       := "res://Data/Classroom/Transcript_TooEarly.json"
-const J_DOC_REVIEW_BANNED                  := "res://Data/Classroom/DocReview_Banned.json"
-const J_DOC_NEED_BOTH                      := "res://Data/Classroom/DocReview_NeedBoth.json"
-const J_DOC_NEED_PRINT                     := "res://Data/Classroom/DocReview_NeedPrint.json"
-const J_DOC_START_CV                       := "res://Data/Classroom/DocReview_StartCV.json"
-const J_DOC_SUSPICION_PROMPT               := "res://Data/Classroom/DocReview_Suspicion_Prompt.json"
-const J_DOC_LIE_CAUGHT                     := "res://Data/Classroom/DocReview_Lie_Caught.json"
-const J_DOC_LIE_PASSED                     := "res://Data/Classroom/DocReview_Lie_Passed.json"
-const J_DOC_ADMIT_REWRITE                  := "res://Data/Classroom/DocReview_Admit_Rewrite.json"
-const J_DOC_RESUBMIT_ACCEPTED              := "res://Data/Classroom/DocReview_Resubmit_Accepted.json"
+const J_TEACHER_TRANSCRIPT_TOO_EARLY := "res://Data/Classroom/Transcript_TooEarly.json"
+const J_DOC_REVIEW_BANNED            := "res://Data/Classroom/DocReview_Banned.json"
+const J_DOC_NEED_BOTH                := "res://Data/Classroom/DocReview_NeedBoth.json"
+const J_DOC_NEED_PRINT               := "res://Data/Classroom/DocReview_NeedPrint.json"
+const J_DOC_START_CV                 := "res://Data/Classroom/DocReview_StartCV.json"
+const J_DOC_SUSPICION_PROMPT         := "res://Data/Classroom/DocReview_Suspicion_Prompt.json"
+const J_DOC_LIE_CAUGHT               := "res://Data/Classroom/DocReview_Lie_Caught.json"
+const J_DOC_LIE_PASSED               := "res://Data/Classroom/DocReview_Lie_Passed.json"
+const J_DOC_ADMIT_REWRITE            := "res://Data/Classroom/DocReview_Admit_Rewrite.json"
+const J_DOC_RESUBMIT_ACCEPTED        := "res://Data/Classroom/DocReview_Resubmit_Accepted.json"
 
-# Janitor JSON (Classroom)
-const J_JANITOR_TIPPED_INTRO  := "res://Data/Janitor/Classroom/Janitor_Tipped_Intro.json"
-const J_JANITOR_LOWREP_INTRO  := "res://Data/Janitor/Classroom/Janitor_LowRep_Intro.json"
-const J_JANITOR_NO_MONEY      := "res://Data/Janitor/Classroom/Janitor_NotEnough.json"
-const J_JANITOR_DECLINED      := "res://Data/Janitor/Classroom/Janitor_Decline.json"
-const J_JANITOR_CONFIRM       := "res://Data/Janitor/Classroom/Janitor_Confirm.json"
-const J_JANITOR_D4_FALLBACK   := "res://Data/Janitor/Classroom/Janitor_D4_Fallback.json"
+# --- Janitor (Classroom) ---
+const J_JANITOR_TIPPED_INTRO         := "res://Data/Janitor/Classroom/Janitor_Tipped_Intro.json"
+const J_JANITOR_LOWREP_INTRO         := "res://Data/Janitor/Classroom/Janitor_LowRep_Intro.json"
+const J_JANITOR_NODEAL_INTRO         := "res://Data/Janitor/Classroom/Janitor_NoDeal.json"
+const J_JANITOR_NO_MONEY             := "res://Data/Janitor/Classroom/Janitor_NotEnough.json"
+const J_JANITOR_CONFIRM              := "res://Data/Janitor/Classroom/Janitor_Confirm.json"
+const J_JANITOR_D4_FALLBACK          := "res://Data/Janitor/Classroom/Janitor_D4_Fallback.json"
 
 # ------------------------ Time Gates ------------------------
 const T_07_00 := 7 * 60
@@ -49,8 +49,8 @@ const T_08_00 := 8 * 60
 const T_08_15 := 8 * 60 + 15
 const T_08_30 := 8 * 60 + 30
 const T_12_30 := 12 * 60 + 30
-const T_14_30 := 14 * 60 + 30
-const T_15_00 := 15 * 60
+const T_13_00 := 13 * 60
+const T_16_00 := 16 * 60
 const T_17_00 := 17 * 60
 const T_17_45 := 17 * 60 + 45
 
@@ -65,22 +65,28 @@ var _janitor_papers_mode: bool = false
 var _next_cb: String = ""
 var _doc_suspicious_this_review: bool = false
 
-# Track which subject was just purchased (for clarity; step calc derives from flags)
+# Track which subject was just purchased (not strictly needed for progress, but kept for clarity)
 var _last_bought_flag: String = ""
+# Guard for sale menu during one interaction chain
+var _sale_menu_shown: bool = false
 
-# ------------------------ Flags ------------------------
+# ------------------------ Flags (string keys) ------------------------
 const F_ATTENDED_PREFIX           := "attended_morning_day_"
 const F_LATE_PENALIZED_PREFIX     := "late_penalized_day_"
 const F_SKIP_PENALIZED_PREFIX     := "skip_penalized_day_"
-const F_NOON_DAY2_DONE            := "noon_day2_announcement_done"
-const F_CATCHUP_SHOWN_PREFIX      := "catchup_shown_day_"
 const F_MISSED_CNT                := "missed_morning_count"
 
+const F_NOON_DAY2_DONE            := "noon_day2_announcement_done"
+const F_CATCHUP_SHOWN_PREFIX      := "catchup_shown_day_"
+const F_FIRST_CATCHUP_DONE        := "first_catchup_done"           # once total, after FirstCatchup
+
+# Janitor
 const F_MARKO_TIP                 := "marko_tip"
 const F_ANS_SUBJ1                 := "bought_answers_s1"
 const F_ANS_SUBJ2                 := "bought_answers_s2"
-const F_JANITOR_REJECTED_D3       := "janitor_offer_declined_d3"
+const F_JANITOR_NOMONEY_D3        := "janitor_nomoney_d3"           # for Day-4 fallback
 
+# Doc review / printing
 const F_DOC_REVIEW_BANNED         := "doc_review_banned"
 const F_PRINTED_CV                := "printed_cv"
 const F_PRINTED_MOTIVATION        := "printed_motivation"
@@ -92,8 +98,8 @@ const F_MLETTER_SECOND_CHANCE     := "motivation_second_chance"
 const TASK_TRANSCRIPT             := "transcript"
 const SCHOOL_SCENE                := "res://Scenes/Reusable/Map/School.tscn"
 
-# Classroom Answers task
-const TASK_CLASSROOM_ANS          := "Classroom Answers Lead"
+# Classroom Answers task (ID you asked for)
+const TASK_CLASSROOM_ANS          := "Visit the classroom"
 const K_CLASSROOM_CHECK_DONE      := "__CLASSROOM_ANS_CHECK_DONE"
 
 func _ready() -> void:
@@ -139,30 +145,46 @@ func _update_presence_and_background() -> void:
 	var show_back := true
 	var tex: Texture2D = bg_empty
 
+	# Day 1 is just empty visuals from here
 	if d == 1:
 		tex = bg_empty
 		_apply_vis(tex, false, false, true)
 		return
 
+	# Days 2–4 visuals
 	if d >= 2 and d <= 4:
 		if t < T_12_30:
-			tex = (bg_teacher_morning if bg_teacher_morning else bg_empty)
+			if bg_teacher_morning != null:
+				tex = bg_teacher_morning
+			else:
+				tex = bg_empty
 			show_teacher_btn = false
 			show_janitor_btn = false
 			show_back = false
-		elif t < T_14_30:
-			tex = (bg_teacher_morning if bg_teacher_morning else bg_empty)
+		elif t < T_16_00:
+			if bg_teacher_morning != null:
+				tex = bg_teacher_morning
+			else:
+				tex = bg_empty
 			show_teacher_btn = true
 			show_janitor_btn = false
 			show_back = true
-		elif (d == 3 or d == 4) and t >= T_17_00 and t < T_17_45:
-			if _janitor_papers_mode and bg_janitor_papers:
+		elif t >= T_17_00 and t < T_17_45 and (d == 3 or d == 4):
+			# Janitor slot
+			if _janitor_papers_mode and bg_janitor_papers != null:
 				tex = bg_janitor_papers
-			elif bg_janitor_cleaning:
+			elif bg_janitor_cleaning != null:
 				tex = bg_janitor_cleaning
 			else:
 				tex = bg_empty
-			show_janitor_btn = not (d == 4 and GameState.has_flag(F_JANITOR_REJECTED_D3))
+
+			# Visibility: Day 3 always; Day 4 only if stock remains or the D4 fallback flag is set
+			var any_left := _has_any_answers_left_to_sell()
+			var allow_d4 := (d == 4 and (any_left or GameState.has_flag(F_JANITOR_NOMONEY_D3)))
+			if d == 3:
+				show_janitor_btn = true
+			elif d == 4:
+				show_janitor_btn = allow_d4
 			show_teacher_btn = false
 			show_back = true
 		else:
@@ -179,39 +201,48 @@ func _update_presence_and_background() -> void:
 	_apply_vis(tex, show_teacher_btn, show_janitor_btn, show_back)
 
 func _apply_vis(tex: Texture2D, teacher_btn: bool, janitor_btn: bool, back_btn: bool) -> void:
-	if _bg: _bg.texture = tex
-	if _btn_teacher: _btn_teacher.visible = teacher_btn
-	if _btn_janitor: _btn_janitor.visible = janitor_btn
-	if _btn_back: _btn_back.visible = back_btn
+	if _bg != null:
+		_bg.texture = tex
+	if _btn_teacher != null:
+		_btn_teacher.visible = teacher_btn
+	if _btn_janitor != null:
+		_btn_janitor.visible = janitor_btn
+	if _btn_back != null:
+		_btn_back.visible = back_btn
 
 # ------------------------ Entry Flow (ordered precedence) ------------------------
 func _handle_entry_flow() -> void:
 	var d := GameState.day
 	var t := GameState.time
 
-	# Retro-skip marking for yesterday
+	# Retro-skip marking for yesterday (handles "never opened classroom yesterday")
 	if d >= 3 and d <= 4:
 		var prev := d - 1
 		if prev >= 2:
-			if not GameState.has_flag(F_ATTENDED_PREFIX + str(prev)) and not GameState.has_flag(F_SKIP_PENALIZED_PREFIX + str(prev)):
+			var attended_prev := F_ATTENDED_PREFIX + str(prev)
+			var skip_prev := F_SKIP_PENALIZED_PREFIX + str(prev)
+			if not GameState.has_flag(attended_prev) and not GameState.has_flag(skip_prev):
 				GameState.adjust_reputation(-10)
-				GameState.set_flag(F_SKIP_PENALIZED_PREFIX + str(prev), true)
-				GameState.set_int(F_MISSED_CNT, GameState.get_int(F_MISSED_CNT, 0) + 1)
+				GameState.set_flag(skip_prev, true)
+				var mc := GameState.get_int(F_MISSED_CNT, 0)
+				GameState.set_int(F_MISSED_CNT, mc + 1)
 
-	# Morning block (07:00–12:30)
+	# Morning block (07:00–12:30) — Day 2..4
 	if d >= 2 and d <= 4:
 		if t >= T_07_00 and t < T_08_00:
-			if T_08_00 - t > 0: GameState.adjust_time(T_08_00 - t)
+			var advance := T_08_00 - t
+			if advance > 0:
+				GameState.adjust_time(advance)
 			GameState.adjust_reputation(+5)
 			GameState.set_flag(F_ATTENDED_PREFIX + str(d), true)
 			_start_and_chain(J_D2_MORNING_ON_TIME, "_after_morning_dialogue")
 			return
 		if t >= T_08_00 and t < T_12_30:
-			var attended := F_ATTENDED_PREFIX + str(d)
-			if not GameState.has_flag(attended):
+			var attended_today := F_ATTENDED_PREFIX + str(d)
+			if not GameState.has_flag(attended_today):
 				if t < T_08_15:
 					GameState.adjust_reputation(+5)
-					GameState.set_flag(attended, true)
+					GameState.set_flag(attended_today, true)
 					_start_and_chain(J_D2_MORNING_ON_TIME, "_after_morning_dialogue")
 					return
 				elif t < T_08_30:
@@ -219,51 +250,90 @@ func _handle_entry_flow() -> void:
 					if not GameState.has_flag(late_key):
 						GameState.adjust_reputation(-5)
 						GameState.set_flag(late_key, true)
-					GameState.set_flag(attended, true)
+					GameState.set_flag(attended_today, true)
 					_start_and_chain(J_D2_MORNING_LATE, "_after_morning_dialogue")
 					return
+			# 08:30–12:30 is locked from School; nothing to do here
 
-	# Catch-up only 07:00–15:00, once/day
+	# After 12:30, if you didn't attend today, mark today's skip (one-time)
+	if d >= 2 and d <= 4 and t >= T_12_30:
+		var attended_today2 := F_ATTENDED_PREFIX + str(d)
+		var skip_today := F_SKIP_PENALIZED_PREFIX + str(d)
+		if not GameState.has_flag(attended_today2) and not GameState.has_flag(skip_today):
+			GameState.adjust_reputation(-10)
+			GameState.set_flag(skip_today, true)
+			var mc2 := GameState.get_int(F_MISSED_CNT, 0)
+			GameState.set_int(F_MISSED_CNT, mc2 + 1)
+
+	# Catch-up branch (07:00–16:00 effective window), show once per day
 	if d >= 2 and d <= 4:
 		var shown_key := F_CATCHUP_SHOWN_PREFIX + str(d)
 		if not GameState.has_flag(shown_key):
-			var skips := GameState.get_int(F_MISSED_CNT, 0)
-			if skips >= 1 and t >= T_07_00 and t < T_15_00:
-				GameState.set_flag(shown_key, true)
-				_apply_vis((bg_teacher_morning if bg_teacher_morning else bg_empty), false, false, true)
-				if skips == 1:
+			var t_in_window := (GameState.time >= T_13_00 and GameState.time < T_16_00)
+			if t_in_window:
+				if _should_first_catchup():
+					GameState.set_flag(shown_key, true)
+					GameState.set_flag(F_FIRST_CATCHUP_DONE, true)
+					# ensure teacher BG
+					_apply_vis((bg_teacher_morning if bg_teacher_morning != null else bg_empty), false, false, true)
 					_start_and_chain(J_CATCHUP_FIRST_SKIP, "_after_catchup")
-				else:
+					return
+				elif GameState.get_int(F_MISSED_CNT, 0) >= 1:
+					GameState.set_flag(shown_key, true)
+					_apply_vis((bg_teacher_morning if bg_teacher_morning != null else bg_empty), false, false, true)
 					_start_and_chain(J_CATCHUP_REPEAT_SKIP, "_after_catchup")
-				return
+					return
 
-	# Day 2 noon announcement
-	if GameState.day == 2 and not GameState.has_flag(F_NOON_DAY2_DONE) and t >= T_12_30 and t < T_14_30:
-		await fade.fade_out(1.0)
-		await fade.fade_in(1.0)
-		_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "_after_day2_noon")
-		return
+	# Day 2 noon announcement (only if Day 2 was attended)
+	if GameState.day == 2 and not GameState.has_flag(F_NOON_DAY2_DONE):
+		var attended_d2 := GameState.has_flag(F_ATTENDED_PREFIX + "2")
+		if attended_d2 and t >= T_12_30 and t < T_13_00:
+			await fade.fade_out(1.0)
+			await fade.fade_in(1.0)
+			_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "_after_day2_noon")
+			return
 
-	# If nobody is present now → show empty classroom JSON, then kick back to School
+	# If nobody is present -> show empty classroom JSON and kick back to School
 	if _is_room_empty_now(d, t):
 		_start_and_chain(J_EMPTY_CLASSROOM, "_go_school")
 		return
 
 func _is_room_empty_now(d: int, t: int) -> bool:
-	var teacher_here := (d >= 2 and d <= 4 and t >= T_12_30 and t < T_14_30)
+	var teacher_here := (d >= 2 and d <= 4 and t >= T_12_30 and t < T_16_00)
 	var janitor_here := ((d == 3 or d == 4) and t >= T_17_00 and t < T_17_45)
-	if d == 4 and GameState.has_flag(F_JANITOR_REJECTED_D3):
-		janitor_here = false
 	return not teacher_here and not janitor_here
 
+# After morning JSONs
 func _after_morning_dialogue() -> void:
+	# Jump to 12:30 after class
 	if GameState.time < T_12_30:
 		GameState.adjust_time(T_12_30 - GameState.time)
+
+	# Right after class, immediately run catchup if applicable (First has precedence)
+	var d := GameState.day
+	var shown_key := F_CATCHUP_SHOWN_PREFIX + str(d)
+	if d >= 2 and d <= 4 and not GameState.has_flag(shown_key):
+		if _should_first_catchup():
+			GameState.set_flag(shown_key, true)
+			GameState.set_flag(F_FIRST_CATCHUP_DONE, true)
+			_apply_vis((bg_teacher_morning if bg_teacher_morning != null else bg_empty), false, false, true)
+			_start_and_chain(J_CATCHUP_FIRST_SKIP, "_after_catchup")
+			return
+		elif GameState.get_int(F_MISSED_CNT, 0) >= 1 and GameState.time < T_16_00:
+			GameState.set_flag(shown_key, true)
+			_apply_vis((bg_teacher_morning if bg_teacher_morning != null else bg_empty), false, false, true)
+			_start_and_chain(J_CATCHUP_REPEAT_SKIP, "_after_catchup")
+			return
+
+	# Day 2 noon announcement only if attended Day 2 and time ∈ [12:30, 13:00)
 	if GameState.day == 2 and not GameState.has_flag(F_NOON_DAY2_DONE):
-		await fade.fade_out(1.0)
-		await fade.fade_in(1.0)
-		_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "_after_day2_noon")
-		return
+		var attended_d2 := GameState.has_flag(F_ATTENDED_PREFIX + "2")
+		if attended_d2 and GameState.time >= T_12_30 and GameState.time < T_13_00:
+			await fade.fade_out(1.0)
+			await fade.fade_in(1.0)
+			_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "_after_day2_noon")
+			return
+
 	_update_presence_and_background()
 	_go_school()
 
@@ -313,7 +383,8 @@ func _try_doc_review() -> void:
 	if GameState.has_flag("secretary_met"):
 		var cvp := GameState.get_task_progress("cv")
 		var mlp := GameState.get_task_progress("motivation")
-		if cvp > 0 and mlp > 0: has_both = true
+		if cvp > 0 and mlp > 0:
+			has_both = true
 	if not has_both:
 		_start_and_chain(J_DOC_NEED_BOTH, ""); return
 	var printed_cv := GameState.has_flag(F_PRINTED_CV)
@@ -379,49 +450,70 @@ func _on_janitor_pressed() -> void:
 	if not ((d == 3 or d == 4) and t >= T_17_00 and t < T_17_45):
 		return
 
-	if d == 4 and GameState.has_flag(F_JANITOR_REJECTED_D3):
-		_start_and_chain(J_JANITOR_D4_FALLBACK, ""); return
+	# Day-4 fallback has priority if player was short on Day 3 and stock remains
+	if d == 4 and GameState.has_flag(F_JANITOR_NOMONEY_D3) and _has_any_answers_left_to_sell():
+		_janitor_papers_mode = true
+		_update_presence_and_background()
+		GameState.clear_flag(F_JANITOR_NOMONEY_D3)  # consume fallback
+		_sale_menu_shown = false
+		_start_and_chain(J_JANITOR_D4_FALLBACK, "_show_janitor_sale_menu")
+		return
 
+	# Normal intro priority: Tip > (Project or Rep<35) > NoDeal
 	var has_tip := GameState.has_flag(F_MARKO_TIP)
-	var can_deal := has_tip or (GameState.reputation < 30)
-	if not can_deal:
-		_start_and_chain(J_JANITOR_LOWREP_INTRO, ""); return
+	var has_project := GameState.has_flag("bought_project")  # rename if your flag differs
+	var rep_low := GameState.reputation < 35
 
-	# Switch papers art for selling stage
-	_janitor_papers_mode = true
-	_update_presence_and_background()
-
-	# Start intro JSON. The JSON should call { "action": "show_janitor_sale_menu" } when ready.
-	DialogueManager.start_dialogue(has_tip ? J_JANITOR_TIPPED_INTRO : J_JANITOR_LOWREP_INTRO, self)
+	if has_tip:
+		_janitor_papers_mode = true
+		_update_presence_and_background()
+		_sale_menu_shown = false
+		_start_and_chain(J_JANITOR_TIPPED_INTRO, "_show_janitor_sale_menu")
+		return
+	elif has_project or rep_low:
+		_janitor_papers_mode = true
+		_update_presence_and_background()
+		_sale_menu_shown = false
+		_start_and_chain(J_JANITOR_LOWREP_INTRO, "_show_janitor_sale_menu")
+		return
+	else:
+		# Pure no-deal: show line, no menu
+		_janitor_papers_mode = false
+		_update_presence_and_background()
+		_start_and_chain(J_JANITOR_NODEAL_INTRO, "")
+		return
 
 func _show_janitor_sale_menu() -> void:
+	if _sale_menu_shown:
+		return
+	_sale_menu_shown = true
+
 	var s1 := GameState.subject1
 	var s2 := GameState.subject2
 	var choices: Array = []
 
 	if s1.strip_edges() != "" and not GameState.has_flag(F_ANS_SUBJ1):
-		choices.append({ "id": "buy_s1", "text": "Buy answers for " + s1.capitalize() })
+		choices.append({"id":"buy_s1","text":"Buy answers for " + s1.capitalize()})
 	if s2.strip_edges() != "" and not GameState.has_flag(F_ANS_SUBJ2):
-		choices.append({ "id": "buy_s2", "text": "Buy answers for " + s2.capitalize() })
+		choices.append({"id":"buy_s2","text":"Buy answers for " + s2.capitalize()})
 
 	if choices.is_empty():
-		# Nothing left to sell
-		_start_and_chain(J_JANITOR_DECLINED, "")
+		# Nothing to sell; just end gracefully
 		return
 
-	choices.append({ "id": "pass", "text": "I’ll pass" })
+	choices.append({"id":"pass","text":"I’ll pass"})
 	_spawn_options_panel(choices, Callable(self, "_on_janitor_choice"))
 
 func _on_janitor_choice(id: String) -> void:
 	_clear_panel()
 
 	if id == "pass":
-		_start_and_chain(J_JANITOR_DECLINED, "")
-		if GameState.day == 3:
-			GameState.set_flag(F_JANITOR_REJECTED_D3, true)
+		# Just close. No JSON, no integrity change.
 		return
 
-	var price := GameState.has_flag(F_MARKO_TIP) ? 400 : 600
+	var price := 600
+	if GameState.has_flag(F_MARKO_TIP):
+		price = 400
 
 	var bought_flag := ""
 	if id == "buy_s1":
@@ -433,6 +525,8 @@ func _on_janitor_choice(id: String) -> void:
 		return
 
 	if GameState.money < price:
+		if GameState.day == 3:
+			GameState.set_flag(F_JANITOR_NOMONEY_D3, true)
 		_start_and_chain(J_JANITOR_NO_MONEY, "")
 		return
 
@@ -440,64 +534,91 @@ func _on_janitor_choice(id: String) -> void:
 	GameState.adjust_integrity(-10)
 	GameState.set_flag(bought_flag, true)
 	_last_bought_flag = bought_flag
+	if GameState.has_flag(F_JANITOR_NOMONEY_D3):
+		GameState.clear_flag(F_JANITOR_NOMONEY_D3)
 
-	# Confirm JSON — AFTER that, update tasks & time
+	# Confirm JSON — AFTER that, update tasks & time, then possibly show menu again
 	_start_and_chain(J_JANITOR_CONFIRM, "_after_janitor_confirm")
 	_update_presence_and_background()
 
 func _after_janitor_confirm() -> void:
-	# 1) Make sure “checks” is credited if we’re in the window
+	# 1) Credit “checks” if we’re in the window
 	_maybe_mark_classroom_answers_check()
 
-	# 2) Derive task progress from actual purchase flags (idempotent)
+	# 2) Task progress derived from flags (1=checks, 2=buy_subj1, 3=buy_subj2)
 	GameState.ensure_task(TASK_CLASSROOM_ANS)
+	var base := 0
+	if GameState.has_flag(K_CLASSROOM_CHECK_DONE):
+		base = 1
+	var s1b := 0
+	if GameState.has_flag(F_ANS_SUBJ1):
+		s1b = 1
+	var s2b := 0
+	if GameState.has_flag(F_ANS_SUBJ2):
+		s2b = 1
+	var target := base + s1b + s2b
 
-	var base := GameState.has_flag(K_CLASSROOM_CHECK_DONE) ? 1 : 0
-	var unique_buys := (GameState.has_flag(F_ANS_SUBJ1) ? 1 : 0) + (GameState.has_flag(F_ANS_SUBJ2) ? 1 : 0)
-	var target := base + unique_buys
+	var current := GameState.get_task_progress(TASK_CLASSROOM_ANS)
+	if target > current:
+		if GameState.has_method("ensure_task_progress_at_least"):
+			GameState.ensure_task_progress_at_least(TASK_CLASSROOM_ANS, target)
+		elif GameState.has_method("set_task_progress"):
+			GameState.set_task_progress(TASK_CLASSROOM_ANS, target)
+		else:
+			while GameState.get_task_progress(TASK_CLASSROOM_ANS) < target:
+				GameState.update_task_step(TASK_CLASSROOM_ANS)
 
-	var prog := GameState.get_task_progress(TASK_CLASSROOM_ANS)
-	if target > prog:
-		GameState.ensure_task_progress_at_least(TASK_CLASSROOM_ANS, target)
+	# 3) If both bought now, end the window at 17:45; otherwise allow buying the second
+	var both_bought := GameState.has_flag(F_ANS_SUBJ1) and GameState.has_flag(F_ANS_SUBJ2)
+	if both_bought:
+		if GameState.time < T_17_45:
+			var delta := T_17_45 - GameState.time
+			if delta > 0:
+				GameState.adjust_time(delta)
+		_update_presence_and_background()
+		return
 
-	# 3) Move time to 17:45 AFTER JSON (to end the selling window)
-	if GameState.time < T_17_45:
-		var delta := T_17_45 - GameState.time
-		if delta > 0:
-			GameState.adjust_time(delta)
+	# Show sale menu again (if within window and another subject remains)
+	var d := GameState.day
+	var t := GameState.time
+	var any_left := _has_any_answers_left_to_sell()
+	if (d == 3 or d == 4) and t >= T_17_00 and t < T_17_45 and any_left:
+		_sale_menu_shown = false
+		_show_janitor_sale_menu()
+	else:
+		_update_presence_and_background()
 
-	_update_presence_and_background()
-
-# ------------------------ Back / Navigation ------------------------
-func _on_back_pressed() -> void:
-	_go_school()
-
-func _go_school() -> void:
-	if _nav_pending: return
-	_nav_pending = true
-	if _btn_back: _btn_back.visible = false
-	_clear_panel()
-	await get_tree().process_frame
-	if ResourceLoader.exists(SCHOOL_SCENE):
-		await fade.fade_to_scene(SCHOOL_SCENE, 0.4, 0.35)
-	_nav_pending = false
-
-# ------------------------ Dialogue actions ------------------------
+# Optional: dialogue actions routed from JSON
 func on_dialogue_action(line: Dictionary) -> void:
-	var act := String(line.get("action",""))
+	var act := String(line.get("action", "")).strip_edges()
 	if act == "show_janitor_sale_menu":
 		_show_janitor_sale_menu()
 		return
 	if act == "classroom_mark_checks":
 		_maybe_mark_classroom_answers_check()
 		return
-	# Pass anything else to your global action handler if you use it
 	if GameState.has_method("apply_action"):
 		GameState.apply_action(line)
 
+# ------------------------ Back / Navigation ------------------------
+func _on_back_pressed() -> void:
+	_go_school()
+
+func _go_school() -> void:
+	if _nav_pending:
+		return
+	_nav_pending = true
+	if _btn_back != null:
+		_btn_back.visible = false
+	_clear_panel()
+	await get_tree().process_frame
+	if ResourceLoader.exists(SCHOOL_SCENE):
+		await fade.fade_to_scene(SCHOOL_SCENE, 0.4, 0.35)
+	_nav_pending = false
+
 # ------------------------ Helpers ------------------------
 func _clear_panel() -> void:
-	if _panel and is_instance_valid(_panel):
+	if _panel != null and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
 
@@ -530,7 +651,6 @@ func _on_dm_finished(_id: String) -> void:
 	if cb != "":
 		call_deferred(cb)
 
-# ---------- Time-window auto marker for "Classroom Answers Lead" ----------
 func _maybe_mark_classroom_answers_check() -> void:
 	if GameState.has_flag(K_CLASSROOM_CHECK_DONE):
 		return
@@ -538,7 +658,17 @@ func _maybe_mark_classroom_answers_check() -> void:
 	var t := GameState.time
 	if (d == 3 or d == 4) and t >= T_17_00 and t < T_17_45:
 		GameState.ensure_task(TASK_CLASSROOM_ANS)
-		# Only push to step 1 if still at 0
-		if GameState.get_task_progress(TASK_CLASSROOM_ANS) < 1:
-			GameState.update_task_step(TASK_CLASSROOM_ANS)
+		GameState.update_task_step(TASK_CLASSROOM_ANS)  # -> checks
 		GameState.set_flag(K_CLASSROOM_CHECK_DONE, true)
+
+func _should_first_catchup() -> bool:
+	# FirstCatchup: only if Day 2 was skipped, and we haven't shown FirstCatchup before
+	var missed_d2 := GameState.has_flag(F_SKIP_PENALIZED_PREFIX + "2")
+	return missed_d2 and not GameState.has_flag(F_FIRST_CATCHUP_DONE)
+
+func _has_any_answers_left_to_sell() -> bool:
+	if GameState.subject1.strip_edges() != "" and not GameState.has_flag(F_ANS_SUBJ1):
+		return true
+	if GameState.subject2.strip_edges() != "" and not GameState.has_flag(F_ANS_SUBJ2):
+		return true
+	return false
