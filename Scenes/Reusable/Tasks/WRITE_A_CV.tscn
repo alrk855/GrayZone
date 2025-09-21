@@ -1,12 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://qd280ybioky1"]
+[gd_scene load_steps=9 format=3 uid="uid://qd280ybioky1"]
 
 [ext_resource type="Script" uid="uid://do4deu8dtxej5" path="res://Scenes/Reusable/Tasks/WRITE_A_CV.gd" id="1_aog3w"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_aog3w"]
 [ext_resource type="Texture2D" uid="uid://dp58ywitfyhh6" path="res://Images/MainMenu/BlueSky_HD2.png" id="2_fx2dp"]
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_6f1df"]
+[ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="5_xav0s"]
 
 [sub_resource type="Animation" id="Animation_d76yl"]
 resource_name = "CV_anim"
-length = 6.0
+length = 10.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -38,10 +40,10 @@ tracks/2/path = NodePath("CVBOX:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 2.96667, 4.4),
-"transitions": PackedFloat32Array(1, 0.307786, 1),
+"times": PackedFloat32Array(0, 2.96667, 4.4, 8, 9.03333),
+"transitions": PackedFloat32Array(1, 0.307786, 1, 0.366022, 0.307786),
 "update": 0,
-"values": [Vector2(-1000, 255), Vector2(-1000, 255), Vector2(517, 255)]
+"values": [Vector2(-1000, 255), Vector2(-1000, 255), Vector2(517, 255), Vector2(517, 255), Vector2(-1000, 255)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -187,27 +189,73 @@ offset_right = 156.5
 offset_bottom = 76.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_6f1df")
 theme_override_font_sizes/font_size = 41
 text = "🖋 CV Entry (Simple Confirm Template):
 Name: [YourName]
 Date of Birth: [DD/MM/YYYY]
-Education: High School (Current)
+Education: High School
 Skills: Typing, Teamwork, Basic Research
 Experience: None yet — willing to learn"
+vertical_alignment = 1
 
 [node name="TextEdit" type="TextEdit" parent="."]
-layout_mode = 0
-offset_left = 637.0
-offset_top = 851.0
-offset_right = 1269.0
-offset_bottom = 1025.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 1140.0
+offset_top = -262.0
+offset_right = 1899.0
+offset_bottom = 261.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_6f1df")
+theme_override_font_sizes/font_size = 35
+placeholder_text = "Name: Aco
+Date of Birth: 28/11/2005
+Education: High School
+Skills: Typing, Teamwork, Basic Research
+Experience: None yet - willing to learn"
 
-[node name="Button" type="Button" parent="."]
-layout_mode = 0
-offset_left = 1447.0
-offset_top = 861.0
-offset_right = 1464.0
-offset_bottom = 880.0
-scale = Vector2(16.3509, 6.97736)
+[node name="FinishButton" type="Button" parent="TextEdit"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -159.5
+offset_top = 106.5
+offset_right = 159.5
+offset_bottom = 225.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("5_xav0s")
+theme_override_font_sizes/font_size = 91
+text = "Finish"
 
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[node name="PeekButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1602.0
+offset_top = -120.0
+offset_right = 1921.0
+offset_bottom = -1.0
+theme_override_fonts/font = ExtResource("5_xav0s")
+theme_override_font_sizes/font_size = 91
+text = "Peek"
+
+[node name="WriteButton" type="Button" parent="."]
+offset_top = -120.0
+offset_right = 319.0
+offset_bottom = -1.0
+theme_override_fonts/font = ExtResource("5_xav0s")
+theme_override_font_sizes/font_size = 91
+text = "Write"
+
+[connection signal="animation_finished" from="SceneAnimation" to="." method="_on_scene_animation_animation_finished"]
+[connection signal="pressed" from="TextEdit/FinishButton" to="." method="_on_finish_button_pressed"]
+[connection signal="pressed" from="PeekButton" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="WriteButton" to="." method="_on_write_button_pressed"]
