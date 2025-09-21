@@ -248,6 +248,7 @@ theme_override_font_sizes/font_size = 91
 text = "Peek"
 
 [node name="WriteButton" type="Button" parent="."]
+layout_mode = 0
 offset_top = -120.0
 offset_right = 319.0
 offset_bottom = -1.0

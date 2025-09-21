@@ -3,6 +3,11 @@ extends Control
 # ---- Config ----
 const HANGOUT_JSON: String = "res://Data/Marko/Marko_Hangout_Free.json"
 
+# ---- BG (set these in Inspector) ----
+@export var bg_rect_path: NodePath
+@export var bg_male: Texture2D
+@export var bg_female: Texture2D
+
 # ---- Effects ----
 const TIME_MIN: int = 90
 const REP_DELTA: int = -5
@@ -17,6 +22,9 @@ var _returning := false
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	GameState.location = "MarkoHangout"
+
+	# Set BG immediately based on player gender
+	_apply_bg_by_gender()
 
 	# Context: if launched from the event, skip REP penalty
 	var from_event := String(GameState.features_unlocked.get(KEY_HANGOUT_CONTEXT, "")) == "event"
@@ -45,6 +53,17 @@ func _ready() -> void:
 			await _return_to(ret)
 	else:
 		await _return_to(ret)
+
+func _apply_bg_by_gender() -> void:
+	if bg_rect_path == NodePath():
+		return
+	var node := get_node_or_null(bg_rect_path)
+	if node == null or not (node is TextureRect):
+		push_error("MarkoHangout: bg_rect_path is invalid or not a TextureRect.")
+		return
+	var rect := node as TextureRect
+	var g := String(GameState.player_gender).to_lower()
+	rect.texture = bg_female if g == "female" else bg_male
 
 func _on_json_done(ret: String) -> void:
 	await _return_to(ret)

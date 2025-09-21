@@ -84,6 +84,7 @@ grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 5
 theme_override_font_sizes/normal_font_size = 33
+bbcode_enabled = true
 text = "The Quick Brown Fox Jumped Over The Fence"
 
 [node name="Speaker Box" type="Control" parent="."]

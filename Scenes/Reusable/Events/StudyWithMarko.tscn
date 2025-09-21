@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://dqwn5yx54a1r2"]
+[gd_scene load_steps=5 format=3 uid="uid://dqwn5yx54a1r2"]
 
 [ext_resource type="Script" uid="uid://cb4ffsx5bw5ag" path="res://Scenes/Reusable/Events/study_with_marko.gd" id="1_sguoi"]
+[ext_resource type="Texture2D" uid="uid://dyg2g7b0pj0tp" path="res://Images/Pozi/uchenje ver 3.png" id="2_mi2hv"]
 [ext_resource type="Texture2D" uid="uid://4ilsh38540f" path="res://Images/download.jpg" id="2_sguoi"]
+[ext_resource type="Texture2D" uid="uid://b0l6l1caesmex" path="res://Images/Pozi/uchenje ver 4.png" id="3_ihior"]
 
 [node name="StudyWithMarko" type="Control"]
 layout_mode = 3
@@ -11,6 +13,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sguoi")
+bg_rect_path = NodePath("TextureRect")
+bg_male = ExtResource("2_mi2hv")
+bg_female = ExtResource("3_ihior")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1

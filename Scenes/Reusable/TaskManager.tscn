@@ -468,6 +468,9 @@ anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 2.0
+offset_left = 3.0
+offset_right = 3.0
+offset_bottom = 20.0
 texture = ExtResource("1_xtc5h")
 expand_mode = 1
 
