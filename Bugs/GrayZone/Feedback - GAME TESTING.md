@@ -18,3 +18,9 @@
 
 ## CV
 - Nema back button
+
+## Write_Project
+- Back, crash
+
+## Write project with ChatGPT
+- Dava 0 poeni i go broi kako nezavrseno
