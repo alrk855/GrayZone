@@ -9,7 +9,7 @@ const REQUIRED_TAGS := [
 	"education:",
 	"skills:",
 	"name",
-	"expirience"
+	"experience"
 ]
 
 var tekst_za_pisuvanje : String = "Name: Aco
