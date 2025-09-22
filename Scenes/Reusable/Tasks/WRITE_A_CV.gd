@@ -25,6 +25,9 @@ Experience: None yet - willing to learn"
 @onready var write : Button = $WriteButton
 @onready var _edit_base_modulate: Color = Color(1, 1, 1, 1)
 
+# --- NEW: Back button export ---
+@export var back_button_path: NodePath
+
 func _ready() -> void:
 	# Cache the base modulate so we can restore after error flash
 	_edit_base_modulate = edit.modulate
@@ -40,6 +43,21 @@ func _ready() -> void:
 	tekst_za_pisuvanje = "Name: " + GameState.player_name + "\nDate of Birth: 28/11/2005 \nEducation: High School \nSkills: Typing, Teamwork, Basic Research \nExperience: None yet - willing to learn"
 
 	GameState.location = "Unknown" # Location Unknown
+
+	# --- NEW: wire Back button if provided ---
+	_wire_back_button()
+
+func _wire_back_button() -> void:
+	if back_button_path == NodePath():
+		return
+	var n := get_node_or_null(back_button_path)
+	if n and n is Button:
+		var btn := n as Button
+		if not btn.is_connected("pressed", Callable(self, "_on_back_pressed")):
+			btn.pressed.connect(_on_back_pressed)
+
+func _on_back_pressed() -> void:
+	await _go_home()
 
 func _on_button_pressed() -> void: # Peek
 	create_tween().tween_property(edit, "position", Vector2(2100, 278), 1) # edit

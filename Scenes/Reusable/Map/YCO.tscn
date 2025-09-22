@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://c85ya7md0kuy3"]
+[gd_scene load_steps=10 format=3 uid="uid://c85ya7md0kuy3"]
 
 [ext_resource type="Script" uid="uid://dwq5awcorxxo4" path="res://Scenes/Reusable/Map/yco.gd" id="1_a2mpb"]
 [ext_resource type="Texture2D" uid="uid://vw1dhtj30301" path="res://Images/b7500904646b294d9b087886b204113a_t.jpeg" id="2_a2mpb"]
 [ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_4n16m"]
+[ext_resource type="Texture2D" uid="uid://cp252lnyqbomr" path="res://Images/CharacterFrames/DanielFrame.png" id="4_4n16m"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kfnul"]
 
@@ -59,4 +60,5 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_5tyei")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_ffrf7")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_xrl65")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ebnsl")
+icon = ExtResource("4_4n16m")
 metadata/_edit_use_anchors_ = true

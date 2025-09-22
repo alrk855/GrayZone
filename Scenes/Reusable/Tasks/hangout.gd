@@ -23,7 +23,6 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	GameState.location = "MarkoHangout"
 
-	# Set BG immediately based on player gender
 	_apply_bg_by_gender()
 
 	# Context: if launched from the event, skip REP penalty
@@ -72,14 +71,22 @@ func _return_to(path: String) -> void:
 	if _returning:
 		return
 	_returning = true
+
+	# Unpause just in case
 	if get_tree().paused:
 		get_tree().paused = false
-	if ResourceLoader.exists(path):
-		var f = get_tree().get_node_or_null("/root/fade")
-		if f and f.has_method("fade_to_scene"):
-			await f.fade_to_scene(path)
-		else:
-			get_tree().change_scene_to_file(path)
-	else:
-		push_warning("Hangout: invalid return path: " + path)
+
+	# Validate target; if missing, use fallback (still via fade singleton)
+	var target := path
+	if not ResourceLoader.exists(target):
+		push_warning("Hangout: invalid return path: " + target + " → using fallback")
+		target = RETURN_FALLBACK
+		if not ResourceLoader.exists(target):
+			push_error("Hangout: fallback path also invalid: " + target)
+			_returning = false
+			return
+
+	# 🔒 Use ONLY the global fade singleton
+	await fade.fade_to_scene(target)
+
 	_returning = false

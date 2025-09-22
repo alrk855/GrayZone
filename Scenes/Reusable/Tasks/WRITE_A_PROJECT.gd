@@ -1,18 +1,18 @@
 extends Node
 
 # ---------- UI & Nodes ----------
-@onready var leave: Label            = $"Leave"
-@onready var begin: Label            = $"Begin"
-@onready var anim: AnimationPlayer   = $"StartAnimation"
-@onready var option_buttons: Array[Label] = [$"Option1", $"Option2", $"Option3"]
-@onready var timer: Timer            = $"tweenTimer"
-@onready var question_label: Label   = $"Question"
+@onready var leave: Label                  = $"Leave"
+@onready var begin: Label                  = $"Begin"
+@onready var anim: AnimationPlayer         = $"StartAnimation"
+@onready var option_buttons: Array[Label]  = [$"Option1", $"Option2", $"Option3"]
+@onready var timer: Timer                  = $"tweenTimer"
+@onready var question_label: Label         = $"Question"
 
-@onready var ans: Label              = $"Outro/answers"
-@onready var stats: Label            = $"Outro/stats"
-@onready var quest: Label            = $"Outro/questions"
-@onready var taken: Label            = $"Outro/taken"
-@onready var outro: Control          = $"Outro"
+@onready var ans: Label                    = $"Outro/answers"
+@onready var stats: Label                  = $"Outro/stats"
+@onready var quest: Label                  = $"Outro/questions"
+@onready var taken: Label                  = $"Outro/taken"
+@onready var outro: Control                = $"Outro"
 
 # ---------- State ----------
 var score: int = 0
@@ -20,6 +20,7 @@ var current_question: int = 0
 var _started: bool = false
 var _finished: bool = false
 var _score_out_of_5: int = 0
+var _exiting: bool = false   # prevents re-entrancy / double scene-switch
 
 # ---------- Config ----------
 const LEAVE_BUTTON_PATH: NodePath = NodePath("Leave/button2")   # visible at start
@@ -73,7 +74,8 @@ func _ready() -> void:
 	for b in option_buttons:
 		b.visible = false
 	outro.visible = false
-	anim.play("CvAnim")
+	if anim:
+		anim.play("CvAnim")
 
 	# Wire controls
 	var leave_btn := get_node_or_null(LEAVE_BUTTON_PATH) as Button
@@ -115,11 +117,13 @@ func _on_button3_pressed() -> void: # Option 3
 # ---------- Flow ----------
 func begin_project() -> void:
 	mark_started()
-	timer.start()
+	if timer:
+		timer.start()
 	create_tween().tween_property(begin, "modulate:a", 0.0, 1.0).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property(leave, "modulate:a", 0.0, 1.0).set_trans(Tween.TRANS_CUBIC)
 	loadQ()
-	await timer.timeout
+	if timer:
+		await timer.timeout
 	for b in option_buttons:
 		b.visible = true
 	begin.visible = false
@@ -221,22 +225,43 @@ func finish_project_with_score(score_in: int) -> void:
 # ---------- Exits ----------
 func _on_leave_pressed() -> void:
 	# Only before the work actually starts
-	if _started:
+	if _started or _exiting:
 		return
 	_go_home()
 
 func _on_exit_pressed() -> void:
-	if not _finished:
+	if not _finished or _exiting:
 		return
 	_go_home()
 
 func _on_exit_label_input(event: InputEvent) -> void:
-	if not _finished:
+	if not _finished or _exiting:
 		return
 	if event is InputEventMouseButton and event.pressed:
 		_go_home()
 
 func _go_home() -> void:
-	if HOME_SCENE_PATH == "":
+	if _exiting:
 		return
-	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/Home.tscn")
+	_exiting = true
+
+	# Stop further inputs so we don't double-trigger while fading
+	var leave_btn := get_node_or_null(LEAVE_BUTTON_PATH) as Button
+	if leave_btn:
+		leave_btn.disabled = true
+	var exit_btn := get_node_or_null(EXIT_BUTTON_PATH) as Button
+	if exit_btn:
+		exit_btn.disabled = true
+	var exit_label := get_node_or_null(EXIT_LABEL_PATH) as Control
+	if exit_label:
+		exit_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	if HOME_SCENE_PATH == "" or not ResourceLoader.exists(HOME_SCENE_PATH):
+		push_error("Invalid HOME_SCENE_PATH: " + String(HOME_SCENE_PATH))
+		return
+
+	# Use the global fade singleton; it survives the swap so no null get_tree() here.
+	GameState.location = "Home"
+	await fade.fade_to_scene(HOME_SCENE_PATH)
+
+	# Do not access local nodes after this point; this instance may already be freed.

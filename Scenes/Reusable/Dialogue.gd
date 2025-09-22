@@ -14,7 +14,8 @@ signal choices_requested(options: Array, max_select: int) # external UI can list
 	"janitor":          preload("res://Images/CharacterFrames/JanitorFrame.png"),
 	"professor":        preload("res://Images/CharacterFrames/Prof1Frame.png"),
 	"marko":            preload("res://Images/CharacterFrames/MarkoFrame.png"),
-	"mvrclerk":         preload("res://Images/CharacterFrames/MvrClerkFrame.png")
+	"mvrclerk":         preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
+	"daniel":           preload("res://Images/CharacterFrames/DanielFrame.png") # ← replace with real path
 }
 
 var dialogue_data: Array = []
@@ -31,6 +32,7 @@ func start(lines: Array, caller_node: Node = null) -> void:
 	dialogue_data = lines
 	caller = caller_node
 	line_index = 0
+	dialogue_label.clear() # BBCode already enabled in Inspector
 	show()
 	display_next()
 
@@ -65,7 +67,11 @@ func display_next() -> void:
 		speaker_label.text = show_speaker
 		_update_portrait(speaker_label.text)
 
-		await _type_text(show_text)
+		# Italicize only when the speaker is Narrator (empty counts as Narrator too)
+		var sp_key := show_speaker.strip_edges().to_lower()
+		var narrator_line := (sp_key == "" or sp_key == "narrator")
+
+		await _type_text(show_text, narrator_line)
 		await get_tree().create_timer(0.5).timeout
 		line_index += 1
 		display_next()
@@ -90,16 +96,22 @@ func display_next() -> void:
 	line_index += 1
 	display_next()
 
-func _type_text(text: String) -> void:
+# Typing that works with BBCode; uses italics for Narrator via push_italics/pop
+func _type_text(text: String, italics: bool=false) -> void:
 	is_typing = true
-	dialogue_label.text = ""
+	dialogue_label.clear()
+	if italics:
+		dialogue_label.push_italics()
+
 	for i in range(text.length()):
-		dialogue_label.text += text[i]
+		dialogue_label.append_text(text.substr(i, 1))
 		await get_tree().create_timer(typing_speed).timeout
+
+	if italics:
+		dialogue_label.pop()
 	is_typing = false
 
 # ---------- External choices flow ----------
-
 func _request_external_choices(line: Dictionary) -> void:
 	_pending_choice_options = []
 	_pending_max_select = int(line.get("max_select", 1))
