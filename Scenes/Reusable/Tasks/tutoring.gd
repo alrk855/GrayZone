@@ -25,6 +25,10 @@ const TIME_1H: int  = 60
 const MONEY_3H: int = 600
 const TIME_3H: int  = 180
 
+# ---- Flags / Task IDs ----
+const TUTORING_TASK_ID := "Tutoring Task"
+const TUTORING_FLAG_PREFIX := "tutored_day_"   # + 1..4
+
 func _ready() -> void:
 	GameState.location = "Tutoring"
 	_apply_bg()
@@ -51,7 +55,11 @@ func _ready() -> void:
 		GameState.add_money(MONEY_1H)
 		GameState.adjust_time(TIME_1H)
 
-	# 4) Fade out and leave
+	# 4) Mark today as tutored (once per in-game day), and make sure the task is visible
+	_mark_tutored_today()
+	GameState.ensure_task(TUTORING_TASK_ID)
+
+	# 5) Fade out and leave
 	await fade.fade_out()
 	get_tree().change_scene_to_file(RETURN_SCENE)
 	await fade.fade_in()
@@ -87,3 +95,11 @@ func _ask_choice() -> String:
 
 func _on_choice(option_id) -> void:
 	emit_signal("selection_made", String(option_id))
+
+func _mark_tutored_today() -> void:
+	var day_index: int = GameState.day
+	# Only track the 4-day arc (1..4). Safe, idempotent flag set.
+	if day_index >= 1 and day_index <= 4:
+		var key := TUTORING_FLAG_PREFIX + str(day_index)
+		if not GameState.has_flag(key):
+			GameState.set_flag(key, true)

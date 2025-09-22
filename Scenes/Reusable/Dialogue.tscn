@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c4ie6t5o4ci1h" path="res://Images/CharacterFrames/secretaryframe.png" id="7_3mbu0"]
 
 [node name="Dialogue UI" type="Control"]
-z_index = 1
+z_index = 999
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

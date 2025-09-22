@@ -237,9 +237,14 @@ func _show_schoolwork_menu() -> void:
 		_show_choices(opts, Callable(self,"_on_schoolwork_choice"))
 		return
 
-	if GameState.has_flag("secretary_met"):
+	# Gate CV / Motivation to “not done/printed”
+	if _can_write_cv():
 		opts.append({"id":"cv","text":"Write CV"})
+	# else: optionally show "CV (Done)" or nothing
+
+	if _can_write_mletter():
 		opts.append({"id":"motivation","text":"Write Motivation Letter"})
+	# else: optionally show "Motivation (Done)" or nothing
 
 	if _is_project_available_now():
 		opts.append({"id":"project","text":"Write Project"})
@@ -346,3 +351,17 @@ func _is_project_available_now() -> bool:
 	if GameState.has_flag("bought_project"):
 		return false
 	return GameState.has_flag("project_accepted")
+# ---- helpers to gate writing once done/printed ----
+func _can_write_cv() -> bool:
+	if not GameState.has_flag("secretary_met"):
+		return false
+	if GameState.has_flag("printed_cv"):
+		return false
+	return GameState.get_task_progress("cv") < 2  # 2 = finished (your print unlock step)
+
+func _can_write_mletter() -> bool:
+	if not GameState.has_flag("secretary_met"):
+		return false
+	if GameState.has_flag("printed_motivation"):
+		return false
+	return GameState.get_task_progress("motivation") < 2

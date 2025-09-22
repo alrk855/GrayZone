@@ -235,6 +235,9 @@ func _handle_entry_flow() -> void:
 				GameState.adjust_time(advance)
 			GameState.adjust_reputation(+5)
 			GameState.set_flag(F_ATTENDED_PREFIX + str(d), true)
+			GameState.ensure_task("Attend Morning Classes")
+			GameState.update_task_step("Attend Morning Classes")
+
 			_start_and_chain(J_D2_MORNING_ON_TIME, "_after_morning_dialogue")
 			return
 		if t >= T_08_00 and t < T_12_30:
@@ -243,6 +246,10 @@ func _handle_entry_flow() -> void:
 				if t < T_08_15:
 					GameState.adjust_reputation(+5)
 					GameState.set_flag(attended_today, true)
+					GameState.ensure_task("Attend Morning Classes")
+					GameState.update_task_step("Attend Morning Classes")
+
+					
 					_start_and_chain(J_D2_MORNING_ON_TIME, "_after_morning_dialogue")
 					return
 				elif t < T_08_30:
@@ -262,6 +269,10 @@ func _handle_entry_flow() -> void:
 		if not GameState.has_flag(attended_today2) and not GameState.has_flag(skip_today):
 			GameState.adjust_reputation(-10)
 			GameState.set_flag(skip_today, true)
+			GameState.ensure_task("Attend Morning Classes")
+			GameState.update_task_step("Attend Morning Classes")
+
+			
 			var mc2 := GameState.get_int(F_MISSED_CNT, 0)
 			GameState.set_int(F_MISSED_CNT, mc2 + 1)
 
@@ -346,9 +357,12 @@ func _after_day2_noon() -> void:
 	_go_school()
 
 func _after_catchup() -> void:
+	# Unlock the same features the Day 2 noon event grants
+	GameState.set_flag("doc_review_unlocked", true)
+	GameState.set_flag("yco_interaction_done", true)
+
 	_update_presence_and_background()
 	_go_school()
-
 # ------------------------ Teacher ------------------------
 func _on_teacher_pressed() -> void:
 	_clear_panel()

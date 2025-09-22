@@ -1,4 +1,8 @@
-[gd_scene format=3 uid="uid://dt7isr52fbm63"]
+[gd_scene load_steps=4 format=3 uid="uid://dt7isr52fbm63"]
+
+[ext_resource type="Texture2D" uid="uid://b2003jejt4dou" path="res://Images/telefon.png" id="1_2c4bh"]
+[ext_resource type="Script" uid="uid://dhu5ojrff8qcu" path="res://Scenes/Reusable/Tasks/social.gd" id="1_vdtvu"]
+[ext_resource type="VideoStream" uid="uid://bbjb6007ikbxx" path="res://Images/Videos/TikTok.ogv" id="2_vdtvu"]
 
 [node name="Social" type="Control"]
 layout_mode = 3
@@ -7,3 +11,34 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_vdtvu")
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.034375
+anchor_top = 0.119444
+anchor_right = 1.0651
+anchor_bottom = 1.01545
+offset_right = -58.9855
+offset_bottom = 112.314
+rotation = -0.0575959
+scale = Vector2(0.8, 0.8)
+stream = ExtResource("2_vdtvu")
+autoplay = true
+loop = true
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = 999
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_right = -2.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_2c4bh")
