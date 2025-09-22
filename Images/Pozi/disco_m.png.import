@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d4jwqtlqptkig"
-path="res://.godot/imported/zabava female.png-82e13b63cb96c783cea15412b549294f.ctex"
+uid="uid://cxylfgsgjejae"
+path="res://.godot/imported/disco_m.png-dea676a3fa2b8debe332a9e347738dc1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Pozi/zabava female.png"
-dest_files=["res://.godot/imported/zabava female.png-82e13b63cb96c783cea15412b549294f.ctex"]
+source_file="res://Images/Pozi/disco_m.png"
+dest_files=["res://.godot/imported/disco_m.png-dea676a3fa2b8debe332a9e347738dc1.ctex"]
 
 [params]
 

@@ -10,15 +10,27 @@ extends Control
 @onready var camera: Camera2D = $Camera2D as Camera2D
 
 # ---------------- Constants / IDs ----------------
-const MAIN_REQUIREMENTS_TASK_ID := "Gather Scholarship Requirements"
+const TASK_REQ := "Gather Scholarship Requirements"
 
-# Task IDs we render with bespoke day-by-day ✔/✘/• logic
+# Day-by-day tasks with bespoke rendering
 const TASK_ATTENDANCE := "Attend Morning Classes"
 const TASK_STUDY_S1 := "study_subject1"
 const TASK_STUDY_S2 := "study_subject2"
 const TASK_TUTORING := "Tutoring Task"
 
-# ---------------- Fonts ----------------
+# if you keep a “visit secretary” wrapper task, list candidate ids here
+const TASK_VISIT_SECRETARY_CANDIDATES := [
+	"Visit the Secretary", "Meet the Secretary", "Secretary Visit"
+]
+
+# Requirement step ids that we DO NOT auto-add (they are created elsewhere)
+const REQ_EXCLUDE_AUTO_ADD := {
+	"volunteer": true,
+	"Volunteer for Community Work": true,
+	"Attend Morning Classes": true
+}
+
+# ---------------- Fonts (only for details panel; grid mini label theme untouched) ----------------
 const OVERVIEW_FONT_PATH := "res://Fonts/Russo_One.ttf"          # grid buttons
 const BODY_FONT_PATH     := "res://Fonts/Chalkboard-Regular.ttf" # title/meta/steps
 
@@ -27,7 +39,7 @@ var FONT_BODY: Font     = preload(BODY_FONT_PATH)
 
 const OVERVIEW_FONT_SIZE: int = 22
 const STEP_FONT_SIZE: int = 26
-const PREVIEW_COUNTER_FONT_SIZE: int = 16   # small “x/y” label on each button
+const PREVIEW_COUNTER_FONT_SIZE: int = 16   # (we won't override theme, just FYI)
 
 # ---------------- Sorting state ----------------
 var _last_opened: Dictionary = {}   # task_id -> unix time (session only)
@@ -58,16 +70,18 @@ func _ready() -> void:
 	camera.position = $"Task Overview".global_position + get_viewport().get_visible_rect().size * 0.5
 	go_back_button.pressed.connect(_on_back_pressed)
 
-# ---------------- Font helpers ----------------
+# ---------------- Font helpers (details panel only) ----------------
 func _apply_title_meta_fonts() -> void:
 	title_label.add_theme_font_override("font", FONT_BODY)
 	var tsize := title_label.get_theme_font_size("font_size")
-	if tsize <= 0: tsize = 24
+	if tsize <= 0:
+		tsize = 24
 	title_label.add_theme_font_size_override("font_size", tsize + 4)
 
 	meta_label.add_theme_font_override("font", FONT_BODY)
 	var msize := meta_label.get_theme_font_size("font_size")
-	if msize <= 0: msize = 14
+	if msize <= 0:
+		msize = 14
 	meta_label.add_theme_font_size_override("font_size", msize + 4)
 
 # ---------------- Signals ----------------
@@ -112,27 +126,59 @@ func _populate_tasks() -> void:
 				button.visible = true
 				button.set_meta("task_id", task_id)
 
-				# Button font
+				# Button font for the main caption (your theme still applies)
 				button.add_theme_font_override("font", FONT_OVERVIEW)
 				button.add_theme_font_size_override("font_size", OVERVIEW_FONT_SIZE)
 
-				# Color rule (fail/red, complete/green, blocked/red)
+				# Color rule (fail/red, complete/green, blocked/red) – day-by-day tasks gated below
 				_apply_overview_color(button, task_id)
 
-				# Small “x/y” progress label (child named "Label" under the button)
-				var steps_total := _get_steps_count(task_id)
-				var prog := GameState.get_task_progress(task_id)
+				# ---- Small “x/y” counter label on the button (child named "Label") ----
 				var lbl: Label = button.get_node_or_null("Label") as Label
 				if lbl:
-					lbl.text = "%d/%d" % [prog, steps_total]
-					lbl.add_theme_font_override("font", FONT_BODY)
-					lbl.add_theme_font_size_override("font_size", PREVIEW_COUNTER_FONT_SIZE)
-					# Dim when complete, normal otherwise
-					if steps_total > 0 and prog >= steps_total:
-						lbl.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+					var pv := 0
+					var tv := _get_steps_count(task_id)
+
+					# dynamic preview for day-by-day tasks
+					if task_id == TASK_STUDY_S1 or task_id == TASK_STUDY_S2:
+						var studied := _count_study_done(task_id)
+						var missed := _count_study_missed(task_id)
+						pv = studied + missed
+						tv = 4
+					elif task_id == TASK_ATTENDANCE:
+						var att := _count_attended()
+						var miss := _attendance_missed()
+						pv = att + miss
+						tv = 4
+					elif task_id == TASK_TUTORING:
+						var tut := _count_tutored()
+						var miss2 := _count_tutor_missed()
+						pv = tut + miss2
+						tv = 4
+					elif task_id == TASK_REQ:
+						var td := _load_task_data(TASK_REQ)
+						var stps = td.get("steps", [])
+						var req_total := 0
+						var req_resolved := 0
+						if stps is Array:
+							for s in stps:
+								if typeof(s) != TYPE_DICTIONARY:
+									continue
+								if bool(s.get("optional", false)):
+									# optional doesn't count towards total
+									continue
+								req_total += 1
+								var st := _req_step_state_from_id(s)
+								if st == StepState.DONE or st == StepState.FAILED:
+									req_resolved += 1
+						pv = req_resolved
+						tv = max(1, req_total)  # avoid 0/0 visual
 					else:
-						if lbl.has_theme_color_override("font_color"):
-							lbl.remove_theme_color_override("font_color")
+						# generic tasks: use linear progress
+						pv = GameState.get_task_progress(task_id)
+
+					lbl.text = "%d/%d" % [pv, tv]  # do NOT touch label theme/colors
+				# ---------------------------------------------------------------
 
 				# Hook up click
 				var cb := Callable(self, "_on_task_button_pressed_internal").bind(button)
@@ -150,7 +196,7 @@ func _apply_overview_color(button: Button, task_id: String) -> void:
 		button.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25)) # red
 		return
 
-	# Completed → green
+	# Completed → green (generic rule; day-by-day will only go green when fully complete)
 	var steps_total := _get_steps_count(task_id)
 	var prog := GameState.get_task_progress(task_id)
 	if steps_total > 0 and prog >= steps_total:
@@ -225,8 +271,6 @@ func _show_task_details(task_id: String) -> void:
 			if typeof(s) == TYPE_DICTIONARY:
 				steps.append(s)
 
-	var progress: int = GameState.get_task_progress(task_id)
-
 	# Bespoke renderers
 	if task_id == TASK_STUDY_S1 or task_id == TASK_STUDY_S2:
 		_render_study_steps(task_id, steps)
@@ -238,28 +282,15 @@ func _show_task_details(task_id: String) -> void:
 		_render_tutoring_steps(steps)
 		return
 
-	# Requirements task: special meta rules per-step
-	if task_id == MAIN_REQUIREMENTS_TASK_ID:
-		for step in steps:
-			var raw_txt: String = String(step.get("text", "Unnamed Step"))
-			var txt: String = _format_placeholders(raw_txt)
-			var label := Label.new()
-			label.add_theme_font_override("font", FONT_BODY)
-			label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
-			var st := _compute_requirement_step_state(step)
-			match st:
-				StepState.DONE:
-					label.add_theme_color_override("font_color", Color.DIM_GRAY)
-					label.text = "✔ " + txt
-				StepState.FAILED:
-					label.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
-					label.text = "✘ " + txt
-				_:
-					label.text = "• " + txt
-			step_container.add_child(label)
+	# Requirements task: special live status per step
+	if task_id == TASK_REQ:
+		_maybe_auto_add_requirement_subtasks(steps)
+		_render_requirements_task(steps)
+		_maybe_finish_requirements_and_bump_secretary(steps)
 		return
 
 	# Generic fallback: show steps up to progress
+	var progress: int = GameState.get_task_progress(task_id)
 	for i in range(steps.size()):
 		if i > progress:
 			break
@@ -276,30 +307,217 @@ func _show_task_details(task_id: String) -> void:
 			label.text = "• " + txt
 		step_container.add_child(label)
 
+# ---------------- Requirements logic ----------------
+func _maybe_auto_add_requirement_subtasks(steps: Array) -> void:
+	for s in steps:
+		if typeof(s) != TYPE_DICTIONARY:
+			continue
+		var sub_id := String(s.get("id", s.get("links_to_task",""))).strip_edges()
+		if sub_id == "" or REQ_EXCLUDE_AUTO_ADD.has(sub_id):
+			continue
+		GameState.ensure_task(sub_id)
+
+func _render_requirements_task(steps: Array) -> void:
+	var required_total := 0
+	var resolved_required := 0
+
+	for s in steps:
+		if typeof(s) != TYPE_DICTIONARY:
+			continue
+
+		var txt := _format_placeholders(String(s.get("text","Unnamed Step")))
+		var optional := bool(s.get("optional", false))
+		if not optional:
+			required_total += 1
+
+		var st := _req_step_state_from_id(s)
+
+		var label := Label.new()
+		label.add_theme_font_override("font", FONT_BODY)
+		label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
+
+		match st:
+			StepState.DONE:
+				label.add_theme_color_override("font_color", Color.DIM_GRAY)
+				label.text = "✔ " + txt
+				if not optional:
+					resolved_required += 1
+			StepState.FAILED:
+				label.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
+				label.text = "✘ " + txt
+				if not optional:
+					resolved_required += 1
+			_:
+				label.text = "• " + txt
+
+		step_container.add_child(label)
+
+	# update preview counter (x/y for required items)
+	_update_preview_counter_for_task(TASK_REQ, resolved_required, max(1, required_total))
+
+func _req_step_state_from_id(step: Dictionary) -> int:
+	var id := String(step.get("id","")).strip_edges()
+	var link := String(step.get("links_to_task","")).strip_edges()
+	if id == "" and link != "":
+		id = link
+	var norm := id.to_lower()
+
+	# --- Birth certificate ---
+	if norm == "birth" or norm == "birth certificate":
+		if _any_flag(["have_birth_certificate", "HAVE_BIRTH_CERTIFICATE"]):
+			return StepState.DONE
+		return StepState.ONGOING
+
+	# --- Transcript ---
+	if norm == "transcript":
+		if _any_flag(["transcript_accepted", "transcript_delivered", "have_transcript"]):
+			return StepState.DONE
+		if GameState.get_task_progress("transcript") >= 2:
+			return StepState.DONE
+		return StepState.ONGOING
+
+	# --- CV ---
+	if norm == "cv" or norm == "submit a cv":
+		if GameState.has_flag("printed_cv"):
+			return StepState.DONE
+		return StepState.ONGOING
+
+	# --- Motivation letter ---
+	if norm == "motivation" or norm == "motivation letter":
+		if GameState.has_flag("printed_motivation"):
+			return StepState.DONE
+		if GameState.has_flag("doc_review_banned"):
+			return StepState.FAILED
+		return StepState.ONGOING
+
+	# --- Project ---
+	if norm == "project":
+		return _project_req_state()
+
+	# --- Language certificate ---
+	if norm == "language" or norm == "language certificate":
+		if _any_flag(["have_language_certificate", "HAVE_LANGUAGE_CERTIFICATE", "lang_cert_picked"]):
+			return StepState.DONE
+		return StepState.ONGOING
+
+	# --- Volunteer (optional) ---
+	if norm == "volunteer" or norm == "volunteer for community work":
+		if GameState.get_task_progress("Volunteer for Community Work") >= _get_steps_count("Volunteer for Community Work"):
+			return StepState.DONE
+		if _any_flag(["volunteer_done", "community_work_done"]):
+			return StepState.DONE
+		return StepState.ONGOING
+
+	# --- Attend Morning Classes (formerly “discipline”) ---
+	if id == "Attend Morning Classes":
+		var finished := (GameState.day >= 5) or (_attendance_days_counted() >= 4)
+		if not finished:
+			return StepState.ONGOING
+		return StepState.DONE if _attendance_missed() <= 1 else StepState.FAILED
+
+	# Generic fallback: link-to-task or flag
+	var link_task := String(step.get("links_to_task","")).strip_edges()
+	if link_task != "":
+		var total := _get_steps_count(link_task)
+		var prog := GameState.get_task_progress(link_task)
+		if total > 0 and prog >= total:
+			return StepState.DONE
+		return StepState.ONGOING
+
+	var f := String(step.get("flag_key","")).strip_edges()
+	if f != "":
+		return StepState.DONE if GameState.has_flag(f) else StepState.ONGOING
+
+	return StepState.ONGOING
+
+func _project_req_state() -> int:
+	var submitted := GameState.has_flag("project_submitted")
+	var second_chance := GameState.has_flag("project_second_chance")
+	var plag := GameState.has_flag("project_plagiarized")
+
+	var grade_str := ""
+	if GameState.has_method("get_project_grade"):
+		grade_str = String(GameState.get_project_grade())
+	elif "project_grade" in GameState:
+		grade_str = String(GameState.project_grade)
+
+	if submitted:
+		if plag:
+			return StepState.FAILED
+		if grade_str.to_upper() == "F" and not second_chance:
+			return StepState.FAILED
+		if grade_str != "" and grade_str.to_upper() != "F":
+			return StepState.DONE
+	return StepState.ONGOING
+
+func _any_flag(names: Array) -> bool:
+	for n in names:
+		if GameState.has_flag(String(n)):
+			return true
+	return false
+
+func _attendance_days_counted() -> int:
+	var total := 0
+	for i in range(1,5):
+		if GameState.has_flag("attended_morning_day_%d" % i) or GameState.has_flag("skip_penalized_day_%d" % i):
+			total += 1
+	return total
+
+func _attendance_missed() -> int:
+	var missed := 0
+	for i in range(1,5):
+		var att := GameState.has_flag("attended_morning_day_%d" % i)
+		if not att and i <= 4 and i < GameState.day:
+			missed += 1
+	return missed
+
+func _maybe_finish_requirements_and_bump_secretary(steps: Array) -> void:
+	var required_total := 0
+	var resolved_required := 0
+
+	for s in steps:
+		if typeof(s) != TYPE_DICTIONARY:
+			continue
+		var optional := bool(s.get("optional", false))
+		if not optional:
+			required_total += 1
+
+		var st := _req_step_state_from_id(s)
+		if st == StepState.DONE or st == StepState.FAILED:
+			resolved_required += 1
+
+	# If all required subtasks are resolved, bump "Visit the Secretary" by +1
+	if required_total > 0 and resolved_required >= required_total:
+		if not GameState.has_flag("requirements_all_done"):
+			GameState.set_flag("requirements_all_done", true)
+			var sec_task := "Visit the Secretary"
+			if GameState.tasks.has(sec_task):
+				GameState.update_task_step(sec_task)  # only +1
+
+
+func _update_preview_counter_for_task(task_id: String, progress_val: int, total_val: int) -> void:
+	for child in task_grid.get_children():
+		if child is Button:
+			var b := child as Button
+			if String(b.get_meta("task_id", "")) == task_id:
+				var lbl := b.get_node_or_null("Label") as Label
+				if lbl:
+					lbl.text = "%d/%d" % [progress_val, total_val]
+				return
+
 # ---------------- Study rendering ----------------
 func _render_study_steps(task_id: String, steps: Array) -> void:
-	var subject_raw: String = ""
-	if task_id == TASK_STUDY_S2:
-		subject_raw = GameState.subject2
-	else:
-		subject_raw = GameState.subject1
-
+	var subject_raw: String = GameState.subject2 if task_id == TASK_STUDY_S2 else GameState.subject1
 	var subj_key: String = GameState._get_subject_key_from_choice(subject_raw)
-
-	var max_steps: int = steps.size()
-	if max_steps > 4:
-		max_steps = 4
-
-	var studied_count := 0
-	var missed_count := 0
+	var max_steps: int = min(4, steps.size())
 
 	for i in range(max_steps):
 		var day_idx: int = i + 1
 		var raw_txt: String = String(steps[i].get("text", "Unnamed Step"))
 		var txt: String = _format_placeholders(raw_txt)
 
-		var studied: bool = false
-		var missed: bool = false
+		var studied := false
+		var missed := false
 		if subj_key.strip_edges() != "":
 			var guard_key: String = subj_key + "|" + str(day_idx)
 			if GameState.study_guard.has(guard_key):
@@ -313,11 +531,9 @@ func _render_study_steps(task_id: String, steps: Array) -> void:
 		label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
 
 		if studied:
-			studied_count += 1
 			label.add_theme_color_override("font_color", Color.DIM_GRAY)
 			label.text = "✔ " + txt
 		elif missed:
-			missed_count += 1
 			label.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
 			label.text = "✘ " + txt
 		else:
@@ -328,10 +544,6 @@ func _render_study_steps(task_id: String, steps: Array) -> void:
 # ---------------- Attendance rendering ----------------
 func _render_attendance_steps(steps: Array) -> void:
 	var max_steps = min(4, steps.size())
-
-	var attended_count := 0
-	var missed_count := 0
-
 	for i in range(max_steps):
 		var day_idx := i + 1
 		var raw_txt: String = String(steps[i].get("text", "Unnamed Step"))
@@ -345,11 +557,9 @@ func _render_attendance_steps(steps: Array) -> void:
 		label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
 
 		if attended:
-			attended_count += 1
 			label.add_theme_color_override("font_color", Color.DIM_GRAY)
 			label.text = "✔ " + txt
 		elif missed:
-			missed_count += 1
 			label.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
 			label.text = "✘ " + txt
 		else:
@@ -360,10 +570,6 @@ func _render_attendance_steps(steps: Array) -> void:
 # ---------------- Tutoring rendering ----------------
 func _render_tutoring_steps(steps: Array) -> void:
 	var max_steps = min(4, steps.size())
-
-	var tutored_count := 0
-	var missed_count := 0
-
 	for i in range(max_steps):
 		var day_idx := i + 1
 		var raw_txt: String = String(steps[i].get("text", "Unnamed Step"))
@@ -377,11 +583,9 @@ func _render_tutoring_steps(steps: Array) -> void:
 		label.add_theme_font_size_override("font_size", STEP_FONT_SIZE)
 
 		if tutored:
-			tutored_count += 1
 			label.add_theme_color_override("font_color", Color.DIM_GRAY)
 			label.text = "✔ " + txt
 		elif missed:
-			missed_count += 1
 			label.add_theme_color_override("font_color", Color(0.9, 0.25, 0.25))
 			label.text = "✘ " + txt
 		else:
@@ -410,37 +614,37 @@ func _mark_missed_if_needed_for_subject(day_index: int, task_id: String, subject
 	if not studied_today and current_prog < day_index:
 		GameState.update_task_step(task_id)
 
-# ---------------- Fail-state computation ----------------
+# ---------------- Fail-state computation (gated) ----------------
 func _has_failed_task(task_id: String) -> bool:
-	# Study tasks fail if missed > studied
+	# Study/Attendance/Tutoring shouldn’t color early
 	if task_id == TASK_STUDY_S1 or task_id == TASK_STUDY_S2:
-		return _is_study_failed(task_id)
-
-	# Attendance fails if missed > attended
+		var finished := (GameState.day >= 5) or (_count_study_done(task_id) + _count_study_missed(task_id) >= 4)
+		return finished and _is_study_failed(task_id)
 	if task_id == TASK_ATTENDANCE:
-		return _is_attendance_failed()
-
-	# Tutoring fails if missed > tutored
+		var finished := (GameState.day >= 5) or (_count_attended() + _attendance_missed() >= 4)
+		return finished and (_attendance_missed() > _count_attended())
 	if task_id == TASK_TUTORING:
-		return _is_tutoring_failed()
+		var finished := (GameState.day >= 5) or (_count_tutored() + _count_tutor_missed() >= 4)
+		return finished and (_count_tutor_missed() > _count_tutored())
 
-	# Requirements: any failed sub-step?
-	if task_id == MAIN_REQUIREMENTS_TASK_ID:
-		return _has_failed_step_in_requirements()
+	# Requirements: fail if any sub-step explicitly FAILED
+	if task_id == TASK_REQ:
+		var d := _load_task_data(TASK_REQ)
+		var stps = d.get("steps", [])
+		if stps is Array:
+			for s in stps:
+				if typeof(s) == TYPE_DICTIONARY:
+					if _req_step_state_from_id(s) == StepState.FAILED:
+						return true
+		return false
 
 	return false
 
 func _is_study_failed(task_id: String) -> bool:
-	var subject_raw: String = ""
-	if task_id == TASK_STUDY_S2:
-		subject_raw = GameState.subject2
-	else:
-		subject_raw = GameState.subject1
-
+	var subject_raw: String = GameState.subject2 if task_id == TASK_STUDY_S2 else GameState.subject1
 	var subj_key := GameState._get_subject_key_from_choice(subject_raw)
 	if subj_key.strip_edges() == "":
 		return false
-
 	var studied := 0
 	var missed := 0
 	for day_idx in range(1, 5):
@@ -453,58 +657,49 @@ func _is_study_failed(task_id: String) -> bool:
 				missed += 1
 	return missed > studied
 
-func _is_attendance_failed() -> bool:
-	var attended := 0
-	var missed := 0
-	for day_idx in range(1, 5):
-		var ok := GameState.has_flag("attended_morning_day_%d" % day_idx)
-		if ok:
-			attended += 1
-		elif day_idx < GameState.day:
-			missed += 1
-	return missed > attended
+# ---------------- Counters for dynamic x/y ----------------
+func _count_study_done(task_id: String) -> int:
+	var subject_raw := GameState.subject2 if task_id == TASK_STUDY_S2 else GameState.subject1
+	var subj_key := GameState._get_subject_key_from_choice(subject_raw)
+	if subj_key == "":
+		return 0
+	var c := 0
+	for i in range(1,5):
+		if GameState.study_guard.has(subj_key + "|" + str(i)):
+			c += 1
+	return c
 
-func _is_tutoring_failed() -> bool:
-	var tutored := 0
-	var missed := 0
-	for day_idx in range(1, 5):
-		var ok := GameState.has_flag("tutored_day_%d" % day_idx)
-		if ok:
-			tutored += 1
-		elif day_idx < GameState.day:
-			missed += 1
-	return missed > tutored
+func _count_study_missed(task_id: String) -> int:
+	var subject_raw := GameState.subject2 if task_id == TASK_STUDY_S2 else GameState.subject1
+	var subj_key := GameState._get_subject_key_from_choice(subject_raw)
+	if subj_key == "":
+		return 0
+	var c := 0
+	for i in range(1,5):
+		if not GameState.study_guard.has(subj_key + "|" + str(i)) and i < GameState.day:
+			c += 1
+	return c
 
-func _has_failed_step_in_requirements() -> bool:
-	var d := _load_task_data(MAIN_REQUIREMENTS_TASK_ID)
-	var steps = d.get("steps", [])
-	if steps is Array:
-		for s in steps:
-			if typeof(s) == TYPE_DICTIONARY:
-				if _compute_requirement_step_state(s) == StepState.FAILED:
-					return true
-	return false
+func _count_attended() -> int:
+	var c := 0
+	for i in range(1,5):
+		if GameState.has_flag("attended_morning_day_%d" % i):
+			c += 1
+	return c
 
-# ---------------- Requirements step state ----------------
-func _compute_requirement_step_state(step: Dictionary) -> int:
-	# discipline/project links were refactored earlier;
-	# keep link-to-task and flag mapping for generic behavior.
+func _count_tutored() -> int:
+	var c := 0
+	for i in range(1,5):
+		if GameState.has_flag("tutored_day_%d" % i):
+			c += 1
+	return c
 
-	# Linked task completion
-	var link_task := String(step.get("links_to_task","")).strip_edges()
-	if link_task != "":
-		var steps_total := _get_steps_count(link_task)
-		var prog := GameState.get_task_progress(link_task)
-		if steps_total > 0 and prog >= steps_total:
-			return StepState.DONE
-		return StepState.ONGOING
-
-	# Flag presence
-	var f := String(step.get("flag_key","")).strip_edges()
-	if f != "":
-		return StepState.DONE if GameState.has_flag(f) else StepState.ONGOING
-
-	return StepState.ONGOING
+func _count_tutor_missed() -> int:
+	var c := 0
+	for i in range(1,5):
+		if not GameState.has_flag("tutored_day_%d" % i) and i < GameState.day:
+			c += 1
+	return c
 
 # ---------------- Data access + helpers ----------------
 func _load_task_data(task_id: String) -> Dictionary:

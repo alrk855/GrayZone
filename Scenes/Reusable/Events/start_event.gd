@@ -14,16 +14,13 @@ extends Control
 var _choice_panel: Control = null
 var _dialogue_ui: Node = null
 
-# ---------- Tasks ----------
-const TASK_VISIT := "Visit the classroom"  # your janitor/answers lead task id
-
 # subject multi-select state
 var _subject_all_ids: Array[String] = []      # canonical IDs from JSON
 var _subject_selected_ids: Array[String] = [] # selected IDs
 var _subject_display: Dictionary = {}         # id -> Capitalized display
 var _subject_max: int = 2
 
-# NEW: map ids <-> buttons for toggling
+# map ids <-> buttons for toggling
 var _btn_by_id: Dictionary = {}   # id -> Button
 var _id_by_btn: Dictionary = {}   # Button -> id
 
@@ -66,13 +63,6 @@ func on_dialogue_action(line: Dictionary) -> void:
 			else:
 				_show_single_choices(opts2)
 
-		# --- OPTIONAL: let JSON drive the task if desired ---
-		"ensure_visit_task":
-			GameState.ensure_task(TASK_VISIT)
-		"update_visit_task":
-			GameState.ensure_task(TASK_VISIT)
-			GameState.update_task_step(TASK_VISIT)
-
 		_:
 			GameState.apply_action(line)
 
@@ -95,10 +85,8 @@ func on_choices_selected(selected: Array) -> void:
 func _on_start_event_finished(_dlg_id: String = "", _payload: Variant = null) -> void:
 	# Day 1 attendance → add & bump so TaskManager fires the notification
 	GameState.ensure_task("Attend Morning Classes")
+	GameState.set_flag("attended_morning_day_1", true)  # <-- NEW
 	GameState.update_task_step("Attend Morning Classes")
-
-	# (Optional) make sure the janitor lead exists early
-	GameState.ensure_task(TASK_VISIT)  # "Visit the classroom"
 
 	# Proceed to the world
 	GameState.begin_game(GameState.day, GameState.time)
@@ -218,7 +206,6 @@ func _update_button_disable_states() -> void:
 		var sel := _subject_selected_ids.has(String(id))
 		# When at cap, lock *unselected* buttons; keep selected clickable so you can unselect
 		b.disabled = (at_cap and not sel)
-		# (selected buttons remain enabled so re-clicking unselects)
 
 func _finalize_subject_selection() -> void:
 	var picked_display: Array = []

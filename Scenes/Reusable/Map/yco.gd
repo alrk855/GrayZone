@@ -5,9 +5,11 @@ extends Control
 @export var daniel_button_path: NodePath      = ^"background/Daniel"
 @export var back_button_path: NodePath        = ^"background/Back"
 
-@export var volunteer_scene_path: String      = "res://Scenes/YCO/VolunteerSession.tscn"
-@export var city_scene_path: String           = "res://Scenes/Reusable/Map/City.tscn"
+# Volunteer background images (gender-specific)
+@export var volunteer_bg_male: Texture2D
+@export var volunteer_bg_female: Texture2D
 
+@export var city_scene_path: String           = "res://Scenes/Reusable/Map/City.tscn"
 @export var choice_panel_scene: PackedScene   = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 
 # ---------- JSON paths ----------
@@ -17,8 +19,7 @@ const J_INTRO_FALLBACK: String    = D + "Daniel_Intro_Only.json"
 
 const J_OPT1_ACCEPT: String       = D + "Daniel_Option1_Accept.json"
 const J_OPT2_INFO: String         = D + "Daniel_Option2_Info.json"
-const J_OPT3_REPGATE: String      = D + "Daniel_Option3_RepGate.json"
-const J_OPT3_BRIBE_OFFER: String  = D + "Daniel_Option3_BribeOffer.json"
+const J_OPT3_BRIBE_OFFER: String  = D + "Daniel_Option3_BribeOffer.json" # generic offer line
 
 const J_TALK_0: String            = D + "Daniel_Talk_0of3.json"
 const J_TALK_1: String            = D + "Daniel_Talk_1of3.json"
@@ -31,13 +32,10 @@ const J_VOL_FILING: String        = D + "Volunteer_Filing.json"
 const J_VOL_SURVEY: String        = D + "Volunteer_Survey.json"
 const J_VOL_DONE_TODAY: String    = D + "Volunteer_DoneToday.json"
 
-# --- New bribe JSONs ---
+# Bribe JSONs
 const J_BRIBE_DECLINED: String            = D + "Daniel_Bribe_Declined.json"
 const J_BRIBE_NOMONEY: String             = D + "Daniel_Bribe_NoMoney.json"
 const J_BRIBE_GRANTED: String             = D + "Daniel_Bribe_Granted.json"
-const J_BRIBE_PRICE_UP: String            = D + "Daniel_Bribe_PriceIncrease.json"
-const J_BRIBE_PRICE_UP_NOMONEY: String    = D + "Daniel_Bribe_PriceIncrease_NoMoney.json"
-const J_BRIBE_PRICE_UP_DECLINED: String   = D + "Daniel_Bribe_PriceIncrease_Declined.json"
 
 # ---------- Task / Flags / Ints ----------
 const TASK_ID: String = "volunteer"
@@ -49,15 +47,15 @@ const F_BRIBED: String     = "yco_letter_bribed"
 const I_COUNT: String    = "yco_volunteer_count"
 const I_LAST_DAY: String = "yco_last_shift_day"
 
-const INTEGRITY_BRIBE_GATE: int = 35  # bribe path if integrity < 35
-
-# --- Bribe pricing state ---
-const BRIBE_COST_BASE: int = 1000
-const BRIBE_COST_ESCALATED: int = 1500
-const K_BRIBE_ESCALATED: String = "yco_bribe_price_escalated"
+# ---------- Bribe pricing (base 1000; -200 per shift; floor 200) ----------
+const BRIBE_BASE_PRICE: int = 1000
+const BRIBE_DISCOUNT_PER_SHIFT: int = 200
+const BRIBE_MIN_PRICE: int = 200
+const BRIBE_INTEGRITY_PENALTY: int = 15
+const BRIBE_DECLINE_INTEGRITY_BONUS: int = 5
 
 # ---------- Nodes / state ----------
-var _bg: CanvasItem
+var _bg_rect: TextureRect
 var _btn_talk: Button
 var _btn_back: Button
 
@@ -65,7 +63,7 @@ var _panel: Control = null
 var _dialogue_playing: bool = false
 var _intro_shown_this_visit: bool = false
 
-var _bribe_offer_escalated: bool = false  # confirms which confirm menu is active
+var _bg_original_tex: Texture2D
 
 # ========================= GameState helpers =========================
 func _ensure_task() -> void:
@@ -98,9 +96,6 @@ func _set_last_day(v: int) -> void:
 func _day() -> int:
 	return GameState.day
 
-func _rep() -> int:
-	return GameState.reputation
-
 func _adjust_reputation(delta: int) -> void:
 	if GameState.has_method("adjust_reputation"):
 		GameState.adjust_reputation(delta)
@@ -116,12 +111,20 @@ func _pay_money(amount: int) -> bool:
 		GameState.money -= amount
 	return true
 
+# Price formula based on volunteer count
+func _current_bribe_price() -> int:
+	var price := BRIBE_BASE_PRICE - BRIBE_DISCOUNT_PER_SHIFT * _count()
+	return max(BRIBE_MIN_PRICE, price)
+
 # ========================= Lifecycle =========================
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	GameState.location = "YCO"
 
-	_bg = get_node_or_null(background_texrect_path)
+	_bg_rect = get_node_or_null(background_texrect_path) as TextureRect
+	if _bg_rect:
+		_bg_original_tex = _bg_rect.texture
+
 	_btn_talk = get_node_or_null(daniel_button_path)
 	_btn_back = get_node_or_null(back_button_path)
 
@@ -162,6 +165,21 @@ func _play_inline_notice(text: String) -> void:
 		f.store_string(JSON.stringify(obj))
 		f.close()
 	var ui = DialogueManager.start_dialogue(temp_path, self)
+	if ui and ui.has_signal("dialogue_finished"):
+		await Signal(ui, "dialogue_finished")
+
+# Replace {price} inside a JSON by writing a temp file (no dependency on placeholder system)
+func _play_with_price(path: String, price: int) -> void:
+	if not ResourceLoader.exists(path):
+		await _play_inline_notice("Missing dialogue: " + path.get_file())
+		return
+	var txt := FileAccess.get_file_as_string(path)
+	txt = txt.replace("{price}", str(price))
+	var temp := "user://__yco_price__.json"
+	var f = FileAccess.open(temp, FileAccess.WRITE)
+	f.store_string(txt)
+	f.close()
+	var ui = DialogueManager.start_dialogue(temp, self)
 	if ui and ui.has_signal("dialogue_finished"):
 		await Signal(ui, "dialogue_finished")
 
@@ -217,10 +235,11 @@ func _on_post_letter_choice(id: String) -> void:
 		_clear_panel()
 
 func _show_first_menu() -> void:
+	var price := _current_bribe_price()
 	var opts = [
 		{"id":"opt1","text":"I’m here to volunteer."},
 		{"id":"opt2","text":"Depends. What would I be doing?"},
-		{"id":"opt3","text":"Actually, I need a recommendation..."},
+		{"id":"bribe","text":"Offer a bribe for a recommendation (%d ден)" % price},
 		{"id":"back","text":"I’ll come back later."}
 	]
 	_show_menu(opts, Callable(self, "_on_first_choice"))
@@ -236,79 +255,23 @@ func _on_first_choice(id: String) -> void:
 			while GameState.get_task_progress(TASK_ID) < 3:
 				GameState.update_task_step(TASK_ID)
 			await _play_and_wait(J_OPT1_ACCEPT)
-			_clear_panel()  # user must click Daniel again; next time shows Main Menu
-
+			_clear_panel()  # next click shows Main Menu
 		"opt2":
 			await _play_and_wait(J_OPT2_INFO)
-			# Return to FIRST menu (until opt1 is chosen)
 			_show_first_menu()
-
-		"opt3":
-			# Bribe path if Integrity < 35; else rep-gated info
-			if GameState.integrity < INTEGRITY_BRIBE_GATE:
-				if GameState.has_flag(K_BRIBE_ESCALATED):
-					await _play_and_wait(J_BRIBE_PRICE_UP)
-					_show_bribe_confirm_menu(true)
-				else:
-					await _play_and_wait(J_OPT3_BRIBE_OFFER)
-					_show_bribe_confirm_menu(false)
-			else:
-				await _play_and_wait(J_OPT3_REPGATE)
-				_show_first_menu()
-
+		"bribe":
+			var price := _current_bribe_price()
+			await _play_with_price(J_OPT3_BRIBE_OFFER, price)
+			_show_bribe_confirm_menu(price)
 		"back":
 			_clear_panel()
 
-func _show_bribe_confirm_menu(escalated: bool) -> void:
-	_bribe_offer_escalated = escalated
-	var price := BRIBE_COST_ESCALATED if escalated else BRIBE_COST_BASE
-	# Show price in the button text
-	var opts = [
-		{"id":"bribe_yes","text":"Pay (%d ден)" % price},
-		{"id":"bribe_no","text":"Never mind"}
-	]
-	_show_menu(opts, Callable(self, "_on_bribe_confirm"))
-
-func _on_bribe_confirm(id: String) -> void:
-	var escalated := _bribe_offer_escalated
-	var price := BRIBE_COST_ESCALATED if escalated else BRIBE_COST_BASE
-	match id:
-		"bribe_yes":
-			if not _pay_money(price):
-				# Not enough money → play appropriate JSON, return to first menu
-				if escalated:
-					await _play_and_wait(J_BRIBE_PRICE_UP_NOMONEY)
-				else:
-					await _play_and_wait(J_BRIBE_NOMONEY)
-				_show_first_menu()
-				return
-			# Money paid; apply integrity hit & grant letter
-			if escalated:
-				GameState.adjust_integrity(-20)
-			else:
-				GameState.adjust_integrity(-15)
-			_set_flag(F_BRIBED, true)
-			_set_flag(F_REC_LETTER, true)
-			_ensure_task()
-			while GameState.get_task_progress(TASK_ID) < 7:
-				GameState.update_task_step(TASK_ID)
-			await _play_and_wait(J_BRIBE_GRANTED)
-			_clear_panel()  # require re-click; post-letter menu next time
-		"bribe_no":
-			# Declines raise integrity; initial decline also escalates future price
-			if escalated:
-				GameState.adjust_integrity(5)
-				await _play_and_wait(J_BRIBE_PRICE_UP_DECLINED)
-			else:
-				GameState.adjust_integrity(10)
-				GameState.set_flag(K_BRIBE_ESCALATED, true)
-				await _play_and_wait(J_BRIBE_DECLINED)
-			_show_first_menu()
-
 func _show_main_menu() -> void:
+	var price := _current_bribe_price()
 	var opts = [
 		{"id":"talk","text":"Talk"},
 		{"id":"vol","text":"Volunteer (once per day)"},
+		{"id":"bribe","text":"Offer a bribe for a recommendation (%d ден)" % price},
 		{"id":"back","text":"Never mind"}
 	]
 	_show_menu(opts, Callable(self, "_on_main_choice"))
@@ -319,8 +282,40 @@ func _on_main_choice(id: String) -> void:
 			await _do_talk()
 		"vol":
 			await _do_volunteer()
+		"bribe":
+			var price := _current_bribe_price()
+			await _play_with_price(J_OPT3_BRIBE_OFFER, price)
+			_show_bribe_confirm_menu(price)
 		"back":
 			_clear_panel()
+
+# ========================= Bribe confirm =========================
+func _show_bribe_confirm_menu(price: int) -> void:
+	var opts = [
+		{"id":"bribe_yes","text":"Pay (%d ден)" % price},
+		{"id":"bribe_no","text":"Never mind"}
+	]
+	_show_menu(opts, Callable(self, "_on_bribe_confirm").bind(price))
+
+func _on_bribe_confirm(id: String, price: int) -> void:
+	match id:
+		"bribe_yes":
+			if not _pay_money(price):
+				await _play_with_price(J_BRIBE_NOMONEY, price)
+				_show_first_menu()
+				return
+			GameState.adjust_integrity(-BRIBE_INTEGRITY_PENALTY)
+			_set_flag(F_BRIBED, true)
+			_set_flag(F_REC_LETTER, true)
+			_ensure_task()
+			while GameState.get_task_progress(TASK_ID) < 7:
+				GameState.update_task_step(TASK_ID)
+			await _play_and_wait(J_BRIBE_GRANTED)
+			_clear_panel()  # require re-click; post-letter menu next time
+		"bribe_no":
+			GameState.adjust_integrity(BRIBE_DECLINE_INTEGRITY_BONUS)
+			await _play_and_wait(J_BRIBE_DECLINED)
+			_show_first_menu()
 
 # ========================= Talk flow =========================
 func _do_talk() -> void:
@@ -350,7 +345,7 @@ func _do_talk() -> void:
 	else:
 		_show_main_menu()
 
-# ========================= Volunteer flow =========================
+# ========================= Volunteer flow (no separate scene; swap BG) =========================
 func _do_volunteer() -> void:
 	if not _has_flag(F_ACCEPTED):
 		await _play_and_wait(J_OPT2_INFO)
@@ -378,28 +373,23 @@ func _on_volunteer_choice(choice_id: String) -> void:
 	if choice_id == "back":
 		_clear_panel()
 		return
-	await _start_session(choice_id)
+	await _run_volunteer(choice_id)
 
-func _start_session(duty_key: String) -> void:
-	var ps := load(volunteer_scene_path) as PackedScene
-	if ps == null:
-		await _play_inline_notice("Volunteer module is unavailable.")
+func _set_volunteer_bg(active: bool) -> void:
+	if _bg_rect == null:
 		return
-
-	var s = ps.instantiate()
-	add_child(s)
-
-	if s.has_method("set_duty"):
-		s.call("set_duty", duty_key)
-
-	if s.has_signal("finished"):
-		await Signal(s, "finished")
-		if is_instance_valid(s):
-			s.queue_free()
+	if active:
+		var g := ("" + str(GameState.player_gender)).to_lower()
+		if g == "f" or g == "female":
+			if volunteer_bg_female: _bg_rect.texture = volunteer_bg_female
+		else:
+			if volunteer_bg_male: _bg_rect.texture = volunteer_bg_male
 	else:
-		if is_instance_valid(s):
-			s.queue_free()
+		_bg_rect.texture = _bg_original_tex
 
+func _run_volunteer(duty_key: String) -> void:
+	_clear_panel()
+	_set_volunteer_bg(true)
 	match duty_key:
 		"flyers":
 			await _play_and_wait(J_VOL_FLYERS)
@@ -409,10 +399,13 @@ func _start_session(duty_key: String) -> void:
 			await _play_and_wait(J_VOL_SURVEY)
 		_:
 			await _play_and_wait(J_VOL_FLYERS)
+	_set_volunteer_bg(false)
 
+	# Update attendance
 	var c := _count() + 1
 	_set_count(c)
 	_set_last_day(_day())
+	_set_flag("yco_vol_attend_day_%d" % _day(), true)  # per-day flag for task manager
 
 	_ensure_task()
 	var prog := GameState.get_task_progress(TASK_ID)
@@ -433,6 +426,23 @@ func _on_back() -> void:
 			return
 	get_tree().change_scene_to_file(city_scene_path)
 
-# ========================= Dialogue action hook =========================
+# ========================= Minimal action bridge =========================
+# Prevent Dialogue UI from calling GameState.apply_action(line) (which crashes on non-string "action").
+# We only care about ending dialogue; ignore everything else.
 func on_dialogue_action(line: Dictionary) -> void:
-	GameState.apply_action(line)
+	var a = line.get("action", null)
+	if a == null:
+		return
+	if typeof(a) == TYPE_STRING and a == "end_dialogue":
+		if DialogueManager.has_method("end_active_dialogue"):
+			DialogueManager.end_active_dialogue()
+	elif typeof(a) == TYPE_DICTIONARY:
+		var t = a.get("type", "")
+		if typeof(t) == TYPE_STRING and t == "end_dialogue" and DialogueManager.has_method("end_active_dialogue"):
+			DialogueManager.end_active_dialogue()
+	elif typeof(a) == TYPE_ARRAY:
+		for item in a:
+			if typeof(item) == TYPE_DICTIONARY:
+				var t2 = item.get("type", "")
+				if typeof(t2) == TYPE_STRING and t2 == "end_dialogue" and DialogueManager.has_method("end_active_dialogue"):
+					DialogueManager.end_active_dialogue()

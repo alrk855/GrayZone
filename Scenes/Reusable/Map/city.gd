@@ -25,6 +25,12 @@ const MARKO_FIRST_EVENT_SCENE    := "res://Scenes/Reusable/Events/MarkoFirstEven
 # ===== Flags =====
 const MARKO_FIRST_EVENT_DONE     := "marko_first_event_done"
 const YCO_INTERACTION_DONE       := "yco_interaction_done"
+const MARKO_SECOND_EVENT_SCENE := "res://Scenes/Reusable/Events/MarkoSecondEvent.tscn"
+const MARKO_SECOND_EVENT_DONE  := "marko_second_event_done"
+
+const EVENT2_DAY   := 3
+const EVENT2_START := 17 * 60  # 17:00
+
 
 # ===== Once-per-day keys =====
 const K_HANGOUT_LAST_DAY := "__CITY_HANGOUT_LAST_DAY"
@@ -176,16 +182,23 @@ func _mark_once_per_day(key: String) -> void:
 func _go_home() -> void:
 	_clear_panel()
 
-	# Day 1 event jump (single hop via fade singleton so we don't chain after a freed node)
+	# Day 1 first event (unchanged)
 	if GameState.day == 1 and not GameState.has_flag(MARKO_FIRST_EVENT_DONE):
 		GameState.set_flag(MARKO_FIRST_EVENT_DONE, true)
 		GameState.location = "MarkoFirstEvent"
 		await fade.fade_to_scene(MARKO_FIRST_EVENT_SCENE)
 		return
 
+	# Day 3 second event trigger after 17:00, only once
+	if GameState.day == EVENT2_DAY and GameState.time >= EVENT2_START and not GameState.has_flag(MARKO_SECOND_EVENT_DONE):
+		GameState.location = "MarkoSecondEvent"
+		await fade.fade_to_scene(MARKO_SECOND_EVENT_SCENE)
+		return
+
+	# Normal go home
 	GameState.location = "Home"
 	await _change_scene(HOME_SCENE_PATH, true)
-	# nothing after this line should rely on this node
+
 
 func _go_to(scene_path: String, loc_name: String) -> void:
 	_clear_panel()

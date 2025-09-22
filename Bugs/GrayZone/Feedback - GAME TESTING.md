@@ -18,3 +18,8 @@
 
 ## CV
 - Nema back button
+
+
+
+DONE
+

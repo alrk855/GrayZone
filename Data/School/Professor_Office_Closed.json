@@ -1,0 +1,7 @@
+{
+  "id": "prof_office_closed",
+  "lines": [
+	{ "speaker": "Narrator", "text": "The professor’s office is closed. The door handle won’t budge." },
+	{ "speaker": "Narrator", "text": "Office hours are 13:00–19:00 today. Come back then." }
+  ]
+}
