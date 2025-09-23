@@ -430,25 +430,61 @@ func _req_step_state_from_id(step: Dictionary) -> int:
 
 	return StepState.ONGOING
 
+# --- helper: fetch letter grade using ProfessorOffice if available (fallback to local map) ---
+func _project_grade_letter() -> String:
+	var score := -1
+	# Prefer numeric score if you track it
+	if GameState.has_method("get_project_score"):
+		score = int(GameState.get_project_score())
+	elif "project_score" in GameState:
+		score = int(GameState.project_score)
+
+	# If we have a score, try the professor's helper first
+	if score >= 0:
+		var prof = get_node_or_null("/root/ProfessorOffice")
+		if prof and prof.has_method("_grade_from_score"):
+			return String(prof._grade_from_score(score))
+		# fallback to the same mapping the prof uses
+		return _grade_from_score_local(score)
+
+	# Otherwise, fall back to any stored letter
+	if GameState.has_method("get_project_grade"):
+		return String(GameState.get_project_grade())
+	elif "project_grade" in GameState:
+		return String(GameState.project_grade)
+	return ""
+
+func _grade_from_score_local(score: int) -> String:
+	if score >= 5: return "A"
+	if score == 4: return "B"
+	if score == 3: return "C"
+	if score == 2: return "D"
+	return "F"
+
+# --- drop-in replacement: requirement state for the Final Project line ---
 func _project_req_state() -> int:
 	var submitted := GameState.has_flag("project_submitted")
 	var second_chance := GameState.has_flag("project_second_chance")
-	var plag := GameState.has_flag("project_plagiarized")
 
-	var grade_str := ""
-	if GameState.has_method("get_project_grade"):
-		grade_str = String(GameState.get_project_grade())
-	elif "project_grade" in GameState:
-		grade_str = String(GameState.project_grade)
+	# If not submitted yet → still ongoing
+	if not submitted:
+		return StepState.ONGOING
 
-	if submitted:
-		if plag:
-			return StepState.FAILED
-		if grade_str.to_upper() == "F" and not second_chance:
-			return StepState.FAILED
-		if grade_str != "" and grade_str.to_upper() != "F":
-			return StepState.DONE
-	return StepState.ONGOING
+	# Use professor's grading (or fallback) to decide
+	var letter := _project_grade_letter().to_upper()
+
+	# No grade yet (waiting / being reviewed) → ongoing
+	if letter == "":
+		return StepState.ONGOING
+
+	# F logic:
+	# - First F typically triggers a reset & second chance → don't show red while that chance is active
+	# - If second chance is already consumed (flag not set) and it's F again → FAILED (red)
+	if letter == "F":
+		return StepState.ONGOING if second_chance else StepState.FAILED
+
+	# Any non-F grade counts as done
+	return StepState.DONE
 
 func _any_flag(names: Array) -> bool:
 	for n in names:

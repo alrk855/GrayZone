@@ -1,4 +1,4 @@
-extends Control 
+extends Control
 
 # ---------- Scene Nodes ----------
 @export var professor_path: NodePath   = "background/Professor"
@@ -67,6 +67,10 @@ const T_17_45: int = 17 * 60 + 45
 const TASK_PROJECT: String = "project"
 const PLAGIARISM_CATCH_CHANCE: float = 0.5
 
+# ---------- Flags ----------
+const FLAG_SECOND_CHANCE := "project_second_chance"
+const FLAG_FORCE_PLAG_CAUGHT := "force_plag_caught"
+
 # ---------- Visit-Professor task gate ----------
 const TASK_VISIT_PROF := "visit_professor_office"
 const K_VISIT_PROF_DONE := "__VISIT_PROF_OFFICE_DONE"  # one-time guard
@@ -79,6 +83,9 @@ var _panel: Control = null
 var _intro_panel_shown: bool = false
 var _janitor_panel_shown: bool = false
 
+# ===============================================================
+#                          LIFECYCLE
+# ===============================================================
 func _ready() -> void:
 	GameState.location = "ProfessorOffice"
 
@@ -104,6 +111,9 @@ func _exit_tree() -> void:
 func _process(_delta: float) -> void:
 	_update_presence()
 
+# ===============================================================
+#                         PRESENCE / BG
+# ===============================================================
 func _update_presence() -> void:
 	var d: int = GameState.day
 	var t: int = GameState.time
@@ -159,10 +169,13 @@ func _in(now: int, start_incl: int, end_excl: int) -> bool:
 	return now >= start_incl and now < end_excl
 
 func _maybe_show_not_here_on_enter() -> void:
-	if GameState.day == 1 and _in(GameState.time, T_15_00, T_17_00):
+	# Show "not here" window outside 13:00–15:00 (tweak the day window as you like)
+	if GameState.day >= 1 and GameState.day <= 5 and _in(GameState.time, T_15_00, T_17_00):
 		DialogueManager.start_dialogue(JSON_PROF_NOT_HERE, self)
 
-# ---------- Professor ----------
+# ===============================================================
+#                           PROFESSOR
+# ===============================================================
 func _on_professor_pressed() -> void:
 	_clear_panel()
 	_intro_panel_shown = false
@@ -222,6 +235,10 @@ func _start_and_wait(json_path: String) -> void:
 	DialogueManager.start_dialogue(json_path, self)
 	await DialogueManager.dialogue_finished
 
+# ---------- Second-chance availability helper ----------
+func _second_chance_available() -> bool:
+	return (GameState.day < 5) and (not GameState.has_flag(FLAG_SECOND_CHANCE))
+
 func _handle_project_submission() -> void:
 	# 1) Promise side-effects FIRST (praise/scold), then grading
 	var side: String = _promise_reward_or_penalty()
@@ -241,7 +258,7 @@ func _handle_project_submission() -> void:
 
 	# --- Plagiarism check (with manual override) ---
 	if is_bought:
-		if GameState.has_flag("force_plag_caught"):
+		if GameState.has_flag(FLAG_FORCE_PLAG_CAUGHT):
 			caught_plag = true
 		else:
 			var rng := RandomNumberGenerator.new()
@@ -256,11 +273,13 @@ func _handle_project_submission() -> void:
 		GameState.adjust_integrity(-10)
 		print("[Integrity] Plagiarism detected at submission. -10 integrity.")
 
-		if GameState.day < 5:
-			# Then second chance
+		if _second_chance_available():
+			# Make sure the next JSON reliably starts
+			DialogueManager.end_active_dialogue()
+			await get_tree().process_frame
 			await _start_and_wait(JSON_FAIL_SECOND_CHANCE)
 			_reset_project_for_second_chance()
-			GameState.set_flag("project_second_chance", true)
+			GameState.set_flag(FLAG_SECOND_CHANCE, true)
 		else:
 			_mark_submitted_no_task_increment()
 		return
@@ -276,10 +295,10 @@ func _handle_project_submission() -> void:
 	var grade_id: String = _grade_from_score(score)
 
 	if grade_id == "F":
-		if GameState.day < 5:
+		if _second_chance_available():
 			await _start_and_wait(JSON_FAIL_SECOND_CHANCE)
 			_reset_project_for_second_chance()
-			GameState.set_flag("project_second_chance", true)
+			GameState.set_flag(FLAG_SECOND_CHANCE, true)
 		else:
 			await _start_and_wait(JSON_GRADE_F)
 			_mark_submitted_no_task_increment()
@@ -349,7 +368,9 @@ func _clear_promise_flags() -> void:
 	if GameState.flags.has("project_promise_day"):
 		GameState.flags.erase("project_promise_day")
 
-# ---------- Dialogue action hook ----------
+# ===============================================================
+#                        DIALOGUE ACTION HOOK
+# ===============================================================
 func on_dialogue_action(line: Dictionary) -> void:
 	var act: String = String(line.get("action", ""))
 
@@ -370,7 +391,9 @@ func on_dialogue_action(line: Dictionary) -> void:
 
 	GameState.apply_action(line)
 
-# ---------- Professor intro choices ----------
+# ===============================================================
+#                     PROFESSOR INTRO CHOICES
+# ===============================================================
 func _show_prof_intro_options() -> void:
 	_clear_panel()
 	var options: Array[Dictionary] = [
@@ -399,7 +422,9 @@ func _on_prof_intro_option(id: String) -> void:
 		_:
 			DialogueManager.end_active_dialogue()
 
-# ---------- Janitor ----------
+# ===============================================================
+#                            JANITOR
+# ===============================================================
 func _on_janitor_pressed() -> void:
 	_clear_panel()
 	_janitor_panel_shown = false
@@ -416,7 +441,7 @@ func _on_janitor_pressed() -> void:
 	var rep: int = GameState.reputation
 	var has_tip := GameState.has_flag("marko_tip")
 
-	# ✅ Prioritize Marko's tip over REP gating
+	# Prioritize Marko's tip over REP gating
 	if has_tip:
 		DialogueManager.start_dialogue(JSON_JANITOR_TIPPED_INTRO, self)
 	elif rep >= 30 and FileAccess.file_exists(JSON_JANITOR_HIGHREP):
@@ -517,7 +542,9 @@ func _on_janitor_purchase_dialogue_finished() -> void:
 	# var btn := get_node_or_null("%JanitorButton")
 	# if btn: btn.visible = false; btn.disabled = true
 
-# ---------- Back ----------
+# ===============================================================
+#                             BACK
+# ===============================================================
 func _on_back_pressed() -> void:
 	if GameState.is_time_frozen():
 		print("⏸️ Finish the conversation first.")
@@ -525,7 +552,9 @@ func _on_back_pressed() -> void:
 	if ResourceLoader.exists(SCHOOL_SCENE_PATH):
 		await fade.fade_to_scene(SCHOOL_SCENE_PATH, 0.4, 0.35)
 
-# ---------- Utils ----------
+# ===============================================================
+#                             UTILS
+# ===============================================================
 func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):
 		_panel.queue_free()

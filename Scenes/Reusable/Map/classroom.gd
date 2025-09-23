@@ -93,11 +93,10 @@ const F_PRINTED_CV                := "printed_cv"
 const F_PRINTED_MOTIVATION        := "printed_motivation"
 const F_MLETTER_AI                := "motivation_ai_generated"
 const F_MLETTER_REWRITE_REQ       := "motivation_rewrite_required"
-const F_MLETTER_SECOND_CHANCE     := "motivation_second_chance"
 
-# Use canonical names from GameFlags for these:
-const F_TEACHER_REVIEW_DONE       := GameFlags.TEACHER_REVIEW_DONE  # "teacher_review_done"
-const F_DOC_FORCE_CATCH           := GameFlags.DOC_FORCE_CATCH      # manual override for testing
+# Canonical names from GameFlags (dev/testing helpers)
+const F_TEACHER_REVIEW_DONE       := GameFlags.TEACHER_REVIEW_DONE   # "teacher_review_done"
+const F_DOC_FORCE_CATCH           := GameFlags.DOC_FORCE_CATCH       # manual override for testing
 
 # Tasks / navigation
 const TASK_TRANSCRIPT             := "transcript"
@@ -352,10 +351,10 @@ func _on_teacher_pressed() -> void:
 
 	var review_unlocked := GameState.has_flag("doc_review_unlocked")
 	var review_done := GameState.has_flag(F_TEACHER_REVIEW_DONE)
-	var need_second := GameState.has_flag(F_MLETTER_REWRITE_REQ)
+	var rewrite_required := GameState.has_flag(F_MLETTER_REWRITE_REQ)
 
-	# Only show review if unlocked AND (not done OR second-chance active)
-	if review_unlocked and (not review_done or need_second):
+	# Show review only if unlocked AND (not done OR rewrite is pending)
+	if review_unlocked and (not review_done or rewrite_required):
 		opts.append({"id":"doc_review","text":"Ask for document review"})
 	elif not review_unlocked:
 		opts.append({"id":"doc_locked","text":"Ask for document review (Locked)"})
@@ -380,7 +379,7 @@ func _on_teacher_choice(id: String) -> void:
 		_clear_panel(); return
 
 func _try_doc_review() -> void:
-	# Already done and no second-chance needed → nothing to review
+	# Already done and no rewrite pending → nothing to review
 	if GameState.has_flag(F_TEACHER_REVIEW_DONE) and not GameState.has_flag(F_MLETTER_REWRITE_REQ):
 		return
 
@@ -397,26 +396,26 @@ func _try_doc_review() -> void:
 	if not has_both:
 		_start_and_chain(J_DOC_NEED_BOTH, ""); return
 
-	# Must have both printed unless second-chance+reprint complete
+	# Must have both printed unless rewrite is required and motivation was reprinted
 	var printed_cv := GameState.has_flag(F_PRINTED_CV)
 	var printed_ml := GameState.has_flag(F_PRINTED_MOTIVATION)
 
-	# If resubmitting (second-chance) and reprinted motivation → accept immediately
-	if GameState.has_flag(F_MLETTER_REWRITE_REQ) and printed_ml and GameState.has_flag(F_MLETTER_SECOND_CHANCE):
+	# If resubmitting (rewrite required) and reprinted motivation → accept immediately
+	if GameState.has_flag(F_MLETTER_REWRITE_REQ) and printed_ml:
 		_start_and_chain(J_DOC_RESUBMIT_ACCEPTED, "_after_resubmit_accept")
 		return
 
 	if not printed_cv or not printed_ml:
 		_start_and_chain(J_DOC_NEED_PRINT, ""); return
 
-	# Normal review → start with CV (dialogue), then suspicion logic in callback
+	# Normal review → start with CV, then suspicion logic
 	_start_and_chain(J_DOC_START_CV, "_after_cv_review")
 
 func _after_cv_review() -> void:
 	# Suspicion ONLY if letter was AI-written
 	var is_ai := GameState.has_flag(F_MLETTER_AI)
 	if not is_ai:
-		# Clean pass → mark review completed, reuse "passed" beat
+		# Clean pass → mark review completed
 		GameState.set_flag(F_TEACHER_REVIEW_DONE, true)
 		_start_and_chain(J_DOC_LIE_PASSED, "")
 		return
@@ -438,17 +437,8 @@ func _on_doc_suspicion_choice(id: String) -> void:
 	_clear_panel()
 	if id == "admit":
 		GameState.adjust_integrity(+3)
-		GameState.set_flag(F_MLETTER_REWRITE_REQ, true)
-		GameState.set_flag(F_MLETTER_SECOND_CHANCE, true)
-		# Un-print and reset motivation task progress to 0
-		if GameState.has_flag(F_PRINTED_MOTIVATION):
-			GameState.clear_flag(F_PRINTED_MOTIVATION)
-		if GameState.has_method("reset_task_progress"):
-			GameState.reset_task_progress("motivation")
-		elif GameState.has_method("reset_task"):
-			GameState.reset_task("motivation")
-		elif GameState.has_method("set_task_progress"):
-			GameState.set_task_progress("motivation", 0)
+		# Use the helper to reset motivation for rewrite (step=1, clear print, set rewrite flag)
+		_reset_mletter_for_rewrite()
 		_start_and_chain(J_DOC_ADMIT_REWRITE, "")
 		return
 
@@ -473,10 +463,18 @@ func _on_doc_suspicion_choice(id: String) -> void:
 			return
 
 func _after_resubmit_accept() -> void:
-	# Clear second-chance flags and mark as done
-	if GameState.has_flag(F_MLETTER_REWRITE_REQ): GameState.clear_flag(F_MLETTER_REWRITE_REQ)
-	if GameState.has_flag(F_MLETTER_SECOND_CHANCE): GameState.clear_flag(F_MLETTER_SECOND_CHANCE)
+	# Clear rewrite requirement and mark review as done
+	if GameState.has_flag(F_MLETTER_REWRITE_REQ):
+		GameState.clear_flag(F_MLETTER_REWRITE_REQ)
 	GameState.set_flag(F_TEACHER_REVIEW_DONE, true)
+
+# ---- Helper: reset motivation for rewrite (same spirit as your project reset) ----
+func _reset_mletter_for_rewrite() -> void:
+	GameState.ensure_task("motivation")
+	GameState.task_step_index["motivation"] = 1
+	print("[Task] Motivation Letter reset to step 1 for rewrite.]")
+	GameState.clear_flag("printed_motivation")
+	GameState.set_flag("motivation_rewrite_required", true)
 
 # ------------------------ Janitor ------------------------
 func _on_janitor_pressed() -> void:
@@ -580,7 +578,7 @@ func _after_janitor_confirm() -> void:
 	# 1) Credit “checks” if we’re in the window
 	_maybe_mark_classroom_answers_check()
 
-	# 2) Task progress derived from flags (1=checks, 2=buy_subj1, 3=buy_subj2)
+	# 2) Task progress derived from flags (1=checks, 2=buy_s1, 3=buy_s2)
 	GameState.ensure_task(TASK_CLASSROOM_ANS)
 	var base := 0
 	if GameState.has_flag(K_CLASSROOM_CHECK_DONE):

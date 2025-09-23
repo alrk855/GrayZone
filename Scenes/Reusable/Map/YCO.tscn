@@ -1,11 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://c85ya7md0kuy3"]
+[gd_scene load_steps=11 format=3 uid="uid://c85ya7md0kuy3"]
 
 [ext_resource type="Script" uid="uid://dwq5awcorxxo4" path="res://Scenes/Reusable/Map/yco.gd" id="1_a2mpb"]
-[ext_resource type="Texture2D" uid="uid://dbyc4oobst6v7" path="res://Images/Pozi/volontiranje male.png" id="2_5tyei"]
-[ext_resource type="Texture2D" uid="uid://vw1dhtj30301" path="res://Images/b7500904646b294d9b087886b204113a_t.jpeg" id="2_a2mpb"]
+[ext_resource type="Texture2D" uid="uid://dobaheso7ro53" path="res://Images/office_listovi_m.png" id="2_kfnul"]
 [ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_4n16m"]
-[ext_resource type="Texture2D" uid="uid://cldx8p2vxqxk4" path="res://Images/Pozi/volontiranje female.png" id="3_ffrf7"]
-[ext_resource type="Texture2D" uid="uid://cp252lnyqbomr" path="res://Images/CharacterFrames/DanielFrame.png" id="4_4n16m"]
+[ext_resource type="Texture2D" uid="uid://cqg2d6srkrp1s" path="res://Images/office_listovi_f.png" id="3_5tyei"]
+[ext_resource type="Texture2D" uid="uid://clk7vos2nmmp6" path="res://Images/office_bussiness_man.png" id="4_ffrf7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kfnul"]
 
@@ -26,8 +25,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_a2mpb")
 back_button_path = NodePath("background/back")
-volunteer_bg_male = ExtResource("2_5tyei")
-volunteer_bg_female = ExtResource("3_ffrf7")
+volunteer_bg_male = ExtResource("2_kfnul")
+volunteer_bg_female = ExtResource("3_5tyei")
 
 [node name="background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -36,7 +35,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_a2mpb")
+texture = ExtResource("4_ffrf7")
+expand_mode = 1
 
 [node name="back" type="Button" parent="background"]
 custom_minimum_size = Vector2(200, 100)
@@ -64,5 +64,4 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_5tyei")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_ffrf7")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_xrl65")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ebnsl")
-icon = ExtResource("4_4n16m")
 metadata/_edit_use_anchors_ = true

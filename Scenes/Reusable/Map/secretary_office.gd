@@ -173,7 +173,7 @@ func _show_print_menu_from_config() -> void:
 			var text := String(it.get("text", ""))
 			var price := int(it.get("price", 0))
 			var id := String(it.get("id", ""))
-			opts.append({ "text": "%s (%d$)" % [text, price], "id": id })
+			opts.append({ "text": "%s (%dMKD)" % [text, price], "id": id })
 
 	if opts.is_empty():
 		var nothing := [{ "text": "Nothing to print right now.", "id": "noop" }, { "text": "Back", "id": "back" }]

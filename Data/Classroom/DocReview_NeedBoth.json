@@ -1,13 +1,13 @@
 {
   "id": "DocReview_NeedBoth",
   "lines": [
-    {
-      "speaker": "Homeroom Teacher",
-      "text": "To review, I need both your CV and your motivational letter."
-    },
-    {
-      "speaker": "Homeroom Teacher",
-      "text": "Come back when you have both ready."
-    }
+	{
+	  "speaker": "Homeroom Teacher",
+	  "text": "To review, I need both your CV and your motivational letter."
+	},
+	{
+	  "speaker": "Homeroom Teacher",
+	  "text": "Come back when you have both ready."
+	}
   ]
 }

@@ -16,7 +16,7 @@ extends Control
 @onready var zvuk_end : AudioStreamPlayer2D = $"end"
 @onready var zvuk_wrong : AudioStreamPlayer2D = $"wrong"
 
-# ---- GPT button wiring (export the path so you can point to your actual button) ----
+# ---- GPT button (you can point this to your real button in the scene) ----
 @export var gpt_button_path: NodePath = ^"box/button2"
 @export var hide_gpt_by_default: bool = false
 var _gpt_button: Button = null
@@ -25,17 +25,15 @@ var _gpt_button: Button = null
 const TASK_MLETTER := "motivation"
 const FLAG_MLETTER_WRITTEN := "motivation_written"
 
-# Flags shared with Classroom review flow
-const F_PRINTED_MOTIVATION        := "printed_motivation"
-const F_MLETTER_AI                := "motivation_ai_generated"   # set only when GPT path used
-const F_MLETTER_REWRITE_REQ       := "motivation_rewrite_required"
-const F_MLETTER_SECOND_CHANCE     := "motivation_second_chance"
-const F_ML_FORCE_MANUAL           := "motivation_force_manual"   # hide/disable GPT while rewriting
+# Shared flags
+const F_PRINTED_MOTIVATION  := "printed_motivation"
+const F_MLETTER_AI          := "motivation_ai_generated"      # set if GPT path used
+const F_MLETTER_REWRITE_REQ := "motivation_rewrite_required"   # single gate flag
 
 # --------------------- Optional JSON templates ---------------------
-@export_file("*.json") var TEMPLATES_JSON: String = ""   # expects {"templates": ["Dear ...", "...", ...]}
+@export_file("*.json") var TEMPLATES_JSON: String = ""   # expects {"templates": ["Dear ...", "..."]}
 
-# Fallback in-code templates (used if JSON missing/invalid)
+# Fallback in-code templates
 @onready var text_library : Array[String] = [
 	"Dear Committee, I come from a modest background, but I've worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community. Thank you for the opportunity. Sincerely, Me",
 	"Dear Committee, I'm the first in my family to attend college. This scholarship would let me keep my grades up and continue mentoring local kids. Thank you. Sincerely, Me",
@@ -72,26 +70,27 @@ func _ready() -> void:
 	GameState.location = "Unknown"
 	finishbutt.modulate.a = 0
 
-	# Wire buttons safely
+	# Buttons
 	if not nevermind.pressed.is_connected(Callable(self, "exit")):
 		nevermind.pressed.connect(Callable(self, "exit"))
 	if not finishbutt.pressed.is_connected(Callable(self, "exit")):
 		finishbutt.pressed.connect(Callable(self, "exit"))
 
-	# Set up GPT button (respect rewrite lock + optional default hide)
+	# GPT button setup: hide/disable if rewrite is required (manual-only)
 	_gpt_button = get_node_or_null(gpt_button_path) as Button
-	var force_hide := hide_gpt_by_default or GameState.has_flag(F_ML_FORCE_MANUAL) or GameState.has_flag(F_MLETTER_SECOND_CHANCE) or GameState.has_flag(F_MLETTER_REWRITE_REQ)
+	var lock_manual := GameState.has_flag(F_MLETTER_REWRITE_REQ)
+	var hide_now := hide_gpt_by_default or lock_manual
 	if _gpt_button:
-		_gpt_button.visible = not force_hide
-		_gpt_button.disabled = force_hide
-		if not force_hide and not _gpt_button.pressed.is_connected(Callable(self, "_on_button_2_pressed")):
+		_gpt_button.visible = not hide_now
+		_gpt_button.disabled = hide_now
+		if not hide_now and not _gpt_button.pressed.is_connected(Callable(self, "_on_button_2_pressed")):
 			_gpt_button.pressed.connect(Callable(self, "_on_button_2_pressed"))
 
-	# Make sure LineEdit submit is connected
+	# LineEdit submit
 	if not edit.text_submitted.is_connected(Callable(self, "_on_line_edit_text_submitted")):
 		edit.text_submitted.connect(Callable(self, "_on_line_edit_text_submitted"))
 
-	# Load templates (JSON if provided; otherwise fallback)
+	# Load templates
 	_load_templates()
 
 	$SceneAnimation.play("LetterIntro")
@@ -106,34 +105,26 @@ func _ready() -> void:
 
 func _load_templates() -> void:
 	_templates.clear()
-
-	# Try JSON first
 	if TEMPLATES_JSON.strip_edges() != "" and FileAccess.file_exists(TEMPLATES_JSON):
 		var raw := FileAccess.get_file_as_string(TEMPLATES_JSON)
 		var parsed = JSON.parse_string(raw)
 		if typeof(parsed) == TYPE_DICTIONARY:
-			var dict: Dictionary = parsed
-			var arr: Variant = dict.get("templates", [])
+			var arr: Variant = (parsed as Dictionary).get("templates", [])
 			if arr is Array:
 				for t in (arr as Array):
 					var s := String(t).strip_edges()
 					if s != "":
 						_templates.append(s)
-
-	# Fallback to in-code strings
 	if _templates.is_empty():
 		for s in text_library:
 			var ss := String(s).strip_edges()
 			if ss != "":
 				_templates.append(ss)
-
-	# Absolute last resort
 	if _templates.is_empty():
 		_templates.append("Dear Committee, Thank you for your time. Sincerely, Me")
 
 # --------------------- Manual typing ---------------------
 func _on_button_pressed() -> void:
-	# Start the typing version
 	gamebox.modulate.a = 0
 	create_tween().tween_property(gamebox, "modulate:a", 1, 2)
 	box.visible = false
@@ -154,13 +145,11 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 		if not zvuk_wrong.playing:
 			zvuk_wrong.play()
 
-# --------------------- GPT path (auto-generate) ---------------------
+# --------------------- GPT path ---------------------
 func _on_button_2_pressed() -> void:
-	# Hard block if in rewrite/second-chance (force manual)
-	if GameState.has_flag(F_ML_FORCE_MANUAL) or GameState.has_flag(F_MLETTER_REWRITE_REQ) or GameState.has_flag(F_MLETTER_SECOND_CHANCE):
-		# Silently ignore or add a small UI nudge if you want.
+	# Hard block if rewrite required → manual-only
+	if GameState.has_flag(F_MLETTER_REWRITE_REQ):
 		return
-
 	_used_gpt = true
 	box.visible = false
 	$outroGPT.visible = true
@@ -172,7 +161,6 @@ func _on_button_2_pressed() -> void:
 # --------------------- Flow ---------------------
 func _process(_delta: float) -> void:
 	debLabel.text = "Correct: %d\nErrors: %d\nStatus:" % [correct, wrong]
-
 	if current_word < words.size():
 		header.text = words[current_word]
 		if edit.text == header.text:
@@ -183,12 +171,11 @@ func _process(_delta: float) -> void:
 	elif not freed:
 		freed = true
 		gamebox.visible = false
-		outro()  # marks complete & bumps task exactly once
+		outro()
 
 func outro() -> void:
-	_mark_completed_once()   # task bump + flags
+	_mark_completed_once()
 
-	# Outro UI
 	zvuk_end.play()
 	debLabel.visible_ratio = 0
 	status.visible = false
@@ -197,9 +184,9 @@ func outro() -> void:
 	var tween : Tween = create_tween()
 	if wrong == 0:
 		status.text = "Perfect"
-	elif wrong > 0 and wrong < 4:
+	elif wrong < 4:
 		status.text = "Almost Perfect"
-	elif wrong > 3 and wrong < 7:
+	elif wrong < 7:
 		status.text = "Mid"
 	else:
 		status.text = "Bad"
@@ -214,7 +201,7 @@ func _mark_completed_once() -> void:
 		return
 	_completed = true
 
-	# Task bump (Secretary meeting typically set progress to 1; this moves it to 2)
+	# Bump the task (Secretary meeting likely set it to 1; this moves it to 2)
 	if not _task_bumped:
 		GameState.ensure_task(TASK_MLETTER)
 		GameState.update_task_step(TASK_MLETTER)
@@ -223,14 +210,12 @@ func _mark_completed_once() -> void:
 	# Mark written
 	GameState.set_flag(FLAG_MLETTER_WRITTEN, true)
 
-	# GPT vs Manual flags
+	# GPT vs Manual: if manual while rewrite_required, clear AI flag so review won't ping again
 	if _used_gpt:
 		GameState.set_flag(F_MLETTER_AI, true)
 	else:
-		# If we’re in second-chance rewrite, ensure we are no longer marked AI.
-		if GameState.has_flag(F_MLETTER_REWRITE_REQ) or GameState.has_flag(F_MLETTER_SECOND_CHANCE) or GameState.has_flag(F_ML_FORCE_MANUAL):
-			if GameState.has_flag(F_MLETTER_AI):
-				GameState.clear_flag(F_MLETTER_AI)
+		if GameState.has_flag(F_MLETTER_REWRITE_REQ) and GameState.has_flag(F_MLETTER_AI):
+			GameState.clear_flag(F_MLETTER_AI)
 
 func SFX_play() -> void:
 	var sound := AudioStreamPlayer2D.new()
@@ -241,7 +226,6 @@ func SFX_play() -> void:
 	sound.queue_free()
 
 func exit() -> void:
-	# No task/flag logic here; completion is handled in outro()
 	var tween : Tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0, 1).set_trans(Tween.TRANS_CUBIC)
 	await tween.finished
