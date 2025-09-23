@@ -55,11 +55,11 @@ modulate_color = Color(0.994686, 0, 0.240131, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1pjf7"]
 content_margin_left = 38.0
 bg_color = Color(0, 0.466667, 1, 0.32549)
-border_width_left = 22
-border_width_top = 22
-border_width_right = 22
-border_width_bottom = 22
-border_color = Color(0.698449, 0.663801, 0, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(9.62615e-07, 0.693992, 0.976692, 1)
 corner_radius_top_left = 22
 corner_radius_top_right = 22
 corner_radius_bottom_right = 22
@@ -109,13 +109,12 @@ TextEdit/styles/read_only = null
 
 [sub_resource type="Gradient" id="Gradient_1kd4o"]
 interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.470085, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.117211, 0.000196819, 0.274451, 1, 0.347654, 0.0885683, 0.0197754, 1)
+offsets = PackedFloat32Array(0, 0.547009, 1)
+colors = PackedColorArray(1, 0.477917, 0.67172, 1, 0.474327, 0.00293886, 0.957635, 1, 0.69038, 0.234772, 0.778019, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_aoucs"]
 gradient = SubResource("Gradient_1kd4o")
 fill_from = Vector2(0, 1)
-fill_to = Vector2(0.5, 0.3)
 metadata/_snap_enabled = true
 
 [sub_resource type="Animation" id="Animation_d76yl"]

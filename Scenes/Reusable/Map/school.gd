@@ -38,7 +38,7 @@ func _ready() -> void:
 		GameState.subject1 = "math"
 	if GameState.subject2.strip_edges() == "":
 		GameState.subject2 = "geography"
-
+	_show_control_hints_once()
 	GameUi.visible = true
 	GameState.location = "School"
 	popup_label.visible = false
@@ -215,3 +215,17 @@ func _fade_and_change_scene(path: String) -> void:
 	_is_fading = true
 	await fade.fade_to_scene(path, 0.4, 0.35)
 	_is_fading = false
+# ---------------- One-time helper notifications ----------------
+func _show_control_hints_once() -> void:
+	# Only run once per save
+	if GameState.has_flag("shown_school_hints"):
+		return
+
+	GameState.set_flag("shown_school_hints", true)
+
+	# Wait 5 seconds before showing the first notification
+	await get_tree().create_timer(10.0).timeout
+	if is_instance_valid(GameUi):
+		GameUi.notify("📘 Press T to open your Tasks")
+	if is_instance_valid(GameUi):
+		GameUi.notify("⚙️ Press ESC to open Settings")

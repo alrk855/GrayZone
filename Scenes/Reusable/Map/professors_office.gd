@@ -239,25 +239,29 @@ func _handle_project_submission() -> void:
 	var is_bought: bool = GameState.has_flag("bought_project")
 	var caught_plag: bool = false
 
+	# --- Plagiarism check (with manual override) ---
 	if is_bought:
-		var rng := RandomNumberGenerator.new()
-		rng.randomize()
-		caught_plag = rng.randf() < PLAGIARISM_CATCH_CHANCE
+		if GameState.has_flag("force_plag_caught"):
+			caught_plag = true
+		else:
+			var rng := RandomNumberGenerator.new()
+			rng.randomize()
+			caught_plag = rng.randf() < PLAGIARISM_CATCH_CHANCE
 
 	# --- Plagiarized & caught ---
 	if is_bought and caught_plag:
+		# Always show plagiarized JSON first
+		await _start_and_wait(JSON_GRADE_F_PLAG)
+		GameState.set_flag("project_plagiarized", true)
+		GameState.adjust_integrity(-10)
+		print("[Integrity] Plagiarism detected at submission. -10 integrity.")
+
 		if GameState.day < 5:
+			# Then second chance
 			await _start_and_wait(JSON_FAIL_SECOND_CHANCE)
-			GameState.set_flag("project_plagiarized", true)
-			GameState.adjust_integrity(-10)
-			print("[Integrity] Plagiarism detected at submission. -10 integrity.")
 			_reset_project_for_second_chance()
 			GameState.set_flag("project_second_chance", true)
 		else:
-			await _start_and_wait(JSON_GRADE_F_PLAG)
-			GameState.set_flag("project_plagiarized", true)
-			GameState.adjust_integrity(-10)
-			print("[Integrity] Plagiarism detected at submission. -10 integrity.")
 			_mark_submitted_no_task_increment()
 		return
 

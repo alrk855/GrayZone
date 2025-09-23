@@ -9,6 +9,7 @@ extends Control
 var selected_gender: String = ""
 
 func _ready():
+	GameState.location ="Unknown"
 	# Use button_up to avoid signal name collisions
 	self.modulate = Color(0, 0, 0, 1)
 	create_tween().tween_property(self, "modulate", Color(1, 1, 1, 1), 2)

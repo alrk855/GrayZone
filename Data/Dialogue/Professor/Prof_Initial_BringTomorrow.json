@@ -14,15 +14,6 @@
 	  "task": "project"
 	},
 	{
-	  "action": "set_flags",
-	  "flags": ["project_accepted", "project_promise_tomorrow"]
-	},
-	{
-	  "action": "unlock_feature",
-	  "feature": "final_project",
-	  "limit": 1.0
-	},
-	{
 	  "action": "adjust_time",
 	  "value": 15
 	}

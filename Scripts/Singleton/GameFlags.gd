@@ -43,29 +43,36 @@ const REQ_SUBTASKS               := "req_subtasks_added"
 # ===== Classroom / Teacher flow =====
 const TEACHER_D2_EVENT_DONE      := "teacher_d2_event_done"       # Day-2 noon talk completed (or catch-up unlock)
 const TEACHER_REVIEW_UNLOCKED    := "teacher_review_unlocked"     # Can ask teacher to review CV/M-letter
+const TEACHER_REVIEW_DONE        := "teacher_review_done"         # Review completed (menu item should hide unless second-chance active)
 
-# Attendance / discipline
-const DISCIPLINE_WARNING         := "discipline_warning"          # first warning after initial skip
-const DISCIPLINE_FAILED          := "discipline_failed"           # record flagged after repeated issues
-const ABSENT_COUNT               := "absent_count"                # int counter
-const LATE_COUNT                 := "late_count"                  # int counter
-const HOMEROOM_CATCHUP_SHOWN     := "homeroom_catchup_shown"      # show catch-up only once before Day 5
+# Attendance
+const DISCIPLINE_WARNING         := "discipline_warning"          
+const DISCIPLINE_FAILED          := "discipline_failed"           
+const ABSENT_COUNT               := "absent_count"                
+const LATE_COUNT                 := "late_count"                  
+const HOMEROOM_CATCHUP_SHOWN     := "homeroom_catchup_shown"      
 
 # Transcripts
-const TRANSCRIPTS_READY          := "transcripts_ready"           # becomes true ~4h after finals
-const TRANSCRIPTS_GIVEN          := "transcripts_given"           # student has received them
+const TRANSCRIPTS_READY          := "transcripts_ready"
+const TRANSCRIPTS_GIVEN          := "transcripts_given"
 
 # Janitor answers (slot-based; independent of actual subject names)
 const BOUGHT_ANSWERS_S1          := "bought_answers_s1"
 const BOUGHT_ANSWERS_S2          := "bought_answers_s2"
-const JANITOR_OFFER_DECLINED_D3  := "janitor_offer_declined_d3"   # outright refused on Day 3
+const JANITOR_OFFER_DECLINED_D3  := "janitor_offer_declined_d3"
 
-# Motivation letter review (no separate task; used to gate/reset states)
-const MLETTER_AI                 := "motivation_ai_generated"     # detected AI-y letter
+# Motivation letter review state
+const MLETTER_AI                 := "motivation_ai_generated"     # set by M-letter scene if GPT path used
 const MLETTER_REWRITE_REQUIRED   := "motivation_rewrite_required" # need rewrite; also implies reprint
 
 # Scholarship requirement: Language certificate (arrived via mailbox)
-const HAVE_LANGUAGE_CERTIFICATE  := "have_language_certificate"   # becomes true once the mail arrives
+const HAVE_LANGUAGE_CERTIFICATE  := "have_language_certificate"
+
+# ===== Manual override (dev/testing) =====
+# When TRUE → teacher ALWAYS catches AI letter during review (no RNG). When FALSE → normal behavior (50/50 only if AI).
+const DOC_FORCE_CATCH            := "doc_force_catch"
+# When TRUE → professor ALWAYS catches project plagiarism (no RNG). When FALSE → normal behavior.
+const PROJECT_FORCE_PLAG_CAUGHT  := "project_force_plag_caught"
 
 # ===== Defaults (types are respected) =====
 const DEFAULTS := {
@@ -103,8 +110,9 @@ const DEFAULTS := {
 	# Classroom / teacher
 	TEACHER_D2_EVENT_DONE: false,
 	TEACHER_REVIEW_UNLOCKED: false,
+	TEACHER_REVIEW_DONE: false,
 
-	# Attendance / discipline
+	# Attendance
 	DISCIPLINE_WARNING: false,
 	DISCIPLINE_FAILED: false,
 	ABSENT_COUNT: 0,
@@ -126,6 +134,10 @@ const DEFAULTS := {
 
 	# Scholarship requirement
 	HAVE_LANGUAGE_CERTIFICATE: false,
+
+	# Manual overrides
+	DOC_FORCE_CATCH: false,
+	PROJECT_FORCE_PLAG_CAUGHT: false,
 }
 
 # ===== Legacy → Canonical map =====
@@ -146,6 +158,7 @@ const ALIASES := {
 
 	"teacher_event_done": TEACHER_D2_EVENT_DONE,
 	"teacher_review": TEACHER_REVIEW_UNLOCKED,
+	"teacher_review_done": TEACHER_REVIEW_DONE,
 
 	"discipline_warn": DISCIPLINE_WARNING,
 	"discipline_warning": DISCIPLINE_WARNING,
@@ -164,6 +177,11 @@ const ALIASES := {
 	"motivation_ai": MLETTER_AI,
 	"motivation_ai_generated": MLETTER_AI,
 	"motivation_rewrite_required": MLETTER_REWRITE_REQUIRED,
+
+	# Manual overrides legacy keys
+	"force_plag_caught": PROJECT_FORCE_PLAG_CAUGHT,
+	"force_doc_catch": DOC_FORCE_CATCH,
+	"doc_force_catch": DOC_FORCE_CATCH,
 }
 
 static func canon(name: String) -> String:

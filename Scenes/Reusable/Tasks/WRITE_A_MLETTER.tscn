@@ -1,8 +1,8 @@
-[gd_scene load_steps=18 format=3 uid="uid://bbw8mfjycwlt"]
+[gd_scene load_steps=22 format=3 uid="uid://bbw8mfjycwlt"]
 
 [ext_resource type="Script" uid="uid://dwfc7ddawqw73" path="res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd" id="1_hg68k"]
-[ext_resource type="Texture2D" uid="uid://uobfmga22klq" path="res://Images/MainMenu/BlueSky_HD_END.png" id="1_ppx27"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_0lpo1"]
+[ext_resource type="StyleBox" uid="uid://b4qwc5kc5q84p" path="res://Scenes/Reusable/Tasks/WRITE_A_MLETTER.tres" id="4_0ev40"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_2mygu"]
 [ext_resource type="StyleBox" uid="uid://d3s5ek8kweqtk" path="res://Themes/BUTTON_WHITE_BORDER.tres" id="5_2mygu"]
 [ext_resource type="FontFile" uid="uid://bv0pm4qc1mksv" path="res://Fonts/BellavoirSerif_PERSONAL_USE_ONLY.otf" id="6_qn3i6"]
@@ -190,6 +190,29 @@ _data = {
 &"RESET": SubResource("Animation_igtkr")
 }
 
+[sub_resource type="Gradient" id="Gradient_igtkr"]
+offsets = PackedFloat32Array(0, 0.504274, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.132856, 0.204514, 1, 1, 0.51, 0.787667, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0ev40"]
+gradient = SubResource("Gradient_igtkr")
+fill_from = Vector2(0, 0.99697)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ev40"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ug6hg"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.7, 0, 0.151667, 1)
+border_blend = true
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
 [sub_resource type="Animation" id="Animation_ug6hg"]
 length = 0.001
 tracks/0/type = "value"
@@ -357,7 +380,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_ppx27")
+texture = SubResource("GradientTexture2D_0ev40")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
@@ -404,6 +427,7 @@ offset_right = 531.0
 offset_bottom = 310.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("4_0ev40")
 
 [node name="Header" type="Label" parent="box"]
 layout_mode = 1
@@ -495,6 +519,7 @@ offset_right = 531.0
 offset_bottom = 310.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("4_0ev40")
 
 [node name="Header" type="Label" parent="gamebox"]
 layout_mode = 1
@@ -534,8 +559,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("4_2mygu")
 theme_override_font_sizes/font_size = 45
-placeholder_text = "Type shit"
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0ev40")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ug6hg")
+placeholder_text = "Type here"
 alignment = 1
+max_length = 15
 
 [node name="outrobox" type="Panel" parent="."]
 visible = false
@@ -551,6 +579,7 @@ offset_right = 531.0
 offset_bottom = 310.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("4_0ev40")
 
 [node name="DebugLabel" type="Label" parent="outrobox"]
 layout_mode = 1
@@ -670,6 +699,7 @@ offset_right = 531.0
 offset_bottom = 310.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("4_0ev40")
 
 [node name="Header" type="Label" parent="outroGPT"]
 layout_mode = 1

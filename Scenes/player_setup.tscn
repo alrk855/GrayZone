@@ -93,6 +93,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_heq8j")
 theme_override_styles/normal = ExtResource("2_e3k3s")
 placeholder_text = "Enter your name"
 alignment = 1
+max_length = 15
 
 [node name="Spacer2" type="Control" parent="Background/MarginContainer/VBoxContainer/NameRow"]
 custom_minimum_size = Vector2(500, 0)
