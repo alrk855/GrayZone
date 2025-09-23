@@ -16,10 +16,10 @@
 - [x] Viktor
 - [x] Kiks
 - [x] Tripunakis
-- [ ] Gjoci
+- [x] Gjoci
 - [ ] Chuki
 - [ ] Damen Kamen
 - [ ] Ando
 - [ ] Pece
-- [ ] Eva
+- [x] Eva
 - [ ] STEVAN
