@@ -104,9 +104,6 @@ func start_interaction() -> void:
 	var opts: Array = []
 	opts.append({ "text": "Ask about scholarship", "id": "talk" })
 
-	if GameState.has_flag("have_birth_certificate"):
-		opts.append({ "text": "Ask about notarization", "id": "notarization" })
-
 	if _has_any_printables():
 		opts.append({ "text": "Print a document", "id": "print" })
 
@@ -123,8 +120,6 @@ func _on_choice_selected(id: String) -> void:
 	match id:
 		"talk":
 			DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Talk.json", self)
-		"notarization":
-			DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Notarization.json", self)
 		"print":
 			DialogueManager.start_dialogue(PRINT_MENU_JSON, self)
 		"submit":

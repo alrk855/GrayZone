@@ -94,7 +94,6 @@ custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
 [node name="LOAD" type="RichTextLabel" parent="Background/Shade/Layout/Title"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/normal_font = ExtResource("1_jnu2l")
@@ -104,6 +103,7 @@ text = "LOAD FROM SLOT"
 horizontal_alignment = 1
 
 [node name="SAVE" type="RichTextLabel" parent="Background/Shade/Layout/Title"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/normal_font = ExtResource("1_jnu2l")
@@ -130,6 +130,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Default" type="MarginContainer" parent="Background/Shade/Layout/Save1/SaveBackground"]
+visible = false
 layout_mode = 2
 
 [node name="Empty" type="Label" parent="Background/Shade/Layout/Save1/SaveBackground/Default"]
@@ -201,7 +202,6 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="Removal" type="HBoxContainer" parent="Background/Shade/Layout/Save1/SaveBackground"]
-visible = false
 layout_mode = 2
 
 [node name="Warning" type="Label" parent="Background/Shade/Layout/Save1/SaveBackground/Removal"]

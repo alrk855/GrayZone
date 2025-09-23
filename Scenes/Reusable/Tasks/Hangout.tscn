@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://coanffbur1o0l"]
+[gd_scene load_steps=5 format=3 uid="uid://coanffbur1o0l"]
 
 [ext_resource type="Script" uid="uid://bxkf2746r0g6c" path="res://Scenes/Reusable/Tasks/hangout.gd" id="1_ollcb"]
+[ext_resource type="Texture2D" uid="uid://w3o62hdf08ww" path="res://Images/Pozi/ploshtad_igra_male.png" id="2_dq446"]
 [ext_resource type="Texture2D" uid="uid://c1aldxrvvcc24" path="res://Images/ploshtad_marko.png" id="2_ollcb"]
+[ext_resource type="Texture2D" uid="uid://b6xyfy6v2qdjs" path="res://Images/Pozi/ploshtad_igra_female.png" id="3_a021g"]
 
 [node name="Hangout" type="Control"]
 layout_mode = 3
@@ -11,6 +13,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ollcb")
+bg_rect_path = NodePath("TextureRect")
+bg_male = ExtResource("2_dq446")
+bg_female = ExtResource("3_a021g")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1

@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://drxcg2tkp2a54"]
+
+[ext_resource type="Script" uid="uid://bpj7rfslbtfww" path="res://Scenes/Reusable/splash.gd" id="1_3qakl"]
+[ext_resource type="VideoStream" uid="uid://fvxik74ydp5p" path="res://Images/Videos/Timeline 1.ogv" id="1_gv28g"]
+[ext_resource type="AudioStream" uid="uid://oxps7fx8me3r" path="res://Images/Videos/typeShiftington.wav" id="3_u7457"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3qakl")
+next_scene = "res://Scenes/main_menu.tscn"
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("1_gv28g")
+autoplay = true
+metadata/_edit_use_anchors_ = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_u7457")
+autoplay = true

@@ -55,24 +55,20 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ww5ix")
 [node name="RichTextLabel" type="RichTextLabel" parent="Panel"]
 z_index = 2
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -345.0
-offset_top = -118.0
-offset_right = 345.0
-offset_bottom = 118.0
+anchors_preset = -1
+anchor_left = 0.320313
+anchor_top = 0.390741
+anchor_right = 0.679688
+anchor_bottom = 0.609259
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/normal_font = ExtResource("1_rrrc0")
 theme_override_font_sizes/normal_font_size = 28
-text = "Ти си матурант во една скопска гимназија. Твојот сон? Да добиеш стипендија и виза за Германија, за да можеш да продолжиш со изучување напредна математика. Твојата цел: да си ги средиш оценките, да ја добиеш визата и да матурираш навреме.
-"
+text = "You are a high school senior in Skopje. Your dream? To get a scholarship and a visa to Germany so you can continue studying advanced mathematics. Your goal: to get your grades in order, get your visa, and graduate on time."
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("2_u3s32")
+metadata/_edit_use_anchors_ = true
 
 [node name="Timer" type="Timer" parent="Panel"]
 one_shot = true

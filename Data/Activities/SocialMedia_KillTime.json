@@ -1,0 +1,18 @@
+{
+  "id": "SocialMedia_KillTime",
+  "post_time_cost_minutes": 120,
+  "lines": [
+	{
+	  "speaker": "Narrator",
+	  "text": "You open your phone to ‘take a quick break’. Scroll. Like. Scroll. Comment. Scroll."
+	},
+	{
+	  "speaker": "Narrator",
+	  "text": "A ping here, a reel there—your focus unravels into threads."
+	},
+	{
+	  "speaker": "Narrator",
+	  "text": "Memes blur into news, into reels, into… nothing. Time dissolves."
+	},
+  ]
+}

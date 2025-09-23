@@ -30,6 +30,8 @@ func _ready() -> void:
 
 	# Gate CV/Motivation initial step behind meeting the secretary
 	if GameState.has_flag("secretary_met"):
+		GameState.ensure_task("cv")
+		GameState.ensure_task("motivation")
 		if GameState.get_task_progress("cv") == 0:
 			GameState.update_task_step("cv")
 		if GameState.get_task_progress("motivation") == 0:
@@ -43,9 +45,7 @@ func _on_home_btn_pressed() -> void:
 
 # ---- Midnight window helper (00:00–01:00 inclusive of 01:00) ----
 func _is_midnight_window() -> bool:
-	if GameState.time <= 60:
-		return true
-	return false
+	return GameState.time <= 60
 
 # ---------------- Menus ----------------
 func show_home_menu() -> void:
@@ -118,17 +118,15 @@ func _on_activities_choice(id: String) -> void:
 func _show_study_menu() -> void:
 	var s1: String = GameState.subject1
 	if s1.strip_edges() == "":
-		s1 = "[Subject 1]"
+		s1 = "Subject 1"
 	var s2: String = GameState.subject2
 	if s2.strip_edges() == "":
-		s2 = "[Subject 2]"
+		s2 = "Subject 2"
 
-	var n1: int = _count_studied_days_for_subject(GameState.subject1)
-	var n2: int = _count_studied_days_for_subject(GameState.subject2)
-
+	# Top-level: no counts, just the two subjects
 	var opts: Array = []
-	opts.append({"id":"s1","text":"Study " + s1 + " (" + str(n1) + "/4)"})
-	opts.append({"id":"s2","text":"Study " + s2 + " (" + str(n2) + "/4)"})
+	opts.append({"id":"s1","text":"Study " + s1})
+	opts.append({"id":"s2","text":"Study " + s2})
 	opts.append({"id":"back","text":"Back"})
 	_show_choices(opts, Callable(self,"_on_study_choice"))
 
@@ -142,6 +140,7 @@ func _on_study_choice(id: String) -> void:
 			_show_activities_menu()
 
 func _show_subject_sessions_menu(which_subject: String) -> void:
+	# FIX: avoid C-style ternary
 	var subject_raw: String = ""
 	if which_subject == "subject2":
 		subject_raw = GameState.subject2
@@ -151,18 +150,20 @@ func _show_subject_sessions_menu(which_subject: String) -> void:
 	var subj_label: String = subject_raw
 	if subj_label.strip_edges() == "":
 		if which_subject == "subject2":
-			subj_label = "[Subject 2]"
+			subj_label = "Subject 2"
 		else:
-			subj_label = "[Subject 1]"
+			subj_label = "Subject 1"
 
 	var opts: Array = []
 	var days_to_show: Array = _get_available_days_for_subject(subject_raw)
 	for d in days_to_show:
-		var tag: String = ""
-		if _is_day_studied(subject_raw, d):
-			tag = " (Done)"
-		var label: String = "Study " + subj_label + " " + str(d) + "/4" + tag
-		opts.append({"id": "sess_" + str(d), "text": label})
+		var studied: bool = _is_day_studied(subject_raw, d)
+		var label: String = "%s Notes #%d" % [subj_label, d]
+		if studied:
+			label += " (Done)"
+			opts.append({"id": "sess_" + str(d), "text": label, "dim": true}) # 'dim' is optional hint
+		else:
+			opts.append({"id": "sess_" + str(d), "text": label})
 
 	opts.append({"id":"back","text":"Back"})
 	_show_choices(opts, Callable(self,"_on_subject_session_choice").bind(which_subject, subject_raw))
@@ -219,13 +220,13 @@ func _get_available_days_for_subject(subject_raw: String) -> Array[int]:
 	if today_index < 1:
 		today_index = 1
 
-	var d: int = 1
-	while d < today_index:
+	# Past days: only include ones actually studied (missed days remain hidden)
+	for d in range(1, today_index):
 		var k: String = subj_key + "|" + str(d)
 		if GameState.study_guard.has(k):
 			out.append(d)
-		d += 1
 
+	# Always include today’s slot
 	out.append(today_index)
 	return out
 
@@ -237,10 +238,11 @@ func _show_schoolwork_menu() -> void:
 		_show_choices(opts, Callable(self,"_on_schoolwork_choice"))
 		return
 
-	if GameState.has_flag("secretary_met"):
+	# Gate CV / Motivation to “not done/printed”
+	if _can_write_cv():
 		opts.append({"id":"cv","text":"Write CV"})
+	if _can_write_mletter():
 		opts.append({"id":"motivation","text":"Write Motivation Letter"})
-
 	if _is_project_available_now():
 		opts.append({"id":"project","text":"Write Project"})
 
@@ -286,34 +288,26 @@ func _fade_out(dur: float) -> void:
 	var f := get_node_or_null("/root/Fade")
 	if f:
 		if f.has_method("out"):
-			await f.out(dur)
-			return
+			await f.out(dur); return
 		if f.has_method("fade_out"):
-			await f.fade_out(dur)
-			return
+			await f.fade_out(dur); return
 
 func _fade_in(dur: float) -> void:
 	var f := get_node_or_null("/root/Fade")
 	if f:
 		if f.has_method("in"):
-			await f.in(dur)
-			return
+			await f.in(dur); return
 		if f.has_method("fade_in"):
-			await f.fade_in(dur)
-			return
+			await f.fade_in(dur); return
 
 func _block_ui(lock: bool) -> void:
 	_ui_was_visible = _panel != null and _panel.visible
 	if lock:
-		if _panel:
-			_panel.visible = false
-		if home_button:
-			home_button.disabled = true
+		if _panel: _panel.visible = false
+		if home_button: home_button.disabled = true
 	else:
-		if home_button:
-			home_button.disabled = false
-		if _panel and _ui_was_visible:
-			_panel.visible = true
+		if home_button: home_button.disabled = false
+		if _panel and _ui_was_visible: _panel.visible = true
 		_ui_was_visible = false
 
 func _do_sleep(force: bool) -> void:
@@ -325,10 +319,7 @@ func _do_sleep(force: bool) -> void:
 
 	_block_ui(true)
 	await _fade_out(0.35)
-
-	# 👉 Move time FIRST so HUD updates immediately
 	GameState.sleep_now()
-
 	await _fade_in(0.6)
 	_block_ui(false)
 
@@ -337,12 +328,24 @@ func _do_sleep(force: bool) -> void:
 		var dm := get_node_or_null("/root/DialogueManager")
 		if dm and dm.has_method("start_dialogue"):
 			dm.start_dialogue(WAKEUP_JSON, self)
-			
+
 func _is_project_available_now() -> bool:
-	if GameState.has_flag("project_submitted"):
-		return false
-	if GameState.has_flag("project_written"):
-		return false
-	if GameState.has_flag("bought_project"):
-		return false
+	if GameState.has_flag("project_submitted"): return false
+	if GameState.has_flag("project_written"): return false
+	if GameState.has_flag("bought_project"): return false
 	return GameState.has_flag("project_accepted")
+
+# ---- helpers to gate writing once done/printed ----
+func _can_write_cv() -> bool:
+	if not GameState.has_flag("secretary_met"):
+		return false
+	if GameState.has_flag("printed_cv"):
+		return false
+	return GameState.get_task_progress("cv") < 2  # 2 = finished (your print unlock step)
+
+func _can_write_mletter() -> bool:
+	if not GameState.has_flag("secretary_met"):
+		return false
+	if GameState.has_flag("printed_motivation"):
+		return false
+	return GameState.get_task_progress("motivation") < 2

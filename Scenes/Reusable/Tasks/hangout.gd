@@ -3,6 +3,11 @@ extends Control
 # ---- Config ----
 const HANGOUT_JSON: String = "res://Data/Marko/Marko_Hangout_Free.json"
 
+# ---- BG (set these in Inspector) ----
+@export var bg_rect_path: NodePath
+@export var bg_male: Texture2D
+@export var bg_female: Texture2D
+
 # ---- Effects ----
 const TIME_MIN: int = 90
 const REP_DELTA: int = -5
@@ -17,6 +22,8 @@ var _returning := false
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	GameState.location = "MarkoHangout"
+
+	_apply_bg_by_gender()
 
 	# Context: if launched from the event, skip REP penalty
 	var from_event := String(GameState.features_unlocked.get(KEY_HANGOUT_CONTEXT, "")) == "event"
@@ -46,6 +53,17 @@ func _ready() -> void:
 	else:
 		await _return_to(ret)
 
+func _apply_bg_by_gender() -> void:
+	if bg_rect_path == NodePath():
+		return
+	var node := get_node_or_null(bg_rect_path)
+	if node == null or not (node is TextureRect):
+		push_error("MarkoHangout: bg_rect_path is invalid or not a TextureRect.")
+		return
+	var rect := node as TextureRect
+	var g := String(GameState.player_gender).to_lower()
+	rect.texture = bg_female if g == "female" else bg_male
+
 func _on_json_done(ret: String) -> void:
 	await _return_to(ret)
 
@@ -53,14 +71,22 @@ func _return_to(path: String) -> void:
 	if _returning:
 		return
 	_returning = true
+
+	# Unpause just in case
 	if get_tree().paused:
 		get_tree().paused = false
-	if ResourceLoader.exists(path):
-		var f = get_tree().get_node_or_null("/root/fade")
-		if f and f.has_method("fade_to_scene"):
-			await f.fade_to_scene(path)
-		else:
-			get_tree().change_scene_to_file(path)
-	else:
-		push_warning("Hangout: invalid return path: " + path)
+
+	# Validate target; if missing, use fallback (still via fade singleton)
+	var target := path
+	if not ResourceLoader.exists(target):
+		push_warning("Hangout: invalid return path: " + target + " → using fallback")
+		target = RETURN_FALLBACK
+		if not ResourceLoader.exists(target):
+			push_error("Hangout: fallback path also invalid: " + target)
+			_returning = false
+			return
+
+	# 🔒 Use ONLY the global fade singleton
+	await fade.fade_to_scene(target)
+
 	_returning = false

@@ -3,9 +3,12 @@ extends Control
 signal dialogue_finished
 signal choices_requested(options: Array, max_select: int) # external UI can listen
 
-@onready var dialogue_label: RichTextLabel = $"Dialogue Box/Control2/Dialogue"
+@onready var dialogue_label: RichTextLabel = $"Dialogue Box/Control2/Dialogue"  # BBCode already enabled in Inspector
 @onready var speaker_label: Label = $"Speaker Box/SpeakerLABEL"
 @onready var portrait: TextureRect = $"Dialogue Box/Control/PlaceHolderFrame"
+
+# Optional: export an italic font for Narrator lines
+@export var narrator_italic_font: Font
 
 @export var portraits: Dictionary = {
 	"homeroom teacher": preload("res://Images/CharacterFrames/KlasenFrame.png"),
@@ -14,7 +17,8 @@ signal choices_requested(options: Array, max_select: int) # external UI can list
 	"janitor":          preload("res://Images/CharacterFrames/JanitorFrame.png"),
 	"professor":        preload("res://Images/CharacterFrames/Prof1Frame.png"),
 	"marko":            preload("res://Images/CharacterFrames/MarkoFrame.png"),
-	"mvrclerk":         preload("res://Images/CharacterFrames/MvrClerkFrame.png")
+	"clerk":            preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
+	"daniel":           preload("res://Images/CharacterFrames/DanielFrame.png") # replace with your real path
 }
 
 var dialogue_data: Array = []
@@ -31,6 +35,13 @@ func start(lines: Array, caller_node: Node = null) -> void:
 	dialogue_data = lines
 	caller = caller_node
 	line_index = 0
+
+	# If you supplied an italic font, make sure the label knows to use it for [i] tags too.
+	if narrator_italic_font:
+		dialogue_label.add_theme_font_override("italics_font", narrator_italic_font)
+		dialogue_label.add_theme_font_override("bold_italics_font", narrator_italic_font)
+
+	dialogue_label.clear() # BBCode already enabled in Inspector
 	show()
 	display_next()
 
@@ -65,7 +76,11 @@ func display_next() -> void:
 		speaker_label.text = show_speaker
 		_update_portrait(speaker_label.text)
 
-		await _type_text(show_text)
+		# Narrator = italics (empty speaker also treated as Narrator)
+		var sp_key := show_speaker.strip_edges().to_lower()
+		var narrator_line := (sp_key == "" or sp_key == "narrator")
+
+		await _type_text(show_text, narrator_line)
 		await get_tree().create_timer(0.5).timeout
 		line_index += 1
 		display_next()
@@ -90,16 +105,36 @@ func display_next() -> void:
 	line_index += 1
 	display_next()
 
-func _type_text(text: String) -> void:
+# ---------- Typing with reliable italics ----------
+# If you exported a narrator_italic_font, we push it on the stack while typing.
+# Otherwise, we wrap with [i]...[/i] so it still renders italic if the label has an 'Italics Font' override.
+func _type_text(text: String, italics: bool=false) -> void:
 	is_typing = true
-	dialogue_label.text = ""
-	for i in range(text.length()):
-		dialogue_label.text += text[i]
-		await get_tree().create_timer(typing_speed).timeout
+	dialogue_label.clear()
+
+	if italics and narrator_italic_font and dialogue_label.has_method("push_font"):
+		# Use the supplied italic font directly.
+		dialogue_label.push_font(narrator_italic_font)
+		for i in range(text.length()):
+			dialogue_label.append_text(text.substr(i, 1))
+			await get_tree().create_timer(typing_speed).timeout
+		dialogue_label.pop()
+	elif italics:
+		# BBCode fallback: ensure the label knows what font to use (see start()).
+		dialogue_label.text = "[i]" + text + "[/i]"
+		dialogue_label.visible_characters = 0
+		for i in range(text.length()):
+			dialogue_label.visible_characters = i + 1
+			await get_tree().create_timer(typing_speed).timeout
+	else:
+		# Normal typing
+		for i in range(text.length()):
+			dialogue_label.append_text(text.substr(i, 1))
+			await get_tree().create_timer(typing_speed).timeout
+
 	is_typing = false
 
 # ---------- External choices flow ----------
-
 func _request_external_choices(line: Dictionary) -> void:
 	_pending_choice_options = []
 	_pending_max_select = int(line.get("max_select", 1))
@@ -120,10 +155,8 @@ func _request_external_choices(line: Dictionary) -> void:
 
 	_waiting_for_external_choice = true
 
-	# 1) Emit a signal any controller can listen to
 	emit_signal("choices_requested", _pending_choice_options, _pending_max_select)
 
-	# 2) Also normalize into an action for controllers that prefer on_dialogue_action
 	if caller and caller.has_method("on_dialogue_action"):
 		var normalized := {
 			"action": "show_choices",
@@ -132,19 +165,15 @@ func _request_external_choices(line: Dictionary) -> void:
 		}
 		caller.call("on_dialogue_action", normalized)
 
-	# Do NOT advance here; wait for apply_choices()/receive_choice()
-
 # Call this from your controller after the player picks via CharacterChoiceButtons
 func apply_choices(selected: Array) -> void:
 	if not _waiting_for_external_choice:
 		return
 	_waiting_for_external_choice = false
 
-	# Preserve old contract if your controller relies on it
 	if caller and caller.has_method("on_choices_selected"):
 		caller.call("on_choices_selected", selected)
 
-	# Continue the dialogue after the choice line
 	line_index += 1
 	display_next()
 
@@ -155,6 +184,9 @@ func receive_choice(selected: Array) -> void:
 # ---------- Portraits ----------
 func _update_portrait(speaker: String) -> void:
 	var key := speaker.strip_edges().to_lower()
+	if key == "narrator" or key == "":
+		portrait.texture = null
+		return
 	if portraits.has(key):
 		portrait.texture = portraits[key]
 	else:

@@ -1,32 +1,32 @@
 {
   "id": "Janitor_LowRep_Intro",
   "lines": [
-    {
-      "speaker": "Narrator",
-      "text": "(The Janitor looks you over, then leans in with a half-smirk.)"
-    },
-    {
-      "speaker": "Janitor",
-      "text": "You’re not here by accident, are you?"
-    },
-    {
-      "speaker": "Narrator",
-      "text": "(He wipes his hands and pulls out a folded paper.)"
-    },
-    {
-      "speaker": "Janitor",
-      "text": "About those Exams on Friday. I’ve got the answers — straight from the teacher’s stash."
-    },
-    {
-      "speaker": "Janitor",
-      "text": "But I don’t sell to people who don’t know what they need."
-    },
-    {
-      "speaker": "Janitor",
-      "text": "So — what’s the subject?"
-    },
-    {
-      "action": "janitor_offer_subjects"
-    }
+	{
+	  "speaker": "Narrator",
+	  "text": "(The Janitor looks you over, then leans in with a half-smirk.)"
+	},
+	{
+	  "speaker": "Janitor",
+	  "text": "You’re not here by accident, are you?"
+	},
+	{
+	  "speaker": "Narrator",
+	  "text": "(He wipes his hands and pulls out a folded paper.)"
+	},
+	{
+	  "speaker": "Janitor",
+	  "text": "About those Exams on Friday. I’ve got the answers — straight from the teacher’s stash."
+	},
+	{
+	  "speaker": "Janitor",
+	  "text": "But I don’t sell to people who don’t know what they need."
+	},
+	{
+	  "speaker": "Janitor",
+	  "text": "So — what’s the subject?"
+	},
+	{
+	  "action": "janitor_offer_subjects"
+	}
   ]
 }

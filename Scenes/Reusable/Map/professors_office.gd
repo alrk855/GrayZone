@@ -400,7 +400,7 @@ func _on_janitor_pressed() -> void:
 	_clear_panel()
 	_janitor_panel_shown = false
 	_janitor_deal_active = false
- 
+
 	# Already bought? Only show the short “done” JSON.
 	if GameState.has_flag("bought_project"):
 		if FileAccess.file_exists(JSON_JANITOR_DONE):
@@ -410,10 +410,13 @@ func _on_janitor_pressed() -> void:
 		return
 
 	var rep: int = GameState.reputation
-	if rep >= 30 and FileAccess.file_exists(JSON_JANITOR_HIGHREP):
-		DialogueManager.start_dialogue(JSON_JANITOR_HIGHREP, self)
-	elif GameState.has_flag("marko_tip"):
+	var has_tip := GameState.has_flag("marko_tip")
+
+	# ✅ Prioritize Marko's tip over REP gating
+	if has_tip:
 		DialogueManager.start_dialogue(JSON_JANITOR_TIPPED_INTRO, self)
+	elif rep >= 30 and FileAccess.file_exists(JSON_JANITOR_HIGHREP):
+		DialogueManager.start_dialogue(JSON_JANITOR_HIGHREP, self)
 	else:
 		DialogueManager.start_dialogue(JSON_JANITOR_NOTIP_INTRO, self)
 

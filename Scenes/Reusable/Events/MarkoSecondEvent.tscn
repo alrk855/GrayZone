@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://dpuexpkyjr4mv"]
+
+[ext_resource type="Script" uid="uid://c26c2fsip2xus" path="res://Scenes/Reusable/Events/marko_second_event.gd" id="1_ucljo"]
+[ext_resource type="Texture2D" uid="uid://cxylfgsgjejae" path="res://Images/Pozi/disco_m.png" id="2_w0ty1"]
+[ext_resource type="Texture2D" uid="uid://cw1c8slkcbhmp" path="res://Images/Pozi/disco_f.png" id="3_mgirt"]
+[ext_resource type="Texture2D" uid="uid://c1aldxrvvcc24" path="res://Images/ploshtad_marko.png" id="4_br6ac"]
+
+[node name="MarkoSecondEvent" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ucljo")
+bg_rect_path = NodePath("background")
+bg_party_male = ExtResource("2_w0ty1")
+bg_party_female = ExtResource("3_mgirt")
+study_scene_path = "res://Scenes/Reusable/Events/StudyWithMarko.tscn"
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_br6ac")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true

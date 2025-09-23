@@ -99,7 +99,7 @@ func _ready() -> void:
 	_init_default_flags()
 	_rng.randomize()
 	print("📂 GameState Ready — timer idle at %s (Day %d)" % [_format_time(), day])
-
+	GameState.location =" YCO"
 func begin_game(day_start: int, time_start: int) -> void:
 	_init_default_flags()
 	day = day_start
@@ -416,7 +416,7 @@ func ensure_task_progress_at_least(task_id: String, target_step: int) -> void:
 # Dialogue JSON action router (canonicalized flag ops)
 # -------------------------------------------------
 func apply_action(line: Dictionary) -> void:
-	var act: String = String(line.get("action", ""))
+	var act: String = (line.get("action", "") as String)
 
 	match act:
 		"add_task":
@@ -478,7 +478,15 @@ func format_placeholders(text: String) -> String:
 	var s2: String = subject2.capitalize()
 	s = s.replace("{subject1}", s1).replace("{subject2}", s2)
 	s = s.replace("[Subject 1]", s1).replace("[Subject 2]", s2)
+
+	# >>> NEW: missed days placeholder(s)
+	var ndays := str(get_missed_morning_count()) # or: str(get_int("missed_morning_count", 0))
+	s = s.replace("{ndays}", ndays)
+	# (optional synonyms)
+	s = s.replace("{missed_days}", ndays).replace("{skips}", ndays)
+
 	return s
+
 
 # -------------------------------------------------
 # Study/Exam helpers
@@ -770,11 +778,10 @@ func count_study_if_new(subject_raw: String, add_time_minutes: int) -> bool:
 		adjust_time(add_time_minutes)
 	return true
 
-# ------------------------ MVR reconcile (idempotent) ------------------------
+# ------------------------ MVR reconcile (one-shot per route) ------------------------
 func reconcile_mvr_wait_progress() -> void:
 	var method := get_int(K_MVR_METHOD, 0)   # 1=Standard, 2=Expedited, 3=Bribery
 	var ready  := get_int(K_MVR_READY_DAY, 0)
-	var prev_check := get_int(K_MVR_LAST_CHECK_DAY, day)
 
 	# No active request or already finished → reset markers and exit.
 	if method == 0 or ready <= 0 or has_flag(Flags.HAVE_BIRTH_CERTIFICATE):
@@ -783,27 +790,32 @@ func reconcile_mvr_wait_progress() -> void:
 		set_int(K_MVR_LAST_CHECK_DAY, day)
 		return
 
-	# -------- Standard/Expedited: bump once per calendar day strictly before ready day --------
-	# We look at any whole days that elapsed since the last check (prev_check .. day-1)
-	# and bump for each such day if it is < ready, guarding with LAST_WAIT_BUMP_DAY.
+	# -------- Standard (3-day) & Expedited (1-day) --------
+	# Exactly one bump when we've reached the ready calendar day.
 	if method == 1 or method == 2:
 		var last := get_int(K_MVR_LAST_WAIT_BUMP_DAY, 0)
-		if prev_check < day:
-			var d := prev_check
-			while d < day:
-				if d < ready and d > last:
-					ensure_task("birth")
-					update_task_step("birth")
-					last = d
-					set_int(K_MVR_LAST_WAIT_BUMP_DAY, last)
-				d += 1
+		if day >= ready and last < ready:
+			ensure_task("birth")
+			update_task_step("birth")
+			set_int(K_MVR_LAST_WAIT_BUMP_DAY, ready)
 
-	# -------- Bribery: bump once at/after 17:00 on the ready day --------
-	if method == 3 and day == ready and time >= T_BRIBE_PICK:
-		if not has_flag(K_MVR_BRIBE_WAIT_BUMPED):
+	# -------- Bribery (same-day @ 17:00 or later) --------
+	if method == 3 and not has_flag(K_MVR_BRIBE_WAIT_BUMPED):
+		# Case A: on ready day, at/after 17:00
+		if day == ready and time >= T_BRIBE_PICK:
+			ensure_task("birth")
+			update_task_step("birth")
+			set_flag(K_MVR_BRIBE_WAIT_BUMPED, true)
+		# Case B: player skipped past the window (day already advanced)
+		elif day > ready:
 			ensure_task("birth")
 			update_task_step("birth")
 			set_flag(K_MVR_BRIBE_WAIT_BUMPED, true)
 
 	# Record that we've reconciled for today's date
 	set_int(K_MVR_LAST_CHECK_DAY, day)
+
+const KEY_MISSED_MORNING_COUNT := "missed_morning_count"
+
+func get_missed_morning_count() -> int:
+	return get_int(KEY_MISSED_MORNING_COUNT, 0)

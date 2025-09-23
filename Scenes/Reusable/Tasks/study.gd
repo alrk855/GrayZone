@@ -16,7 +16,7 @@ var _subject_raw: String = ""
 var _effective_session: int = 0    # 1..4
 
 func _ready() -> void:
-	GameState.location = "Study"
+	GameState.location = "Unknown"
 
 	# --- find container + Done button ---
 	var container: Node = get_node_or_null(LABELS_CONTAINER_PATH)

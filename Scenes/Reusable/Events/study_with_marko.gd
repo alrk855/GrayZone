@@ -27,12 +27,18 @@ const P_S2_PROMPT: String  = "S2_PROMPT"
 const P_S2_START: String   = "S2_START"
 const P_END: String        = "END"
 
+# --- BG (Inspector) ---
+@export var bg_rect_path: NodePath
+@export var bg_male: Texture2D
+@export var bg_female: Texture2D
+
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 var _panel: Control = null
 var _current_phase: String = ""
 
 func _ready() -> void:
 	GameState.location = "MarkoStudy"
+	_apply_bg_by_gender()
 	_clear_panel()
 
 	# Ensure Study.tscn returns HERE when Done
@@ -84,7 +90,7 @@ func _on_dialogue_finished() -> void:
 		GameState.features_unlocked[KEY_SESSION_INDEX] = 0
 		GameState.mark_today_finals_revealed(GameState.subject1)
 		GameState.set_flag(F_PHASE_POST_S1, true)
-		get_tree().change_scene_to_file(STUDY_SCENE_PATH)
+		await _go_to(STUDY_SCENE_PATH)
 		return
 
 	if _current_phase == P_S2_PROMPT:
@@ -96,11 +102,11 @@ func _on_dialogue_finished() -> void:
 		GameState.features_unlocked[KEY_SESSION_INDEX] = 0
 		GameState.mark_today_finals_revealed(GameState.subject2)
 		GameState.set_flag(F_PHASE_POST_S2, true)
-		get_tree().change_scene_to_file(STUDY_SCENE_PATH)
+		await _go_to(STUDY_SCENE_PATH)
 		return
 
 	if _current_phase == P_END:
-		get_tree().change_scene_to_file(HOME_SCENE_PATH)
+		await _go_to(HOME_SCENE_PATH)
 		return
 
 # ---------------------- S2 Choice panel ----------------------
@@ -125,17 +131,30 @@ func _on_choice_s2(id: String) -> void:
 	_clear_panel()
 
 	if id == "do_s2":
-		# Play S2 intro JSON; when it finishes we jump into Study (see _on_dialogue_finished)
 		_start_dialogue(JSON_S2_START, P_S2_START)
 		return
 
 	if id == "end":
-		# Play End JSON; when it finishes we go Home
 		_start_dialogue(JSON_END, P_END)
 		return
 
-# ---------------------- Utils ----------------------
+# ---------------------- BG + Utils ----------------------
+func _apply_bg_by_gender() -> void:
+	if bg_rect_path == NodePath():
+		return
+	var node := get_node_or_null(bg_rect_path)
+	if node == null or not (node is TextureRect):
+		push_error("MarkoStudy: bg_rect_path is invalid or not a TextureRect.")
+		return
+	var rect := node as TextureRect
+	var g := String(GameState.player_gender).to_lower()
+	rect.texture = bg_female if g == "female" else bg_male
+
 func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
+
+func _go_to(path: String) -> void:
+	# Global fade only (no fallback)
+	await fade.fade_to_scene(path)

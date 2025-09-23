@@ -1,10 +1,122 @@
-[gd_scene load_steps=9 format=3 uid="uid://qd280ybioky1"]
+[gd_scene load_steps=24 format=3 uid="uid://qd280ybioky1"]
 
 [ext_resource type="Script" uid="uid://do4deu8dtxej5" path="res://Scenes/Reusable/Tasks/WRITE_A_CV.gd" id="1_aog3w"]
+[ext_resource type="StyleBox" uid="uid://buns1l7dy7mi7" path="res://cv settings.tres" id="2_6f1df"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_aog3w"]
-[ext_resource type="Texture2D" uid="uid://dp58ywitfyhh6" path="res://Images/MainMenu/BlueSky_HD2.png" id="2_fx2dp"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_6f1df"]
 [ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="5_xav0s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6f1df"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xav0s"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xav0s"]
+bg_color = Color(0.3149, 0.664082, 0.67, 0.560784)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1autc"]
+bg_color = Color(0.0719283, 0.210931, 0.214389, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5dnpw"]
+bg_color = Color(0.18302, 0.630919, 0.937869, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rsdlv"]
+bg_color = Color(0.336009, 0.608871, 0.94075, 1)
+
+[sub_resource type="Gradient" id="Gradient_1autc"]
+offsets = PackedFloat32Array(0, 0.478632, 1)
+colors = PackedColorArray(0.402849, 0.135842, 1, 1, 0.382675, 0.419226, 0.996011, 1, 0.0759486, 0.000742946, 0.803985, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2pnhq"]
+gradient = SubResource("Gradient_1autc")
+fill_from = Vector2(0.5, 0.7)
+fill_to = Vector2(0.5, 0.3)
+metadata/_snap_enabled = true
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fwan4"]
+texture = SubResource("GradientTexture2D_2pnhq")
+modulate_color = Color(0.994686, 0, 0.240131, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1pjf7"]
+content_margin_left = 38.0
+bg_color = Color(0, 0.466667, 1, 0.32549)
+border_width_left = 22
+border_width_top = 22
+border_width_right = 22
+border_width_bottom = 22
+border_color = Color(0.698449, 0.663801, 0, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+expand_margin_left = 9.0
+expand_margin_top = 9.0
+expand_margin_right = 9.0
+expand_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rv1yp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w7m5l"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0, 0, 0, 0.627451)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="Theme" id="Theme_2ewob"]
+Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+Button/font_sizes/font_size = 91
+Button/fonts/font = ExtResource("5_xav0s")
+Button/styles/disabled = SubResource("StyleBoxEmpty_6f1df")
+Button/styles/focus = SubResource("StyleBoxEmpty_xav0s")
+Button/styles/hover = SubResource("StyleBoxFlat_xav0s")
+Button/styles/normal = ExtResource("2_6f1df")
+Button/styles/pressed = SubResource("StyleBoxFlat_1autc")
+LineEdit/font_sizes/font_size = 16
+LineEdit/fonts/font = null
+LineEdit/styles/focus = null
+LineEdit/styles/normal = SubResource("StyleBoxFlat_5dnpw")
+LineEdit/styles/read_only = SubResource("StyleBoxFlat_rsdlv")
+Panel/styles/panel = SubResource("StyleBoxTexture_fwan4")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_1pjf7")
+TextEdit/styles/focus = SubResource("StyleBoxEmpty_rv1yp")
+TextEdit/styles/normal = SubResource("StyleBoxFlat_w7m5l")
+TextEdit/styles/read_only = null
+
+[sub_resource type="Gradient" id="Gradient_1kd4o"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.470085, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.117211, 0.000196819, 0.274451, 1, 0.347654, 0.0885683, 0.0197754, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_aoucs"]
+gradient = SubResource("Gradient_1kd4o")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0.5, 0.3)
+metadata/_snap_enabled = true
 
 [sub_resource type="Animation" id="Animation_d76yl"]
 resource_name = "CV_anim"
@@ -122,7 +234,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_2ewob")
 script = ExtResource("1_aog3w")
+back_button_path = NodePath("Back")
 
 [node name="BG" type="TextureRect" parent="."]
 layout_mode = 1
@@ -131,7 +245,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_fx2dp")
+texture = SubResource("GradientTexture2D_aoucs")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
@@ -170,6 +284,18 @@ grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="CVBOX"]
 layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.0643341
+anchor_top = -0.0666667
+anchor_right = 1.02709
+anchor_bottom = 1.06667
+offset_bottom = -6.10352e-05
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="CVBOX/Panel"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -183,19 +309,24 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -156.5
-offset_top = -76.5
-offset_right = 156.5
-offset_bottom = 76.5
+offset_left = -427.0
+offset_top = -279.0
+offset_right = 427.0
+offset_bottom = 279.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("4_6f1df")
 theme_override_font_sizes/font_size = 41
-text = "🖋 CV Entry (Simple Confirm Template):
+text = "CV Entry (Simple Confirm Template):
+
 Name: [YourName]
+
 Date of Birth: [DD/MM/YYYY]
+
 Education: High School
+
 Skills: Typing, Teamwork, Basic Research
+
 Experience: None yet — willing to learn"
 vertical_alignment = 1
 
@@ -233,8 +364,6 @@ offset_right = 159.5
 offset_bottom = 225.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_fonts/font = ExtResource("5_xav0s")
-theme_override_font_sizes/font_size = 91
 text = "Finish"
 
 [node name="PeekButton" type="Button" parent="."]
@@ -248,12 +377,28 @@ theme_override_font_sizes/font_size = 91
 text = "Peek"
 
 [node name="WriteButton" type="Button" parent="."]
+layout_mode = 0
 offset_top = -120.0
 offset_right = 319.0
 offset_bottom = -1.0
 theme_override_fonts/font = ExtResource("5_xav0s")
 theme_override_font_sizes/font_size = 91
 text = "Write"
+
+[node name="Back" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -319.0
+offset_top = -119.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("5_xav0s")
+theme_override_font_sizes/font_size = 91
+text = "Back"
 
 [connection signal="animation_finished" from="SceneAnimation" to="." method="_on_scene_animation_animation_finished"]
 [connection signal="pressed" from="TextEdit/FinishButton" to="." method="_on_finish_button_pressed"]

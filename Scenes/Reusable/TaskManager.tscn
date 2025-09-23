@@ -1,11 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://be02gb1lcicyt"]
+[gd_scene load_steps=15 format=3 uid="uid://be02gb1lcicyt"]
 
 [ext_resource type="Script" uid="uid://cgh3h3gek0533" path="res://Scenes/Reusable/task_manager.gd" id="1_wsdlb"]
 [ext_resource type="Texture2D" uid="uid://b4joiojiobkba" path="res://Images/board.png" id="1_xtc5h"]
 [ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="2_5qtaj"]
 [ext_resource type="Texture2D" uid="uid://dll21rvk30k2j" path="res://Images/Pin.png" id="3_5js0q"]
-[ext_resource type="Theme" uid="uid://ddajan8x4gjds" path="res://Themes/NoVisibleScroll.tres" id="3_tv6op"]
+[ext_resource type="Theme" uid="uid://jp8vrishkb81" path="res://Themes/NoVisibleScroll.tres" id="3_tv6op"]
 [ext_resource type="Theme" uid="uid://bt7s2lqt8aalx" path="res://Themes/5pxMargin.tres" id="4_tv6op"]
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="7_u4kjf"]
 [ext_resource type="Theme" uid="uid://dac3bbni4k0gv" path="res://goback_tmng_button.tres" id="7_wsdlb"]
 
 [sub_resource type="Theme" id="Theme_tv6op"]
@@ -46,6 +47,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 20.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_xtc5h")
@@ -96,6 +99,21 @@ size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task1"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task2" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
@@ -105,6 +123,21 @@ theme = SubResource("Theme_wecsq")
 text_overrun_behavior = 4
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task3" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
@@ -112,6 +145,21 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Task4" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
@@ -121,6 +169,21 @@ size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task4"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task5" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
@@ -128,6 +191,21 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task5"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Task6" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
@@ -137,6 +215,21 @@ size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task6"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task7" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
@@ -144,6 +237,21 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task7"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Task8" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
@@ -153,6 +261,21 @@ size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task8"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task9" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
@@ -160,6 +283,21 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task9"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Task10" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
@@ -170,6 +308,21 @@ theme = SubResource("Theme_wecsq")
 text_overrun_behavior = 4
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task10"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task11" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
@@ -177,6 +330,21 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task11"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Task12" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
@@ -186,6 +354,21 @@ size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task12"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task13" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
@@ -193,6 +376,21 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task13"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Task14" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
@@ -202,6 +400,21 @@ size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task14"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task15" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
 layout_mode = 2
@@ -209,6 +422,21 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task15"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Task16" type="Button" parent="Task Overview/ScrollContainer/GridContainer"]
 custom_minimum_size = Vector2(340, 315)
@@ -218,6 +446,21 @@ size_flags_vertical = 0
 theme = SubResource("Theme_wecsq")
 autowrap_mode = 3
 
+[node name="Label" type="Label" parent="Task Overview/ScrollContainer/GridContainer/Task16"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.620588
+anchor_top = 0.0730159
+anchor_right = 0.947059
+anchor_bottom = 0.193651
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_u4kjf")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Task Detailed" type="TextureRect" parent="."]
 z_index = 1
 layout_mode = 1
@@ -225,6 +468,9 @@ anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 2.0
+offset_left = 3.0
+offset_right = 3.0
+offset_bottom = 20.0
 texture = ExtResource("1_xtc5h")
 expand_mode = 1
 
