@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Characters/Janitor/Classroom.md",
+                "file": "Lista na gosti - ACO - FIC.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "Classroom"
+              "title": "Lista na gosti - ACO - FIC"
             }
           }
         ],
@@ -183,10 +183,10 @@
   },
   "active": "2a023d2bbe02d248",
   "lastOpenFiles": [
-    "Characters/Janitor/First Interaction (FIXED).md",
     "Characters/Janitor/Classroom.md",
+    "Characters/Janitor/First Interaction (FIXED).md",
     "Home/Mailbox.md",
-    "Daniel.md",
+    "Lista na gosti - ACO - FIC.md",
     "Home/Mletter.md",
     "Home/Study.md",
     "UI/Task Overview.md",
