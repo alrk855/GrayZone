@@ -1,0 +1,49 @@
+{
+  "questions": [
+	{
+	  "question": "What’s the title and general theme of your project?",
+	  "options": [
+		"The Role of Civic Education in Modern Democracy",
+		"Youth and Society: A Reflection",
+		"How to Not Fail High School"
+	  ],
+	  "answer": 0
+	},
+	{
+	  "question": "Where did you get most of your information?",
+	  "options": [
+		"Wikipedia, mostly. And a TikTok video.",
+		"Some blogs, an old project I found, and a few quotes.",
+		"Peer-reviewed articles, civic textbooks, and official statistics."
+	  ],
+	  "answer": 2
+	},
+	{
+	  "question": "Include a relevant example or case study?",
+	  "options": [
+		"That one time our teacher forgot to mark us present.",
+		"A general mention of student activism.",
+		"The Anti-Corruption Protests and their impact on reforms."
+	  ],
+	  "answer": 2
+	},
+	{
+	  "question": "Add a brief personal viewpoint?",
+	  "options": [
+		"I believe civic awareness should be taught from a young age.",
+		"Everyone has their own opinion.",
+		"This was boring. But here we are."
+	  ],
+	  "answer": 0
+	},
+	{
+	  "question": "How’s the formatting and final check?",
+	  "options": [
+		"I skimmed it and stapled it last minute.",
+		"Proofread, formatted, and printed neatly.",
+		"Wrote it on loose paper. Might’ve spilled juice on it."
+	  ],
+	  "answer": 1
+	}
+  ]
+}

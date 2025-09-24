@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://dqwn5yx54a1r2"]
 
 [ext_resource type="Script" uid="uid://cb4ffsx5bw5ag" path="res://Scenes/Reusable/Events/study_with_marko.gd" id="1_sguoi"]
-[ext_resource type="Texture2D" uid="uid://c5h16j2ctw7u3" path="res://Images/Characters/pozi/uchenje ver 1.png" id="2_mi2hv"]
+[ext_resource type="Texture2D" uid="uid://do0hkqqrsqcst" path="res://Images/Pozi/ucenje_m.png" id="2_mi2hv"]
 [ext_resource type="Texture2D" uid="uid://4ilsh38540f" path="res://Images/download.jpg" id="2_sguoi"]
-[ext_resource type="Texture2D" uid="uid://dv2rxr3q6ja2f" path="res://Images/Characters/pozi/uchenje ver 2.png" id="3_ihior"]
+[ext_resource type="Texture2D" uid="uid://cy1oojs0lp727" path="res://Images/Pozi/ucenje_f.png" id="3_ihior"]
 
 [node name="StudyWithMarko" type="Control"]
 layout_mode = 3

@@ -98,7 +98,7 @@ func _build_city_options() -> Array:
 		{ "text": "MVR",    "id": "mvr" }
 	]
 	if _is_yco_available():
-		options.append({ "text": "YCO", "id": "yco" })
+		options.append({ "text": "Volunteering Centre", "id": "yco" })
 	options.append({ "text": "Activity", "id": "activity" })
 	options.append({ "text": "Back", "id": "back" })
 	return options

@@ -14,6 +14,15 @@ extends Node
 @onready var taken: Label                  = $"Outro/taken"
 @onready var outro: Control                = $"Outro"
 
+# ---------- Config ----------
+@export_file("*.json") var QUESTIONS_JSON_PATH: String = "res://Data/Quizzes/Project_Quiz.json"
+
+const LEAVE_BUTTON_PATH: NodePath = NodePath("Leave/button2")   # visible at start
+const EXIT_BUTTON_PATH: NodePath  = NodePath("Exit/button2")    # hidden until finish
+const EXIT_LABEL_PATH: NodePath   = NodePath("Exit")            # Label named "Exit", hidden until finish
+const SCORE_LABEL_PATH: NodePath  = NodePath("UI/ScoreLabel")   # optional
+const HOME_SCENE_PATH: String     = "res://Scenes/Reusable/Map/Home.tscn"
+
 # ---------- State ----------
 var score: int = 0
 var current_question: int = 0
@@ -22,53 +31,61 @@ var _finished: bool = false
 var _score_out_of_5: int = 0
 var _exiting: bool = false   # prevents re-entrancy / double scene-switch
 
-# ---------- Config ----------
-const LEAVE_BUTTON_PATH: NodePath = NodePath("Leave/button2")   # visible at start
-const EXIT_BUTTON_PATH: NodePath  = NodePath("Exit/button2")    # hidden until finish
-const EXIT_LABEL_PATH: NodePath   = NodePath("Exit")            # Label named "Exit", hidden until finish
-const SCORE_LABEL_PATH: NodePath  = NodePath("UI/ScoreLabel")   # optional
-const HOME_SCENE_PATH: String     = "res://Scenes/Reusable/Map/Home.tscn"
+# ---------- Quiz Data (populated from JSON; falls back to DEFAULT_QUESTIONS) ----------
+var questions: Array[Dictionary] = []
 
-# ---------- Quiz Data ----------
-var questions: Array[Dictionary] = [
+const DEFAULT_QUESTIONS := [
 	{
 		"question": "What’s the title and general theme of your project?",
-		"options": ["The Role of Civic Education in Modern Democracy",
-					"Youth and Society: A Reflection",
-					"How to Not Fail High School"],
+		"options": [
+			"The Role of Civic Education in Modern Democracy",
+			"Youth and Society: A Reflection",
+			"How to Not Fail High School"
+		],
 		"answer": 0
 	},
 	{
 		"question": "Where did you get most of your information?",
-		"options": ["Wikipedia, mostly. And a TikTok video.",
-					"Some blogs, an old project I found, and a few quotes.",
-					"Peer-reviewed articles, civic textbooks, and official statistics."],
+		"options": [
+			"Wikipedia, mostly. And a TikTok video.",
+			"Some blogs, an old project I found, and a few quotes.",
+			"Peer-reviewed articles, civic textbooks, and official statistics."
+		],
 		"answer": 2
 	},
 	{
 		"question": "Include a relevant example or case study?",
-		"options": ["That one time our teacher forgot to mark us present.",
-					"A general mention of student activism.",
-					"The Anti-Corruption Protests and their impact on reforms."],
+		"options": [
+			"That one time our teacher forgot to mark us present.",
+			"A general mention of student activism.",
+			"The Anti-Corruption Protests and their impact on reforms."
+		],
 		"answer": 2
 	},
 	{
 		"question": "Add a brief personal viewpoint?",
-		"options": ["I believe civic awareness should be taught from a young age.",
-					"Everyone has their own opinion.",
-					"This was boring. But here we are."],
+		"options": [
+			"I believe civic awareness should be taught from a young age.",
+			"Everyone has their own opinion.",
+			"This was boring. But here we are."
+		],
 		"answer": 0
 	},
 	{
 		"question": "How’s the formatting and final check?",
-		"options": ["I skimmed it and stapled it last minute.",
-					"Proofread, formatted, and printed neatly.",
-					"Wrote it on loose paper. Might’ve spilled juice on it."],
+		"options": [
+			"I skimmed it and stapled it last minute.",
+			"Proofread, formatted, and printed neatly.",
+			"Wrote it on loose paper. Might’ve spilled juice on it."
+		],
 		"answer": 1
 	}
 ]
 
 func _ready() -> void:
+	# Load questions from JSON (with safe fallback)
+	_load_questions_from_json()
+
 	# Initial visibility
 	GameState.location = "Unknown"
 	for b in option_buttons:
@@ -97,6 +114,51 @@ func _ready() -> void:
 	var score_lbl := get_node_or_null(SCORE_LABEL_PATH) as Label
 	if score_lbl:
 		score_lbl.visible = false
+
+# ---------- JSON loader ----------
+func _load_questions_from_json() -> void:
+	questions.clear()
+
+	var p := QUESTIONS_JSON_PATH.strip_edges()
+	if p == "" or not FileAccess.file_exists(p):
+		push_warning("Questions JSON not found: " + p + " (using built-in fallback).")
+		questions = DEFAULT_QUESTIONS.duplicate(true)
+		return
+
+	var raw := FileAccess.get_file_as_string(p)
+	var parsed = JSON.parse_string(raw)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_warning("Invalid questions JSON root (expected Dictionary). Using fallback.")
+		questions = DEFAULT_QUESTIONS.duplicate(true)
+		return
+
+	var arr: Variant = (parsed as Dictionary).get("questions", [])
+	if not (arr is Array):
+		push_warning("'questions' missing or not an Array. Using fallback.")
+		questions = DEFAULT_QUESTIONS.duplicate(true)
+		return
+
+	for item in (arr as Array):
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var q := String(item.get("question", ""))
+		var opts_v = item.get("options", [])
+		var ans := int(item.get("answer", 0))
+
+		if q == "" or not (opts_v is Array) or (opts_v as Array).size() < 3:
+			continue
+
+		var opts_arr := opts_v as Array
+		var rec := {
+			"question": q,
+			"options": [String(opts_arr[0]), String(opts_arr[1]), String(opts_arr[2])],
+			"answer": clamp(ans, 0, 2)
+		}
+		questions.append(rec)
+
+	if questions.is_empty():
+		push_warning("No valid questions loaded. Using fallback.")
+		questions = DEFAULT_QUESTIONS.duplicate(true)
 
 # ---------- Buttons from the scene ----------
 func _on_button_pressed() -> void: # Begin
@@ -175,7 +237,7 @@ func endQ() -> void:
 
 	var t4 := create_tween()
 	var hours_taken: int = int(floor(float(GameState.time) / 60.0))
-	taken.text = "Time Taken: %d h" % hours_taken
+	taken.text = "Time Taken: %d min" % hours_taken
 	t4.tween_property(taken, "position", Vector2(116.5, 330), 0.6).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property(taken, "modulate:a", 1.0, 0.6).set_trans(Tween.TRANS_CUBIC)
 
@@ -198,15 +260,11 @@ func finish_project_with_score(score_in: int) -> void:
 	_finished = true
 	_score_out_of_5 = clamp(score_in, 1, 5)
 
-	# Store score & state using GameState's typed helpers
 	GameState.set_int("project_score", _score_out_of_5)
 	GameState.set_int("project_score_day_%d" % GameState.day, _score_out_of_5)
 	GameState.set_flag("project_written", true)
-
-	# Make project submit-ready (professor also checks print if it's self-written)
 	GameState.ensure_task_progress_at_least("project", 2)
 
-	# Reveal exit routes; hide Leave
 	var leave_btn := get_node_or_null(LEAVE_BUTTON_PATH) as Button
 	if leave_btn:
 		leave_btn.visible = false
@@ -224,7 +282,6 @@ func finish_project_with_score(score_in: int) -> void:
 
 # ---------- Exits ----------
 func _on_leave_pressed() -> void:
-	# Only before the work actually starts
 	if _started or _exiting:
 		return
 	_go_home()
@@ -245,7 +302,6 @@ func _go_home() -> void:
 		return
 	_exiting = true
 
-	# Stop further inputs so we don't double-trigger while fading
 	var leave_btn := get_node_or_null(LEAVE_BUTTON_PATH) as Button
 	if leave_btn:
 		leave_btn.disabled = true
@@ -260,8 +316,5 @@ func _go_home() -> void:
 		push_error("Invalid HOME_SCENE_PATH: " + String(HOME_SCENE_PATH))
 		return
 
-	# Use the global fade singleton; it survives the swap so no null get_tree() here.
 	GameState.location = "Home"
 	await fade.fade_to_scene(HOME_SCENE_PATH)
-
-	# Do not access local nodes after this point; this instance may already be freed.

@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://ci6r73qv0hkce" path="res://Images/BlueSky_HD3.png" id="1_smofp"]
 [ext_resource type="Script" uid="uid://b73koauje3u8p" path="res://Scenes/Reusable/Tasks/tutoring.gd" id="1_tophc"]
-[ext_resource type="Texture2D" uid="uid://dyg2g7b0pj0tp" path="res://Images/Pozi/uchenje ver 3.png" id="2_7jobc"]
-[ext_resource type="Texture2D" uid="uid://b0l6l1caesmex" path="res://Images/Pozi/uchenje ver 4.png" id="3_lxsi2"]
+[ext_resource type="Texture2D" uid="uid://chkkdb7lpljr7" path="res://Images/Pozi/ucenje_m_bald2.png" id="2_7jobc"]
+[ext_resource type="Texture2D" uid="uid://b0cmrg4jex7h5" path="res://Images/Pozi/ucenje_m_bald.png" id="3_lxsi2"]
 
 [node name="Tutoring" type="Control"]
 layout_mode = 3

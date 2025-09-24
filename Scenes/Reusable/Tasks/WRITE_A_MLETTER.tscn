@@ -539,7 +539,7 @@ theme_override_font_sizes/font_size = 31
 text = "Dear Committee,
 I come from a modest background, but I’ve worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community.
 Thank you for the opportunity.
-Sincerely, Me"
+Sincerely, "
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2

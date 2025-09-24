@@ -482,9 +482,8 @@ func format_placeholders(text: String) -> String:
 	# >>> NEW: missed days placeholder(s)
 	var ndays := str(get_missed_morning_count()) # or: str(get_int("missed_morning_count", 0))
 	s = s.replace("{ndays}", ndays)
-	# (optional synonyms)
-	s = s.replace("{missed_days}", ndays).replace("{skips}", ndays)
 
+	s = s.replace("{name}", player_name)
 	return s
 
 

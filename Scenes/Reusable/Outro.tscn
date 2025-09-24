@@ -1,0 +1,102 @@
+[gd_scene load_steps=10 format=3 uid="uid://dlqe1pobklbbp"]
+
+[ext_resource type="Script" uid="uid://cnxkchuvd8rwf" path="res://Scenes/Reusable/outro.gd" id="1_hbwat"]
+[ext_resource type="FontFile" uid="uid://cxei884chjj1u" path="res://Fonts/Mileast Italic.otf" id="2_w7jjj"]
+
+[sub_resource type="Gradient" id="Gradient_lr1g2"]
+offsets = PackedFloat32Array(0, 0.204301, 1)
+colors = PackedColorArray(0.0781564, 0.0781564, 0.0781564, 1, 0.0307482, 7.40687e-06, 0.0458465, 1, 0.183361, 0.0237987, 0.226585, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7npbx"]
+gradient = SubResource("Gradient_lr1g2")
+fill_from = Vector2(0.5, 0.1)
+fill_to = Vector2(0.5, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hgpus"]
+texture = SubResource("GradientTexture2D_7npbx")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1kpyb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hbwat"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 66
+corner_radius_top_right = 66
+corner_radius_bottom_right = 66
+corner_radius_bottom_left = 66
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hpfev"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ms0iv"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 66
+corner_radius_top_right = 66
+corner_radius_bottom_right = 66
+corner_radius_bottom_left = 66
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hbwat")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hgpus")
+
+[node name="Label" type="Label" parent="Panel"]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.097
+anchor_top = 0.22
+anchor_right = 0.867708
+anchor_bottom = 0.676852
+offset_left = -0.240005
+offset_top = 0.399979
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_w7jjj")
+theme_override_font_sizes/font_size = 33
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="Panel"]
+custom_minimum_size = Vector2(300, 120)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -175.0
+offset_right = 150.0
+offset_bottom = -55.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_w7jjj")
+theme_override_font_sizes/font_size = 44
+theme_override_styles/focus = SubResource("StyleBoxEmpty_1kpyb")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hbwat")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_hpfev")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ms0iv")
+text = "QUIT"

@@ -12,6 +12,7 @@ const MAILBOX_SCENE_PATH := "res://Scenes/Reusable/Tasks/Mailbox.tscn"
 const SOCIAL_SCENE_PATH := "res://Scenes/Reusable/Tasks/Social.tscn"
 
 const WAKEUP_JSON := "res://Data/Home/WakeUp_Reminder.json"
+const OUTRO_SCENE_PATH := "res://Scenes/Reusable/Outro.tscn" # <- adjust if your path differs
 
 # Normal sleep availability outside midnight window
 const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
@@ -73,7 +74,7 @@ func _on_home_choice(id: String) -> void:
 		"activities":
 			_show_activities_menu()
 		"city":
-			_change_scene(CITY_SCENE_PATH)
+			await _change_scene(CITY_SCENE_PATH)
 		"sleep":
 			await _do_sleep(false) # normal gating when not midnight window
 		"sleep_locked":
@@ -108,9 +109,9 @@ func _on_activities_choice(id: String) -> void:
 		"schoolwork":
 			_show_schoolwork_menu()
 		"mailbox":
-			_change_scene(MAILBOX_SCENE_PATH)
+			await _change_scene(MAILBOX_SCENE_PATH)
 		"social":
-			_change_scene(SOCIAL_SCENE_PATH)
+			await _change_scene(SOCIAL_SCENE_PATH)
 		"back":
 			show_home_menu()
 
@@ -140,7 +141,6 @@ func _on_study_choice(id: String) -> void:
 			_show_activities_menu()
 
 func _show_subject_sessions_menu(which_subject: String) -> void:
-	# FIX: avoid C-style ternary
 	var subject_raw: String = ""
 	if which_subject == "subject2":
 		subject_raw = GameState.subject2
@@ -149,10 +149,7 @@ func _show_subject_sessions_menu(which_subject: String) -> void:
 
 	var subj_label: String = subject_raw
 	if subj_label.strip_edges() == "":
-		if which_subject == "subject2":
-			subj_label = "Subject 2"
-		else:
-			subj_label = "Subject 1"
+		subj_label = "Subject 2" if which_subject == "subject2" else "Subject 1"
 
 	var opts: Array = []
 	var days_to_show: Array = _get_available_days_for_subject(subject_raw)
@@ -161,7 +158,7 @@ func _show_subject_sessions_menu(which_subject: String) -> void:
 		var label: String = "%s Notes #%d" % [subj_label, d]
 		if studied:
 			label += " (Done)"
-			opts.append({"id": "sess_" + str(d), "text": label, "dim": true}) # 'dim' is optional hint
+			opts.append({"id": "sess_" + str(d), "text": label, "dim": true})
 		else:
 			opts.append({"id": "sess_" + str(d), "text": label})
 
@@ -187,7 +184,7 @@ func _on_subject_session_choice(id: String, which_subject: String, subject_raw: 
 		GameState.features_unlocked[KEY_RETURN_SCENE] = ret
 
 		GameState.features_unlocked[KEY_STUDY_SESSION] = day_index
-		_change_scene(STUDY_SCENE_PATH)
+		await _change_scene(STUDY_SCENE_PATH)
 	else:
 		_show_subject_sessions_menu(which_subject)
 
@@ -252,11 +249,11 @@ func _show_schoolwork_menu() -> void:
 func _on_schoolwork_choice(id: String) -> void:
 	match id:
 		"cv":
-			_change_scene(WRITE_CV_SCENE_PATH)
+			await _change_scene(WRITE_CV_SCENE_PATH)
 		"motivation":
-			_change_scene(WRITE_MOTIVATION_PATH)
+			await _change_scene(WRITE_MOTIVATION_PATH)
 		"project":
-			_change_scene(WRITE_PROJECT_PATH)
+			await _change_scene(WRITE_PROJECT_PATH)
 		"back":
 			_show_activities_menu()
 
@@ -276,30 +273,17 @@ func _clear_panel() -> void:
 		_panel.queue_free()
 	_panel = null
 
+# Centralized scene change via fade singleton
 func _change_scene(path: String) -> void:
+	# Block city & others during midnight window
 	if _is_midnight_window():
 		return
 	_clear_panel()
-	if path != "" and ResourceLoader.exists(path):
-		get_tree().change_scene_to_file(path)
+	if path == "" or not ResourceLoader.exists(path):
+		return
+	await fade.fade_to_scene(path, 0.4, 0.35)
 
-# --------------- Sleep with Fade singleton ---------------
-func _fade_out(dur: float) -> void:
-	var f := get_node_or_null("/root/Fade")
-	if f:
-		if f.has_method("out"):
-			await f.out(dur); return
-		if f.has_method("fade_out"):
-			await f.fade_out(dur); return
-
-func _fade_in(dur: float) -> void:
-	var f := get_node_or_null("/root/Fade")
-	if f:
-		if f.has_method("in"):
-			await f.in(dur); return
-		if f.has_method("fade_in"):
-			await f.fade_in(dur); return
-
+# --------------- Sleep with Fade singleton + Day5 Outro ---------------
 func _block_ui(lock: bool) -> void:
 	_ui_was_visible = _panel != null and _panel.visible
 	if lock:
@@ -318,12 +302,26 @@ func _do_sleep(force: bool) -> void:
 			return
 
 	_block_ui(true)
-	await _fade_out(0.35)
+
+	# Fade out, perform sleep (which may tick day), then decide where to go.
+	await fade.fade_out(3.35)
 	GameState.sleep_now()
-	await _fade_in(0.6)
+
+	# If we crossed into Day 5 (or beyond), skip any wake-up JSON and jump to Outro.
+	if GameState.day >= 5:
+		if ResourceLoader.exists(OUTRO_SCENE_PATH):
+			await fade.fade_to_scene(OUTRO_SCENE_PATH, 0.0, 3.6) # already black; just fade in at outro
+		else:
+			push_warning("Outro scene not found at: " + OUTRO_SCENE_PATH)
+			await fade.fade_in(3.6)
+		_block_ui(false)
+		return
+
+	# Normal wake-up for Days 1–4
+	await fade.fade_in(3.6)
 	_block_ui(false)
 
-	# Optional wake-up nudge (non-blocking preferred)
+	# Optional wake-up nudge (non-blocking)
 	if FileAccess.file_exists(WAKEUP_JSON):
 		var dm := get_node_or_null("/root/DialogueManager")
 		if dm and dm.has_method("start_dialogue"):
