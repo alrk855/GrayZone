@@ -7,7 +7,8 @@ const Flags = preload("res://Scripts/Singleton/GameFlags.gd")
 # -----------------------------
 const ONE_AM_MINUTES := 60                       # 01:00
 const HOME_SCENE_PATH := "res://Scenes/Reusable/Map/Home.tscn"
-const J_ONE_AM := "res://Data/System/Narrator_Curfew.json"
+const J_ONE_AM := "System/Narrator_Curfew.json"  # relative path now, resolved at runtime
+
 
 # MVR LOGIC KEYS / MARKERS
 const K_MVR_METHOD                := "MVR_METHOD"                # 0/1/2/3
@@ -77,11 +78,11 @@ var _task_counters: Dictionary = {}
 # Study/Exam (paths + caches)
 # -----------------------------
 var study_paths: Dictionary = {
-	"science":    "res://Data/Study/Science.json",
-	"geography":  "res://Data/Study/Geography.json",
-	"math":       "res://Data/Study/Math.json",
-	"macedonian": "res://Data/Study/Macedonian.json",
-	"english":    "res://Data/Study/English.json",
+	"science":    "Study/Science.json",
+	"geography":  "Study/Geography.json",
+	"math":       "Study/Math.json",
+	"macedonian": "Study/Macedonian.json",
+	"english":    "Study/English.json",
 }
 
 var study_pool_cache: Dictionary = {}   # subject -> Array[Dictionary]
@@ -285,7 +286,9 @@ func _handle_one_am_sequence() -> void:
 		return
 
 	# Start the JSON dialogue exactly like the rest of your project
-	var ui = dm.start_dialogue(J_ONE_AM, self)
+	var path = GameState.get_data_path(J_ONE_AM)
+	var ui = dm.start_dialogue(path, self)
+
 
 	# Prefer awaiting the UI's own 'dialogue_finished' if present
 	var waited := false
@@ -501,10 +504,17 @@ func _get_subject_key_from_choice(which: String) -> String:
 func _load_pool(subject: String) -> Array:
 	if study_pool_cache.has(subject):
 		return study_pool_cache[subject]
-	var path: String = String(study_paths.get(subject, ""))
-	if path == "" or not FileAccess.file_exists(path):
-		push_error("Study pool missing for subject: " + subject + " @ " + path)
+
+	var rel: String = String(study_paths.get(subject, ""))
+	if rel == "":
+		push_error("Study pool missing for subject: " + subject)
 		return []
+
+	var path: String = GameState.get_data_path(rel)
+	if not FileAccess.file_exists(path):
+		push_error("Study pool file not found: " + path)
+		return []
+
 	var txt: String = FileAccess.get_file_as_string(path)
 	var parsed: Variant = JSON.parse_string(txt)
 	if typeof(parsed) != TYPE_DICTIONARY:
@@ -816,16 +826,21 @@ const KEY_MISSED_MORNING_COUNT := "missed_morning_count"
 
 func get_missed_morning_count() -> int:
 	return get_int(KEY_MISSED_MORNING_COUNT, 0)
-var current_locale: String = "en"  # default language
+# ==========================
+# Localization support
+# ==========================
 
-# Redirect JSON paths depending on locale
+# Current language code ("en", "mk", etc.)
+var current_locale: String = "en"
+
+# Get JSON path depending on language
 func get_data_path(relative: String) -> String:
 	var base = "res://Data/"
 	if current_locale == "mk":
-		base = "res://DataMK/"
+		base = "res://DataMK/"   # or Data2/, whatever you name it
 	return base + relative
 
-# Switch locale at runtime
+# Switch language at runtime
 func switch_locale(new_locale: String) -> void:
 	current_locale = new_locale
 	TranslationServer.set_locale(new_locale)  # flips all tr() UI strings

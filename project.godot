@@ -69,7 +69,7 @@ dev={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://mk.po")
+locale/translations=PackedStringArray("res://Locales/mk.po")
 
 [rendering]
 

@@ -32,7 +32,7 @@ Button/styles/hover = SubResource("StyleBoxTexture_4fpbc")
 Button/styles/normal = SubResource("StyleBoxTexture_86v4f")
 Button/styles/pressed = SubResource("StyleBoxTexture_5t3n7")
 
-[node name="Control" type="Control"]
+[node name="Control2" type="Control"]
 custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 3
 anchors_preset = 15

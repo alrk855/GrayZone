@@ -26,10 +26,11 @@ var _id_by_btn: Dictionary = {}   # Button -> id
 
 func _ready() -> void:
 	GameUi.visible = true
-	GameState.location = "Classroom"
+	GameState.location = "Classroom"  # logic string; unchanged
 	_set_bg(bg_teacher)
 
-	_dialogue_ui = DialogueManager.start_dialogue("res://Data/StartEvent.json", self)
+	# Locale-aware start dialogue path
+	_dialogue_ui = DialogueManager.start_dialogue(GameState.get_data_path("StartEvent.json"), self)
 	if _dialogue_ui and _dialogue_ui.has_signal("dialogue_finished"):
 		_dialogue_ui.connect("dialogue_finished", Callable(self, "_on_start_event_finished"))
 
@@ -85,7 +86,7 @@ func on_choices_selected(selected: Array) -> void:
 func _on_start_event_finished(_dlg_id: String = "", _payload: Variant = null) -> void:
 	# Day 1 attendance → add & bump so TaskManager fires the notification
 	GameState.ensure_task("Attend Morning Classes")
-	GameState.set_flag("attended_morning_day_1", true)  # <-- NEW
+	GameState.set_flag("attended_morning_day_1", true)
 	GameState.update_task_step("Attend Morning Classes")
 
 	# Proceed to the world
@@ -97,7 +98,6 @@ func _on_start_event_finished(_dlg_id: String = "", _payload: Variant = null) ->
 # ---------- Single-choice ----------
 func _show_single_choices(options: Array) -> void:
 	_ensure_choice_panel()
-	# keep your existing single-choice behavior (panel hides itself)
 	_choice_panel.call("show_options", options, Callable(self, "_on_single_choice_clicked"))
 
 func _on_single_choice_clicked(id: String) -> void:
@@ -126,11 +126,9 @@ func _begin_subject_multiselect(options: Array, max_select: int) -> void:
 func _render_subject_multiselect() -> void:
 	_ensure_choice_panel()
 
-	# Build + apply onto the existing buttons, using toggle_mode
 	var btns := _collect_choice_buttons(_choice_panel)
 	btns.sort_custom(func(a, b): return String(a.name) < String(b.name))
 
-	# Show only what we need
 	var count = min(_subject_all_ids.size(), btns.size())
 	for i in range(btns.size()):
 		var b := btns[i]
@@ -138,22 +136,19 @@ func _render_subject_multiselect() -> void:
 			var id := _subject_all_ids[i]
 			var label := String(_subject_display.get(id, id))
 
-			# Ensure toggle behavior
 			b.toggle_mode = true
 			b.text = label
 			b.visible = true
-			# clear old connections
+
 			if b.is_connected("pressed", Callable(self, "_on_choice_button_pressed")):
 				b.disconnect("pressed", Callable(self, "_on_choice_button_pressed"))
 			if b.is_connected("toggled", Callable(self, "_on_choice_button_toggled")):
 				b.disconnect("toggled", Callable(self, "_on_choice_button_toggled"))
 
-			# pressed state reflects selection
 			var is_sel := _subject_selected_ids.has(id)
 			b.set_pressed_no_signal(is_sel)
 			_apply_button_visual(b, is_sel)
 
-			# map + connect
 			_btn_by_id[id] = b
 			_id_by_btn[b] = id
 			b.toggled.connect(Callable(self, "_on_choice_button_toggled").bind(id))
@@ -166,25 +161,20 @@ func _render_subject_multiselect() -> void:
 func _on_choice_button_toggled(pressed: bool, id: String) -> void:
 	var sid := String(id)
 	if pressed:
-		# add if room remains
 		if not _subject_selected_ids.has(sid):
 			if _subject_selected_ids.size() < _subject_max:
 				_subject_selected_ids.append(sid)
 			else:
-				# no room → revert this press
 				var b = _btn_by_id.get(sid, null)
 				if b:
 					b.set_pressed_no_signal(false)
 				return
 	else:
-		# remove if present
 		_subject_selected_ids.erase(sid)
 
-	# visuals + enable/disable states
 	_apply_button_visual_state_all()
 	_update_button_disable_states()
 
-	# Keep your original auto-finalize on reaching max
 	if _subject_selected_ids.size() == _subject_max:
 		_finalize_subject_selection()
 
@@ -197,14 +187,13 @@ func _apply_button_visual_state_all() -> void:
 func _apply_button_visual(b: Button, selected: bool) -> void:
 	# Dim when selected, normal when not
 	b.modulate = Color(1, 1, 1, 0.65) if selected else Color(1, 1, 1, 1)
-	b.tooltip_text = "Click to unselect" if selected else "Click to select"
+	b.tooltip_text = tr("Click to unselect") if selected else tr("Click to select")
 
 func _update_button_disable_states() -> void:
 	var at_cap := _subject_selected_ids.size() >= _subject_max
 	for id in _btn_by_id.keys():
 		var b: Button = _btn_by_id[id]
 		var sel := _subject_selected_ids.has(String(id))
-		# When at cap, lock *unselected* buttons; keep selected clickable so you can unselect
 		b.disabled = (at_cap and not sel)
 
 func _finalize_subject_selection() -> void:

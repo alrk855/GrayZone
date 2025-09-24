@@ -42,8 +42,8 @@ const STEP_FONT_SIZE: int = 26
 const PREVIEW_COUNTER_FONT_SIZE: int = 16   # (we won't override theme, just FYI)
 
 # ---------------- Sorting state ----------------
-var _last_opened: Dictionary = {}   # task_id -> unix time (session only)
-var _task_cache: Dictionary = {}    # task_id -> parsed JSON
+var _last_opened: Dictionary = {}            # task_id -> unix time (session only)
+var _task_cache: Dictionary = {}             # (task_id|locale) -> parsed JSON
 
 # Track last seen day to detect daily rollover
 var _last_seen_day: int = 0
@@ -259,7 +259,10 @@ func _show_task_details(task_id: String) -> void:
 		return
 
 	title_label.text = TaskCatalog.get_title(task_id)
-	var raw_meta: String = "📍 " + String(task_data.get("location", "Unknown")) + " | 🎓 Given by: " + String(task_data.get("giver", "???"))
+
+	var loc_txt := String(task_data.get("location", tr("Unknown")))
+	var giver_txt := String(task_data.get("giver", tr("???")))
+	var raw_meta: String = "📍 " + loc_txt + " | 🎓 " + tr("Given by:") + " " + giver_txt
 	meta_label.text = _format_placeholders(raw_meta)
 
 	_clear_task_details()
@@ -295,7 +298,7 @@ func _show_task_details(task_id: String) -> void:
 		if i > progress:
 			break
 		var step: Dictionary = steps[i]
-		var raw_txt: String = String(step.get("text", "Unnamed Step"))
+		var raw_txt: String = String(step.get("text", tr("Unnamed Step")))
 		var txt: String = _format_placeholders(raw_txt)
 		var label := Label.new()
 		label.add_theme_font_override("font", FONT_BODY)
@@ -325,7 +328,7 @@ func _render_requirements_task(steps: Array) -> void:
 		if typeof(s) != TYPE_DICTIONARY:
 			continue
 
-		var txt := _format_placeholders(String(s.get("text","Unnamed Step")))
+		var txt := _format_placeholders(String(s.get("text", tr("Unnamed Step"))))
 		var optional := bool(s.get("optional", false))
 		if not optional:
 			required_total += 1
@@ -420,6 +423,7 @@ func _req_step_state_from_id(step: Dictionary) -> int:
 	if link_task != "":
 		var total := _get_steps_count(link_task)
 		var prog := GameState.get_task_progress(link_task)
+		# If the linked task has zero steps, treat “any progress” as ongoing to avoid false green.
 		if total > 0 and prog >= total:
 			return StepState.DONE
 		return StepState.ONGOING
@@ -530,7 +534,6 @@ func _maybe_finish_requirements_and_bump_secretary(steps: Array) -> void:
 			if GameState.tasks.has(sec_task):
 				GameState.update_task_step(sec_task)  # only +1
 
-
 func _update_preview_counter_for_task(task_id: String, progress_val: int, total_val: int) -> void:
 	for child in task_grid.get_children():
 		if child is Button:
@@ -549,7 +552,7 @@ func _render_study_steps(task_id: String, steps: Array) -> void:
 
 	for i in range(max_steps):
 		var day_idx: int = i + 1
-		var raw_txt: String = String(steps[i].get("text", "Unnamed Step"))
+		var raw_txt: String = String(steps[i].get("text", tr("Unnamed Step")))
 		var txt: String = _format_placeholders(raw_txt)
 
 		var studied := false
@@ -582,7 +585,7 @@ func _render_attendance_steps(steps: Array) -> void:
 	var max_steps = min(4, steps.size())
 	for i in range(max_steps):
 		var day_idx := i + 1
-		var raw_txt: String = String(steps[i].get("text", "Unnamed Step"))
+		var raw_txt: String = String(steps[i].get("text", tr("Unnamed Step")))
 		var txt: String = _format_placeholders(raw_txt)
 
 		var attended := GameState.has_flag("attended_morning_day_%d" % day_idx)
@@ -608,7 +611,7 @@ func _render_tutoring_steps(steps: Array) -> void:
 	var max_steps = min(4, steps.size())
 	for i in range(max_steps):
 		var day_idx := i + 1
-		var raw_txt: String = String(steps[i].get("text", "Unnamed Step"))
+		var raw_txt: String = String(steps[i].get("text", tr("Unnamed Step")))
 		var txt: String = _format_placeholders(raw_txt)
 
 		var tutored := GameState.has_flag("tutored_day_%d" % day_idx)
@@ -739,17 +742,19 @@ func _count_tutor_missed() -> int:
 
 # ---------------- Data access + helpers ----------------
 func _load_task_data(task_id: String) -> Dictionary:
-	if _task_cache.has(task_id):
-		return _task_cache[task_id]
+	var k := _cache_key(task_id)
+	if _task_cache.has(k):
+		return _task_cache[k]
 
-	var file_path: String = "res://Data/Tasks/%s.json" % task_id
+	# Locale-aware path (no ID changes)
+	var file_path: String = GameState.get_data_path("Tasks/%s.json" % task_id)
 	if not FileAccess.file_exists(file_path):
-		_task_cache[task_id] = {}
+		_task_cache[k] = {}
 		return {}
 
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if not file:
-		_task_cache[task_id] = {}
+		_task_cache[k] = {}
 		return {}
 
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
@@ -757,7 +762,7 @@ func _load_task_data(task_id: String) -> Dictionary:
 	if typeof(parsed) == TYPE_DICTIONARY:
 		d = parsed
 
-	_task_cache[task_id] = d
+	_task_cache[k] = d
 	return d
 
 func _get_steps_count(task_id: String) -> int:
@@ -788,6 +793,17 @@ func _format_placeholders(text: String) -> String:
 		s = s.replace("{subject2}", GameState.subject2.capitalize())
 		s = s.replace("[Subject 2]", GameState.subject2.capitalize())
 	return s
+
+# ---- locale-aware cache key ----
+func _cache_key(task_id: String) -> String:
+	var loc := "en"
+	if Engine.is_editor_hint():
+		loc = "en"
+	elif Engine.has_singleton("GameState"):
+		loc = String(GameState.current_locale)
+		if loc == "":
+			loc = "en"
+	return "%s|%s" % [task_id, loc]
 
 # ---------------- Nav ----------------
 func _on_back_pressed() -> void:

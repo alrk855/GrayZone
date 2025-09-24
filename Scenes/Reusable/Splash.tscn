@@ -4,7 +4,7 @@
 [ext_resource type="VideoStream" uid="uid://fvxik74ydp5p" path="res://Images/Videos/Timeline 1.ogv" id="1_gv28g"]
 [ext_resource type="AudioStream" uid="uid://oxps7fx8me3r" path="res://Images/Videos/typeShiftington.wav" id="3_u7457"]
 
-[node name="Control" type="Control"]
+[node name="Control2" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
