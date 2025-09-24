@@ -17,14 +17,14 @@ extends Node
 
 # ---------- Config ----------
 # RELATIVE ID under Data/. Example file: res://Data/Quizzes/Project_Quiz.json
-# Localized: res://Data/<locale>/Quizzes/Project_Quiz.json
+# Localized: GameState.get_data_path("Quizzes/Project_Quiz.json") -> res://DataMK/... if mk, etc.
 @export var QUESTIONS_JSON_ID: String = "Quizzes/Project_Quiz.json"
 
 const LEAVE_BUTTON_PATH: NodePath = NodePath("Leave/button2")
-const EXIT_BUTTON_PATH:  NodePath  = NodePath("Exit/button2")
-const EXIT_LABEL_PATH:   NodePath  = NodePath("Exit")
-const SCORE_LABEL_PATH:  NodePath  = NodePath("UI/ScoreLabel")
-const HOME_SCENE_PATH:   String    = "res://Scenes/Reusable/Map/Home.tscn"
+const EXIT_BUTTON_PATH:  NodePath = NodePath("Exit/button2")
+const EXIT_LABEL_PATH:   NodePath = NodePath("Exit")
+const SCORE_LABEL_PATH:  NodePath = NodePath("UI/ScoreLabel")
+const HOME_SCENE_PATH:   String   = "res://Scenes/Reusable/Map/Home.tscn"
 
 # ---------- State ----------
 var score: int = 0
@@ -69,11 +69,11 @@ func _ready() -> void:
 	if score_lbl:
 		score_lbl.visible = false
 
-# ---------- JSON loader (relative ID → locale-aware absolute path) ----------
+# ---------- JSON loader (relative ID → locale-aware absolute path via GameState.get_data_path) ----------
 func _load_questions_from_json() -> void:
 	questions.clear()
 
-	var p: String = _jp_id(QUESTIONS_JSON_ID).strip_edges()
+	var p: String = _path_from_id(QUESTIONS_JSON_ID).strip_edges()
 	if p == "" or not FileAccess.file_exists(p):
 		push_warning("Questions JSON not found: " + p)
 		return
@@ -91,7 +91,7 @@ func _load_questions_from_json() -> void:
 		return
 	var arr: Array = arr_v as Array
 
-	for item_v: Variant in arr:
+	for item_v in arr:
 		if not (item_v is Dictionary):
 			continue
 		var item: Dictionary = item_v
@@ -113,7 +113,7 @@ func _load_questions_from_json() -> void:
 		var ans_i: int = int(ans_v)
 
 		questions.append({
-			"question": q,  # already localized via file
+			"question": q,              # already localized via file
 			"options": [opt0, opt1, opt2],
 			"answer": clamp(ans_i, 0, 2)
 		})
@@ -278,24 +278,11 @@ func _go_home() -> void:
 	GameState.location = "Home"
 	await fade.fade_to_scene(HOME_SCENE_PATH)
 
-# ---------- Locale-aware resolver for RELATIVE IDs ----------
-# Input: "Quizzes/Project_Quiz.json"
-# Tries GameState hooks first, then falls back to res://Data/<id>
-func _jp_id(id: String) -> String:
-	var base: String = String(id).strip_edges().trim_prefix("/")
-
-	# Preferred resolvers if your GameState provides them
-	if GameState.has_method("resolve_json_id"):
-		var r0: Variant = GameState.resolve_json_id(base)
-		return String(r0)
-
-	if GameState.has_method("localized_json_path"):
-		var r1: Variant = GameState.localized_json_path("res://Data/" + base)
-		return String(r1)
-
-	if GameState.has_method("get_localized_json_path"):
-		var r2: Variant = GameState.get_localized_json_path("res://Data/" + base)
-		return String(r2)
-
-	# Plain fallback (non-localized)
-	return "res://Data/" + base
+# ---------- ID → Path (Golden Standard) ----------
+func _path_from_id(id: String) -> String:
+	# Golden rule: *always* resolve relative JSON IDs through GameState.get_data_path(relative)
+	var rel: String = String(id).strip_edges().trim_prefix("/")
+	if GameState.has_method("get_data_path"):
+		return String(GameState.get_data_path(rel))
+	# Fallback for dev/debug if get_data_path() isn’t present:
+	return "res://Data/" + rel

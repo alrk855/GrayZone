@@ -1,7 +1,8 @@
+# res://Scripts/Scenes/MarkoHangout.gd
 extends Control
 
-# ---- Config ----
-const HANGOUT_JSON: String = "res://Data/Marko/Marko_Hangout_Free.json"
+# ---- Config (RELATIVE under Data/, locale-aware via GameState.get_data_path) ----
+const HANGOUT_JSON_ID: String = "Marko/Marko_Hangout_Free.json"
 
 # ---- BG (set these in Inspector) ----
 @export var bg_rect_path: NodePath
@@ -17,7 +18,7 @@ const KEY_RETURN_SCENE: String    = "__study_return_scene"   # set by launcher
 const KEY_HANGOUT_CONTEXT: String = "__hangout_context"      # "event" | ""
 const RETURN_FALLBACK: String     = "res://Scenes/Reusable/Map/City.tscn"
 
-var _returning := false
+var _returning: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -26,7 +27,7 @@ func _ready() -> void:
 	_apply_bg_by_gender()
 
 	# Context: if launched from the event, skip REP penalty
-	var from_event := String(GameState.features_unlocked.get(KEY_HANGOUT_CONTEXT, "")) == "event"
+	var from_event: bool = String(GameState.features_unlocked.get(KEY_HANGOUT_CONTEXT, "")) == "event"
 	if GameState.features_unlocked.has(KEY_HANGOUT_CONTEXT):
 		GameState.features_unlocked.erase(KEY_HANGOUT_CONTEXT)
 
@@ -35,15 +36,18 @@ func _ready() -> void:
 	GameState.adjust_time(TIME_MIN)
 
 	# Decide where to return; then consume the marker so it doesn't leak
-	var ret := String(GameState.features_unlocked.get(KEY_RETURN_SCENE, RETURN_FALLBACK)).strip_edges()
+	var ret: String = String(GameState.features_unlocked.get(KEY_RETURN_SCENE, RETURN_FALLBACK)).strip_edges()
 	if ret == "":
 		ret = RETURN_FALLBACK
 	if GameState.features_unlocked.has(KEY_RETURN_SCENE):
 		GameState.features_unlocked.erase(KEY_RETURN_SCENE)
 
+	# Resolve JSON via GameState.get_data_path(relative)
+	var json_path: String = _dp(HANGOUT_JSON_ID)
+
 	# Play JSON then return
-	if HANGOUT_JSON != "" and ResourceLoader.exists(HANGOUT_JSON):
-		var ui: Control = DialogueManager.start_dialogue(HANGOUT_JSON, self)
+	if json_path != "" and FileAccess.file_exists(json_path):
+		var ui: Control = DialogueManager.start_dialogue(json_path, self)
 		if ui and ui.has_signal("dialogue_finished"):
 			if not ui.is_connected("dialogue_finished", Callable(self, "_on_json_done").bind(ret)):
 				ui.connect("dialogue_finished", Callable(self, "_on_json_done").bind(ret))
@@ -61,7 +65,7 @@ func _apply_bg_by_gender() -> void:
 		push_error("MarkoHangout: bg_rect_path is invalid or not a TextureRect.")
 		return
 	var rect := node as TextureRect
-	var g := String(GameState.player_gender).to_lower()
+	var g: String = String(GameState.player_gender).to_lower()
 	rect.texture = bg_female if g == "female" else bg_male
 
 func _on_json_done(ret: String) -> void:
@@ -77,7 +81,7 @@ func _return_to(path: String) -> void:
 		get_tree().paused = false
 
 	# Validate target; if missing, use fallback (still via fade singleton)
-	var target := path
+	var target: String = path
 	if not ResourceLoader.exists(target):
 		push_warning("Hangout: invalid return path: " + target + " → using fallback")
 		target = RETURN_FALLBACK
@@ -90,3 +94,12 @@ func _return_to(path: String) -> void:
 	await fade.fade_to_scene(target)
 
 	_returning = false
+
+# ===================== Golden path resolver =====================
+# Convert a *relative* Data/ ID (e.g., "Marko/Marko_Hangout_Free.json") into an absolute, locale-aware path.
+func _dp(relative: String) -> String:
+	var rel: String = String(relative).strip_edges().trim_prefix("/")
+	if GameState.has_method("get_data_path"):
+		return String(GameState.get_data_path(rel))
+	# Dev fallback if get_data_path() isn’t present:
+	return "res://Data/" + rel

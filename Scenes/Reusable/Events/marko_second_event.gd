@@ -10,10 +10,10 @@ extends Control
 # Choice panel scene
 const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
 
-# JSONs (dialogue-only)
-const JSON_INTRO_STUDY := "Marko/SecondEvent/MarkoSecond_Intro_Study.json"
-const JSON_INTRO_PARTY := "Marko/SecondEvent/MarkoSecond_Intro_Party.json"
-const JSON_PARTY_NIGHT := "Marko/SecondEvent/MarkoSecond_Party_Night.json"
+# JSON IDs (relative under Data/)
+const JSON_INTRO_STUDY_ID: String = "Marko/SecondEvent/MarkoSecond_Intro_Study.json"
+const JSON_INTRO_PARTY_ID: String = "Marko/SecondEvent/MarkoSecond_Intro_Party.json"
+const JSON_PARTY_NIGHT_ID: String = "Marko/SecondEvent/MarkoSecond_Party_Night.json"
 
 # ---------- Internals ----------
 var _bg_node: Node = null
@@ -22,7 +22,7 @@ var _ui: Control = null
 var _came_from_study_intro: bool = false
 
 func _ready() -> void:
-	GameState.location = "Unknown"
+	GameState.location = "MarkoSecondEvent"
 
 	_bg_node = null
 	if bg_rect_path != NodePath():
@@ -32,11 +32,11 @@ func _ready() -> void:
 	var rep = GameState.reputation
 	if rep >= 50:
 		_came_from_study_intro = true
-		await _play_json(JSON_INTRO_STUDY)
+		await _play_json(JSON_INTRO_STUDY_ID)
 		_show_choices_study_intro()
 	else:
 		_came_from_study_intro = false
-		await _play_json(JSON_INTRO_PARTY)
+		await _play_json(JSON_INTRO_PARTY_ID)
 		_show_choices_party_intro()
 
 # -------------------- Choice sets --------------------
@@ -65,12 +65,10 @@ func _on_choice(id: String) -> void:
 	match id:
 		"study_with_marko":
 			_clear_panel()
-			# Study with Marko: no time/stat change here; Study scene handles time.
 			await _fade_to(study_scene_path)
-			_mark_done(false)  # no party flag
+			_mark_done(false)
 		"solo_study":
 			_clear_panel()
-			# Solo study: +5 integrity, +60 minutes, then go home
 			GameState.adjust_integrity(+5)
 			GameState.adjust_time(60)
 			await _fade_to(home_scene_path)
@@ -83,21 +81,15 @@ func _on_choice(id: String) -> void:
 
 # -------------------- Party branch --------------------
 func _handle_party_branch() -> void:
-	# Rep -5
 	GameState.adjust_reputation(-5)
-
-	# BG swaps ONLY for party; choose by gender
 	_apply_party_bg_by_gender()
 
-	# Set time to 21:00 while party is "playing"
 	GameState.time = 21 * 60
 	if GameState.has_method("_emit_time_changed"):
 		GameState._emit_time_changed()
 
-	# Play party JSON
-	await _play_json(JSON_PARTY_NIGHT)
+	await _play_json(JSON_PARTY_NIGHT_ID)
 
-	# After party, set to 23:00 and send home
 	GameState.time = 23 * 60
 	if GameState.has_method("_emit_time_changed"):
 		GameState._emit_time_changed()
@@ -115,10 +107,8 @@ func _apply_party_bg_by_gender() -> void:
 		tex = bg_party_female
 	else:
 		tex = bg_party_male
-
 	if tex == null:
 		return
-
 	if _bg_node is TextureRect:
 		(_bg_node as TextureRect).texture = tex
 	elif _bg_node is Sprite2D:
@@ -126,9 +116,10 @@ func _apply_party_bg_by_gender() -> void:
 	elif _bg_node.has_method("set_texture"):
 		_bg_node.call("set_texture", tex)
 
-func _play_json(path: String) -> void:
-	var p := _jp(path)
+func _play_json(relative_id: String) -> void:
+	var p := _dp(relative_id)
 	if p == "" or not FileAccess.file_exists(p):
+		push_warning("MarkoSecondEvent: missing JSON → " + relative_id + " (resolved: " + p + ")")
 		return
 	_ui = DialogueManager.start_dialogue(p, self)
 	if _ui and _ui.has_signal("dialogue_finished"):
@@ -151,10 +142,9 @@ func _clear_panel() -> void:
 		_panel.queue_free()
 	_panel = null
 
-# -------- Locale path resolver (JSON) --------
-func _jp(p: String) -> String:
-	if GameState.has_method("localized_json_path"):
-		return String(GameState.localized_json_path(p))
-	if GameState.has_method("get_localized_json_path"):
-		return String(GameState.get_localized_json_path(p))
-	return p
+# -------- Golden data-path resolver (JSON) --------
+func _dp(relative: String) -> String:
+	var rel := String(relative).strip_edges().trim_prefix("/")
+	if GameState.has_method("get_data_path"):
+		return String(GameState.get_data_path(rel))
+	return "res://Data/" + rel

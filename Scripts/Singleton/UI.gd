@@ -80,7 +80,7 @@ func _on_time_changed(time_minutes: int, current_day: int) -> void:
 	if time:
 		time.text = "%02d:%02d" % [time_minutes / 60, time_minutes % 60]
 	if day:
-		day.text = "Day %d" % current_day
+		day.text = tr("Day %d") % current_day
 
 # ======================== PUBLIC NOTIFY API ========================
 func notify(text: String) -> void:
@@ -100,10 +100,9 @@ func notify_task_added(task_id: String) -> void:
 		total = int(tc.call("get_steps_count", task_id))
 
 	if total > 0:
-		notify("Task added: %s (0/%d)" % [title, total])
+		notify(tr("Task added: %s (0/%d)") % [title, total])
 	else:
-		notify("Task added: %s" % title)
-
+		notify(tr("Task added: %s") % title)
 
 func notify_task_updated(task_id: String, step_index: int) -> void:
 	var tc := get_node_or_null("/root/TaskCatalog")
@@ -115,9 +114,9 @@ func notify_task_updated(task_id: String, step_index: int) -> void:
 
 	if total > 0:
 		var shown = min(step_index, total)
-		notify("Task updated: %s → Step %d/%d" % [title, shown, total])
+		notify(tr("Task updated: %s → Step %d/%d") % [title, shown, total])
 	else:
-		notify("Task updated: %s → Step %d" % [title, step_index])
+		notify(tr("Task updated: %s → Step %d") % [title, step_index])
 
 # =================== GameState → notifications ===================
 func _on_task_added(task_id: String) -> void:

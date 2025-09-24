@@ -19,11 +19,14 @@ var _bg_current: Texture2D = null
 const T_13_00: int = 13 * 60
 const T_16_00: int = 16 * 60
 
-# ---------- JSONs ----------
-const JSON_SEC_INITIAL   := "res://Data/Dialogue/Secretary/Secretary_Initial.json"
-const JSON_SEC_NOT_HERE  := "res://Data/Dialogue/Secretary/Secretary_NotHere.json"
-const PRINT_MENU_JSON    := "res://Data/Dialogue/Secretary/Secretary_Print_Menu.json"
-const PRINT_CONFIG_JSON  := "res://Data/Dialogue/Secretary/Secretary_Print_Config.json"
+# ---------- JSONs (RELATIVE IDs; resolved via GameState.get_data_path) ----------
+const JSON_SEC_INITIAL   := "Dialogue/Secretary/Secretary_Initial.json"
+const JSON_SEC_NOT_HERE  := "Dialogue/Secretary/Secretary_NotHere.json"
+const PRINT_MENU_JSON    := "Dialogue/Secretary/Secretary_Print_Menu.json"
+const PRINT_CONFIG_JSON  := "Dialogue/Secretary/Secretary_Print_Config.json"
+const JSON_TALK          := "Dialogue/Secretary/Secretary_Talk.json"
+const JSON_SUBMIT_PREFRI := "Dialogue/Secretary/Secretary_Submit_PreFriday.json"
+const JSON_SUBMIT        := "Dialogue/Secretary/Secretary_Submit.json"
 
 var _active_panel: Control = null
 var _print_cfg: Dictionary = {}
@@ -48,7 +51,7 @@ func _ready() -> void:
 		if GameState.get_task_progress(VISIT_SEC_ID) == 0:
 			GameState.update_task_step(VISIT_SEC_ID)
 			GameState.set_flag("secretary_met", true)
-			DialogueManager.start_dialogue(JSON_SEC_INITIAL, self)
+			DialogueManager.start_dialogue(_jp(JSON_SEC_INITIAL), self)
 	else:
 		call_deferred("_start_not_here_on_enter")
 
@@ -68,8 +71,10 @@ func _update_background() -> void:
 		_set_bg(bg_not_here)
 
 func _set_bg(tex: Texture2D) -> void:
-	if _bg_node == null or tex == null: return
-	if _bg_current == tex: return
+	if _bg_node == null or tex == null:
+		return
+	if _bg_current == tex:
+		return
 	_bg_current = tex
 	if _bg_node is TextureRect:
 		(_bg_node as TextureRect).texture = tex
@@ -80,16 +85,18 @@ func _set_bg(tex: Texture2D) -> void:
 
 # Deferred entry hook so NotHere ALWAYS fires after-hours
 func _start_not_here_on_enter() -> void:
-	if _not_here_fired_on_enter: return
+	if _not_here_fired_on_enter:
+		return
 	_not_here_fired_on_enter = true
 	await get_tree().process_frame
 	_start_not_here_dialogue()
 
 func _start_not_here_dialogue() -> void:
-	if FileAccess.file_exists(JSON_SEC_NOT_HERE):
-		DialogueManager.start_dialogue(JSON_SEC_NOT_HERE, self)
+	var p := _jp(JSON_SEC_NOT_HERE)
+	if FileAccess.file_exists(p):
+		DialogueManager.start_dialogue(p, self)
 	else:
-		print("Secretary not here (missing JSON): ", JSON_SEC_NOT_HERE)
+		print(tr("Secretary not here (missing JSON): ") + p)
 
 func _close_to_school() -> void:
 	_fade_and_change_scene("res://Scenes/Reusable/Map/School.tscn")
@@ -102,15 +109,15 @@ func start_interaction() -> void:
 		return
 
 	var opts: Array = []
-	opts.append({ "text": "Ask about scholarship", "id": "talk" })
+	opts.append({ "text": tr("Ask about scholarship"), "id": "talk" })
 
 	if _has_any_printables():
-		opts.append({ "text": "Print a document", "id": "print" })
+		opts.append({ "text": tr("Print a document"), "id": "print" })
 
 	if GameState.day >= 5:
-		opts.append({ "text": "Submit documents", "id": "submit" })
+		opts.append({ "text": tr("Submit documents"), "id": "submit" })
 
-	opts.append({ "text": "Back", "id": "back" })
+	opts.append({ "text": tr("Back"), "id": "back" })
 
 	_active_panel = choice_panel_scene.instantiate()
 	add_child(_active_panel)
@@ -119,14 +126,14 @@ func start_interaction() -> void:
 func _on_choice_selected(id: String) -> void:
 	match id:
 		"talk":
-			DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Talk.json", self)
+			DialogueManager.start_dialogue(_jp(JSON_TALK), self)
 		"print":
-			DialogueManager.start_dialogue(PRINT_MENU_JSON, self)
+			DialogueManager.start_dialogue(_jp(PRINT_MENU_JSON), self)
 		"submit":
 			if GameState.day < 5:
-				DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Submit_PreFriday.json", self)
+				DialogueManager.start_dialogue(_jp(JSON_SUBMIT_PREFRI), self)
 			else:
-				DialogueManager.start_dialogue("res://Data/Dialogue/Secretary/Secretary_Submit.json", self)
+				DialogueManager.start_dialogue(_jp(JSON_SUBMIT), self)
 		"back":
 			_clear_panel()
 
@@ -176,13 +183,16 @@ func _show_print_menu_from_config() -> void:
 			opts.append({ "text": "%s (%dMKD)" % [text, price], "id": id })
 
 	if opts.is_empty():
-		var nothing := [{ "text": "Nothing to print right now.", "id": "noop" }, { "text": "Back", "id": "back" }]
+		var nothing := [
+			{ "text": tr("Nothing to print right now."), "id": "noop" },
+			{ "text": tr("Back"), "id": "back" }
+		]
 		_active_panel = choice_panel_scene.instantiate()
 		add_child(_active_panel)
 		_active_panel.call("show_options", nothing, Callable(self, "_on_print_choice"))
 		return
 
-	opts.append({ "text": "Back", "id": "back" })
+	opts.append({ "text": tr("Back"), "id": "back" })
 	_active_panel = choice_panel_scene.instantiate()
 	add_child(_active_panel)
 	_active_panel.call("show_options", opts, Callable(self, "_on_print_choice"))
@@ -197,19 +207,24 @@ func _on_print_choice(choice_id: String) -> void:
 		var it: Dictionary = v
 		if String(it.get("id", "")) == choice_id:
 			var price := int(it.get("price", 0))
-			var action_json := String(it.get("action_json", ""))
+			var action_rel := String(it.get("action_json", ""))
 			if GameState.money < price:
-				print("❌ Not enough money to print.")
+				print(tr("❌ Not enough money to print."))
 				return
-			if action_json != "" and FileAccess.file_exists(action_json):
-				DialogueManager.start_dialogue(action_json, self)
+			if action_rel != "":
+				var p: String = action_rel
+				if not action_rel.begins_with("res://"):
+					p = _jp(action_rel)
+				if FileAccess.file_exists(p):
+					DialogueManager.start_dialogue(p, self)
 			_clear_panel()
 			return
 
 func _load_print_config() -> Dictionary:
-	if not FileAccess.file_exists(PRINT_CONFIG_JSON):
+	var p := _jp(PRINT_CONFIG_JSON)
+	if not FileAccess.file_exists(p):
 		return {}
-	var txt := FileAccess.get_file_as_string(PRINT_CONFIG_JSON)
+	var txt := FileAccess.get_file_as_string(p)
 	var parsed: Variant = JSON.parse_string(txt)
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return {}
@@ -219,6 +234,13 @@ func _clear_panel() -> void:
 	if _active_panel and is_instance_valid(_active_panel):
 		_active_panel.queue_free()
 	_active_panel = null
+
+# -------- Locale-aware resolver for RELATIVE IDs --------
+func _jp(rel: String) -> String:
+	var base := String(rel).strip_edges().trim_prefix("/")
+	if GameState.has_method("get_data_path"):
+		return String(GameState.get_data_path(base))
+	return "res://Data/" + base
 
 # ============ Fade helpers ============
 func _ensure_fader() -> void:

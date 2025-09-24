@@ -1,3 +1,4 @@
+# res://Scripts/Scenes/MarkoStudy.gd
 extends Control
 
 # --- Scenes ---
@@ -5,11 +6,13 @@ const STUDY_SCENE_PATH: String       = "res://Scenes/Reusable/Tasks/Study.tscn"
 const RETURN_SCENE_FALLBACK: String  = "res://Scenes/Reusable/Events/MarkoFirstEvent.tscn"
 const HOME_SCENE_PATH: String        = "res://Scenes/Reusable/Map/Home.tscn"
 
-# --- JSONs (placed under Data/Marko/Study) ---
-const JSON_S1_START: String    = "res://Data/Marko/StudyWithMarko_Start.json"
-const JSON_CONTINUE: String    = "res://Data/Marko/Marko_Study_Continue.json"
-const JSON_S2_START: String    = "res://Data/Marko/Study_Subject2.json"
-const JSON_END: String         = "res://Data/Marko/StudyWithMarko_End.json"
+# --- JSONs (RELATIVE IDs under Data/, resolved via GameState.get_data_path) ---
+# Example resolved path (EN): res://Data/Marko/StudyWithMarko_Start.json
+# Example resolved path (MK): res://DataMK/Marko/StudyWithMarko_Start.json
+const JSON_S1_START_ID: String = "Marko/StudyWithMarko_Start.json"
+const JSON_CONTINUE_ID: String = "Marko/Marko_Study_Continue.json"
+const JSON_S2_START_ID: String = "Marko/Study_Subject2.json"
+const JSON_END_ID: String      = "Marko/StudyWithMarko_End.json"
 
 # --- Feature flags for Study scene ---
 const KEY_STUDY_MODE: String     = "__study_mode"          # "marko"
@@ -52,16 +55,16 @@ func _ready() -> void:
 	# Decide which JSON to start based on persisted phase flags
 	if GameState.has_flag(F_PHASE_POST_S2):
 		GameState.clear_flag(F_PHASE_POST_S2)
-		_start_dialogue(JSON_END, P_END)
+		_start_dialogue(JSON_END_ID, P_END)
 		return
 
 	if GameState.has_flag(F_PHASE_POST_S1):
 		GameState.clear_flag(F_PHASE_POST_S1)
-		_start_dialogue(JSON_CONTINUE, P_S2_PROMPT)
+		_start_dialogue(JSON_CONTINUE_ID, P_S2_PROMPT)
 		return
 
 	# First entry: Subject 1 intro → auto Study after the JSON ends
-	_start_dialogue(JSON_S1_START, P_S1_START)
+	_start_dialogue(JSON_S1_START_ID, P_S1_START)
 
 func on_dialogue_action(line: Dictionary) -> void:
 	var act: String = String(line.get("action", ""))
@@ -75,9 +78,13 @@ func on_dialogue_action(line: Dictionary) -> void:
 	GameState.apply_action(line)
 
 # ---------------------- Dialogue helpers ----------------------
-func _start_dialogue(json_path: String, phase: String) -> void:
+func _start_dialogue(json_id: String, phase: String) -> void:
 	_current_phase = phase
-	var ui := DialogueManager.start_dialogue(json_path, self)
+	var path := _dp(json_id)
+	if path == "" or not FileAccess.file_exists(path):
+		push_warning("MarkoStudy: missing dialogue JSON → " + json_id + " (resolved: " + path + ")")
+		return
+	var ui := DialogueManager.start_dialogue(path, self)
 	if ui and ui.has_signal("dialogue_finished"):
 		if not ui.is_connected("dialogue_finished", Callable(self, "_on_dialogue_finished")):
 			ui.connect("dialogue_finished", Callable(self, "_on_dialogue_finished"))
@@ -88,7 +95,8 @@ func _on_dialogue_finished() -> void:
 		GameState.features_unlocked[KEY_STUDY_MODE] = "marko"
 		GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject1"
 		GameState.features_unlocked[KEY_SESSION_INDEX] = 0
-		GameState.mark_today_finals_revealed(GameState.subject1)
+		if GameState.has_method("mark_today_finals_revealed"):
+			GameState.mark_today_finals_revealed(GameState.subject1)
 		GameState.set_flag(F_PHASE_POST_S1, true)
 		await _go_to(STUDY_SCENE_PATH)
 		return
@@ -100,7 +108,8 @@ func _on_dialogue_finished() -> void:
 		GameState.features_unlocked[KEY_STUDY_MODE] = "marko"
 		GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject2"
 		GameState.features_unlocked[KEY_SESSION_INDEX] = 0
-		GameState.mark_today_finals_revealed(GameState.subject2)
+		if GameState.has_method("mark_today_finals_revealed"):
+			GameState.mark_today_finals_revealed(GameState.subject2)
 		GameState.set_flag(F_PHASE_POST_S2, true)
 		await _go_to(STUDY_SCENE_PATH)
 		return
@@ -117,11 +126,11 @@ func _show_choice_s2() -> void:
 	_clear_panel()
 	var s2_label: String = GameState.subject2
 	if s2_label.strip_edges() == "":
-		s2_label = "[Subject 2]"
+		s2_label = tr("[Subject 2]")
 
 	var opts: Array = [
-		{"id":"do_s2","text":"Study " + s2_label + " now"},
-		{"id":"end","text":"We’re done"}
+		{"id":"do_s2","text": tr("Study %s now") % s2_label},
+		{"id":"end","text": tr("We’re done")}
 	]
 	_panel = choice_panel_scene.instantiate()
 	add_child(_panel)
@@ -131,11 +140,11 @@ func _on_choice_s2(id: String) -> void:
 	_clear_panel()
 
 	if id == "do_s2":
-		_start_dialogue(JSON_S2_START, P_S2_START)
+		_start_dialogue(JSON_S2_START_ID, P_S2_START)
 		return
 
 	if id == "end":
-		_start_dialogue(JSON_END, P_END)
+		_start_dialogue(JSON_END_ID, P_END)
 		return
 
 # ---------------------- BG + Utils ----------------------
@@ -158,3 +167,12 @@ func _clear_panel() -> void:
 func _go_to(path: String) -> void:
 	# Global fade only (no fallback)
 	await fade.fade_to_scene(path)
+
+# ---- Golden data-path resolver (RELATIVE → ABSOLUTE, locale-aware) ----
+# Uses your provided GameState.get_data_path(relative) implementation.
+func _dp(relative: String) -> String:
+	var rel := String(relative).strip_edges().trim_prefix("/")
+	if GameState.has_method("get_data_path"):
+		return String(GameState.get_data_path(rel))
+	# Fallback if helper is missing:
+	return "res://Data/" + rel

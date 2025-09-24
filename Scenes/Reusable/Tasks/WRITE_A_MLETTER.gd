@@ -1,3 +1,4 @@
+# res://Scripts/Scenes/WriteMotivation.gd
 extends Control
 
 # --------------------- UI refs ---------------------
@@ -32,9 +33,10 @@ const F_PRINTED_MOTIVATION  := "printed_motivation"
 const F_MLETTER_AI          := "motivation_ai_generated"
 const F_MLETTER_REWRITE_REQ := "motivation_rewrite_required"
 
-# --------------------- JSON locations ---------------------
-const HUMAN_DIR := "res://Data/MotivationTemplates/Human"  # Motivation_Human_XX.json
-const AI_JSON   := "res://Data/MotivationTemplates/AI/Motivation_AI_01.json"
+# --------------------- JSON locations (RELATIVE, golden) ---------------------
+# These are *relative IDs* under Data/. We resolve them through GameState.get_data_path().
+const HUMAN_DIR_ID := "MotivationTemplates/Human"                   # directory containing Motivation_Human_XX.json
+const AI_JSON_ID   := "MotivationTemplates/AI/Motivation_AI_01.json"
 
 # --------------------- Runtime state ---------------------
 var _templates: Array[String] = []   # holds exactly 1 manual template after load
@@ -72,8 +74,8 @@ func _ready() -> void:
 
 	# GPT button setup: hide/disable if rewrite is required (manual-only)
 	_gpt_button = get_node_or_null(gpt_button_path) as Button
-	var lock_manual := GameState.has_flag(F_MLETTER_REWRITE_REQ)
-	var hide_now := hide_gpt_by_default or lock_manual
+	var lock_manual: bool = GameState.has_flag(F_MLETTER_REWRITE_REQ)
+	var hide_now: bool = hide_gpt_by_default or lock_manual
 	if _gpt_button:
 		_gpt_button.visible = not hide_now
 		_gpt_button.disabled = hide_now
@@ -214,66 +216,79 @@ func exit() -> void:
 
 # ===================== JSON LOADERS (manual/AI) =====================
 
-# Manual: pick one random JSON from HUMAN_DIR and use it as the typing content
+# Manual: pick one random JSON from HUMAN_DIR_ID and use it as the typing content
 func _load_one_manual_template() -> void:
 	_templates.clear()
-	var p := _pick_random_json(HUMAN_DIR)
-	var text := _read_text_from_json(p)
+	var picked_abs: String = _pick_random_json_dir_id(HUMAN_DIR_ID)
+	var text: String = _read_text_from_json(picked_abs)
 	if text.strip_edges() == "":
-		push_warning("MLetter: fallback used (no Human JSON found or empty). Path tried: " + p)
+		push_warning("MLetter: fallback used (no Human JSON found or empty). Path tried: " + picked_abs)
 		text = "Dear Committee, Thank you for your time. Sincerely, {name}"
 	text = _apply_placeholders(text)
 	_templates.append(text)
 
 # AI: load the single file you specified and assign to AILABEL (no randomness)
 func _load_ai_text_into_label() -> void:
-	var text := _read_text_from_json(AI_JSON)
+	var ai_abs: String = _dp(AI_JSON_ID)
+	var text: String = _read_text_from_json(ai_abs)
 	if text.strip_edges() == "":
-		push_warning("MLetter: AI fallback used (missing/empty): " + AI_JSON)
+		push_warning("MLetter: AI fallback used (missing/empty): " + ai_abs)
 		text = "Esteemed Committee, I am enthusiastic about joining your program. With gratitude, {name}"
 	text = _apply_placeholders(text)
 	if AILABEL:
 		AILABEL.text = text
 
-func _pick_random_json(dir_path: String) -> String:
-	var da := DirAccess.open(dir_path)
+# Pick a random .json from a *relative* Data/ directory ID (golden standard)
+func _pick_random_json_dir_id(dir_id: String) -> String:
+	var dir_abs: String = _dp(dir_id)
+	var da := DirAccess.open(dir_abs)
 	if da == null:
-		push_warning("MLetter: directory not found → " + dir_path)
+		push_warning("MLetter: directory not found → " + dir_abs)
 		return ""
 	var files: Array[String] = []
 	da.list_dir_begin()
 	while true:
-		var fname := da.get_next()
+		var fname: String = da.get_next()
 		if fname == "":
 			break
 		if da.current_is_dir():
 			continue
 		if fname.to_lower().ends_with(".json"):
-			files.append(dir_path + "/" + fname)
+			files.append(dir_abs.rstrip("/") + "/" + fname)
 	da.list_dir_end()
 	if files.is_empty():
-		push_warning("MLetter: no .json files in → " + dir_path)
+		push_warning("MLetter: no .json files in → " + dir_abs)
 		return ""
 	return files[randi() % files.size()]
 
-func _read_text_from_json(path: String) -> String:
-	if path.strip_edges() == "" or not FileAccess.file_exists(path):
+func _read_text_from_json(abs_path: String) -> String:
+	if abs_path.strip_edges() == "" or not FileAccess.file_exists(abs_path):
 		return ""
-	var raw := FileAccess.get_file_as_string(path)
-	var parsed = JSON.parse_string(raw)
+	var raw: String = FileAccess.get_file_as_string(abs_path)
+	var parsed: Variant = JSON.parse_string(raw)
 	if typeof(parsed) == TYPE_DICTIONARY:
-		return String((parsed as Dictionary).get("text", ""))
-	push_warning("MLetter: bad JSON format in → " + path)
+		var dict: Dictionary = parsed
+		return String(dict.get("text", ""))
+	push_warning("MLetter: bad JSON format in → " + abs_path)
 	return ""
 
 # --- Placeholder helper: {name} and [Field] ---
 func _apply_placeholders(s: String) -> String:
-	var nm := String(GameState.player_name).strip_edges()
+	var nm: String = String(GameState.player_name).strip_edges()
 	if nm == "":
 		nm = "Student"
-	var field := String(GameState.subject1).strip_edges()
+	var field: String = String(GameState.subject1).strip_edges()
 	if field == "":
 		field = "your field"
 	s = s.replace("{name}", nm)
 	s = s.replace("[Field]", field).replace("[field]", field).replace("[FIELD]", field)
 	return s
+
+# ===================== Golden path resolver =====================
+# Convert a *relative* Data/ ID (e.g., "MotivationTemplates/Human") into an absolute, locale-aware path.
+func _dp(relative: String) -> String:
+	var rel: String = String(relative).strip_edges().trim_prefix("/")
+	if GameState.has_method("get_data_path"):
+		return String(GameState.get_data_path(rel))
+	# Fallback for dev/debug if get_data_path() isn’t present:
+	return "res://Data/" + rel

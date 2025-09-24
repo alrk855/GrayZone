@@ -1,28 +1,24 @@
 extends Control
 
-# ---------- JSON paths ----------
-const JSON_ENTRY: String        = "res://Data/Marko/FirstEvent/00_Entry.json"
-const JSON_STUDY_SWAY: String   = "res://Data/Marko/FirstEvent/01_Study_Sway.json"
-const JSON_GOTO_STUDY: String   = "res://Data/Marko/FirstEvent/02_Goto_StudyScene.json"
-const JSON_ALONE_PUSH: String   = "res://Data/Marko/FirstEvent/10_StudyAlone_Push.json"
-const JSON_SOLO_END: String     = "res://Data/Marko/FirstEvent/11_Solo_Study_End.json"
-const JSON_HANGOUT_END: String  = "res://Data/Marko/FirstEvent/12_Hangout_End.json"
+# ---------- JSON IDs (relative under Data/) ----------
+const JSON_ENTRY_ID:       String = "Marko/FirstEvent/00_Entry.json"
+const JSON_STUDY_SWAY_ID:  String = "Marko/FirstEvent/01_Study_Sway.json"
+const JSON_GOTO_STUDY_ID:  String = "Marko/FirstEvent/02_Goto_StudyScene.json"
+const JSON_ALONE_PUSH_ID:  String = "Marko/FirstEvent/10_StudyAlone_Push.json"
+const JSON_SOLO_END_ID:    String = "Marko/FirstEvent/11_Solo_Study_End.json"
+const JSON_HANGOUT_END_ID: String = "Marko/FirstEvent/12_Hangout_End.json"
 
-const FALLBACK_HOME: String     = "res://Scenes/Reusable/Map/Home.tscn"
+const FALLBACK_HOME: String = "res://Scenes/Reusable/Map/Home.tscn"
+const HANGOUT_SCENE: String = "res://Scenes/Reusable/Tasks/Hangout.tscn"
 
-# ---- Hangout scene (lightweight time-waster) ----
-const HANGOUT_SCENE: String     = "res://Scenes/Reusable/Tasks/Hangout.tscn"
-
-# keys shared with Study/MarkoStudy (ephemeral “feature” keys per your design)
-const KEY_STUDY_MODE: String    = "__study_mode"
-const KEY_SUBJECT_PICK: String  = "__study_subject_pick"
-const KEY_RETURN_SCENE: String  = "__study_return_scene"
+# keys shared with Study/MarkoStudy
+const KEY_STUDY_MODE: String      = "__study_mode"
+const KEY_SUBJECT_PICK: String    = "__study_subject_pick"
+const KEY_RETURN_SCENE: String    = "__study_return_scene"
 const KEY_HANGOUT_CONTEXT: String = "__hangout_context" # "event" | ""
 
-# task we add after hangout (done in code, not JSON)
-const TASK_VISIT_PROF: String   = "visit_professor_office"
-
-# comeback flag set by the Hangout scene so we know to play the end JSON
+# task we add after hangout
+const TASK_VISIT_PROF: String = "visit_professor_office"
 const F_BACK_FROM_HANGOUT: String = "marko_first_event_hangout_done"
 
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
@@ -31,13 +27,11 @@ var _panel: Control = null
 var _transitioning: bool = false
 
 func _ready() -> void:
-	# Ensure this controller still ticks even if the tree is paused by Dialogue UI
 	process_mode = Node.PROCESS_MODE_ALWAYS
-
 	GameState.location = "MarkoFirstEvent"
 	_clear_panel()
 
-	# Store a valid return path for round-trips (Hangout / Study)
+	# Return path for hangout/study round-trips
 	var ret_path: String = ""
 	if get_tree() and get_tree().current_scene:
 		ret_path = String(get_tree().current_scene.get_scene_file_path())
@@ -45,14 +39,14 @@ func _ready() -> void:
 		ret_path = FALLBACK_HOME
 	GameState.features_unlocked[KEY_RETURN_SCENE] = ret_path
 
-	# If we just returned from the Hangout scene, play the end JSON and then go Home
+	# Handle comeback from hangout
 	if GameState.has_flag(F_BACK_FROM_HANGOUT):
 		GameState.clear_flag(F_BACK_FROM_HANGOUT)
-		_start_json(JSON_HANGOUT_END, "_on_hangout_json_finished")
+		_start_json(JSON_HANGOUT_END_ID, "_on_hangout_json_finished")
 		return
 
-	# Otherwise start the normal entry flow
-	_start_json(JSON_ENTRY, "")
+	# Otherwise, normal entry
+	_start_json(JSON_ENTRY_ID, "")
 
 # ---------- helpers ----------
 func _clear_panel() -> void:
@@ -82,7 +76,11 @@ func _do_change_scene(path: String) -> void:
 		push_warning("MarkoFirstEvent: invalid scene path: " + path)
 	_transitioning = false
 
-func _start_json(path: String, finish_cb: String) -> void:
+func _start_json(json_id: String, finish_cb: String) -> void:
+	var path := _dp(json_id)
+	if path == "" or not FileAccess.file_exists(path):
+		push_warning("MarkoFirstEvent: missing JSON → " + json_id + " (resolved: " + path + ")")
+		return
 	var ui: Control = DialogueManager.start_dialogue(path, self)
 	if ui and finish_cb != "":
 		if ui.has_signal("dialogue_finished"):
@@ -97,23 +95,18 @@ func on_dialogue_action(line: Dictionary) -> void:
 	match act:
 		"marko_show_entry_choices":
 			_show_entry_choices()
-
 		"marko_show_study_sway_choices":
 			_show_study_sway_choices()
-
 		"marko_show_alone_push_choices":
 			_show_alone_push_choices()
-
 		"goto":
 			var scene_path: String = String(line.get("scene", ""))
 			if scene_path != "":
 				_safe_end_dialogue()
 				_safe_change_scene(scene_path)
-
 		"end_event":
 			_safe_end_dialogue()
 			_safe_change_scene(FALLBACK_HOME)
-
 		_:
 			GameState.apply_action(line)
 
@@ -121,9 +114,9 @@ func on_dialogue_action(line: Dictionary) -> void:
 func _show_entry_choices() -> void:
 	_clear_panel()
 	var options: Array = [
-		{ "text": "Let’s study together.", "id": "study_together" },
-		{ "text": "I’m studying alone.",   "id": "study_alone" },
-		{ "text": "We can hang out.",      "id": "hangout" }
+		{ "text": tr("Let’s study together."), "id": "study_together" },
+		{ "text": tr("I’m studying alone."),   "id": "study_alone" },
+		{ "text": tr("We can hang out."),      "id": "hangout" }
 	]
 	_panel = choice_panel_scene.instantiate()
 	add_child(_panel)
@@ -134,25 +127,23 @@ func _on_entry_choice(id: String) -> void:
 		"study_together":
 			_clear_panel()
 			_safe_end_dialogue()
-			_start_json(JSON_STUDY_SWAY, "")
-
+			_start_json(JSON_STUDY_SWAY_ID, "")
 		"study_alone":
 			_clear_panel()
 			_safe_end_dialogue()
-			_start_json(JSON_ALONE_PUSH, "")
-
+			_start_json(JSON_ALONE_PUSH_ID, "")
 		"hangout":
 			_clear_panel()
 			_safe_end_dialogue()
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
-			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event" # ensure Hangout skips REP penalty
+			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
 			_safe_change_scene(HANGOUT_SCENE)
 
 func _show_study_sway_choices() -> void:
 	_clear_panel()
 	var options: Array = [
-		{ "text": "No, seriously. Let’s study.",    "id": "study_now" },
-		{ "text": "Alright, let’s hang out a bit.", "id": "hangout_now" }
+		{ "text": tr("No, seriously. Let’s study."),    "id": "study_now" },
+		{ "text": tr("Alright, let’s hang out a bit."), "id": "hangout_now" }
 	]
 	_panel = choice_panel_scene.instantiate()
 	add_child(_panel)
@@ -173,24 +164,20 @@ func _on_study_sway_choice(id: String) -> void:
 
 			_clear_panel()
 			_safe_end_dialogue()
-			# Use the GOTO JSON (contains action to jump to StudyWithMarko.tscn)
-			_start_json(JSON_GOTO_STUDY, "")
-
+			_start_json(JSON_GOTO_STUDY_ID, "")
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
-			# Integrity penalty only for second-choice hangout
 			GameState.adjust_integrity(-10)
-
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
-			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event" # ensure Hangout skips REP penalty
+			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
 			_safe_change_scene(HANGOUT_SCENE)
 
 func _show_alone_push_choices() -> void:
 	_clear_panel()
 	var options: Array = [
-		{ "text": "No. I’ll study on my own.", "id": "solo_study" },
-		{ "text": "Fine, we can hang out.",    "id": "hangout_now" }
+		{ "text": tr("No. I’ll study on my own."), "id": "solo_study" },
+		{ "text": tr("Fine, we can hang out."),    "id": "hangout_now" }
 	]
 	_panel = choice_panel_scene.instantiate()
 	add_child(_panel)
@@ -201,16 +188,13 @@ func _on_alone_push_choice(id: String) -> void:
 		"solo_study":
 			_clear_panel()
 			_safe_end_dialogue()
-			_start_json(JSON_SOLO_END, "_on_solo_end_finished")
-
+			_start_json(JSON_SOLO_END_ID, "_on_solo_end_finished")
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
-			# Integrity penalty only for second-choice hangout
 			GameState.adjust_integrity(-10)
-
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
-			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event" # ensure Hangout skips REP penalty
+			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
 			_safe_change_scene(HANGOUT_SCENE)
 
 # ---- JSON finish handlers ----
@@ -220,3 +204,10 @@ func _on_hangout_json_finished() -> void:
 
 func _on_solo_end_finished() -> void:
 	_safe_change_scene(FALLBACK_HOME)
+
+# ---- Golden data-path resolver ----
+func _dp(relative: String) -> String:
+	var rel := String(relative).strip_edges().trim_prefix("/")
+	if GameState.has_method("get_data_path"):
+		return String(GameState.get_data_path(rel))
+	return "res://Data/" + rel

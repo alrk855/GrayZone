@@ -11,7 +11,8 @@ const WRITE_PROJECT_PATH := "res://Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn"
 const MAILBOX_SCENE_PATH := "res://Scenes/Reusable/Tasks/Mailbox.tscn"
 const SOCIAL_SCENE_PATH := "res://Scenes/Reusable/Tasks/Social.tscn"
 
-const WAKEUP_JSON := "res://Data/Home/WakeUp_Reminder.json"
+# 🟡 RELATIVE ID under Data/ ; will be resolved via GameState.get_data_path(...)
+const WAKEUP_JSON_ID := "Home/WakeUp_Reminder.json"
 const OUTRO_SCENE_PATH := "res://Scenes/Reusable/Outro.tscn"
 
 const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
@@ -307,14 +308,15 @@ func _do_sleep(force: bool) -> void:
 	await fade.fade_in(3.6)
 	_block_ui(false)
 
-	# Locale-aware wake-up JSON
-	var wake_path := WAKEUP_JSON
-	if GameState.has_method("localized_json_path"):
-		wake_path = GameState.localized_json_path(WAKEUP_JSON)
+	# ✅ Locale-aware wake-up JSON via GameState.get_data_path(relative)
+	var wake_path: String = WAKEUP_JSON_ID
+	if GameState.has_method("get_data_path"):
+		wake_path = GameState.get_data_path(WAKEUP_JSON_ID)
 
 	if FileAccess.file_exists(wake_path):
 		var dm := get_node_or_null("/root/DialogueManager")
 		if dm and dm.has_method("start_dialogue"):
+			# pass the resolved absolute path
 			dm.start_dialogue(wake_path, self)
 
 func _is_project_available_now() -> bool:
