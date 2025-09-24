@@ -39,7 +39,7 @@ const K_TUTOR_LAST_DAY   := "__CITY_TUTOR_LAST_DAY"
 # ===== School gating =====
 const SCHOOL_OPEN  := 7 * 60 + 30
 const SCHOOL_CLOSE := 18 * 60 + 30
-const SCHOOL_CLOSED_JSON := "res://Data/School/School_Closed.json"
+const SCHOOL_CLOSED_JSON := "res://Data/city/School_Closed.json"
 
 # ===== MVR gating =====
 const MVR_OPEN              := 13 * 60

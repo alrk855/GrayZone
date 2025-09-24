@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Exit"
+msgstr "Излез"
+
+msgid "Start Game"
+msgstr "Започни ја играта"
