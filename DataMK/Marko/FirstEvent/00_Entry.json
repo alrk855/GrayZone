@@ -1,0 +1,16 @@
+{
+  "id": "Marko_FirstEvent_Entry",
+  "lines": [
+    {
+      "speaker": "Марко",
+      "text": "Еј. Навистина се појави."
+    },
+    {
+      "speaker": "Марко",
+      "text": "Па — учење, дружење, или да си правиш свое?"
+    },
+    {
+      "action": "marko_show_entry_choices"
+    }
+  ]
+}

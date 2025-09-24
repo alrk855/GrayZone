@@ -1,0 +1,13 @@
+{
+  "id": "Classroom_Catchup_RepeatSkip",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "You’ve now skipped {ndays} day(s) of class."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Get back on track in your own time. The consequences are yours."
+    }
+  ]
+}

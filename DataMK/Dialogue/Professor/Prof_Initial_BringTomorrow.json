@@ -1,0 +1,21 @@
+{
+  "id": "Prof_Initial_BringTomorrow",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "Tomorrow then. Don’t be late—and make sure it’s printed."
+    },
+    {
+      "action": "add_task",
+      "tasks": "project"
+    },
+    {
+      "action": "update_task_step",
+      "task": "project"
+    },
+    {
+      "action": "adjust_time",
+      "value": 15
+    }
+  ]
+}

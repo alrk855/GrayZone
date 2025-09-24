@@ -1,0 +1,23 @@
+{
+  "title": "Учиш {subject1}",
+  "giver": "Самиот",
+  "location": "Дома",
+  "steps": [
+    {
+      "id": "study_1",
+      "text": "Учиш {subject1} (1/4)"
+    },
+    {
+      "id": "study_2",
+      "text": "Учиш {subject1} (2/4)"
+    },
+    {
+      "id": "study_3",
+      "text": "Учиш {subject1} (3/4)"
+    },
+    {
+      "id": "study_4",
+      "text": "Учиш {subject1} (4/4)"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "Marko_Solo_Study_End",
+  "lines": [
+    {
+      "action": "adjust_time",
+      "value": 90
+    },
+    {
+      "action": "adjust_integrity",
+      "value": 5
+    },
+    {
+      "speaker": "Марко",
+      "text": "Добро тогаш, ќе се видиме."
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "marko_first_event_done"
+      ]
+    }
+  ]
+}

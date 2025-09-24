@@ -1,0 +1,17 @@
+{
+  "id": "DocReview_Admit_Rewrite",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "I figured. I appreciate your honesty."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "You still have time to rewrite this. Make it sound like you."
+    },
+    {
+      "speaker": "Наратор",
+      "text": "Your motivational-letter progress has been reset. You’ll need to rewrite it and print it again before returning."
+    }
+  ]
+}

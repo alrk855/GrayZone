@@ -1,0 +1,39 @@
+{
+  "id": "Classroom_D2_Noon_Event",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Hold on — just a moment everyone."
+    },
+    {
+      "speaker": "Наратор",
+      "text": "(He straightens a few papers.)"
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "If you’re serious about applying for a scholarship, start thinking about how to make your application stand out."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "There’s a volunteering program after school.If you help out three times this week, you will receive a recommendation letter from them."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "And one more thing — if you want me to look over your CV or motivation letter before handing them in, I’m available. Just don’t drop them on my desk the day before the deadline."
+    },
+    {
+      "action": "add_task",
+      "task": "volunteer_community_work"
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "yco_interaction_done"
+      ]
+    },
+    {
+      "action": "adjust_time",
+      "value": 10
+    }
+  ]
+}

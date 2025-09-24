@@ -6,8 +6,16 @@ const HOME_SCENE: String = "res://Scenes/Reusable/Map/Home.tscn"  # your canonic
 
 func _ready() -> void:
 	GameState.location = "SocialMedia"
-	var ui := DialogueManager.start_dialogue(JSON_PATH, self)
+	var ui := DialogueManager.start_dialogue(_jp(JSON_PATH), self)
 	if ui and ui.has_signal("dialogue_finished"):
 		await ui.dialogue_finished
 	# JSON has "post_time_cost_minutes": 120 so time is applied by DialogueManager -> GameState
 	await fade.fade_to_scene(HOME_SCENE)
+
+# ---- Locale-aware JSON resolver ----
+func _jp(p: String) -> String:
+	if GameState.has_method("localized_json_path"):
+		return String(GameState.localized_json_path(p))
+	if GameState.has_method("get_localized_json_path"):
+		return String(GameState.get_localized_json_path(p))
+	return p

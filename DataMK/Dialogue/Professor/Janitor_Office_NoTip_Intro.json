@@ -1,0 +1,16 @@
+{
+  "id": "Janitor_Office_NoTip_Intro",
+  "lines": [
+    {
+      "speaker": "Домар",
+      "text": "Well, well… you look like someone who needs help no one official wants to give."
+    },
+    {
+      "speaker": "Домар",
+      "text": "Got a project from last year. Real polished work. Yours for 500 денари."
+    },
+    {
+      "action": "show_janitor_office_options"
+    }
+  ]
+}

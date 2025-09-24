@@ -1,0 +1,17 @@
+{
+  "id": "Classroom_Skipped_Penalty",
+  "lines": [
+    {
+      "speaker": "Наратор",
+      "text": "You skipped class today. Teachers noticed. So did the students."
+    },
+    {
+      "speaker": "Наратор",
+      "text": "(You won’t get far on a scholarship like this.)"
+    },
+    {
+      "action": "adjust_reputation",
+      "value": -10
+    }
+  ]
+}

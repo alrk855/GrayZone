@@ -10,16 +10,17 @@ signal choices_requested(options: Array, max_select: int) # external UI can list
 # Optional: export an italic font for Narrator lines
 @export var narrator_italic_font: Font
 
-@export var portraits: Dictionary = {
-	"homeroom teacher": preload("res://Images/CharacterFrames/KlasenFrame.png"),
-	"principal":        preload("res://Images/CharacterFrames/direktorframe.png"),
-	"secretary":        preload("res://Images/CharacterFrames/secretaryframe.png"),
-	"janitor":          preload("res://Images/CharacterFrames/JanitorFrame.png"),
-	"professor":        preload("res://Images/CharacterFrames/Prof1Frame.png"),
-	"marko":            preload("res://Images/CharacterFrames/MarkoFrame.png"),
-	"clerk":            preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
-	"daniel":           preload("res://Images/CharacterFrames/DanielFrame.png") # replace with your real path
+var portraits: Dictionary = {
+	tr("homeroom teacher"): preload("res://Images/CharacterFrames/KlasenFrame.png"),
+	tr("principal"):        preload("res://Images/CharacterFrames/direktorframe.png"),
+	tr("secretary"):        preload("res://Images/CharacterFrames/secretaryframe.png"),
+	tr("janitor"):          preload("res://Images/CharacterFrames/JanitorFrame.png"),
+	tr("professor"):        preload("res://Images/CharacterFrames/Prof1Frame.png"),
+	tr("marko"):            preload("res://Images/CharacterFrames/MarkoFrame.png"),
+	tr("clerk"):            preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
+	tr("daniel"):           preload("res://Images/CharacterFrames/DanielFrame.png")
 }
+
 
 var dialogue_data: Array = []
 var line_index: int = 0
@@ -78,7 +79,7 @@ func display_next() -> void:
 
 		# Narrator = italics (empty speaker also treated as Narrator)
 		var sp_key := show_speaker.strip_edges().to_lower()
-		var narrator_line := (sp_key == "" or sp_key == "narrator")
+		var narrator_line := (sp_key == "" or sp_key == tr("narrator"))
 
 		await _type_text(show_text, narrator_line)
 		await get_tree().create_timer(0.5).timeout

@@ -1,0 +1,12 @@
+{
+  "id": "Marko_Study_Sway",
+  "lines": [
+    {
+      "speaker": "Марко",
+      "text": "Учење? Ајде бе, само малку пауза прво."
+    },
+    {
+      "action": "marko_show_study_sway_choices"
+    }
+  ]
+}

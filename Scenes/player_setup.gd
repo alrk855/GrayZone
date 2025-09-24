@@ -35,12 +35,11 @@ func _on_continue_pressed() -> void:
 
 	var player_name = name_input.text.strip_edges()
 	if player_name == "" or selected_gender == "":
-		print("Please enter your name and select a gender.")
+		print(tr("Please enter your name and select a gender."))
 		return
 	elif player_name.to_lower() == "ostaver":
 		get_tree().change_scene_to_file("res://Themes/28112005.tscn")
 		return
-
 
 	GameState.player_name = player_name
 	GameState.player_gender = selected_gender

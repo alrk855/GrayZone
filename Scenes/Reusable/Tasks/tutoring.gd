@@ -34,7 +34,7 @@ func _ready() -> void:
 	_apply_bg()
 
 	# 1) Intro
-	var ui := DialogueManager.start_dialogue(INTRO_JSON, self)
+	var ui := DialogueManager.start_dialogue(_jp(INTRO_JSON), self)
 	if ui and ui.has_signal("dialogue_finished"):
 		await ui.dialogue_finished
 
@@ -43,13 +43,13 @@ func _ready() -> void:
 
 	# 3) Narration + rewards
 	if pick == "3h":
-		var ui3 := DialogueManager.start_dialogue(JSON_3H, self)
+		var ui3 := DialogueManager.start_dialogue(_jp(JSON_3H), self)
 		if ui3 and ui3.has_signal("dialogue_finished"):
 			await ui3.dialogue_finished
 		GameState.add_money(MONEY_3H)
 		GameState.adjust_time(TIME_3H)
 	else:
-		var ui1 := DialogueManager.start_dialogue(JSON_1H, self)
+		var ui1 := DialogueManager.start_dialogue(_jp(JSON_1H), self)
 		if ui1 and ui1.has_signal("dialogue_finished"):
 			await ui1.dialogue_finished
 		GameState.add_money(MONEY_1H)
@@ -84,8 +84,8 @@ func _ask_choice() -> String:
 	var panel = ps.instantiate()
 	add_child(panel)
 	panel.call("show_options", [
-		{"id":"1h", "text":"1 hour (200 ден)"},
-		{"id":"3h", "text":"3 hours (600 ден)"}
+		{"id":"1h", "text": tr("1 hour") + " (%d %s)" % [MONEY_1H, tr("ден")]},
+		{"id":"3h", "text": tr("3 hours") + " (%d %s)" % [MONEY_3H, tr("ден")]}
 	], Callable(self, "_on_choice"))
 
 	var pick: String = await selection_made
@@ -103,3 +103,12 @@ func _mark_tutored_today() -> void:
 		var key := TUTORING_FLAG_PREFIX + str(day_index)
 		if not GameState.has_flag(key):
 			GameState.set_flag(key, true)
+
+# ---- Locale-aware JSON resolver (non-breaking) ----
+func _jp(p: String) -> String:
+	# If GameState exposes a locale path resolver, use it; else, fall back to given path.
+	if GameState.has_method("localized_json_path"):
+		return String(GameState.localized_json_path(p))
+	if GameState.has_method("get_localized_json_path"):
+		return String(GameState.get_localized_json_path(p))
+	return p

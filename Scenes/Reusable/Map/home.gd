@@ -1,4 +1,4 @@
-extends Control
+extends Control 
 
 @export var home_button: Button
 const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
@@ -12,9 +12,8 @@ const MAILBOX_SCENE_PATH := "res://Scenes/Reusable/Tasks/Mailbox.tscn"
 const SOCIAL_SCENE_PATH := "res://Scenes/Reusable/Tasks/Social.tscn"
 
 const WAKEUP_JSON := "res://Data/Home/WakeUp_Reminder.json"
-const OUTRO_SCENE_PATH := "res://Scenes/Reusable/Outro.tscn" # <- adjust if your path differs
+const OUTRO_SCENE_PATH := "res://Scenes/Reusable/Outro.tscn"
 
-# Normal sleep availability outside midnight window
 const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
 
 var _panel: Control = null
@@ -44,7 +43,6 @@ func _ready() -> void:
 func _on_home_btn_pressed() -> void:
 	show_home_menu()
 
-# ---- Midnight window helper (00:00–01:00 inclusive of 01:00) ----
 func _is_midnight_window() -> bool:
 	return GameState.time <= 60
 
@@ -53,20 +51,18 @@ func show_home_menu() -> void:
 	var opts: Array = []
 	var in_midnight: bool = _is_midnight_window()
 
-	opts.append({"id":"activities","text":"Activities"})
+	opts.append({"id":"activities","text": tr("Activities")})
 
-	# Hide / block City during midnight window
 	if not in_midnight:
-		opts.append({"id":"city","text":"City"})
+		opts.append({"id":"city","text": tr("City")})
 
-	# During midnight window, Sleep should only appear under Activities.
 	if not in_midnight:
 		if GameState.time >= SLEEP_AVAILABLE_MIN and not GameState.is_time_frozen():
-			opts.append({"id":"sleep","text":"Sleep"})
+			opts.append({"id":"sleep","text": tr("Sleep")})
 		else:
-			opts.append({"id":"sleep_locked","text":"Sleep (Locked)"})
+			opts.append({"id":"sleep_locked","text": tr("Sleep (Locked)")})
 
-	opts.append({"id":"back","text":"Back"})
+	opts.append({"id":"back","text": tr("Back")})
 	_show_choices(opts, Callable(self,"_on_home_choice"))
 
 func _on_home_choice(id: String) -> void:
@@ -76,7 +72,7 @@ func _on_home_choice(id: String) -> void:
 		"city":
 			await _change_scene(CITY_SCENE_PATH)
 		"sleep":
-			await _do_sleep(false) # normal gating when not midnight window
+			await _do_sleep(false)
 		"sleep_locked":
 			show_home_menu()
 		"back":
@@ -87,17 +83,16 @@ func _show_activities_menu() -> void:
 	var in_midnight: bool = _is_midnight_window()
 
 	if in_midnight:
-		# Between 00:00–01:00 (incl. 01:00 after warp): ONLY Sleep here
-		opts.append({"id":"sleep_force","text":"Sleep"})
-		opts.append({"id":"back","text":"Back"})
+		opts.append({"id":"sleep_force","text": tr("Sleep")})
+		opts.append({"id":"back","text": tr("Back")})
 		_show_choices(opts, Callable(self,"_on_activities_choice"))
 		return
 
-	opts.append({"id":"study","text":"Study"})
-	opts.append({"id":"schoolwork","text":"Schoolwork"})
-	opts.append({"id":"mailbox","text":"Check Mailbox"})
-	opts.append({"id":"social","text":"Social Media"})
-	opts.append({"id":"back","text":"Back"})
+	opts.append({"id":"study","text": tr("Study")})
+	opts.append({"id":"schoolwork","text": tr("Schoolwork")})
+	opts.append({"id":"mailbox","text": tr("Check Mailbox")})
+	opts.append({"id":"social","text": tr("Social Media")})
+	opts.append({"id":"back","text": tr("Back")})
 	_show_choices(opts, Callable(self,"_on_activities_choice"))
 
 func _on_activities_choice(id: String) -> void:
@@ -119,16 +114,15 @@ func _on_activities_choice(id: String) -> void:
 func _show_study_menu() -> void:
 	var s1: String = GameState.subject1
 	if s1.strip_edges() == "":
-		s1 = "Subject 1"
+		s1 = tr("Subject 1")
 	var s2: String = GameState.subject2
 	if s2.strip_edges() == "":
-		s2 = "Subject 2"
+		s2 = tr("Subject 2")
 
-	# Top-level: no counts, just the two subjects
 	var opts: Array = []
-	opts.append({"id":"s1","text":"Study " + s1})
-	opts.append({"id":"s2","text":"Study " + s2})
-	opts.append({"id":"back","text":"Back"})
+	opts.append({"id":"s1","text": tr("Study") + " " + s1})
+	opts.append({"id":"s2","text": tr("Study") + " " + s2})
+	opts.append({"id":"back","text": tr("Back")})
 	_show_choices(opts, Callable(self,"_on_study_choice"))
 
 func _on_study_choice(id: String) -> void:
@@ -149,20 +143,20 @@ func _show_subject_sessions_menu(which_subject: String) -> void:
 
 	var subj_label: String = subject_raw
 	if subj_label.strip_edges() == "":
-		subj_label = "Subject 2" if which_subject == "subject2" else "Subject 1"
+		subj_label = tr("Subject 2") if which_subject == "subject2" else tr("Subject 1")
 
 	var opts: Array = []
 	var days_to_show: Array = _get_available_days_for_subject(subject_raw)
 	for d in days_to_show:
 		var studied: bool = _is_day_studied(subject_raw, d)
-		var label: String = "%s Notes #%d" % [subj_label, d]
+		var label: String = "%s %s" % [subj_label, tr("Notes #%d") % d]
 		if studied:
-			label += " (Done)"
+			label += " (" + tr("Done") + ")"
 			opts.append({"id": "sess_" + str(d), "text": label, "dim": true})
 		else:
 			opts.append({"id": "sess_" + str(d), "text": label})
 
-	opts.append({"id":"back","text":"Back"})
+	opts.append({"id":"back","text": tr("Back")})
 	_show_choices(opts, Callable(self,"_on_subject_session_choice").bind(which_subject, subject_raw))
 
 func _on_subject_session_choice(id: String, which_subject: String, subject_raw: String) -> void:
@@ -217,13 +211,11 @@ func _get_available_days_for_subject(subject_raw: String) -> Array[int]:
 	if today_index < 1:
 		today_index = 1
 
-	# Past days: only include ones actually studied (missed days remain hidden)
 	for d in range(1, today_index):
 		var k: String = subj_key + "|" + str(d)
 		if GameState.study_guard.has(k):
 			out.append(d)
 
-	# Always include today’s slot
 	out.append(today_index)
 	return out
 
@@ -231,19 +223,18 @@ func _get_available_days_for_subject(subject_raw: String) -> Array[int]:
 func _show_schoolwork_menu() -> void:
 	var opts: Array = []
 	if _is_midnight_window():
-		opts.append({"id":"back","text":"Back"})
+		opts.append({"id":"back","text": tr("Back")})
 		_show_choices(opts, Callable(self,"_on_schoolwork_choice"))
 		return
 
-	# Gate CV / Motivation to “not done/printed”
 	if _can_write_cv():
-		opts.append({"id":"cv","text":"Write CV"})
+		opts.append({"id":"cv","text": tr("Write CV")})
 	if _can_write_mletter():
-		opts.append({"id":"motivation","text":"Write Motivation Letter"})
+		opts.append({"id":"motivation","text": tr("Write Motivation Letter")})
 	if _is_project_available_now():
-		opts.append({"id":"project","text":"Write Project"})
+		opts.append({"id":"project","text": tr("Write Project")})
 
-	opts.append({"id":"back","text":"Back"})
+	opts.append({"id":"back","text": tr("Back")})
 	_show_choices(opts, Callable(self,"_on_schoolwork_choice"))
 
 func _on_schoolwork_choice(id: String) -> void:
@@ -273,9 +264,7 @@ func _clear_panel() -> void:
 		_panel.queue_free()
 	_panel = null
 
-# Centralized scene change via fade singleton
 func _change_scene(path: String) -> void:
-	# Block city & others during midnight window
 	if _is_midnight_window():
 		return
 	_clear_panel()
@@ -303,29 +292,30 @@ func _do_sleep(force: bool) -> void:
 
 	_block_ui(true)
 
-	# Fade out, perform sleep (which may tick day), then decide where to go.
 	await fade.fade_out(3.35)
 	GameState.sleep_now()
 
-	# If we crossed into Day 5 (or beyond), skip any wake-up JSON and jump to Outro.
 	if GameState.day >= 5:
 		if ResourceLoader.exists(OUTRO_SCENE_PATH):
-			await fade.fade_to_scene(OUTRO_SCENE_PATH, 0.0, 3.6) # already black; just fade in at outro
+			await fade.fade_to_scene(OUTRO_SCENE_PATH, 0.0, 3.6)
 		else:
 			push_warning("Outro scene not found at: " + OUTRO_SCENE_PATH)
 			await fade.fade_in(3.6)
 		_block_ui(false)
 		return
 
-	# Normal wake-up for Days 1–4
 	await fade.fade_in(3.6)
 	_block_ui(false)
 
-	# Optional wake-up nudge (non-blocking)
-	if FileAccess.file_exists(WAKEUP_JSON):
+	# Locale-aware wake-up JSON
+	var wake_path := WAKEUP_JSON
+	if GameState.has_method("localized_json_path"):
+		wake_path = GameState.localized_json_path(WAKEUP_JSON)
+
+	if FileAccess.file_exists(wake_path):
 		var dm := get_node_or_null("/root/DialogueManager")
 		if dm and dm.has_method("start_dialogue"):
-			dm.start_dialogue(WAKEUP_JSON, self)
+			dm.start_dialogue(wake_path, self)
 
 func _is_project_available_now() -> bool:
 	if GameState.has_flag("project_submitted"): return false
@@ -339,7 +329,7 @@ func _can_write_cv() -> bool:
 		return false
 	if GameState.has_flag("printed_cv"):
 		return false
-	return GameState.get_task_progress("cv") < 2  # 2 = finished (your print unlock step)
+	return GameState.get_task_progress("cv") < 2
 
 func _can_write_mletter() -> bool:
 	if not GameState.has_flag("secretary_met"):

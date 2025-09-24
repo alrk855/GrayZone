@@ -4,7 +4,7 @@ extends Control
 const HOME_SCENE_PATH := "res://Scenes/Reusable/Map/Home.tscn"
 const CV_TASK_ID := "cv"
 
-# Required sections (case-insensitive). Add more if you want to enforce them.
+# Required sections (case-insensitive). Logic stays in English.
 const REQUIRED_TAGS := [
 	"education:",
 	"skills:",
@@ -12,11 +12,7 @@ const REQUIRED_TAGS := [
 	"experience"
 ]
 
-var tekst_za_pisuvanje : String = "Name: Aco
-Date of Birth: 28/11/2005
-Education: High School
-Skills: Typing, Teamwork, Basic Research
-Experience: None yet - willing to learn"
+var tekst_za_pisuvanje: String = ""
 
 @onready var animIntro : AnimationPlayer = $SceneAnimation
 @onready var edit : TextEdit = $TextEdit
@@ -25,27 +21,37 @@ Experience: None yet - willing to learn"
 @onready var write : Button = $WriteButton
 @onready var _edit_base_modulate: Color = Color(1, 1, 1, 1)
 
-# --- NEW: Back button export ---
 @export var back_button_path: NodePath
 
 func _ready() -> void:
-	# Cache the base modulate so we can restore after error flash
 	_edit_base_modulate = edit.modulate
-
-	# Animation
 	animIntro.play("CV_anim")
 
-	# Default player name safeguard
+	# Default player name safeguard (logic only)
 	if GameState.player_name == "":
 		GameState.player_name = "Aco"
 
-	# Template text
-	tekst_za_pisuvanje = "Name: " + GameState.player_name + "\nDate of Birth: 28/11/2005 \nEducation: High School \nSkills: Typing, Teamwork, Basic Research \nExperience: None yet - willing to learn"
+	# Localized template for the *output text only*
+	tekst_za_pisuvanje = _make_localized_template()
 
-	GameState.location = "Unknown" # Location Unknown
+	GameState.location = "Unknown"
 
-	# --- NEW: wire Back button if provided ---
 	_wire_back_button()
+
+func _make_localized_template() -> String:
+	# Only the visible strings are localized; the logic keys remain English.
+	# Add these keys to your .translation files:
+	# "Name:", "Date of Birth:", "Education:", "High School",
+	# "Skills:", "Typing, Teamwork, Basic Research",
+	# "Experience:", "None yet - willing to learn"
+	var lines := [
+		tr("Name:") + " " + GameState.player_name,
+		tr("Date of Birth:") + " 28/11/2005",
+		tr("Education:") + " " + tr("High School"),
+		tr("Skills:") + " " + tr("Typing, Teamwork, Basic Research"),
+		tr("Experience:") + " " + tr("None yet - willing to learn")
+	]
+	return String("\n").join(lines)
 
 func _wire_back_button() -> void:
 	if back_button_path == NodePath():
@@ -60,10 +66,10 @@ func _on_back_pressed() -> void:
 	await _go_home()
 
 func _on_button_pressed() -> void: # Peek
-	create_tween().tween_property(edit, "position", Vector2(2100, 278), 1) # edit
-	create_tween().tween_property(box, "position", Vector2(517, 255), 1)   # CV text
-	create_tween().tween_property(peek, "position", Vector2(1602, -120), 1)# peek
-	create_tween().tween_property(write, "position", Vector2(0.0, 0), 1)   # write
+	create_tween().tween_property(edit, "position", Vector2(2100, 278), 1)
+	create_tween().tween_property(box, "position", Vector2(517, 255), 1)
+	create_tween().tween_property(peek, "position", Vector2(1602, -120), 1)
+	create_tween().tween_property(write, "position", Vector2(0.0, 0), 1)
 
 func _on_scene_animation_animation_finished(anim_name: StringName) -> void:
 	create_tween().tween_property(edit, "position", Vector2(580.5, 278.5), 1)
@@ -72,14 +78,14 @@ func _on_scene_animation_animation_finished(anim_name: StringName) -> void:
 func _on_write_button_pressed() -> void:
 	create_tween().tween_property(write, "position", Vector2(0.0, -120), 1)
 	create_tween().tween_property(peek, "position", Vector2(1602, 0), 1)
-	create_tween().tween_property(edit, "position", Vector2(580.5, 278.5), 1) # edit
-	create_tween().tween_property(box, "position", Vector2(-1000, 255), 1)   # CV text
+	create_tween().tween_property(edit, "position", Vector2(580.5, 278.5), 1)
+	create_tween().tween_property(box, "position", Vector2(-1000, 255), 1)
 
 func _on_finish_button_pressed() -> void:
-	# Trim trailing whitespace safely (original code crashed on empty string)
+	# Trim trailing whitespace safely
 	edit.text = _trim_trailing_ws(edit.text)
 
-	# Accept if exact template OR if it contains the required section tags (case-insensitive)
+	# Accept if exact (localized) template OR if it contains required English tags
 	if edit.text == tekst_za_pisuvanje or _contains_required_tags(edit.text):
 		_finish_success()
 	else:
@@ -104,23 +110,17 @@ func _trim_trailing_ws(s: String) -> String:
 	return s
 
 func _finish_success() -> void:
-	# 1) Advance CV task so printing unlocks (requires >= 2)
 	_ensure_cv_progress_at_least(2)
-
-	# 2) Go home (Fade singleton if available, else direct change)
 	await _go_home()
 
 func _ensure_cv_progress_at_least(step: int) -> void:
-	# Make sure the task exists
 	if GameState.has_method("ensure_task"):
 		GameState.ensure_task(CV_TASK_ID)
 
-	# Prefer helper if your GameState has it
 	if GameState.has_method("ensure_task_progress_at_least"):
 		GameState.ensure_task_progress_at_least(CV_TASK_ID, step)
 		return
 
-	# Fallback: increment until we reach the desired step
 	var p := 0
 	if GameState.has_method("get_task_progress"):
 		p = GameState.get_task_progress(CV_TASK_ID)
@@ -129,7 +129,6 @@ func _ensure_cv_progress_at_least(step: int) -> void:
 		p += 1
 
 func _get_fader() -> Node:
-	# Try common autoload names/paths
 	var paths := ["/root/Fade", "/root/fade", "/root/FADE"]
 	for p in paths:
 		if has_node(p):
@@ -144,13 +143,11 @@ func _go_home() -> void:
 		get_tree().change_scene_to_file(HOME_SCENE_PATH)
 
 func _flash_edit_error() -> void:
-	# Brief red flash, then restore
 	var tw := create_tween()
 	tw.tween_property(edit, "modulate", Color(1, 0.25, 0.25, 1), 0.12)
 	tw.tween_interval(0.20)
 	tw.tween_property(edit, "modulate", _edit_base_modulate, 0.22)
 	await tw.finished
 
-# Keep your original finish hook if something else calls it
 func finish_game():
 	_finish_success()

@@ -6,8 +6,8 @@ extends Control
 @export var choice_panel_scene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 @export var city_scene_path = "res://Scenes/Reusable/Map/City.tscn"
 
-# ---------- JSON paths ----------
-const D = "res://Data/MVR/files/"
+# ---------- JSON paths (RELATIVE; DM will resolve per locale) ----------
+const D = "MVR/files/"
 const J_OPEN_ARRIVAL     = D + "MVR_Open_Arrival.json"
 const J_REQUEST_CLERK    = D + "MVR_Request_Clerk.json"
 const J_PAY_STANDARD     = D + "MVR_Payment_Standard.json"
@@ -59,7 +59,6 @@ var _dialogue_playing = false
 var _fade_layer_canvas
 var _fade_layer
 
-# Kick control: only kick after UI (dialogue/panel) is done
 var _pending_after_hours_kick := false
 
 # ---------- Day gates ----------
@@ -109,15 +108,12 @@ func _ready() -> void:
 	await _fade_out_only(0.6)
 
 func _process(_dt) -> void:
-	# If we are past closing, prepare to kick.
 	if GameState.time >= _effective_after_hours_limit():
-		# If any UI is active, defer; otherwise, kick immediately.
 		if _dialogue_playing or _panel != null:
 			_pending_after_hours_kick = true
 		else:
 			_go_city()
 	else:
-		# If we're back under the limit (e.g., scene time manipulation), clear pending.
 		_pending_after_hours_kick = false
 
 # ========================= Fade =========================
@@ -170,15 +166,12 @@ func _play_and_wait(path: String) -> void:
 		await Signal(ui, "dialogue_finished")
 	_dialogue_playing = false
 	_set_talk_enabled(true)
-	# Do NOT kick here; let _process() handle it on the next frame
-	# so any post-dialogue flow (e.g., pickups) can finish neatly.
 
 # ========================= Panel helpers =========================
 func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
-	# Do NOT kick here; _process() will kick on the next frame if needed.
 
 func _show_menu(opts, cb: Callable) -> void:
 	_clear_panel()
@@ -190,9 +183,9 @@ func _show_menu(opts, cb: Callable) -> void:
 func _on_talk() -> void:
 	_clear_panel()
 
-	# Bribery expired check (came back after ready day without pickup)
+	# Bribery expired check
 	if _method() == METHOD_BRIBERY and GameState.day > _ready_day() and not GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
-		if ResourceLoader.exists(J_BRIBERY_EXPIRED):
+		if ResourceLoader.exists(GameState.get_data_path(J_BRIBERY_EXPIRED)):
 			await _play_and_wait(J_BRIBERY_EXPIRED)
 		GameState.set_flag(K_BRIBE_PERMA_LOCK, true)
 		_set_method(METHOD_NONE)
@@ -200,7 +193,7 @@ func _on_talk() -> void:
 		_show_method_menu()
 		return
 
-	# If there's an active method, handle followups/pickup
+	# Active method?
 	if _method() != METHOD_NONE:
 		await _handle_followups_or_pickup()
 		return
@@ -214,8 +207,8 @@ func _on_talk() -> void:
 # ========================= Greeting =========================
 func _show_greeting_menu() -> void:
 	var opts = []
-	opts.append({"id":"ask","text":"I need a birth certificate."})
-	opts.append({"id":"bye","text":"Never mind."})
+	opts.append({"id":"ask","text": tr("I need a birth certificate.")})
+	opts.append({"id":"bye","text": tr("Never mind.")})
 	_show_menu(opts, Callable(self, "_on_greeting_choice"))
 
 func _on_greeting_choice(id: String) -> void:
@@ -231,12 +224,12 @@ func _on_greeting_choice(id: String) -> void:
 func _show_method_menu() -> void:
 	var opts = []
 	if _can_standard_today():
-		opts.append({"id":"standard","text":"Standard (150 ден) – Ready in 3 days"})
+		opts.append({"id":"standard","text": tr("Standard (%s ден) – Ready in 3 days") % str(COST_STANDARD)})
 	if _can_expedite_today():
-		opts.append({"id":"expedited","text":"Expedited (500 ден) – Ready tomorrow"})
+		opts.append({"id":"expedited","text": tr("Expedited (%s ден) – Ready tomorrow") % str(COST_EXPEDITED)})
 	if GameState.integrity < INTEGRITY_BRIBE_GATE and not GameState.has_flag(K_BRIBE_PERMA_LOCK):
-		opts.append({"id":"bribe","text":"Same-day (1,000 ден) – After 17:00"})
-	opts.append({"id":"think","text":"Let me think on it."})
+		opts.append({"id":"bribe","text": tr("Same-day (%s ден) – After 17:00") % str(COST_BRIBE)})
+	opts.append({"id":"think","text": tr("Let me think on it.")})
 	_show_menu(opts, Callable(self, "_on_method_choice"))
 
 func _on_method_choice(id: String) -> void:
@@ -312,7 +305,7 @@ func _handle_followups_or_pickup() -> void:
 				await _play_and_wait(J_FOLLOW_BRIBERY)
 				_show_bribe_wait_menu()
 		else:
-			if ResourceLoader.exists(J_BRIBERY_EXPIRED):
+			if ResourceLoader.exists(GameState.get_data_path(J_BRIBERY_EXPIRED)):
 				await _play_and_wait(J_BRIBERY_EXPIRED)
 			GameState.set_flag(K_BRIBE_PERMA_LOCK, true)
 			_set_method(METHOD_NONE)
@@ -338,20 +331,19 @@ func _handle_followups_or_pickup() -> void:
 func _show_bribe_wait_menu() -> void:
 	var opts = []
 	if GameState.time < T_BRIBE_PICK:
-		opts.append({"id":"wait","text":"Wait here until 17:00"})
-	opts.append({"id":"later","text":"I’ll come back later"})
+		opts.append({"id":"wait","text": tr("Wait here until 17:00")})
+	opts.append({"id":"later","text": tr("I’ll come back later")})
 	_show_menu(opts, Callable(self, "_on_bribe_wait_choice"))
 
 func _on_bribe_wait_choice(id: String) -> void:
 	_clear_panel()
 	if id == "wait":
-		# Jump time to 17:00 and flow straight into the pickup without extra clicks
 		await _fade_in_out(0.35)
 		var delta = T_BRIBE_PICK - GameState.time
 		if delta > 0:
 			GameState.adjust_time(delta)
-		await _play_and_wait(J_BRIBE_WAIT)     # “time passes” dialogue
-		await _do_pickup_bribery()              # immediately proceed to pickup
+		await _play_and_wait(J_BRIBE_WAIT)
+		await _do_pickup_bribery()
 		return
 	if id == "later":
 		await _play_and_wait(J_BRIBE_COME_LATER)
@@ -364,7 +356,7 @@ func _advance_birth_task_by_one() -> void:
 
 func _do_pickup_legal() -> void:
 	GameState.set_flag(GameFlags.HAVE_BIRTH_CERTIFICATE, true)
-	_advance_birth_task_by_one()               # +1 on pickup (legal)
+	_advance_birth_task_by_one()
 	await _play_and_wait(J_PICKUP_LEGAL)
 	await _fade_in_out(0.20)
 	_set_method(METHOD_NONE)
@@ -374,7 +366,7 @@ func _do_pickup_legal() -> void:
 func _do_pickup_bribery() -> void:
 	GameState.adjust_integrity(INTEGRITY_BRIBE_PICKUP)
 	GameState.set_flag(GameFlags.HAVE_BIRTH_CERTIFICATE, true)
-	_advance_birth_task_by_one()               # +1 on pickup (bribery)
+	_advance_birth_task_by_one()
 	await _play_and_wait(J_PICKUP_BRIBERY)
 	await _fade_in_out(0.20)
 	GameState.set_flag(K_BRIBE_PERMA_LOCK, true)

@@ -15,34 +15,34 @@ extends Control
 @export var bg_janitor_cleaning: Texture2D
 @export var bg_janitor_papers: Texture2D
 
-# ------------------------ JSON paths ------------------------
-const J_EMPTY_CLASSROOM              := "res://Data/Classroom/Classroom_Afternoon_Empty.json"
+# ------------------------ JSON paths (relative; locale-resolved) ------------------------
+const J_EMPTY_CLASSROOM              := "Classroom/Classroom_Afternoon_Empty.json"
 
-const J_D2_MORNING_ON_TIME           := "res://Data/Classroom/Classroom_Morning_OnTime.json"
-const J_D2_MORNING_LATE              := "res://Data/Classroom/Classroom_Morning_Late.json"
-const J_D2_NOON_ANNOUNCEMENT         := "res://Data/Classroom/Classroom_D2_Noon_Event.json"
+const J_D2_MORNING_ON_TIME           := "Classroom/Classroom_Morning_OnTime.json"
+const J_D2_MORNING_LATE              := "Classroom/Classroom_Morning_Late.json"
+const J_D2_NOON_ANNOUNCEMENT         := "Classroom/Classroom_D2_Noon_Event.json"
 
-const J_CATCHUP_FIRST_SKIP           := "res://Data/Classroom/Classroom_Catchup_FirstSkip.json"
-const J_CATCHUP_REPEAT_SKIP          := "res://Data/Classroom/Classroom_Catchup_RepeatSkip.json"
+const J_CATCHUP_FIRST_SKIP           := "Classroom/Classroom_Catchup_FirstSkip.json"
+const J_CATCHUP_REPEAT_SKIP          := "Classroom/Classroom_Catchup_RepeatSkip.json"
 
-const J_TEACHER_TRANSCRIPT_TOO_EARLY := "res://Data/Classroom/Transcript_TooEarly.json"
-const J_DOC_REVIEW_BANNED            := "res://Data/Classroom/DocReview_Banned.json"
-const J_DOC_NEED_BOTH                := "res://Data/Classroom/DocReview_NeedBoth.json"
-const J_DOC_NEED_PRINT               := "res://Data/Classroom/DocReview_NeedPrint.json"
-const J_DOC_START_CV                 := "res://Data/Classroom/DocReview_StartCV.json"
-const J_DOC_SUSPICION_PROMPT         := "res://Data/Classroom/DocReview_Suspicion_Prompt.json"
-const J_DOC_LIE_CAUGHT               := "res://Data/Classroom/DocReview_Lie_Caught.json"
-const J_DOC_LIE_PASSED               := "res://Data/Classroom/DocReview_Lie_Passed.json"
-const J_DOC_ADMIT_REWRITE            := "res://Data/Classroom/DocReview_Admit_Rewrite.json"
-const J_DOC_RESUBMIT_ACCEPTED        := "res://Data/Classroom/DocReview_Resubmit_Accepted.json"
+const J_TEACHER_TRANSCRIPT_TOO_EARLY := "Classroom/Transcript_TooEarly.json"
+const J_DOC_REVIEW_BANNED            := "Classroom/DocReview_Banned.json"
+const J_DOC_NEED_BOTH                := "Classroom/DocReview_NeedBoth.json"
+const J_DOC_NEED_PRINT               := "Classroom/DocReview_NeedPrint.json"
+const J_DOC_START_CV                 := "Classroom/DocReview_StartCV.json"
+const J_DOC_SUSPICION_PROMPT         := "Classroom/DocReview_Suspicion_Prompt.json"
+const J_DOC_LIE_CAUGHT               := "Classroom/DocReview_Lie_Caught.json"
+const J_DOC_LIE_PASSED               := "Classroom/DocReview_Lie_Passed.json"
+const J_DOC_ADMIT_REWRITE            := "Classroom/DocReview_Admit_Rewrite.json"
+const J_DOC_RESUBMIT_ACCEPTED        := "Classroom/DocReview_Resubmit_Accepted.json"
 
 # --- Janitor (Classroom) ---
-const J_JANITOR_TIPPED_INTRO         := "res://Data/Janitor/Classroom/Janitor_Tipped_Intro.json"
-const J_JANITOR_LOWREP_INTRO         := "res://Data/Janitor/Classroom/Janitor_LowRep_Intro.json"
-const J_JANITOR_NODEAL_INTRO         := "res://Data/Janitor/Classroom/Janitor_NoDeal.json"
-const J_JANITOR_NO_MONEY             := "res://Data/Janitor/Classroom/Janitor_NotEnough.json"
-const J_JANITOR_CONFIRM              := "res://Data/Janitor/Classroom/Janitor_Confirm.json"
-const J_JANITOR_D4_FALLBACK          := "res://Data/Janitor/Classroom/Janitor_D4_Fallback.json"
+const J_JANITOR_TIPPED_INTRO         := "Janitor/Classroom/Janitor_Tipped_Intro.json"
+const J_JANITOR_LOWREP_INTRO         := "Janitor/Classroom/Janitor_LowRep_Intro.json"
+const J_JANITOR_NODEAL_INTRO         := "Janitor/Classroom/Janitor_NoDeal.json"
+const J_JANITOR_NO_MONEY             := "Janitor/Classroom/Janitor_NotEnough.json"
+const J_JANITOR_CONFIRM              := "Janitor/Classroom/Janitor_Confirm.json"
+const J_JANITOR_D4_FALLBACK          := "Janitor/Classroom/Janitor_D4_Fallback.json"
 
 # ------------------------ Time Gates ------------------------
 const T_07_00 := 7 * 60
@@ -66,9 +66,7 @@ var _janitor_papers_mode: bool = false
 var _next_cb: String = ""
 var _doc_suspicious_this_review: bool = false
 
-# Track which subject was just purchased (not strictly needed, kept for clarity)
 var _last_bought_flag: String = ""
-# Guard for sale menu during one interaction chain
 var _sale_menu_shown: bool = false
 
 # ------------------------ Flags (string keys) ------------------------
@@ -95,8 +93,8 @@ const F_MLETTER_AI                := "motivation_ai_generated"
 const F_MLETTER_REWRITE_REQ       := "motivation_rewrite_required"
 
 # Canonical names from GameFlags (dev/testing helpers)
-const F_TEACHER_REVIEW_DONE       := GameFlags.TEACHER_REVIEW_DONE   # "teacher_review_done"
-const F_DOC_FORCE_CATCH           := GameFlags.DOC_FORCE_CATCH       # manual override for testing
+const F_TEACHER_REVIEW_DONE       := GameFlags.TEACHER_REVIEW_DONE
+const F_DOC_FORCE_CATCH           := GameFlags.DOC_FORCE_CATCH
 
 # Tasks / navigation
 const TASK_TRANSCRIPT             := "transcript"
@@ -127,7 +125,6 @@ func _ready() -> void:
 	_update_presence_and_background()
 	_handle_entry_flow()
 
-	# Keep UI + tasks in sync as the clock ticks
 	if not GameState.time_changed.is_connected(Callable(self, "_on_time_changed")):
 		GameState.time_changed.connect(_on_time_changed)
 
@@ -207,7 +204,7 @@ func _handle_entry_flow() -> void:
 	var d := GameState.day
 	var t := GameState.time
 
-	# Retro-skip marking for yesterday (handles "never opened classroom yesterday")
+	# Retro-skip marking for yesterday
 	if d >= 3 and d <= 4:
 		var prev := d - 1
 		if prev >= 2:
@@ -250,7 +247,7 @@ func _handle_entry_flow() -> void:
 					_start_and_chain(J_D2_MORNING_LATE, "_after_morning_dialogue")
 					return
 
-	# After 12:30, if you didn't attend today, mark today's skip (one-time)
+	# After 12:30, if you didn't attend today, mark today's skip
 	if d >= 2 and d <= 4 and t >= T_12_30:
 		var attended_today2 := F_ATTENDED_PREFIX + str(d)
 		var skip_today := F_SKIP_PENALIZED_PREFIX + str(d)
@@ -262,7 +259,7 @@ func _handle_entry_flow() -> void:
 			var mc2 := GameState.get_int(F_MISSED_CNT, 0)
 			GameState.set_int(F_MISSED_CNT, mc2 + 1)
 
-	# Catch-up branch (07:00–16:00 effective window), show once per day
+	# Catch-up branch (13:00–16:00), show once per day
 	if d >= 2 and d <= 4:
 		var shown_key := F_CATCHUP_SHOWN_PREFIX + str(d)
 		if not GameState.has_flag(shown_key):
@@ -280,7 +277,7 @@ func _handle_entry_flow() -> void:
 					_start_and_chain(J_CATCHUP_REPEAT_SKIP, "_after_catchup")
 					return
 
-	# Day 2 noon announcement (only if Day 2 was attended)
+	# Day 2 noon announcement
 	if GameState.day == 2 and not GameState.has_flag(F_NOON_DAY2_DONE):
 		var attended_d2 := GameState.has_flag(F_ATTENDED_PREFIX + "2")
 		if attended_d2 and t >= T_12_30 and t < T_13_00:
@@ -353,14 +350,13 @@ func _on_teacher_pressed() -> void:
 	var review_done := GameState.has_flag(F_TEACHER_REVIEW_DONE)
 	var rewrite_required := GameState.has_flag(F_MLETTER_REWRITE_REQ)
 
-	# Show review only if unlocked AND (not done OR rewrite is pending)
 	if review_unlocked and (not review_done or rewrite_required):
-		opts.append({"id":"doc_review","text":"Ask for document review"})
+		opts.append({"id":"doc_review","text": tr("Ask for document review")})
 	elif not review_unlocked:
-		opts.append({"id":"doc_locked","text":"Ask for document review (Locked)"})
+		opts.append({"id":"doc_locked","text": tr("Ask for document review (Locked)")})
 
-	opts.append({"id":"transcript","text":"Ask about transcript"})
-	opts.append({"id":"back","text":"Back"})
+	opts.append({"id":"transcript","text": tr("Ask about transcript")})
+	opts.append({"id":"back","text": tr("Back")})
 	_spawn_options_panel(opts, Callable(self, "_on_teacher_choice"))
 
 func _on_teacher_choice(id: String) -> void:
@@ -379,14 +375,12 @@ func _on_teacher_choice(id: String) -> void:
 		_clear_panel(); return
 
 func _try_doc_review() -> void:
-	# Already done and no rewrite pending → nothing to review
 	if GameState.has_flag(F_TEACHER_REVIEW_DONE) and not GameState.has_flag(F_MLETTER_REWRITE_REQ):
 		return
 
 	if GameState.has_flag(F_DOC_REVIEW_BANNED):
 		_start_and_chain(J_DOC_REVIEW_BANNED, ""); return
 
-	# Must have both tasks started at least
 	var has_both := false
 	if GameState.has_flag("secretary_met"):
 		var cvp := GameState.get_task_progress("cv")
@@ -396,11 +390,9 @@ func _try_doc_review() -> void:
 	if not has_both:
 		_start_and_chain(J_DOC_NEED_BOTH, ""); return
 
-	# Must have both printed unless rewrite is required and motivation was reprinted
 	var printed_cv := GameState.has_flag(F_PRINTED_CV)
 	var printed_ml := GameState.has_flag(F_PRINTED_MOTIVATION)
 
-	# If resubmitting (rewrite required) and reprinted motivation → accept immediately
 	if GameState.has_flag(F_MLETTER_REWRITE_REQ) and printed_ml:
 		_start_and_chain(J_DOC_RESUBMIT_ACCEPTED, "_after_resubmit_accept")
 		return
@@ -408,27 +400,23 @@ func _try_doc_review() -> void:
 	if not printed_cv or not printed_ml:
 		_start_and_chain(J_DOC_NEED_PRINT, ""); return
 
-	# Normal review → start with CV, then suspicion logic
 	_start_and_chain(J_DOC_START_CV, "_after_cv_review")
 
 func _after_cv_review() -> void:
-	# Suspicion ONLY if letter was AI-written
 	var is_ai := GameState.has_flag(F_MLETTER_AI)
 	if not is_ai:
-		# Clean pass → mark review completed
 		GameState.set_flag(F_TEACHER_REVIEW_DONE, true)
 		_start_and_chain(J_DOC_LIE_PASSED, "")
 		return
 
-	# AI-written → ask: lie or admit
 	_start_and_chain(J_DOC_SUSPICION_PROMPT, "_show_doc_suspicion_choices")
 
 func _show_doc_suspicion_choices() -> void:
 	_clear_panel()
 	_spawn_options_panel(
 		[
-			{"id":"lie","text":"(Lie) Yes, I wrote it myself."},
-			{"id":"admit","text":"(Admit) I used help online."}
+			{"id":"lie","text": tr("(Lie) Yes, I wrote it myself.")},
+			{"id":"admit","text": tr("(Admit) I used help online.")}
 		],
 		Callable(self, "_on_doc_suspicion_choice")
 	)
@@ -437,7 +425,6 @@ func _on_doc_suspicion_choice(id: String) -> void:
 	_clear_panel()
 	if id == "admit":
 		GameState.adjust_integrity(+3)
-		# Use the helper to reset motivation for rewrite (step=1, clear print, set rewrite flag)
 		_reset_mletter_for_rewrite()
 		_start_and_chain(J_DOC_ADMIT_REWRITE, "")
 		return
@@ -457,18 +444,15 @@ func _on_doc_suspicion_choice(id: String) -> void:
 			_start_and_chain(J_DOC_LIE_CAUGHT, "")
 			return
 		else:
-			# Got away with it → review completed
 			GameState.set_flag(F_TEACHER_REVIEW_DONE, true)
 			_start_and_chain(J_DOC_LIE_PASSED, "")
 			return
 
 func _after_resubmit_accept() -> void:
-	# Clear rewrite requirement and mark review as done
 	if GameState.has_flag(F_MLETTER_REWRITE_REQ):
 		GameState.clear_flag(F_MLETTER_REWRITE_REQ)
 	GameState.set_flag(F_TEACHER_REVIEW_DONE, true)
 
-# ---- Helper: reset motivation for rewrite (same spirit as your project reset) ----
 func _reset_mletter_for_rewrite() -> void:
 	GameState.ensure_task("motivation")
 	GameState.task_step_index["motivation"] = 1
@@ -482,20 +466,17 @@ func _on_janitor_pressed() -> void:
 	var d := GameState.day
 	var t := GameState.time
 
-	# Only open in the selling window
 	if not ((d == 3 or d == 4) and t >= T_17_00 and t < T_17_45):
 		return
 
-	# Day-4 fallback has priority if player was short on Day 3 and stock remains
 	if d == 4 and GameState.has_flag(F_JANITOR_NOMONEY_D3) and _has_any_answers_left_to_sell():
 		_janitor_papers_mode = true
 		_update_presence_and_background()
-		GameState.clear_flag(F_JANITOR_NOMONEY_D3)  # consume fallback
+		GameState.clear_flag(F_JANITOR_NOMONEY_D3)
 		_sale_menu_shown = false
 		_start_and_chain(J_JANITOR_D4_FALLBACK, "_show_janitor_sale_menu")
 		return
 
-	# Normal intro priority: Tip > (Project or Rep<35) > NoDeal
 	var has_tip := GameState.has_flag(F_MARKO_TIP)
 	var has_project := GameState.has_flag("bought_project")
 	var rep_low := GameState.reputation < 35
@@ -528,14 +509,14 @@ func _show_janitor_sale_menu() -> void:
 	var choices: Array = []
 
 	if s1.strip_edges() != "" and not GameState.has_flag(F_ANS_SUBJ1):
-		choices.append({"id":"buy_s1","text":"Buy answers for " + s1.capitalize()})
+		choices.append({"id":"buy_s1","text": tr("Buy answers for ") + s1.capitalize()})
 	if s2.strip_edges() != "" and not GameState.has_flag(F_ANS_SUBJ2):
-		choices.append({"id":"buy_s2","text":"Buy answers for " + s2.capitalize()})
+		choices.append({"id":"buy_s2","text": tr("Buy answers for ") + s2.capitalize()})
 
 	if choices.is_empty():
 		return
 
-	choices.append({"id":"pass","text":"I’ll pass"})
+	choices.append({"id":"pass","text": tr("I’ll pass")})
 	_spawn_options_panel(choices, Callable(self, "_on_janitor_choice"))
 
 func _on_janitor_choice(id: String) -> void:
@@ -570,15 +551,12 @@ func _on_janitor_choice(id: String) -> void:
 	if GameState.has_flag(F_JANITOR_NOMONEY_D3):
 		GameState.clear_flag(F_JANITOR_NOMONEY_D3)
 
-	# Confirm JSON — AFTER that, update tasks & time, then possibly show menu again
 	_start_and_chain(J_JANITOR_CONFIRM, "_after_janitor_confirm")
 	_update_presence_and_background()
 
 func _after_janitor_confirm() -> void:
-	# 1) Credit “checks” if we’re in the window
 	_maybe_mark_classroom_answers_check()
 
-	# 2) Task progress derived from flags (1=checks, 2=buy_s1, 3=buy_s2)
 	GameState.ensure_task(TASK_CLASSROOM_ANS)
 	var base := 0
 	if GameState.has_flag(K_CLASSROOM_CHECK_DONE):
@@ -601,7 +579,6 @@ func _after_janitor_confirm() -> void:
 			while GameState.get_task_progress(TASK_CLASSROOM_ANS) < target:
 				GameState.update_task_step(TASK_CLASSROOM_ANS)
 
-	# 3) If both bought now, end the window at 17:45; otherwise allow buying the second
 	var both_bought := GameState.has_flag(F_ANS_SUBJ1) and GameState.has_flag(F_ANS_SUBJ2)
 	if both_bought:
 		if GameState.time < T_17_45:
@@ -611,7 +588,6 @@ func _after_janitor_confirm() -> void:
 		_update_presence_and_background()
 		return
 
-	# Show sale menu again (if within window and another subject remains)
 	var d := GameState.day
 	var t := GameState.time
 	var any_left := _has_any_answers_left_to_sell()
@@ -676,7 +652,7 @@ func _start_and_chain(json_path: String, next_method: String) -> void:
 	if DialogueManager.is_connected("dialogue_finished", Callable(self, "_on_dm_finished")):
 		DialogueManager.disconnect("dialogue_finished", Callable(self, "_on_dm_finished"))
 	DialogueManager.connect("dialogue_finished", Callable(self, "_on_dm_finished"), Object.CONNECT_ONE_SHOT)
-	DialogueManager.start_dialogue(json_path, self)
+	DialogueManager.start_dialogue(json_path, self)  # relative path; DM resolves per locale
 
 func _on_dm_finished(_id: String) -> void:
 	var cb := _next_cb
@@ -691,7 +667,7 @@ func _maybe_mark_classroom_answers_check() -> void:
 	var t := GameState.time
 	if (d == 3 or d == 4) and t >= T_17_00 and t < T_17_45:
 		GameState.ensure_task(TASK_CLASSROOM_ANS)
-		GameState.update_task_step(TASK_CLASSROOM_ANS)  # -> checks
+		GameState.update_task_step(TASK_CLASSROOM_ANS)
 		GameState.set_flag(K_CLASSROOM_CHECK_DONE, true)
 
 func _should_first_catchup() -> bool:

@@ -1,0 +1,16 @@
+{
+  "id": "Prof_Office_Initial",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "If this is about your grades — they’re not finalized yet."
+    },
+    {
+      "speaker": "Professor",
+      "text": "If you’re here about the Finals Project, it’s mandatory. No project, no pass."
+    },
+    {
+      "action": "show_prof_intro_choices"
+    }
+  ]
+}

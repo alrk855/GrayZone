@@ -1,0 +1,27 @@
+{
+  "id": "Marko_Study_Goto_Scene",
+  "lines": [
+    {
+      "speaker": "Марко",
+      "text": "Добро, добро. Ајде да се фатиме за книги тогаш. Не си забава — ама можеби така се завршуваат работите."
+    },
+    {
+      "action": "adjust_reputation",
+      "value": 5
+    },
+    {
+      "action": "adjust_integrity",
+      "value": 5
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "marko_first_event_done"
+      ]
+    },
+    {
+      "action": "goto",
+      "scene": "res://Scenes/Reusable/Events/StudyWithMarko.tscn"
+    }
+  ]
+}

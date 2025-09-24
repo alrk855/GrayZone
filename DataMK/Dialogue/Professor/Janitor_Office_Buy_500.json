@@ -1,0 +1,17 @@
+{
+  "id": "Janitor_Office_Buy_500",
+  "lines": [
+    {
+      "speaker": "Домар",
+      "text": "Deal."
+    },
+    {
+      "action": "adjust_time",
+      "value": 15
+    },
+    {
+      "speaker": "Домар",
+      "text": "Try the classroom later this week… if you’re the type who studies answer sheets instead of books."
+    }
+  ]
+}

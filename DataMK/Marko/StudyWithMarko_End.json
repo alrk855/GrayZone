@@ -1,0 +1,19 @@
+{
+  "id": "Marko_Study_End",
+  "lines": [
+    {
+      "speaker": "Марко",
+      "text": "Добро тогаш, ќе се видиме."
+    },
+    {
+      "action": "adjust_reputation",
+      "value": 5
+    },
+    {
+      "action": "set_flags",
+      "flags": [
+        "marko_first_event_done"
+      ]
+    }
+  ]
+}

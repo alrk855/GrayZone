@@ -127,7 +127,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/normal_font = ExtResource("2_yhxw7")
 theme_override_font_sizes/normal_font_size = 44
-text = "  Click to start"
+text = "Click to start"
 script = ExtResource("5_t1dhk")
 
 [node name="Swoosh" type="AudioStreamPlayer2D" parent="Click_to_Start_Control/Click_To_Start_Picture"]

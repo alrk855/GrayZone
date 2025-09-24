@@ -1,0 +1,21 @@
+{
+  "id": "Classroom_Catchup_FirstSkip",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "You missed class. That’s {ndays} skipped day so far."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "If you want to catch up, start with the basics: volunteer, prepare your CV, and show up."
+    },
+    {
+      "speaker": "Наратор",
+      "text": "(He watches you carefully.)"
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "This is a warning. Don’t make a habit of it."
+    }
+  ]
+}

@@ -23,8 +23,8 @@ extends Control
 var _current_bg: Texture2D = null
 var _janitor_deal_active: bool = false
 
-# ---------- JSON paths ----------
-const D_PROF: String = "res://Data/Dialogue/Professor/"
+# ---------- JSON paths (RELATIVE; resolved by GameState.get_data_path) ----------
+const D_PROF: String = "Dialogue/Professor/"
 
 const JSON_PROF_INITIAL: String      = D_PROF + "Prof_Office_Initial.json"
 const JSON_PROF_NOT_HERE: String     = D_PROF + "Prof_NotHere.json"
@@ -169,7 +169,7 @@ func _in(now: int, start_incl: int, end_excl: int) -> bool:
 	return now >= start_incl and now < end_excl
 
 func _maybe_show_not_here_on_enter() -> void:
-	# Show "not here" window outside 13:00–15:00 (tweak the day window as you like)
+	# Show "not here" window outside 13:00–15:00
 	if GameState.day >= 1 and GameState.day <= 5 and _in(GameState.time, T_15_00, T_17_00):
 		DialogueManager.start_dialogue(JSON_PROF_NOT_HERE, self)
 
@@ -191,17 +191,18 @@ func _on_professor_pressed() -> void:
 	var accepted: bool = GameState.has_flag("project_accepted")
 
 	if d == 1 and not accepted:
-		options.append({ "text": "Talk to Professor", "id": "talk_initial" })
+		options.append({ "text": tr("Talk to Professor"), "id": "talk_initial" })
 	else:
 		if _project_ready_for_submit():
-			options.append({ "text": "Submit Final Project", "id": "submit" })
-		options.append({ "text": "Talk", "id": "talk_followup" })
+			options.append({ "text": tr("Submit Final Project"), "id": "submit" })
+		options.append({ "text": tr("Talk"), "id": "talk_followup" })
 
-	options.append({ "text": "Back", "id": "back" })
+	options.append({ "text": tr("Back"), "id": "back" })
 
 	_panel = choice_panel_scene.instantiate()
 	add_child(_panel)
 	_panel.call("show_options", options, Callable(self, "_on_prof_menu_choice"))
+
 
 func _on_prof_menu_choice(id: String) -> void:
 	match id:
@@ -267,14 +268,12 @@ func _handle_project_submission() -> void:
 
 	# --- Plagiarized & caught ---
 	if is_bought and caught_plag:
-		# Always show plagiarized JSON first
 		await _start_and_wait(JSON_GRADE_F_PLAG)
 		GameState.set_flag("project_plagiarized", true)
 		GameState.adjust_integrity(-10)
 		print("[Integrity] Plagiarism detected at submission. -10 integrity.")
 
 		if _second_chance_available():
-			# Make sure the next JSON reliably starts
 			DialogueManager.end_active_dialogue()
 			await get_tree().process_frame
 			await _start_and_wait(JSON_FAIL_SECOND_CHANCE)
@@ -397,9 +396,9 @@ func on_dialogue_action(line: Dictionary) -> void:
 func _show_prof_intro_options() -> void:
 	_clear_panel()
 	var options: Array[Dictionary] = [
-		{ "text": "When do I need to bring it?", "id": "prof_ask_deadline" },
-		{ "text": "I'll bring it tomorrow.",     "id": "prof_bring_tomorrow" },
-		{ "text": "Never mind.",                 "id": "prof_nevermind" }
+		{ "text": tr("When do I need to bring it?"), "id": "prof_ask_deadline" },
+		{ "text": tr("I'll bring it tomorrow."),     "id": "prof_bring_tomorrow" },
+		{ "text": tr("Never mind."),                 "id": "prof_nevermind" }
 	]
 	_panel = choice_panel_scene.instantiate()
 	add_child(_panel)
@@ -432,7 +431,7 @@ func _on_janitor_pressed() -> void:
 
 	# Already bought? Only show the short “done” JSON.
 	if GameState.has_flag("bought_project"):
-		if FileAccess.file_exists(JSON_JANITOR_DONE):
+		if FileAccess.file_exists(GameState.get_data_path(JSON_JANITOR_DONE)):
 			DialogueManager.start_dialogue(JSON_JANITOR_DONE, self)
 		else:
 			DialogueManager.end_active_dialogue()
@@ -444,7 +443,7 @@ func _on_janitor_pressed() -> void:
 	# Prioritize Marko's tip over REP gating
 	if has_tip:
 		DialogueManager.start_dialogue(JSON_JANITOR_TIPPED_INTRO, self)
-	elif rep >= 30 and FileAccess.file_exists(JSON_JANITOR_HIGHREP):
+	elif rep >= 30 and FileAccess.file_exists(GameState.get_data_path(JSON_JANITOR_HIGHREP)):
 		DialogueManager.start_dialogue(JSON_JANITOR_HIGHREP, self)
 	else:
 		DialogueManager.start_dialogue(JSON_JANITOR_NOTIP_INTRO, self)
@@ -453,7 +452,7 @@ func _show_janitor_office_options() -> void:
 	# Guard options after purchase
 	if GameState.has_flag("bought_project"):
 		DialogueManager.end_active_dialogue()
-		if FileAccess.file_exists(JSON_JANITOR_DONE):
+		if FileAccess.file_exists(GameState.get_data_path(JSON_JANITOR_DONE)):
 			DialogueManager.start_dialogue(JSON_JANITOR_DONE, self)
 		return
 	if _janitor_panel_shown:
@@ -462,13 +461,13 @@ func _show_janitor_office_options() -> void:
 
 	var options: Array[Dictionary] = []
 	if GameState.has_flag("marko_tip"):
-		options.append({ "text": "Deal (300 денари)", "id": "janitor_buy_300" })
+		options.append({ "text": tr("Deal (300 денари)"), "id": "janitor_buy_300" })
 	else:
-		options.append({ "text": "Buy it (500 денари)", "id": "janitor_buy_500" })
+		options.append({ "text": tr("Buy it (500 денари)"), "id": "janitor_buy_500" })
 
-	options.append({ "text": "That’s still shady.",     "id": "janitor_pass" })
-	options.append({ "text": "Anything else for sale?", "id": "janitor_anything_else" })
-	options.append({ "text": "Back",                    "id": "back" })
+	options.append({ "text": tr("That’s still shady."),     "id": "janitor_pass" })
+	options.append({ "text": tr("Anything else for sale?"), "id": "janitor_anything_else" })
+	options.append({ "text": tr("Back"),                    "id": "back" })
 
 	_clear_panel()
 	_panel = choice_panel_scene.instantiate()
@@ -522,7 +521,6 @@ func _handle_janitor_purchase(tipped: bool) -> void:
 	if not GameState.tasks.has("Visit the Classroom"):
 		GameState.add_task("Visit the Classroom")
 
-	# Choose dialogue; do NOT advance time yet — wait for JSON to finish
 	var dlg_path: String = JSON_JANITOR_DEAL_500
 	if tipped:
 		dlg_path = JSON_JANITOR_DEAL_300
@@ -538,9 +536,6 @@ func _handle_janitor_purchase(tipped: bool) -> void:
 # Time bump AFTER the purchase JSON finishes
 func _on_janitor_purchase_dialogue_finished() -> void:
 	GameState.adjust_time(15)
-	# Optional: hide janitor button afterwards
-	# var btn := get_node_or_null("%JanitorButton")
-	# if btn: btn.visible = false; btn.disabled = true
 
 # ===============================================================
 #                             BACK

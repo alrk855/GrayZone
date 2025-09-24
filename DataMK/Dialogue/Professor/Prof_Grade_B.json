@@ -1,0 +1,17 @@
+{
+  "id": "Prof_Grade_B",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "(He finishes, then shrugs.)"
+    },
+    {
+      "speaker": "Professor",
+      "text": "Not bad. A few rough edges… but it’s solid enough."
+    },
+    {
+      "speaker": "Professor",
+      "text": "B."
+    }
+  ]
+}

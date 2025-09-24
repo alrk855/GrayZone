@@ -1,0 +1,25 @@
+{
+  "id": "DocReview_Banned",
+  "lines": [
+    {
+      "speaker": "Наставник",
+      "text": "We need to talk about your submission."
+    },
+    {
+      "speaker": "Наставник",
+      "text": "Your motivation letter raised serious integrity concerns."
+    },
+    {
+      "speaker": "Наставник",
+      "text": "Because of that, I won't be reviewing any further documents from you."
+    },
+    {
+      "speaker": "Наставник",
+      "text": "You may still submit your paperwork to the secretary, but there will be no more feedback from me."
+    },
+    {
+      "speaker": "Наставник",
+      "text": "Take responsibility and do better."
+    }
+  ]
+}

@@ -81,9 +81,11 @@ func _ensure_task_and_finish(task_id: String) -> void:
 			GameState.ensure_task_progress_at_least(task_id, 1)
 
 func _get_task_final_step_index(task_id: String) -> int:
-	var path := "res://Data/Tasks/%s.json" % task_id
+	# Use localized Tasks path
+	var path := GameState.get_data_path("Tasks/%s.json" % task_id)
 	if not FileAccess.file_exists(path):
-		var alt := "res://Data/Tasks/%s.json" % task_id.to_lower()
+		# Try lowercase file name as a fallback
+		var alt := GameState.get_data_path("Tasks/%s.json" % task_id.to_lower())
 		if FileAccess.file_exists(alt):
 			path = alt
 		else:
@@ -100,18 +102,18 @@ func _get_task_final_step_index(task_id: String) -> int:
 
 func _set_bg(arrived: bool) -> void:
 	if _bg:
-		if arrived:
-			_bg.texture = texture_full
-		else:
-			_bg.texture = texture_empty
+		_bg.texture = texture_full if arrived else texture_empty
 
 func _play_dialogue_and_return(json_path: String, claim_after: bool) -> void:
+	# Localize the path transparently (keeps your constants untouched)
+	var localized := _locale_path(json_path)
+
 	# Start dialogue and prefer waiting on the UI instance (not the singleton).
 	var ui: Node = null
-	if FileAccess.file_exists(json_path):
-		ui = DialogueManager.start_dialogue(json_path, self)
+	if FileAccess.file_exists(localized):
+		ui = DialogueManager.start_dialogue(localized, self)
 	else:
-		push_error("[Mailbox] Missing dialogue JSON: " + json_path)
+		push_error("[Mailbox] Missing dialogue JSON: " + localized)
 
 	var waited := false
 
@@ -126,7 +128,7 @@ func _play_dialogue_and_return(json_path: String, claim_after: bool) -> void:
 
 	# Fallback: pause-proof timer (in case the UI uses different signals)
 	if not waited:
-		var sec := _estimate_dialogue_duration(json_path)
+		var sec := _estimate_dialogue_duration(localized)
 		var t := get_tree().create_timer(max(0.3, sec), false, true, true) # (time, physics=false, ignore_time_scale=true, process_always=true)
 		await t.timeout
 
@@ -163,3 +165,12 @@ func _go_home() -> void:
 		get_tree().change_scene_to_file(home_scene_path)
 	else:
 		push_warning("[Mailbox] Invalid home_scene_path: " + home_scene_path)
+
+# ---------- Locale helper (keeps your constants; swaps folder at call time) ----------
+func _locale_path(abs_path: String) -> String:
+	# If it starts with res://Data/, convert to relative and ask GameState for the localized path.
+	const PREFIX := "res://Data/"
+	if abs_path.begins_with(PREFIX):
+		var relative := abs_path.substr(PREFIX.length())   # e.g. "Home/Mail_LangCert_Arrived.json"
+		return GameState.get_data_path(relative)
+	return abs_path

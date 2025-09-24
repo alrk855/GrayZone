@@ -11,9 +11,9 @@ extends Control
 const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
 
 # JSONs (dialogue-only)
-const JSON_INTRO_STUDY := "res://Data/Marko/SecondEvent/MarkoSecond_Intro_Study.json"
-const JSON_INTRO_PARTY := "res://Data/Marko/SecondEvent/MarkoSecond_Intro_Party.json"
-const JSON_PARTY_NIGHT := "res://Data/Marko/SecondEvent/MarkoSecond_Party_Night.json"
+const JSON_INTRO_STUDY := "Marko/SecondEvent/MarkoSecond_Intro_Study.json"
+const JSON_INTRO_PARTY := "Marko/SecondEvent/MarkoSecond_Intro_Party.json"
+const JSON_PARTY_NIGHT := "Marko/SecondEvent/MarkoSecond_Party_Night.json"
 
 # ---------- Internals ----------
 var _bg_node: Node = null
@@ -22,7 +22,7 @@ var _ui: Control = null
 var _came_from_study_intro: bool = false
 
 func _ready() -> void:
-	GameState.location = "MarkoSecondEvent"
+	GameState.location = "Unknown"
 
 	_bg_node = null
 	if bg_rect_path != NodePath():
@@ -43,8 +43,8 @@ func _ready() -> void:
 func _show_choices_study_intro() -> void:
 	_clear_panel()
 	var opts: Array = [
-		{ "id": "study_with_marko", "text": "Yeah, let’s study." },
-		{ "id": "party",            "text": "Nah, I’m done for tonight — let’s party!" }
+		{ "id": "study_with_marko", "text": tr("Yeah, let’s study.") },
+		{ "id": "party",            "text": tr("Nah, I’m done for tonight — let’s party!") }
 	]
 	_panel = preload(CCB_SCENE_PATH).instantiate()
 	add_child(_panel)
@@ -53,8 +53,8 @@ func _show_choices_study_intro() -> void:
 func _show_choices_party_intro() -> void:
 	_clear_panel()
 	var opts: Array = [
-		{ "id": "party",       "text": "Let’s go." },
-		{ "id": "solo_study",  "text": "I need to study." }
+		{ "id": "party",       "text": tr("Let’s go.") },
+		{ "id": "solo_study",  "text": tr("I need to study.") }
 	]
 	_panel = preload(CCB_SCENE_PATH).instantiate()
 	add_child(_panel)
@@ -127,9 +127,10 @@ func _apply_party_bg_by_gender() -> void:
 		_bg_node.call("set_texture", tex)
 
 func _play_json(path: String) -> void:
-	if path == "" or not FileAccess.file_exists(path):
+	var p := _jp(path)
+	if p == "" or not FileAccess.file_exists(p):
 		return
-	_ui = DialogueManager.start_dialogue(path, self)
+	_ui = DialogueManager.start_dialogue(p, self)
 	if _ui and _ui.has_signal("dialogue_finished"):
 		await _ui.dialogue_finished
 	await get_tree().process_frame
@@ -149,3 +150,11 @@ func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
+
+# -------- Locale path resolver (JSON) --------
+func _jp(p: String) -> String:
+	if GameState.has_method("localized_json_path"):
+		return String(GameState.localized_json_path(p))
+	if GameState.has_method("get_localized_json_path"):
+		return String(GameState.get_localized_json_path(p))
+	return p

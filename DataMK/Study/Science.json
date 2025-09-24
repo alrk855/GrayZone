@@ -1,0 +1,230 @@
+{
+  "subject": "science",
+  "pool": [
+    {
+      "id": "SCI_01",
+      "q": "What gas do plants mainly take in during photosynthesis?",
+      "correct": "Carbon dioxide",
+      "wrong": [
+        "Oxygen",
+        "Hydrogen"
+      ]
+    },
+    {
+      "id": "SCI_02",
+      "q": "Which organ pumps blood around the human body?",
+      "correct": "Heart",
+      "wrong": [
+        "Lungs",
+        "Liver"
+      ]
+    },
+    {
+      "id": "SCI_03",
+      "q": "Water boils at what temperature at sea level?",
+      "correct": "100°C",
+      "wrong": [
+        "50°C",
+        "80°C"
+      ]
+    },
+    {
+      "id": "SCI_04",
+      "q": "What force pulls objects toward Earth?",
+      "correct": "Gravity",
+      "wrong": [
+        "Magnetism",
+        "Friction"
+      ]
+    },
+    {
+      "id": "SCI_05",
+      "q": "How many states of matter are commonly taught in school?",
+      "correct": "Three",
+      "wrong": [
+        "Five",
+        "Six"
+      ]
+    },
+    {
+      "id": "SCI_06",
+      "q": "Which planet is known as the Red Planet?",
+      "correct": "Mars",
+      "wrong": [
+        "Venus",
+        "Jupiter"
+      ]
+    },
+    {
+      "id": "SCI_07",
+      "q": "What part of the cell contains DNA?",
+      "correct": "Nucleus",
+      "wrong": [
+        "Cell wall",
+        "Cytoplasm"
+      ]
+    },
+    {
+      "id": "SCI_08",
+      "q": "What do we call baby frogs?",
+      "correct": "Tadpoles",
+      "wrong": [
+        "Puppies",
+        "Chicks"
+      ]
+    },
+    {
+      "id": "SCI_09",
+      "q": "What vitamin do we mainly get from sunlight?",
+      "correct": "Vitamin D",
+      "wrong": [
+        "Vitamin C",
+        "Vitamin B12"
+      ]
+    },
+    {
+      "id": "SCI_10",
+      "q": "Which gas makes up most of the Earth’s atmosphere?",
+      "correct": "Nitrogen",
+      "wrong": [
+        "Oxygen",
+        "Carbon dioxide"
+      ]
+    },
+    {
+      "id": "SCI_11",
+      "q": "What do bees collect from flowers to make honey?",
+      "correct": "Nectar",
+      "wrong": [
+        "Seeds",
+        "Roots"
+      ]
+    },
+    {
+      "id": "SCI_12",
+      "q": "Which blood cells fight infection?",
+      "correct": "White blood cells",
+      "wrong": [
+        "Red blood cells",
+        "Platelets"
+      ]
+    },
+    {
+      "id": "SCI_13",
+      "q": "What instrument is used to measure temperature?",
+      "correct": "Thermometer",
+      "wrong": [
+        "Barometer",
+        "Speedometer"
+      ]
+    },
+    {
+      "id": "SCI_14",
+      "q": "What is the center of our solar system?",
+      "correct": "The Sun",
+      "wrong": [
+        "The Moon",
+        "Polaris"
+      ]
+    },
+    {
+      "id": "SCI_15",
+      "q": "Which human sense is associated with the nose?",
+      "correct": "Smell",
+      "wrong": [
+        "Taste",
+        "Hearing"
+      ]
+    },
+    {
+      "id": "SCI_16",
+      "q": "What gas do most living things need to breathe?",
+      "correct": "Oxygen",
+      "wrong": [
+        "Helium",
+        "Carbon monoxide"
+      ]
+    },
+    {
+      "id": "SCI_17",
+      "q": "What do we call the change from liquid to gas?",
+      "correct": "Evaporation",
+      "wrong": [
+        "Condensation",
+        "Freezing"
+      ]
+    },
+    {
+      "id": "SCI_18",
+      "q": "Which metal is liquid at room temperature?",
+      "correct": "Mercury",
+      "wrong": [
+        "Iron",
+        "Aluminum"
+      ]
+    },
+    {
+      "id": "SCI_19",
+      "q": "What kind of animal is a salmon?",
+      "correct": "Fish",
+      "wrong": [
+        "Amphibian",
+        "Reptile"
+      ]
+    },
+    {
+      "id": "SCI_20",
+      "q": "What part of the plant absorbs water from the soil?",
+      "correct": "Roots",
+      "wrong": [
+        "Stem",
+        "Flower"
+      ]
+    },
+    {
+      "id": "SCI_21",
+      "q": "What is the largest organ of the human body?",
+      "correct": "Skin",
+      "wrong": [
+        "Liver",
+        "Brain"
+      ]
+    },
+    {
+      "id": "SCI_22",
+      "q": "What do we call the path Earth takes around the Sun?",
+      "correct": "Orbit",
+      "wrong": [
+        "Axis",
+        "Eclipse"
+      ]
+    },
+    {
+      "id": "SCI_23",
+      "q": "What is the process of a caterpillar becoming a butterfly?",
+      "correct": "Metamorphosis",
+      "wrong": [
+        "Hibernation",
+        "Photosynthesis"
+      ]
+    },
+    {
+      "id": "SCI_24",
+      "q": "Which tool is used to see very tiny objects like cells?",
+      "correct": "Microscope",
+      "wrong": [
+        "Telescope",
+        "Periscope"
+      ]
+    },
+    {
+      "id": "SCI_25",
+      "q": "What is H2O commonly known as?",
+      "correct": "Water",
+      "wrong": [
+        "Salt",
+        "Sugar"
+      ]
+    }
+  ]
+}

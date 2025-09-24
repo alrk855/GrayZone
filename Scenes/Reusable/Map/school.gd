@@ -22,10 +22,10 @@ const CLASS_LOCK_END_SKIPPED  := 13 * 60       # 13:00 (if skipped)
 # Campus hard close
 const CAMPUS_CLOSE := 19 * 60              # 19:00
 
-# “Locked” dialogue for class in session
-const CLASS_LOCKED_JSON := "res://Data/School/Classroom_Door_Locked.json"
-const JSON_PROF_CLOSED := "res://Data/School/Professor_Office_Closed.json"
-const JSON_SEC_CLOSED  := "res://Data/School/Secretary_Office_Closed.json"
+# “Locked” dialogue for class in session  (relative; resolved per locale)
+const CLASS_LOCKED_JSON := "School/Classroom_Door_Locked.json"
+const JSON_PROF_CLOSED := "School/Professor_Office_Closed.json"
+const JSON_SEC_CLOSED  := "School/Secretary_Office_Closed.json"
 
 @onready var popup_label: Label = $PopUp
 @onready var show_menu_button: Button = $background/ShowMenuButton
@@ -39,10 +39,10 @@ func _ready() -> void:
 	if GameState.subject2.strip_edges() == "":
 		GameState.subject2 = "geography"
 	if GameState.player_name == "":
-		GameState.player_name == "TEST"
+		GameState.player_name = "TEST"  # (fix: assignment, not comparison)
 	_show_control_hints_once()
 	GameUi.visible = true
-	GameState.location = "School"
+	GameState.location = "School"   # logic string — do not translate
 	popup_label.visible = false
 
 	if not show_menu_button.pressed.is_connected(Callable(self, "_show_menu")):
@@ -56,11 +56,11 @@ func _ready() -> void:
 func _show_menu() -> void:
 	_clear_panel()
 	var options = [
-		{ "text": "Classroom",        "id": "classroom" },
-		{ "text": "Professor Office", "id": "prof_office" },
-		{ "text": "Secretary Office", "id": "sec_office" },
-		{ "text": "City",             "id": "city" },
-		{ "text": "Back",             "id": "back" }
+		{ "text": tr("Classroom"),         "id": "classroom" },
+		{ "text": tr("Professor Office"),  "id": "prof_office" },
+		{ "text": tr("Secretary Office"),  "id": "sec_office" },
+		{ "text": tr("City"),              "id": "city" },
+		{ "text": tr("Back"),              "id": "back" }
 	]
 	_panel = preload(CCB_SCENE_PATH).instantiate()
 	add_child(_panel)
@@ -76,7 +76,7 @@ func _on_choice(id: String) -> void:
 			await _try_enter_generic(SECRETARY_OFFICE_SCENE, SECRETARY_OPEN, SECRETARY_CLOSE, "SecretaryOffice")
 		"city":
 			_clear_panel()
-			GameState.location = "CITY"
+			GameState.location = "CITY"  # logic string — do not translate
 			await _fade_and_change_scene(CITY_SCENE)
 		"back":
 			_clear_panel()
@@ -93,30 +93,31 @@ func _try_enter_generic(scene_path: String, open_time: int, close_time: int, loc
 	# Inside hours → enter
 	if now >= open_time and now < close_time:
 		_clear_panel()
-		GameState.location = loc_name
+		GameState.location = loc_name  # logic string — do not translate
 		await _fade_and_change_scene(scene_path)
 		return
 
 	# Outside hours → play the location-specific 'closed' JSON
 	_clear_panel()
-	var json_path := ""
+	var json_rel := ""
 	match loc_name:
 		"ProfessorOffice":
-			json_path = JSON_PROF_CLOSED
+			json_rel = JSON_PROF_CLOSED
 		"SecretaryOffice":
-			json_path = JSON_SEC_CLOSED
+			json_rel = JSON_SEC_CLOSED
 		_:
-			json_path = ""
+			json_rel = ""
 
-	if json_path != "" and FileAccess.file_exists(json_path):
-		var ui := DialogueManager.start_dialogue(json_path, self)
-		if ui and ui.has_signal("dialogue_finished"):
-			await ui.dialogue_finished
-	else:
-		# Silent fallback (no popup)
-		push_warning("Closed JSON missing for: " + loc_name)
+	if json_rel != "":
+		var path := GameState.get_data_path(json_rel)
+		if FileAccess.file_exists(path):
+			var ui := DialogueManager.start_dialogue(json_rel, self)  # DialogueManager resolves relatives too
+			if ui and ui.has_signal("dialogue_finished"):
+				await ui.dialogue_finished
+		else:
+			push_warning("Closed JSON missing for: " + loc_name)
 
-# ---------------- Classroom logic (unchanged) ----------------
+# ---------------- Classroom logic (unchanged rules; localized UI text) ----------------
 func _try_enter_classroom() -> void:
 	var d := GameState.day
 	var t := GameState.time
@@ -130,11 +131,10 @@ func _try_enter_classroom() -> void:
 	if d == 1:
 		if t >= 12 * 60 + 30 and t < 18 * 60:
 			_clear_panel()
-			GameState.location = "Classroom"
+			GameState.location = "Classroom"  # logic string — do not translate
 			await _fade_and_change_scene(CLASSROOM_SCENE)
 		else:
-			# (left as-is; you can swap to a JSON later if desired)
-			popup_label.text = "The classroom is closed. (Open after 12:30 on Day 1.)"
+			popup_label.text = tr("The classroom is closed. (Open after 12:30 on Day 1.)")
 			popup_label.visible = true
 			_clear_panel()
 		return
@@ -143,8 +143,7 @@ func _try_enter_classroom() -> void:
 	if d >= 2 and d <= 4:
 		# hard close after 18:00 (but before campus-wide 19:00)
 		if t >= 18 * 60 and t < CAMPUS_CLOSE:
-			# (left as-is; you can swap to a JSON later if desired)
-			popup_label.text = "The classroom is closed for the day."
+			popup_label.text = tr("The classroom is closed for the day.")
 			popup_label.visible = true
 			_clear_panel()
 			return
@@ -177,13 +176,13 @@ func _try_enter_classroom() -> void:
 	await _fade_and_change_scene(CLASSROOM_SCENE)
 
 func _show_locked_dialogue() -> void:
-	if FileAccess.file_exists(CLASS_LOCKED_JSON):
+	var path := GameState.get_data_path(CLASS_LOCKED_JSON)
+	if FileAccess.file_exists(path):
 		var ui = DialogueManager.start_dialogue(CLASS_LOCKED_JSON, self)
 		if ui and ui.has_signal("dialogue_finished"):
 			await ui.dialogue_finished
 	else:
-		# (left as-is; you can swap to a JSON later if desired)
-		popup_label.text = "Class is in session. The door's locked."
+		popup_label.text = tr("Class is in session. The door's locked.")
 		popup_label.visible = true
 	await get_tree().process_frame
 
@@ -193,12 +192,11 @@ func _minutes_to_time_str(minutes: int) -> String:
 	return "%02d:%02d" % [hours, mins]
 
 func _kick_out_of_school() -> void:
-	# (left as-is; you can swap to a JSON later if desired)
-	popup_label.text = "School is closed for the day."
+	popup_label.text = tr("School is closed for the day.")
 	popup_label.visible = true
 	await get_tree().process_frame
 	_clear_panel()
-	GameState.location = "CITY"
+	GameState.location = "CITY"  # logic string — do not translate
 	await _fade_and_change_scene(CITY_SCENE)
 
 func _clear_panel() -> void:
@@ -217,6 +215,7 @@ func _fade_and_change_scene(path: String) -> void:
 	_is_fading = true
 	await fade.fade_to_scene(path, 0.4, 0.35)
 	_is_fading = false
+
 # ---------------- One-time helper notifications ----------------
 func _show_control_hints_once() -> void:
 	# Only run once per save
@@ -225,9 +224,9 @@ func _show_control_hints_once() -> void:
 
 	GameState.set_flag("shown_school_hints", true)
 
-	# Wait 5 seconds before showing the first notification
+	# Wait before showing notifications
 	await get_tree().create_timer(10.0).timeout
 	if is_instance_valid(GameUi):
-		GameUi.notify("📘 Press T to open your Tasks")
+		GameUi.notify(tr("📘 Press T to open your Tasks"))
 	if is_instance_valid(GameUi):
-		GameUi.notify("⚙️ Press ESC to open Settings")
+		GameUi.notify(tr("⚙️ Press ESC to open Settings"))

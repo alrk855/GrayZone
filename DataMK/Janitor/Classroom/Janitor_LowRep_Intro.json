@@ -1,0 +1,32 @@
+{
+  "id": "Janitor_LowRep_Intro",
+  "lines": [
+    {
+      "speaker": "Наратор",
+      "text": "(The Janitor looks you over, then leans in with a half-smirk.)"
+    },
+    {
+      "speaker": "Домар",
+      "text": "You’re not here by accident, are you?"
+    },
+    {
+      "speaker": "Наратор",
+      "text": "(He wipes his hands and pulls out a folded paper.)"
+    },
+    {
+      "speaker": "Домар",
+      "text": "About those Exams on Friday. I’ve got the answers — straight from the teacher’s stash."
+    },
+    {
+      "speaker": "Домар",
+      "text": "But I don’t sell to people who don’t know what they need."
+    },
+    {
+      "speaker": "Домар",
+      "text": "So — what’s the subject?"
+    },
+    {
+      "action": "janitor_offer_subjects"
+    }
+  ]
+}

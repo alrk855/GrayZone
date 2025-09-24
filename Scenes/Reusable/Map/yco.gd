@@ -223,8 +223,8 @@ func _on_talk() -> void:
 # ========================= Menus =========================
 func _show_post_letter_menu() -> void:
 	var opts = [
-		{"id":"talk","text":"Talk"},
-		{"id":"back","text":"Never mind"}
+		{"id":"talk","text": tr("Talk")},
+		{"id":"back","text": tr("Never mind")}
 	]
 	_show_menu(opts, Callable(self, "_on_post_letter_choice"))
 
@@ -237,17 +237,16 @@ func _on_post_letter_choice(id: String) -> void:
 func _show_first_menu() -> void:
 	var price := _current_bribe_price()
 	var opts = [
-		{"id":"opt1","text":"I’m here to volunteer."},
-		{"id":"opt2","text":"Depends. What would I be doing?"},
-		{"id":"bribe","text":"Offer a bribe for a recommendation (%d ден)" % price},
-		{"id":"back","text":"I’ll come back later."}
+		{"id":"opt1","text": tr("I’m here to volunteer.")},
+		{"id":"opt2","text": tr("Depends. What would I be doing?")},
+		{"id":"bribe","text": tr("Offer a bribe for a recommendation (%d ден)") % price},
+		{"id":"back","text": tr("I’ll come back later.")}
 	]
 	_show_menu(opts, Callable(self, "_on_first_choice"))
 
 func _on_first_choice(id: String) -> void:
 	match id:
 		"opt1":
-			# Accept volunteering: integrity +5, reputation +10, then close panel (require re-click)
 			GameState.adjust_integrity(5)
 			_adjust_reputation(10)
 			_set_flag(F_ACCEPTED, true)
@@ -255,7 +254,7 @@ func _on_first_choice(id: String) -> void:
 			while GameState.get_task_progress(TASK_ID) < 3:
 				GameState.update_task_step(TASK_ID)
 			await _play_and_wait(J_OPT1_ACCEPT)
-			_clear_panel()  # next click shows Main Menu
+			_clear_panel()
 		"opt2":
 			await _play_and_wait(J_OPT2_INFO)
 			_show_first_menu()
@@ -269,10 +268,10 @@ func _on_first_choice(id: String) -> void:
 func _show_main_menu() -> void:
 	var price := _current_bribe_price()
 	var opts = [
-		{"id":"talk","text":"Talk"},
-		{"id":"vol","text":"Volunteer (once per day)"},
-		{"id":"bribe","text":"Offer a bribe for a recommendation (%d ден)" % price},
-		{"id":"back","text":"Never mind"}
+		{"id":"talk","text": tr("Talk")},
+		{"id":"vol","text": tr("Volunteer (once per day)")},
+		{"id":"bribe","text": tr("Offer a bribe for a recommendation (%d ден)") % price},
+		{"id":"back","text": tr("Never mind")}
 	]
 	_show_menu(opts, Callable(self, "_on_main_choice"))
 
@@ -292,8 +291,8 @@ func _on_main_choice(id: String) -> void:
 # ========================= Bribe confirm =========================
 func _show_bribe_confirm_menu(price: int) -> void:
 	var opts = [
-		{"id":"bribe_yes","text":"Pay (%d ден)" % price},
-		{"id":"bribe_no","text":"Never mind"}
+		{"id":"bribe_yes","text": tr("Pay (%d ден)") % price},
+		{"id":"bribe_no","text": tr("Never mind")}
 	]
 	_show_menu(opts, Callable(self, "_on_bribe_confirm").bind(price))
 
@@ -311,7 +310,7 @@ func _on_bribe_confirm(id: String, price: int) -> void:
 			while GameState.get_task_progress(TASK_ID) < 7:
 				GameState.update_task_step(TASK_ID)
 			await _play_and_wait(J_BRIBE_GRANTED)
-			_clear_panel()  # require re-click; post-letter menu next time
+			_clear_panel()
 		"bribe_no":
 			GameState.adjust_integrity(BRIBE_DECLINE_INTEGRITY_BONUS)
 			await _play_and_wait(J_BRIBE_DECLINED)
@@ -362,10 +361,10 @@ func _do_volunteer() -> void:
 		return
 
 	var opts = [
-		{"id":"flyers","text":"Outreach & Flyers"},
-		{"id":"filing","text":"Archive & Filing"},
-		{"id":"survey","text":"Survey Help"},
-		{"id":"back","text":"Never mind"}
+		{"id":"flyers","text": tr("Outreach & Flyers")},
+		{"id":"filing","text": tr("Archive & Filing")},
+		{"id":"survey","text": tr("Survey Help")},
+		{"id":"back","text": tr("Never mind")}
 	]
 	_show_menu(opts, Callable(self, "_on_volunteer_choice"))
 
@@ -405,7 +404,7 @@ func _run_volunteer(duty_key: String) -> void:
 	var c := _count() + 1
 	_set_count(c)
 	_set_last_day(_day())
-	_set_flag("yco_vol_attend_day_%d" % _day(), true)  # per-day flag for task manager
+	_set_flag("yco_vol_attend_day_%d" % _day(), true)
 
 	_ensure_task()
 	var prog := GameState.get_task_progress(TASK_ID)
@@ -427,8 +426,6 @@ func _on_back() -> void:
 	get_tree().change_scene_to_file(city_scene_path)
 
 # ========================= Minimal action bridge =========================
-# Prevent Dialogue UI from calling GameState.apply_action(line) (which crashes on non-string "action").
-# We only care about ending dialogue; ignore everything else.
 func on_dialogue_action(line: Dictionary) -> void:
 	var a = line.get("action", null)
 	if a == null:

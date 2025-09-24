@@ -1,0 +1,17 @@
+{
+  "id": "Prof_Scold_MissedPromise",
+  "lines": [
+    {
+      "speaker": "Professor",
+      "text": "(He glances at the clock.)"
+    },
+    {
+      "speaker": "Professor",
+      "text": "You promised yesterday. You’re late."
+    },
+    {
+      "speaker": "Professor",
+      "text": "Next time, keep your word."
+    }
+  ]
+}

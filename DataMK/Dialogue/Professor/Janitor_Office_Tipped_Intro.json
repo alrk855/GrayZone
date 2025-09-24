@@ -1,0 +1,16 @@
+{
+  "id": "Janitor_Office_Tipped_Intro",
+  "lines": [
+    {
+      "speaker": "Домар",
+      "text": "Marko’s little protégé, huh? Didn’t think you’d show."
+    },
+    {
+      "speaker": "Домар",
+      "text": "Project. Last year’s. Neat, graded, forgotten. 300 денари and we forget this ever happened."
+    },
+    {
+      "action": "show_janitor_office_options"
+    }
+  ]
+}

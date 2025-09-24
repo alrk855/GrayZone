@@ -1,0 +1,21 @@
+{
+  "id": "Prof_Submit_Generic",
+  "lines": [
+    {
+      "speaker": "Player",
+      "text": "I’ve brought my Final Project."
+    },
+    {
+      "speaker": "Professor",
+      "text": "…Hmph. I’ll review it."
+    },
+    {
+      "action": "update_task_step",
+      "task": "project"
+    },
+    {
+      "action": "adjust_time",
+      "value": 15
+    }
+  ]
+}
