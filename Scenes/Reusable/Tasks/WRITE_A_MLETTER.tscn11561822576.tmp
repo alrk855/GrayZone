@@ -522,7 +522,6 @@ grow_vertical = 2
 theme_override_styles/panel = ExtResource("4_0ev40")
 
 [node name="Header" type="Label" parent="gamebox"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -753,6 +752,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("4_2mygu")
 theme_override_font_sizes/font_size = 50
+text = "Dear Committee,
+I come from a modest background, but I’ve worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community.
+Thank you for the opportunity.
+Sincerely, Me"
 horizontal_alignment = 1
 autowrap_mode = 2
 visible_characters = 0

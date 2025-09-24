@@ -15,8 +15,10 @@ extends Control
 @onready var nevermind : Button = $"box/button3"
 @onready var zvuk_end : AudioStreamPlayer2D = $"end"
 @onready var zvuk_wrong : AudioStreamPlayer2D = $"wrong"
+@onready var AILABEL : Label = $"outroGPT/textfull"
+@onready var scene_anim : AnimationPlayer = $SceneAnimation
 
-# ---- GPT button (you can point this to your real button in the scene) ----
+# ---- GPT button ----
 @export var gpt_button_path: NodePath = ^"box/button2"
 @export var hide_gpt_by_default: bool = false
 var _gpt_button: Button = null
@@ -27,23 +29,15 @@ const FLAG_MLETTER_WRITTEN := "motivation_written"
 
 # Shared flags
 const F_PRINTED_MOTIVATION  := "printed_motivation"
-const F_MLETTER_AI          := "motivation_ai_generated"      # set if GPT path used
-const F_MLETTER_REWRITE_REQ := "motivation_rewrite_required"   # single gate flag
+const F_MLETTER_AI          := "motivation_ai_generated"
+const F_MLETTER_REWRITE_REQ := "motivation_rewrite_required"
 
-# --------------------- Optional JSON templates ---------------------
-@export_file("*.json") var TEMPLATES_JSON: String = ""   # expects {"templates": ["Dear ...", "..."]}
-
-# Fallback in-code templates
-@onready var text_library : Array[String] = [
-	"Dear Committee, I come from a modest background, but I've worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community. Thank you for the opportunity. Sincerely, Me",
-	"Dear Committee, I'm the first in my family to attend college. This scholarship would let me keep my grades up and continue mentoring local kids. Thank you. Sincerely, Me",
-	"Dear Committee, Hard work lifted my GPA to 3.9 despite tight finances. Your support keeps me in school and giving back. Thanks. Best, Me",
-	"Dear Esteemed Committee, My journey began at a kitchen table where bills often outnumbered paychecks. From that table, I learned that perseverance is a currency more reliable than cash. It bought me top grades, leadership roles in two campus clubs, and the chance every Saturday to serve meals at the youth shelter.",
-	"Dear Committee, I juggle jobs and classes to stay on the Dean's List. Help me finish my degree and keep tutoring teens. Thank you."
-]
+# --------------------- JSON locations ---------------------
+const HUMAN_DIR := "res://Data/MotivationTemplates/Human"  # Motivation_Human_XX.json
+const AI_JSON   := "res://Data/MotivationTemplates/AI/Motivation_AI_01.json"
 
 # --------------------- Runtime state ---------------------
-var _templates: Array[String] = []
+var _templates: Array[String] = []   # holds exactly 1 manual template after load
 var current: int = 0
 var words: PackedStringArray = []
 var current_word: int = 0
@@ -90,38 +84,24 @@ func _ready() -> void:
 	if not edit.text_submitted.is_connected(Callable(self, "_on_line_edit_text_submitted")):
 		edit.text_submitted.connect(Callable(self, "_on_line_edit_text_submitted"))
 
-	# Load templates
-	_load_templates()
+	# Load the single AI JSON and show it in the AI panel now (no randomness)
+	_load_ai_text_into_label()
 
-	$SceneAnimation.play("LetterIntro")
-	current = randi() % max(_templates.size(), 1)
+	# Load exactly ONE manual template from JSONs (random pick among Human/*.json)
+	_load_one_manual_template()
+
+	# Start intro and typing content
+	if scene_anim:
+		scene_anim.play("LetterIntro")
+	current = 0
 	words = _templates[current].split(" ", false)
 	current_word = 0
 	correct = 0
 	wrong = 0
 	freed = false
 	header.text = words[current_word]
-	await $SceneAnimation.animation_finished
-
-func _load_templates() -> void:
-	_templates.clear()
-	if TEMPLATES_JSON.strip_edges() != "" and FileAccess.file_exists(TEMPLATES_JSON):
-		var raw := FileAccess.get_file_as_string(TEMPLATES_JSON)
-		var parsed = JSON.parse_string(raw)
-		if typeof(parsed) == TYPE_DICTIONARY:
-			var arr: Variant = (parsed as Dictionary).get("templates", [])
-			if arr is Array:
-				for t in (arr as Array):
-					var s := String(t).strip_edges()
-					if s != "":
-						_templates.append(s)
-	if _templates.is_empty():
-		for s in text_library:
-			var ss := String(s).strip_edges()
-			if ss != "":
-				_templates.append(ss)
-	if _templates.is_empty():
-		_templates.append("Dear Committee, Thank you for your time. Sincerely, Me")
+	if scene_anim:
+		await scene_anim.animation_finished
 
 # --------------------- Manual typing ---------------------
 func _on_button_pressed() -> void:
@@ -145,12 +125,13 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 		if not zvuk_wrong.playing:
 			zvuk_wrong.play()
 
-# --------------------- GPT path ---------------------
+# --------------------- GPT path (uses AILABEL content) ---------------------
 func _on_button_2_pressed() -> void:
 	# Hard block if rewrite required → manual-only
 	if GameState.has_flag(F_MLETTER_REWRITE_REQ):
 		return
 	_used_gpt = true
+
 	box.visible = false
 	$outroGPT.visible = true
 	gptanim.play("GPT")
@@ -230,3 +211,69 @@ func exit() -> void:
 	tween.tween_property(self, "modulate:a", 0, 1).set_trans(Tween.TRANS_CUBIC)
 	await tween.finished
 	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/Home.tscn")
+
+# ===================== JSON LOADERS (manual/AI) =====================
+
+# Manual: pick one random JSON from HUMAN_DIR and use it as the typing content
+func _load_one_manual_template() -> void:
+	_templates.clear()
+	var p := _pick_random_json(HUMAN_DIR)
+	var text := _read_text_from_json(p)
+	if text.strip_edges() == "":
+		push_warning("MLetter: fallback used (no Human JSON found or empty). Path tried: " + p)
+		text = "Dear Committee, Thank you for your time. Sincerely, {name}"
+	text = _apply_placeholders(text)
+	_templates.append(text)
+
+# AI: load the single file you specified and assign to AILABEL (no randomness)
+func _load_ai_text_into_label() -> void:
+	var text := _read_text_from_json(AI_JSON)
+	if text.strip_edges() == "":
+		push_warning("MLetter: AI fallback used (missing/empty): " + AI_JSON)
+		text = "Esteemed Committee, I am enthusiastic about joining your program. With gratitude, {name}"
+	text = _apply_placeholders(text)
+	if AILABEL:
+		AILABEL.text = text
+
+func _pick_random_json(dir_path: String) -> String:
+	var da := DirAccess.open(dir_path)
+	if da == null:
+		push_warning("MLetter: directory not found → " + dir_path)
+		return ""
+	var files: Array[String] = []
+	da.list_dir_begin()
+	while true:
+		var fname := da.get_next()
+		if fname == "":
+			break
+		if da.current_is_dir():
+			continue
+		if fname.to_lower().ends_with(".json"):
+			files.append(dir_path + "/" + fname)
+	da.list_dir_end()
+	if files.is_empty():
+		push_warning("MLetter: no .json files in → " + dir_path)
+		return ""
+	return files[randi() % files.size()]
+
+func _read_text_from_json(path: String) -> String:
+	if path.strip_edges() == "" or not FileAccess.file_exists(path):
+		return ""
+	var raw := FileAccess.get_file_as_string(path)
+	var parsed = JSON.parse_string(raw)
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return String((parsed as Dictionary).get("text", ""))
+	push_warning("MLetter: bad JSON format in → " + path)
+	return ""
+
+# --- Placeholder helper: {name} and [Field] ---
+func _apply_placeholders(s: String) -> String:
+	var nm := String(GameState.player_name).strip_edges()
+	if nm == "":
+		nm = "Student"
+	var field := String(GameState.subject1).strip_edges()
+	if field == "":
+		field = "your field"
+	s = s.replace("{name}", nm)
+	s = s.replace("[Field]", field).replace("[field]", field).replace("[FIELD]", field)
+	return s

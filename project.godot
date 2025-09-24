@@ -67,6 +67,10 @@ dev={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://mk.po")
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

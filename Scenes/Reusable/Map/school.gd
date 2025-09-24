@@ -38,6 +38,8 @@ func _ready() -> void:
 		GameState.subject1 = "math"
 	if GameState.subject2.strip_edges() == "":
 		GameState.subject2 = "geography"
+	if GameState.player_name == "":
+		GameState.player_name == "TEST"
 	_show_control_hints_once()
 	GameUi.visible = true
 	GameState.location = "School"

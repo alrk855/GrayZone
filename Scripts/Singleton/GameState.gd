@@ -482,8 +482,6 @@ func format_placeholders(text: String) -> String:
 	# >>> NEW: missed days placeholder(s)
 	var ndays := str(get_missed_morning_count()) # or: str(get_int("missed_morning_count", 0))
 	s = s.replace("{ndays}", ndays)
-
-	s = s.replace("{name}", player_name)
 	return s
 
 
@@ -818,3 +816,17 @@ const KEY_MISSED_MORNING_COUNT := "missed_morning_count"
 
 func get_missed_morning_count() -> int:
 	return get_int(KEY_MISSED_MORNING_COUNT, 0)
+var current_locale: String = "en"  # default language
+
+# Redirect JSON paths depending on locale
+func get_data_path(relative: String) -> String:
+	var base = "res://Data/"
+	if current_locale == "mk":
+		base = "res://DataMK/"
+	return base + relative
+
+# Switch locale at runtime
+func switch_locale(new_locale: String) -> void:
+	current_locale = new_locale
+	TranslationServer.set_locale(new_locale)  # flips all tr() UI strings
+	print("Locale switched to:", new_locale)
