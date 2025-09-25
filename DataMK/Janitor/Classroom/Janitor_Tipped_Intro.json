@@ -3,27 +3,27 @@
   "lines": [
     {
       "speaker": "Наратор",
-      "text": "(The Janitor smirks as soon as he sees you.)"
+      "text": "(Хигиеничарот се насмевнува кога те здогледува.)"
     },
     {
-      "speaker": "Домар",
-      "text": "Marko’s little friend. I figured you'd show up eventually."
+      "speaker": "Хигиеничар",
+      "text": "Другарчето на Марко. Знаев дека ќе се појавиш."
     },
     {
       "speaker": "Наратор",
-      "text": "(He pulls a crumpled paper from beneath his cart.)"
+      "text": "(Извлекува смотан лист од под својата количка)"
     },
     {
-      "speaker": "Домар",
-      "text": "Friday’s answers, all questions. Spotless copy."
+      "speaker": "Хигиеничар",
+      "text": "Одговорите за петок, сите прашања."
     },
     {
-      "speaker": "Домар",
-      "text": "400 денари per subject — friends of Marko get the friendly rate."
+      "speaker": "Хигиеничар",
+      "text": "400 денари од предмет — пријателите на Марко добиваат попуст."
     },
     {
-      "speaker": "Домар",
-      "text": "So — what’s the subject?"
+      "speaker": "Хигиеничар",
+      "text": "Па, кој предмет ти треба?"
     },
     {
       "action": "janitor_offer_subjects"

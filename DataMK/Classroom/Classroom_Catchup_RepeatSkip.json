@@ -2,12 +2,12 @@
   "id": "Classroom_Catchup_RepeatSkip",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "You’ve now skipped {ndays} day(s) of class."
+      "speaker": "Класен раководител",
+      "text": "Досега имате пропуштено {ndays} ден(а) од наставата."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Get back on track in your own time. The consequences are yours."
+      "speaker": "Класен раководител",
+      "text": "Вратете се во нормала. Последиците ќе бидат ваши."
     }
   ]
 }

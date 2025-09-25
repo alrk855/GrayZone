@@ -2,20 +2,20 @@
   "id": "Teacher_DocReview_Start",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Sure. Let's take a look. Start with the CV..."
+      "speaker": "Класен раководител",
+      "text": "Ајде да видиме. Почнете со CV-то..."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Clean layout. You've kept it simple. Good."
+      "speaker": "Класен раководител",
+      "text": "Убаво е средено, едноставно. Како што треба."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Now your motivational letter... keep it honest and specific. Avoid boilerplate."
+      "speaker": "Класен раководител",
+      "text": "Сега вашето мотивациско писмо... нека биде искрено. Не користете готово напишани текстови."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "If you revise it, bring the printed copy again and I'll take another look."
+      "speaker": "Класен раководител",
+      "text": "Доколку го промените, донесете го повторно и ќе го прегледам повторно."
     }
   ]
 }

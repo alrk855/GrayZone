@@ -2,16 +2,16 @@
   "id": "Prof_Grade_B",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "(He finishes, then shrugs.)"
+      "speaker": "Професор",
+      "text": "(Завршува со читање и ги крева рамениците.)"
     },
     {
-      "speaker": "Professor",
-      "text": "Not bad. A few rough edges… but it’s solid enough."
+      "speaker": "Професор",
+      "text": "Не е лошо. Има неколку недостатоци... но доволно е добро."
     },
     {
-      "speaker": "Professor",
-      "text": "B."
+      "speaker": "Професор",
+      "text": "Четворка."
     }
   ]
 }

@@ -2,12 +2,12 @@
   "id": "Prof_Office_Initial",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "If this is about your grades — they’re not finalized yet."
+      "speaker": "Професор",
+      "text": "Доколку ова е за вашите оцени - сѐ уште не се финализирани."
     },
     {
-      "speaker": "Professor",
-      "text": "If you’re here about the Finals Project, it’s mandatory. No project, no pass."
+      "speaker": "Професор",
+      "text": "Доколку сте тука за проектната задача, задолжителна е. Доколку немате проектна не положувате."
     },
     {
       "action": "show_prof_intro_choices"

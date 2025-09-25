@@ -2,20 +2,20 @@
   "id": "Prof_Grade_F_Plagiarized",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "(He flips back and forth between pages.)"
+      "speaker": "Професор",
+      "text": "(Листа низ проектната задача.)"
     },
     {
-      "speaker": "Professor",
-      "text": "These phrases are… identical to something I’ve read before."
+      "speaker": "Професор",
+      "text": "Некои од речениците се… идентични со текстови што ги имам прочитано претходно."
     },
     {
-      "speaker": "Professor",
-      "text": "Academic dishonesty is unacceptable."
+      "speaker": "Професор",
+      "text": "Ваква нечесност е неприфатлива."
     },
     {
-      "speaker": "Professor",
-      "text": "F."
+      "speaker": "Професор",
+      "text": "Единица."
     }
   ]
 }

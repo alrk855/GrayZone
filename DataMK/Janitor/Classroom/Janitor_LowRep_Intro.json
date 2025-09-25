@@ -3,27 +3,27 @@
   "lines": [
     {
       "speaker": "Наратор",
-      "text": "(The Janitor looks you over, then leans in with a half-smirk.)"
+      "text": "(Хигиеничарот те гледа внимателно, па се наведнува со полусмеење)"
     },
     {
-      "speaker": "Домар",
-      "text": "You’re not here by accident, are you?"
+      "speaker": "Хигиеничар",
+      "text": "Не си тука случајно, нели?"
     },
     {
       "speaker": "Наратор",
-      "text": "(He wipes his hands and pulls out a folded paper.)"
+      "text": "(Ги брише рацете и вади свиткана хартија)"
     },
     {
-      "speaker": "Домар",
-      "text": "About those Exams on Friday. I’ve got the answers — straight from the teacher’s stash."
+      "speaker": "Хигиеничар",
+      "text": " Ги имам одговорите за испитите во петок, директно од професорите."
     },
     {
-      "speaker": "Домар",
-      "text": "But I don’t sell to people who don’t know what they need."
+      "speaker": "Хигиеничар",
+      "text": "Но не продавам на оние што не знаат што им треба."
     },
     {
-      "speaker": "Домар",
-      "text": "So — what’s the subject?"
+      "speaker": "Хигиеничар",
+      "text": "Па, по кој предмет?"
     },
     {
       "action": "janitor_offer_subjects"

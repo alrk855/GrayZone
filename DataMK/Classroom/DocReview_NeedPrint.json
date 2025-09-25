@@ -2,12 +2,12 @@
   "id": "DocReview_NeedPrint",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Bring me printed copies. I can’t mark up digital files."
+      "speaker": "Класен раководител",
+      "text": "Донесете ми испринтани копии. Не можам да работам со дигитални фајлови."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Print them and come back when you’re ready."
+      "speaker": "Класен раководител",
+      "text": "Испринтајте ги и вратете се."
     }
   ]
 }

@@ -2,16 +2,16 @@
   "id": "DocReview_Resubmit_Accepted",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Let’s see what you’ve done with it."
+      "speaker": "Класен раководител",
+      "text": "Да видиме што сте направиле."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Now this sounds like you. Good job. I’ll sign off on this."
+      "speaker": "Класен раководител",
+      "text": "Е ова звучи на вас. Браво. Ова го одобрувам."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "You’re ready to submit."
+      "speaker": "Класен раководител",
+      "text": "Сѐ ви е спремно за апликацијата."
     }
   ]
 }

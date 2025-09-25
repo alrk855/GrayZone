@@ -3,7 +3,7 @@
   "lines": [
     {
       "speaker": "Марко",
-      "text": "Учење? Ајде бе, само малку пауза прво."
+      "text": "Учење? Ајде бе, малку пауза прво."
     },
     {
       "action": "marko_show_study_sway_choices"

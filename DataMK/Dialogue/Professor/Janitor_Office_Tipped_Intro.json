@@ -2,12 +2,12 @@
   "id": "Janitor_Office_Tipped_Intro",
   "lines": [
     {
-      "speaker": "Домар",
-      "text": "Marko’s little protégé, huh? Didn’t think you’d show."
+      "speaker": "Хигиеничар",
+      "text": "Аха, ти си другарчето на Марко? Мислев дека нема да се појавиш."
     },
     {
-      "speaker": "Домар",
-      "text": "Project. Last year’s. Neat, graded, forgotten. 300 денари and we forget this ever happened."
+      "speaker": "Хигиеничар",
+      "text": "Проектна задача. Од минатата година. Уредена, оценета, заборавена. 300 денари и ова исто како да не се случило."
     },
     {
       "action": "show_janitor_office_options"

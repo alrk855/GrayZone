@@ -2,16 +2,16 @@
   "id": "Prof_Fail_SecondChance",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "(He sets the pages aside.)"
+      "speaker": "Професор",
+      "text": "(Ја остава проектната задача на страна.)"
     },
     {
-      "speaker": "Professor",
-      "text": "This won’t pass as is. But it’s still early in the week."
+      "speaker": "Професор",
+      "text": "Ова вака нема да може да помине. Но, сѐ уште е почетокот на седмицата."
     },
     {
-      "speaker": "Professor",
-      "text": "You have one more chance. Fix it and bring it back before Friday."
+      "speaker": "Професор",
+      "text": "Ви давам уште една шанса. Поправете ја и донесете ми ја пред петок."
     },
     {
       "action": "adjust_time",

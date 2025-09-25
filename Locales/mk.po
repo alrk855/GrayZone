@@ -71,22 +71,25 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GrayZone\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: mk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.7\n"
 
-#: Scenes/GAME_UI.tscn
-#: Scenes/Reusable/Tutorial.tscn
+#: Scenes/GAME_UI.tscn Scenes/Reusable/Tutorial.tscn
 msgid "19:00"
 msgstr ""
 
-#: Scenes/GAME_UI.tscn
-#: Scenes/Reusable/Tutorial.tscn
+#: Scenes/GAME_UI.tscn Scenes/Reusable/Tutorial.tscn
 msgid "DAY 1"
-msgstr ""
+msgstr "ДЕН 1"
 
-#: Scenes/GAME_UI.tscn
-#: Scenes/Reusable/Tutorial.tscn
+#: Scenes/GAME_UI.tscn Scenes/Reusable/Tutorial.tscn
 msgid "1000"
 msgstr ""
 
@@ -95,12 +98,19 @@ msgid "Notification1"
 msgstr ""
 
 #: Scenes/Intro.tscn
-msgid "You are a high school senior in Skopje. Your dream? To get a scholarship and a visa to Germany so you can continue studying abroad Your goal: to get your grades in order, get your visa, and graduate on time."
+msgid ""
+"You are a high school senior in Skopje. Your dream? To get a scholarship and "
+"a visa to Germany so you can continue studying abroad Your goal: to get your "
+"grades in order, get your visa, and graduate on time."
 msgstr ""
+"Ти си матурант во една скопска гимназија. Твојот сон Да добиеш стипендија и "
+"виза за Германија, за да можеш да продолжиш со школувањето во странство. "
+"Твојата цел?Да си ги средиш оценките, да ја добиеш визата и да положиш "
+"матура навреме."
 
 #: Scenes/main_menu.tscn
 msgid "Click to start"
-msgstr ""
+msgstr "Кликни за да почнеш"
 
 #: Scenes/main_menu.tscn
 msgid "o"
@@ -112,47 +122,44 @@ msgstr ""
 
 #: Scenes/main_menu.tscn
 msgid "Play"
-msgstr ""
+msgstr "Играј"
 
-#: Scenes/main_menu.tscn
-#: Scenes/Reusable/SettingsUI.tscn
+#: Scenes/main_menu.tscn Scenes/Reusable/SettingsUI.tscn
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Settings"
-msgstr ""
+msgstr "Подесувања"
 
 #: Scenes/main_menu.tscn
 msgid "\tQUIT\n"
-msgstr ""
+msgstr "\tИзлези\n"
 
 #: Scenes/main_menu.tscn
 msgid "Settings\n"
-msgstr ""
+msgstr "Подесувања\n"
 
-#: Scenes/main_menu.tscn
-#: Scenes/Reusable/SettingsUI.tscn
+#: Scenes/main_menu.tscn Scenes/Reusable/SettingsUI.tscn
 msgid "Sound"
-msgstr ""
+msgstr "Звук"
 
-#: Scenes/main_menu.tscn
-#: Scenes/Reusable/SettingsUI.tscn
+#: Scenes/main_menu.tscn Scenes/Reusable/SettingsUI.tscn
 msgid "Music "
-msgstr ""
+msgstr "Музика"
 
 #: Scenes/main_menu.tscn
 msgid "Language"
-msgstr ""
+msgstr "Јазик"
 
 #: Scenes/player_setup.gd
 msgid "Please enter your name and select a gender."
-msgstr ""
+msgstr "Внеси го името , и одбери пол."
 
 #: Scenes/player_setup.tscn
 msgid "Enter your name"
-msgstr ""
+msgstr "Напиши го името"
 
 #: Scenes/player_setup.tscn
 msgid "Gender"
-msgstr ""
+msgstr "Пол"
 
 #: Scenes/Reusable/CharacterChoiceButtons.tscn
 msgid "Choice 1"
@@ -160,39 +167,39 @@ msgstr ""
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "homeroom teacher"
-msgstr ""
+msgstr "Класен раководител"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "principal"
-msgstr ""
+msgstr "Директор"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "secretary"
-msgstr ""
+msgstr "Секретарка"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "janitor"
-msgstr ""
+msgstr "Хигиеничар"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "professor"
-msgstr ""
+msgstr "Професор"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "marko"
-msgstr ""
+msgstr "Марко"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "clerk"
-msgstr ""
+msgstr "Шалтерски службеник"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "daniel"
-msgstr ""
+msgstr "Даниел"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "narrator"
-msgstr ""
+msgstr "Наратор"
 
 #: Scenes/Reusable/Dialogue.tscn
 msgid "The Quick Brown Fox Jumped Over The Fence"
@@ -204,7 +211,7 @@ msgstr ""
 
 #: Scenes/Reusable/Outro.tscn
 msgid "QUIT"
-msgstr ""
+msgstr "ИЗЛЕЗИ"
 
 #: Scenes/Reusable/SettingsUI.tscn
 msgid ""
@@ -212,30 +219,33 @@ msgid ""
 "\n"
 "Are you sure you want to Quit?"
 msgstr ""
+"Со бришење се губи цел напредок\n"
+"\n"
+"Потврди бришење?"
 
 #: Scenes/Reusable/SettingsUI.tscn
 msgid "No"
-msgstr ""
+msgstr "Не"
 
 #: Scenes/Reusable/SettingsUI.tscn
 msgid "Yes"
-msgstr ""
+msgstr "Да"
 
 #: Scenes/Reusable/SettingsUI.tscn
 msgid "Main Menu\n"
-msgstr ""
+msgstr "Главно Мени\n"
 
 #: Scenes/Reusable/SettingsUI.tscn
 msgid "Save\n"
-msgstr ""
+msgstr "Зачувај\n"
 
 #: Scenes/Reusable/SettingsUI.tscn
 msgid "Load\n"
-msgstr ""
+msgstr "Вчитај\n"
 
 #: Scenes/Reusable/TaskManager.tscn
 msgid "Tasks\n"
-msgstr ""
+msgstr "Задачи\n"
 
 #: Scenes/Reusable/task_manager.gd
 msgid "Unknown"
@@ -243,11 +253,11 @@ msgstr ""
 
 #: Scenes/Reusable/task_manager.gd
 msgid "???"
-msgstr ""
+msgstr "???"
 
 #: Scenes/Reusable/task_manager.gd
 msgid "Given by:"
-msgstr ""
+msgstr "Од"
 
 #: Scenes/Reusable/task_manager.gd
 msgid "Unnamed Step"
@@ -255,7 +265,7 @@ msgstr ""
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Welcome"
-msgstr ""
+msgstr "Добредојде"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "1/8"
@@ -271,10 +281,17 @@ msgid ""
 "\n"
 "Use the arrows to go through each page.\n"
 msgstr ""
+"Пред да почнеш,еве што ќе треба да знаеш.\n"
+"\n"
+"\n"
+"Читај внимателно - овој дел открива како работи играта!\n"
+"\n"
+"\n"
+"Користи ги стрелките за навигација.\n"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Status Bar"
-msgstr ""
+msgstr "Статусна Лента"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "2/8"
@@ -285,8 +302,14 @@ msgid ""
 "Every action (talking, studying, printing, traveling) advances the clock.\n"
 "\n"
 "\n"
-"Some people are only available at certain hours — miss them, and you’ll have to wait for another chance."
+"Some people are only available at certain hours — miss them, and you’ll have "
+"to wait for another chance."
 msgstr ""
+"Секоја акција(Зборење, Учење, Шетање) троши време.\n"
+"\n"
+"\n"
+"Некои луѓе се достапни во одредено време - задоцни и ќе треба да чекаш "
+"наредна шанса!"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid ""
@@ -296,6 +319,11 @@ msgid ""
 "\n"
 "But stay up too late, and you’ll sleep in, losing part of the next morning."
 msgstr ""
+"Приказната се движи во денови.\n"
+"\n"
+"Спиењето дома после 19:00 ќе напредува до следниот ден.\n"
+"\n"
+"Ако останеш касно, следниот ден ќе се успиеш и ќе изгубиш дел од утрото!"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid ""
@@ -304,26 +332,30 @@ msgid ""
 "\n"
 "Spending money once unlocks Tutoring, which becomes a source of extra income."
 msgstr ""
+"Потребен ресурс за принтање,набавка на документи , или мито!\n"
+"\n"
+"\n"
+"После првото трошење на пари , се отклучува задача за дополнителен приход."
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Click a button to show detailed info"
-msgstr ""
+msgstr "Кликни на копчињата под лентата!"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Time"
-msgstr ""
+msgstr "Време"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Day"
-msgstr ""
+msgstr "Ден"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Money"
-msgstr ""
+msgstr "Пари"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Task Overview"
-msgstr ""
+msgstr "Преглед на Задачи"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "3/8"
@@ -341,10 +373,19 @@ msgid ""
 "\n"
 "Clicking T opens and closes the Task Overview"
 msgstr ""
+"Задачите се прикажани на таблата.\n"
+"\n"
+"Сите картички се главни задачи.\n"
+"\n"
+"Нови задачи ќе се појавуваат во текот на приказната.\n"
+"\n"
+"Таблата е тука да ти покаже до каде си со напредок.\n"
+"\n"
+"Таблата се отвара со кликање на копчето Т."
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Task Details\n"
-msgstr ""
+msgstr "Детални Задачи\n"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "4/8"
@@ -352,19 +393,20 @@ msgstr ""
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "✅ Green text = task completed."
-msgstr ""
+msgstr "✅Зелено = Завршена Задача"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "❌ Red text = task failed (irreversible)."
-msgstr ""
+msgstr "❌Црвено"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Clicking a task opens its detailed view, showing every step clearly."
 msgstr ""
+"Со кликање на задача се отвара детален преглед со сите потребни чекори!"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Dialogues"
-msgstr ""
+msgstr "Дијалог"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "5/8"
@@ -374,15 +416,15 @@ msgstr ""
 msgid ""
 "Some options are one-time\n"
 " think before you commit.\n"
-msgstr ""
+msgstr "Некои избори се избори се еднократни - мисли пред да одбереш!\n"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Click a character to start a conversation."
-msgstr ""
+msgstr "Кликни на карактерите за да почнеш разговор."
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Activities\n"
-msgstr ""
+msgstr "Активности\n"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "6/8"
@@ -392,12 +434,22 @@ msgstr ""
 msgid ""
 "\n"
 "\n"
-"The Action button is your way of checking what’s available in each location.\n"
+"The Action button is your way of checking what’s available in each "
+"location.\n"
 "\n"
-"Instead of guessing, open it and you’ll always see what can be done here and now.\n"
+"Instead of guessing, open it and you’ll always see what can be done here and "
+"now.\n"
 "\n"
-"It also shows the travel options, letting you move between locations at the right times."
+"It also shows the travel options, letting you move between locations at the "
+"right times."
 msgstr ""
+"\n"
+"\n"
+"Ова копче е твојот начин да провериш што е достапно во твојата околина.\n"
+"\n"
+"Со неговото отворање секогаш можеш да видиш достапни акции.\n"
+"\n"
+"Исто така преку него се патува од една до друга локација."
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "7/8"
@@ -405,18 +457,22 @@ msgstr ""
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid ""
-"Settings let you adjust Sound (overall volume) and Music (game music volume).\n"
+"Settings let you adjust Sound (overall volume) and Music (game music "
+"volume).\n"
 "\n"
-"The game does not pause when the menu is open — time and activities keep running in the background."
+"The game does not pause when the menu is open — time and activities keep "
+"running in the background."
 msgstr ""
+"Ова мени ти дозволува промена на звукот и музиката во играта ,Додека е "
+"вклучено прозорецот времето тече!"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Open the Settings menu by pressing ESC."
-msgstr ""
+msgstr "Се отвара со кликање на ESC."
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "The Gray Zone"
-msgstr ""
+msgstr "Сивата Зона"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "8/8"
@@ -430,16 +486,16 @@ msgid ""
 "\n"
 "Every action leaves a mark — some visible right away, others only later."
 msgstr ""
+"Светот околу тебе реагира на твоите одлуки.\n"
+"\n"
+"Можеш да одбереш чесната страна , да користиш кратенки или да останеш во "
+"сивата зона.\n"
+"\n"
+"Секоја акција остава трага - некои се видливи одма ,други дури подоцна."
 
-#: Scenes/Reusable/Tutorial.tscn
-#: Scenes/Reusable/Map/SecretaryOffice.tscn
+#: Scenes/Reusable/Tutorial.tscn Scenes/Reusable/Map/SecretaryOffice.tscn
 msgid "GO BACK"
-msgstr ""
-
-#: Scenes/Reusable/Tasks/study.gd
-#: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
-msgid ""
-msgstr ""
+msgstr "НАЗАД"
 
 #: Scenes/Reusable/Tasks/study.gd
 msgid "No questions available."
@@ -447,7 +503,7 @@ msgstr ""
 
 #: Scenes/Reusable/Tasks/study.gd
 msgid "Answer: "
-msgstr ""
+msgstr "Одговор:"
 
 #: Scenes/Reusable/Tasks/study.gd
 msgid "correct"
@@ -467,51 +523,51 @@ msgstr ""
 
 #: Scenes/Reusable/Tasks/tutoring.gd
 msgid "1 hour"
-msgstr ""
+msgstr "1 саат"
 
 #: Scenes/Reusable/Tasks/tutoring.gd
 msgid "MKD"
-msgstr ""
+msgstr "МКД"
 
 #: Scenes/Reusable/Tasks/tutoring.gd
 msgid "3 hours"
-msgstr ""
+msgstr "3 саати"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "Name:"
-msgstr ""
+msgstr "Име:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "Date of Birth:"
-msgstr ""
+msgstr "Дата на раѓање:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "Education:"
-msgstr ""
+msgstr "Образоване:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "High School"
-msgstr ""
+msgstr "Средно"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "Skills:"
-msgstr ""
+msgstr "Вештини:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "Typing, Teamwork, Basic Research"
-msgstr ""
+msgstr "Пишување, Истражување, Тимска работа..."
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "Experience:"
-msgstr ""
+msgstr "Искуство:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "None yet - willing to learn"
-msgstr ""
+msgstr "Без - Спремен да учам"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid "WRITE A CV"
-msgstr ""
+msgstr "Направи ЦВ"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid ""
@@ -527,6 +583,17 @@ msgid ""
 "\n"
 "Experience: None yet — willing to learn"
 msgstr ""
+"ЦВ Формат (Едноставен дизајн):\n"
+"\n"
+"Име: [Твоето Име]\n"
+"\n"
+"Дата на раѓање: [DD/MM/YYYY]\n"
+"\n"
+"Образование: Средноl\n"
+"\n"
+"Вештини: Пишување, Истражување, Тимска работа...\n"
+"\n"
+"Искуство: Без - Спремен да учам"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid ""
@@ -536,64 +603,68 @@ msgid ""
 "Skills: Typing, Teamwork, Basic Research\n"
 "Experience: None yet - willing to learn"
 msgstr ""
+"Име: Александар\n"
+"Дата на раѓање: 28/11/2005\n"
+"Образование: Средно\n"
+"Вештини: Пишување, програмирање, Работа со тим\n"
+"Искуство: Немам"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid "Finish"
-msgstr ""
+msgstr "Заврши"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid "Peek"
-msgstr ""
+msgstr "Ѕирни"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid "Write"
-msgstr ""
+msgstr "Пишувај"
 
-#: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
-#: Scenes/Reusable/Map/city.gd
-#: Scenes/Reusable/Map/classroom.gd
-#: Scenes/Reusable/Map/home.gd
-#: Scenes/Reusable/Map/professors_office.gd
-#: Scenes/Reusable/Map/school.gd
+#: Scenes/Reusable/Tasks/WRITE_A_CV.tscn Scenes/Reusable/Map/city.gd
+#: Scenes/Reusable/Map/classroom.gd Scenes/Reusable/Map/home.gd
+#: Scenes/Reusable/Map/professors_office.gd Scenes/Reusable/Map/school.gd
 #: Scenes/Reusable/Map/secretary_office.gd
 msgid "Back"
-msgstr ""
+msgstr "Назад"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Correct: %d"
-msgstr ""
+msgstr "Точни: %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Errors: %d"
-msgstr ""
+msgstr "Грешки %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Status:"
-msgstr ""
+msgstr "Статус"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "Perfect"
-msgstr ""
+msgstr "Одличен"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Almost Perfect"
-msgstr ""
+msgstr "Многу Добар"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Mid"
-msgstr ""
+msgstr "Добар"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Bad"
-msgstr ""
+msgstr "Доволен"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Dear Committee, Thank you for your time. Sincerely, {name}"
 msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
-msgid "Esteemed Committee, I am enthusiastic about joining your program. With gratitude, {name}"
+msgid ""
+"Esteemed Committee, I am enthusiastic about joining your program. With "
+"gratitude, {name}"
 msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
@@ -606,40 +677,45 @@ msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "WRITE A MOTIVATION LETTER"
-msgstr ""
+msgstr "Напиши Мотивационо Писмо"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
-msgid "Your screen is empty. A blinking cursor waits for your words... or a shortcut link glows temptingly at the bottom."
+msgid ""
+"Your screen is empty. A blinking cursor waits for your words... or a "
+"shortcut link glows temptingly at the bottom."
 msgstr ""
+"Екранот е празен. Документот седи отворен да го напишеш , но позади него "
+"чека кратенка..."
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "How do you want to write your motivation letter?"
-msgstr ""
+msgstr "Како ќе го напишеш мотивационото писмо?"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "Write it Yourself"
-msgstr ""
+msgstr "Сам ќе го напишам."
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "Use ChatGPT to Auto-Generate It"
-msgstr ""
+msgstr "Ќе го користам Chat-GPT да ми го среди целото."
 
-#: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
-#: Scenes/Reusable/Map/yco.gd
+#: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn Scenes/Reusable/Map/yco.gd
 msgid "Never mind"
-msgstr ""
+msgstr "Назад"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid ""
 "Dear Committee,\n"
-"I come from a modest background, but I’ve worked hard to maintain my grades. I believe this scholarship can help me continue my education and give back to the community.\n"
+"I come from a modest background, but I’ve worked hard to maintain my grades. "
+"I believe this scholarship can help me continue my education and give back "
+"to the community.\n"
 "Thank you for the opportunity.\n"
 "Sincerely, "
 msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "Type here"
-msgstr ""
+msgstr "Пишувај тука"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid ""
@@ -647,42 +723,45 @@ msgid ""
 "Errors: 00\n"
 "Status:        "
 msgstr ""
+"Точни:\n"
+"Грешки:\n"
+"Статус:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "Good Job!"
-msgstr ""
+msgstr "Браво!"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "Finish and go back"
-msgstr ""
+msgstr "Излези"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "Write what you see!"
-msgstr ""
+msgstr "Пишувај тоа што го гледаш!"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "Writing your letter with AI?!"
-msgstr ""
+msgstr "Користиш вештачка интелигенција за пишување?! "
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid "_"
-msgstr ""
+msgstr "_"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
 msgid "🎓 Project Completed!"
-msgstr ""
+msgstr "🎓 Проектот е завршен!"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
 msgid "You answered: %d"
-msgstr ""
+msgstr "Ти одговори: %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
 msgid "Time Taken: %d min"
-msgstr ""
+msgstr "Потребно време: %d мин"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
 msgid "Score: %d / 5"
-msgstr ""
+msgstr "Оценка: %d / 5"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "P"
@@ -690,15 +769,15 @@ msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "Start writing the final project now? You’ll only have one shot at this."
-msgstr ""
+msgstr "Почни со пишување на проектот? Ќе имаш само една шанса."
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "Begin writing"
-msgstr ""
+msgstr "Започни"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "Leave"
-msgstr ""
+msgstr "Излези"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "The Role of Civic Education in Modern Democracy"
@@ -714,7 +793,7 @@ msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "Stats"
-msgstr ""
+msgstr "Резултат"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "Questions : 5"
@@ -730,39 +809,39 @@ msgstr ""
 
 #: Scenes/Reusable/Map/city.gd
 msgid "Home"
-msgstr ""
+msgstr "Дома"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "School"
-msgstr ""
+msgstr "Училиште"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "MVR"
-msgstr ""
+msgstr "МВР"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "Volunteering Centre"
-msgstr ""
+msgstr "Центар за волонтирање"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "Activity"
-msgstr ""
+msgstr "Активности"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "Hang Out with Marko"
-msgstr ""
+msgstr "Дружење со Марко"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "Hang Out with Marko (Locked)"
-msgstr ""
+msgstr "Дружење со Марко(Заклуено)"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "Tutoring"
-msgstr ""
+msgstr "Држи приватни часови"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "Tutoring (Locked)"
-msgstr ""
+msgstr "Држи приватни часови(заклучено)"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "You can't hang out with Marko yet."
@@ -793,19 +872,19 @@ msgid "It's closed right now."
 msgstr ""
 
 #: Scenes/Reusable/Map/city.gd
-msgid "Not the best idea to go there now. The Youth Civil Office is closed between 09:00 and 15:30."
+msgid ""
+"Not the best idea to go there now. The Youth Civil Office is closed between "
+"09:00 and 15:30."
 msgstr ""
 
-#: Scenes/Reusable/Map/City.tscn
-#: Scenes/Reusable/Map/home.gd
-#: Scenes/Reusable/Map/Home.tscn
-#: Scenes/Reusable/Map/School.tscn
+#: Scenes/Reusable/Map/City.tscn Scenes/Reusable/Map/home.gd
+#: Scenes/Reusable/Map/Home.tscn Scenes/Reusable/Map/School.tscn
 msgid "Activities"
-msgstr ""
+msgstr "Активности"
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "Ask for document review"
-msgstr ""
+msgstr "Проверка на документи"
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "Ask for document review (Locked)"
@@ -813,59 +892,56 @@ msgstr ""
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "Ask about transcript"
-msgstr ""
+msgstr "Прашај за оценките"
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "(Lie) Yes, I wrote it myself."
-msgstr ""
+msgstr "(Лажи) Да, Сам ја напишав."
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "(Admit) I used help online."
-msgstr ""
+msgstr "(Признај) Користев помош онлајн."
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "Buy answers for "
-msgstr ""
+msgstr "Купи одговори за"
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "I’ll pass"
-msgstr ""
+msgstr "Не. Фала."
 
-#: Scenes/Reusable/Map/classroom.tscn
-#: Scenes/Reusable/Map/ProfessorOffice.tscn
+#: Scenes/Reusable/Map/classroom.tscn Scenes/Reusable/Map/ProfessorOffice.tscn
 msgid "GO BACK\n"
-msgstr ""
+msgstr "Назад\n"
 
-#: Scenes/Reusable/Map/home.gd
-#: Scenes/Reusable/Map/MVR.tscn
-#: Scenes/Reusable/Map/school.gd
-#: Scenes/Reusable/Map/YCO.tscn
+#: Scenes/Reusable/Map/home.gd Scenes/Reusable/Map/MVR.tscn
+#: Scenes/Reusable/Map/school.gd Scenes/Reusable/Map/YCO.tscn
 msgid "City"
-msgstr ""
+msgstr "Град"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Sleep"
-msgstr ""
+msgstr "Спиј"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Sleep (Locked)"
-msgstr ""
+msgstr "Спиј (Заклучено)"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Study"
-msgstr ""
+msgstr "Учење"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Schoolwork"
-msgstr ""
+msgstr "За училиште"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Check Mailbox"
-msgstr ""
+msgstr "Провери Сандаче"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Social Media"
-msgstr ""
+msgstr "Социјални Медиуми"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Subject 1"
@@ -877,105 +953,103 @@ msgstr ""
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Notes #%d"
-msgstr ""
+msgstr "Белешки #%d"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Done"
-msgstr ""
+msgstr "Готово"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Write CV"
-msgstr ""
+msgstr "Пишувај ЦВ"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Write Motivation Letter"
-msgstr ""
+msgstr "Пишувај Мотивационо пицмо"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Write Project"
-msgstr ""
+msgstr "Пишувај проект"
 
 #: Scenes/Reusable/Map/mvr.gd
 msgid "I need a birth certificate."
-msgstr ""
+msgstr "Ми треба извод за родени."
 
-#: Scenes/Reusable/Map/mvr.gd
-#: Scenes/Reusable/Map/professors_office.gd
+#: Scenes/Reusable/Map/mvr.gd Scenes/Reusable/Map/professors_office.gd
 msgid "Never mind."
-msgstr ""
+msgstr "Нема врска."
 
 #: Scenes/Reusable/Map/mvr.gd
 msgid "Standard (%s ден) – Ready in 3 days"
-msgstr ""
+msgstr "Стандардна (%s МКД) - Спремно за 3 дена"
 
 #: Scenes/Reusable/Map/mvr.gd
 msgid "Expedited (%s ден) – Ready tomorrow"
-msgstr ""
+msgstr "Брза постапка  (%s МКД) - Спремно утре"
 
 #: Scenes/Reusable/Map/mvr.gd
 msgid "Same-day (%s ден) – After 17:00"
-msgstr ""
+msgstr "Ист-ден  (%s ден) - После 17:00"
 
 #: Scenes/Reusable/Map/mvr.gd
 msgid "Let me think on it."
-msgstr ""
+msgstr "Чекај да размислам"
 
 #: Scenes/Reusable/Map/mvr.gd
 msgid "Wait here until 17:00"
-msgstr ""
+msgstr "Чекај тука до 17:00"
 
 #: Scenes/Reusable/Map/mvr.gd
 msgid "I’ll come back later"
-msgstr ""
+msgstr "Ќе се вратам подоцна"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "Talk to Professor"
-msgstr ""
+msgstr "Збори со професорот"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "Submit Final Project"
-msgstr ""
+msgstr "Предај го проектот"
 
-#: Scenes/Reusable/Map/professors_office.gd
-#: Scenes/Reusable/Map/yco.gd
+#: Scenes/Reusable/Map/professors_office.gd Scenes/Reusable/Map/yco.gd
 msgid "Talk"
-msgstr ""
+msgstr "Збори"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "When do I need to bring it?"
-msgstr ""
+msgstr "Кога да го донесам?"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "I'll bring it tomorrow."
-msgstr ""
+msgstr "Ќе го донесам утре"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "Deal (300 денари)"
-msgstr ""
+msgstr "Договорено (300 МКД)"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "Buy it (500 денари)"
-msgstr ""
+msgstr "Купи го (500 МКД)"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "That’s still shady."
-msgstr ""
+msgstr "Тоа не е баш , легално?"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "Anything else for sale?"
-msgstr ""
+msgstr "Нешто друго за купување има?"
 
 #: Scenes/Reusable/Map/school.gd
 msgid "Classroom"
-msgstr ""
+msgstr "Училна"
 
 #: Scenes/Reusable/Map/school.gd
 msgid "Professor Office"
-msgstr ""
+msgstr "Канцеларија на професорот"
 
 #: Scenes/Reusable/Map/school.gd
 msgid "Secretary Office"
-msgstr ""
+msgstr "Канцеларија на секретарката"
 
 #: Scenes/Reusable/Map/school.gd
 msgid "The classroom is closed. (Open after 12:30 on Day 1.)"
@@ -995,11 +1069,11 @@ msgstr ""
 
 #: Scenes/Reusable/Map/school.gd
 msgid "📘 Press T to open your Tasks"
-msgstr ""
+msgstr "📘 Кликни Т да ги отвориш Задачите"
 
 #: Scenes/Reusable/Map/school.gd
 msgid "⚙️ Press ESC to open Settings"
-msgstr ""
+msgstr "⚙️ Кликни ESC да отвориш подесувања"
 
 #: Scenes/Reusable/Map/School.tscn
 msgid "-30"
@@ -1027,19 +1101,19 @@ msgstr ""
 
 #: Scenes/Reusable/Map/secretary_office.gd
 msgid "Ask about scholarship"
-msgstr ""
+msgstr "Прашај за стипендијата"
 
 #: Scenes/Reusable/Map/secretary_office.gd
 msgid "Print a document"
-msgstr ""
+msgstr "Принтај документ"
 
 #: Scenes/Reusable/Map/secretary_office.gd
 msgid "Submit documents"
-msgstr ""
+msgstr "Поднеси документи"
 
 #: Scenes/Reusable/Map/secretary_office.gd
 msgid "Nothing to print right now."
-msgstr ""
+msgstr "Нема ништо за принтање"
 
 #: Scenes/Reusable/Map/secretary_office.gd
 msgid "❌ Not enough money to print."
@@ -1047,83 +1121,83 @@ msgstr ""
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "I’m here to volunteer."
-msgstr ""
+msgstr "Тука сум да волонтирам"
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "Depends. What would I be doing?"
-msgstr ""
+msgstr "Зависи? Што би праевел?"
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "Offer a bribe for a recommendation (%d ден)"
-msgstr ""
+msgstr "Подмити го за препорака."
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "I’ll come back later."
-msgstr ""
+msgstr "Ќе се вратам подоцна."
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "Volunteer (once per day)"
-msgstr ""
+msgstr "Волонтирај (еднаш дневно)"
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "Pay (%d ден)"
-msgstr ""
+msgstr "Плати (%d МКД)"
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "Outreach & Flyers"
-msgstr ""
+msgstr "Делење флаери"
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "Archive & Filing"
-msgstr ""
+msgstr "Архивирање"
 
 #: Scenes/Reusable/Map/yco.gd
 msgid "Survey Help"
-msgstr ""
+msgstr "Анкетирање"
 
 #: Scenes/Reusable/Events/marko_first_event.gd
 msgid "Let’s study together."
-msgstr ""
+msgstr "Ај заедно да учиме."
 
 #: Scenes/Reusable/Events/marko_first_event.gd
 msgid "I’m studying alone."
-msgstr ""
+msgstr "Сам ќе учам."
 
 #: Scenes/Reusable/Events/marko_first_event.gd
 msgid "We can hang out."
-msgstr ""
+msgstr "Ајде да се дружиме."
 
 #: Scenes/Reusable/Events/marko_first_event.gd
 msgid "No, seriously. Let’s study."
-msgstr ""
+msgstr "Не, ајде сериозно да учиме."
 
 #: Scenes/Reusable/Events/marko_first_event.gd
 msgid "Alright, let’s hang out a bit."
-msgstr ""
+msgstr "Важи, ајде ќе искочам малце."
 
 #: Scenes/Reusable/Events/marko_first_event.gd
 msgid "No. I’ll study on my own."
-msgstr ""
+msgstr "Не , ќе учам сам."
 
 #: Scenes/Reusable/Events/marko_first_event.gd
 msgid "Fine, we can hang out."
-msgstr ""
+msgstr "Ајде може ќе искочиме."
 
 #: Scenes/Reusable/Events/marko_second_event.gd
 msgid "Yeah, let’s study."
-msgstr ""
+msgstr "Ајде , ќе учиме "
 
 #: Scenes/Reusable/Events/marko_second_event.gd
 msgid "Nah, I’m done for tonight — let’s party!"
-msgstr ""
+msgstr "Не бе , ајде да журкаме."
 
 #: Scenes/Reusable/Events/marko_second_event.gd
 msgid "Let’s go."
-msgstr ""
+msgstr "Идеме одма."
 
 #: Scenes/Reusable/Events/marko_second_event.gd
 msgid "I need to study."
-msgstr ""
+msgstr "Морам да учам."
 
 #: Scenes/Reusable/Events/start_event.gd
 msgid "Click to unselect"
@@ -1139,29 +1213,28 @@ msgstr ""
 
 #: Scenes/Reusable/Events/study_with_marko.gd
 msgid "Study %s now"
-msgstr ""
+msgstr "Учи %s сега "
 
 #: Scenes/Reusable/Events/study_with_marko.gd
 msgid "We’re done"
-msgstr ""
+msgstr "Завршивме тука"
 
 #: Scripts/Singleton/UI.gd
 msgid "Day %d"
-msgstr ""
+msgstr "Ден %d"
 
 #: Scripts/Singleton/UI.gd
 msgid "Task added: %s (0/%d)"
-msgstr ""
+msgstr "Додадена задача: %s (0/%d)"
 
 #: Scripts/Singleton/UI.gd
 msgid "Task added: %s"
-msgstr ""
+msgstr "Додадена задача: %s"
 
 #: Scripts/Singleton/UI.gd
 msgid "Task updated: %s → Step %d/%d"
-msgstr ""
+msgstr "Ажурирање на задачата: %s → Step %d/%d"
 
 #: Scripts/Singleton/UI.gd
 msgid "Task updated: %s → Step %d"
-msgstr ""
-
+msgstr "Ажурирање на задачата: %s → Step %d"

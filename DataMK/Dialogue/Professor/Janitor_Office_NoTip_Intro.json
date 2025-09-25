@@ -2,12 +2,12 @@
   "id": "Janitor_Office_NoTip_Intro",
   "lines": [
     {
-      "speaker": "Домар",
-      "text": "Well, well… you look like someone who needs help no one official wants to give."
+      "speaker": "Хигиеничар",
+      "text": "Хмм… изгледате на некој на кој му е потребна помош која што никој официјален не би ја понудил."
     },
     {
-      "speaker": "Домар",
-      "text": "Got a project from last year. Real polished work. Yours for 500 денари."
+      "speaker": "Хигиеничар",
+      "text": "Имам завршена проектна задача од минатата година. Одлично средена. Ваша е за 500 денари."
     },
     {
       "action": "show_janitor_office_options"

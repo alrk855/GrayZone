@@ -3,25 +3,25 @@
   "pool": [
     {
       "id": "SCI_01",
-      "q": "What gas do plants mainly take in during photosynthesis?",
-      "correct": "Carbon dioxide",
+      "q": "Кој гас главно го внесуваат растенијата за време на фотосинтеза?",
+      "correct": "Јаглерод диоксид",
       "wrong": [
-        "Oxygen",
-        "Hydrogen"
+        "Кислород",
+        "Водород"
       ]
     },
     {
       "id": "SCI_02",
-      "q": "Which organ pumps blood around the human body?",
-      "correct": "Heart",
+      "q": "Кој орган пумпа крв низ човековото тело?",
+      "correct": "Срцето",
       "wrong": [
-        "Lungs",
-        "Liver"
+        "Белите дробови",
+        "Црниот дроб"
       ]
     },
     {
       "id": "SCI_03",
-      "q": "Water boils at what temperature at sea level?",
+      "q": "На која температура врие водата?",
       "correct": "100°C",
       "wrong": [
         "50°C",
@@ -30,200 +30,200 @@
     },
     {
       "id": "SCI_04",
-      "q": "What force pulls objects toward Earth?",
-      "correct": "Gravity",
+      "q": "Која сила ги влече предметите кон земјата?",
+      "correct": "Гравитација",
       "wrong": [
-        "Magnetism",
-        "Friction"
+        "Магнетизам",
+        "Триење"
       ]
     },
     {
       "id": "SCI_05",
-      "q": "How many states of matter are commonly taught in school?",
-      "correct": "Three",
+      "q": "Колку состојби на материја најчесто се изучуваат во училиште?",
+      "correct": "Три",
       "wrong": [
-        "Five",
-        "Six"
+        "Пет",
+        "Шест"
       ]
     },
     {
       "id": "SCI_06",
-      "q": "Which planet is known as the Red Planet?",
-      "correct": "Mars",
+      "q": "Која планета е позната како Црвена Планета?",
+      "correct": "Марс",
       "wrong": [
-        "Venus",
-        "Jupiter"
+        "Венера",
+        "Јупитер"
       ]
     },
     {
       "id": "SCI_07",
-      "q": "What part of the cell contains DNA?",
-      "correct": "Nucleus",
+      "q": "Кој дел од клетката содржи ДНК?",
+      "correct": "Јадро",
       "wrong": [
-        "Cell wall",
-        "Cytoplasm"
+        "Клеточен ѕид",
+        "Цитоплазма"
       ]
     },
     {
       "id": "SCI_08",
-      "q": "What do we call baby frogs?",
-      "correct": "Tadpoles",
+      "q": "Како се нарекуваат младите жаби?",
+      "correct": "Полугласци",
       "wrong": [
-        "Puppies",
-        "Chicks"
+        "Кутриња",
+        "Пилиња"
       ]
     },
     {
       "id": "SCI_09",
-      "q": "What vitamin do we mainly get from sunlight?",
-      "correct": "Vitamin D",
+      "q": "Кој витамин го добиваме од сончевите зраци?",
+      "correct": "Витамин Д",
       "wrong": [
-        "Vitamin C",
-        "Vitamin B12"
+        "Витамин Ц",
+        "Витамин Б12"
       ]
     },
     {
       "id": "SCI_10",
-      "q": "Which gas makes up most of the Earth’s atmosphere?",
-      "correct": "Nitrogen",
+      "q": "Кој гас го сочинува најголем дел од атмосферата на Земјата?",
+      "correct": "Азот",
       "wrong": [
-        "Oxygen",
-        "Carbon dioxide"
+        "Кислород",
+        "Јаглерод диоксид"
       ]
     },
     {
       "id": "SCI_11",
-      "q": "What do bees collect from flowers to make honey?",
-      "correct": "Nectar",
+      "q": "Што собираат пчелите од цвеќињата за да направат мед?",
+      "correct": "Нектар",
       "wrong": [
-        "Seeds",
-        "Roots"
+        "Семки",
+        "Корени"
       ]
     },
     {
       "id": "SCI_12",
-      "q": "Which blood cells fight infection?",
-      "correct": "White blood cells",
+      "q": "Кои крвни клетки се борат против инфекции?",
+      "correct": "Бели крвни клетки",
       "wrong": [
-        "Red blood cells",
-        "Platelets"
+        "Црвени крвни клетки",
+        "Тромбоцити"
       ]
     },
     {
       "id": "SCI_13",
-      "q": "What instrument is used to measure temperature?",
-      "correct": "Thermometer",
+      "q": "Со кој инструмент се мери температура?",
+      "correct": "Термометар",
       "wrong": [
-        "Barometer",
-        "Speedometer"
+        "Барометар",
+        "Брзинометар"
       ]
     },
     {
       "id": "SCI_14",
-      "q": "What is the center of our solar system?",
-      "correct": "The Sun",
+      "q": "Кој е центарот на сончевиот систем?",
+      "correct": "Сонцето",
       "wrong": [
-        "The Moon",
-        "Polaris"
+        "Месечината",
+        "Поларис"
       ]
     },
     {
       "id": "SCI_15",
-      "q": "Which human sense is associated with the nose?",
-      "correct": "Smell",
+      "q": "Кое човечко сетило е поврзано со носот?",
+      "correct": "Мирис",
       "wrong": [
-        "Taste",
-        "Hearing"
+        "Вкус",
+        "Слух"
       ]
     },
     {
       "id": "SCI_16",
-      "q": "What gas do most living things need to breathe?",
-      "correct": "Oxygen",
+      "q": "Кој гас е потребен за дишење кај повеќето живи суштества?",
+      "correct": "Кислород",
       "wrong": [
-        "Helium",
-        "Carbon monoxide"
+        "Хелиум",
+        "Јаглерод моноксид"
       ]
     },
     {
       "id": "SCI_17",
-      "q": "What do we call the change from liquid to gas?",
-      "correct": "Evaporation",
+      "q": "Како е нарекува преминот од течна во гасовита состојба?",
+      "correct": "Испарување",
       "wrong": [
-        "Condensation",
-        "Freezing"
+        "Кондензација",
+        "Замрзнување"
       ]
     },
     {
       "id": "SCI_18",
-      "q": "Which metal is liquid at room temperature?",
-      "correct": "Mercury",
+      "q": "Кој метал е течен на собна температура?",
+      "correct": "Жива",
       "wrong": [
-        "Iron",
-        "Aluminum"
+        "Железо",
+        "Алуминиум"
       ]
     },
     {
       "id": "SCI_19",
-      "q": "What kind of animal is a salmon?",
-      "correct": "Fish",
+      "q": "Каков тип на животно е лососот?",
+      "correct": "Риба",
       "wrong": [
-        "Amphibian",
-        "Reptile"
+        "Водоземец",
+        "Влекач"
       ]
     },
     {
       "id": "SCI_20",
-      "q": "What part of the plant absorbs water from the soil?",
-      "correct": "Roots",
+      "q": "Кој дел од растението ја впива водата од почвата?",
+      "correct": "Корен",
       "wrong": [
-        "Stem",
-        "Flower"
+        "Стебло",
+        "Цвет"
       ]
     },
     {
       "id": "SCI_21",
-      "q": "What is the largest organ of the human body?",
-      "correct": "Skin",
+      "q": "Кој е најголемиот орган на човековото тело?",
+      "correct": "Кожата",
       "wrong": [
-        "Liver",
-        "Brain"
+        "Црниот дроб",
+        "Мозокот"
       ]
     },
     {
       "id": "SCI_22",
-      "q": "What do we call the path Earth takes around the Sun?",
-      "correct": "Orbit",
+      "q": "Како се нарекува патеката по која Земјата се движи околу Сонцето?",
+      "correct": "Орбита",
       "wrong": [
-        "Axis",
-        "Eclipse"
+        "Оска",
+        "Еклипса"
       ]
     },
     {
       "id": "SCI_23",
-      "q": "What is the process of a caterpillar becoming a butterfly?",
-      "correct": "Metamorphosis",
+      "q": "Како се нарекува процесот кога гасеницата се претвора во пеперутка?",
+      "correct": "Метаморфоза",
       "wrong": [
-        "Hibernation",
-        "Photosynthesis"
+        "Хибернација",
+        "Фотосинтеза"
       ]
     },
     {
       "id": "SCI_24",
-      "q": "Which tool is used to see very tiny objects like cells?",
-      "correct": "Microscope",
+      "q": "Кој инструмент се користи за гледање многу ситни објекти, како клетки?",
+      "correct": "Микроскоп",
       "wrong": [
-        "Telescope",
-        "Periscope"
+        "Телескоп",
+        "Перископ"
       ]
     },
     {
       "id": "SCI_25",
-      "q": "What is H2O commonly known as?",
-      "correct": "Water",
+      "q": "Кој е другиот назив за H2O?",
+      "correct": "Вода",
       "wrong": [
-        "Salt",
-        "Sugar"
+        "Сол",
+        "Шеќер"
       ]
     }
   ]

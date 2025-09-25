@@ -1,23 +1,23 @@
 {
-  "title": "Учиш {subject2}",
-  "giver": "Самиот",
+  "title": "Учи {subject2}",
+  "giver": "Самостојно",
   "location": "Дома",
   "steps": [
     {
       "id": "study_1",
-      "text": "Учиш {subject2} (1/4)"
+      "text": "Учи {subject2} (1/4)"
     },
     {
       "id": "study_2",
-      "text": "Учиш {subject2} (2/4)"
+      "text": "Учи {subject2} (2/4)"
     },
     {
       "id": "study_3",
-      "text": "Учиш {subject2} (3/4)"
+      "text": "Учи {subject2} (3/4)"
     },
     {
       "id": "study_4",
-      "text": "Учиш {subject2} (4/4)"
+      "text": "Учи {subject2} (4/4)"
     }
   ]
 }

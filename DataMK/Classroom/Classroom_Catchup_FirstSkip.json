@@ -2,20 +2,20 @@
   "id": "Classroom_Catchup_FirstSkip",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "You missed class. That’s {ndays} skipped day so far."
+      "speaker": "Класен раководител",
+      "text": "Го пропушти часот. Ова е {ndays} ден што го изоставаш досега."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "If you want to catch up, start with the basics: volunteer, prepare your CV, and show up."
+      "speaker": "Класен раководител",
+      "text": "Доколку сакаш да надоместиш, започни со основите: волонтирај, подготви CV и доаѓај на час!"
     },
     {
       "speaker": "Наратор",
-      "text": "(He watches you carefully.)"
+      "text": "(Те гледа внимателно.)"
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "This is a warning. Don’t make a habit of it."
+      "speaker": "Класен раководител",
+      "text": "Те предупредувам. Немој да ти стане навика."
     }
   ]
 }

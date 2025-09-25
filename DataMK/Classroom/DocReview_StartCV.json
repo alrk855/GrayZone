@@ -2,16 +2,16 @@
   "id": "DocReview_StartCV",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Sure. Let’s take a look. Start with the CV…"
+      "speaker": "Класен раководител",
+      "text": "Ајде да видиме. Почнете со CV-то..."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Clean layout. You’ve kept it simple. Good. It might be short, but at least it’s honest."
+      "speaker": "Класен раководител",
+      "text": "Убаво е средено, едноставно. Малку е кратко, но барем е со искреност."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Now, the motivational letter…"
+      "speaker": "Класен раководител",
+      "text": "Сега, мотивациското писмо..."
     }
   ]
 }

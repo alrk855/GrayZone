@@ -2,16 +2,16 @@
   "id": "DocReview_Admit_Rewrite",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "I figured. I appreciate your honesty."
+      "speaker": "Класен раководител",
+      "text": "Ја ценам вашата искреност."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "You still have time to rewrite this. Make it sound like you."
+      "speaker": "Класен раководител",
+      "text": "Сѐ уште имате време да го препишете. Нека звучи на вас."
     },
     {
       "speaker": "Наратор",
-      "text": "Your motivational-letter progress has been reset. You’ll need to rewrite it and print it again before returning."
+      "text": "Напредокот за мотивациското писмо е ресетиран. Треба да го препишеш и повторно да го испринташ пред да се вратиш."
     }
   ]
 }

@@ -2,16 +2,16 @@
   "id": "Prof_Praise_Initiative",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "(He nods once.)"
+      "speaker": "Професор",
+      "text": "(Кимнува со главата.)"
     },
     {
-      "speaker": "Professor",
-      "text": "You said you’d bring it tomorrow—and you did."
+      "speaker": "Професор",
+      "text": "Ветивте дека ќе ја донесете денес и тоа го сторивте."
     },
     {
-      "speaker": "Professor",
-      "text": "Good initiative."
+      "speaker": "Професор",
+      "text": "Добра иницијатива."
     }
   ]
 }

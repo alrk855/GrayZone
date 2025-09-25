@@ -2,8 +2,8 @@
   "id": "Prof_Initial_AskDeadline",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "I’ll expect your final project by the end of the week. Don’t forget to print it before you bring it."
+      "speaker": "Професор",
+      "text": "Одлично. Ја очекувам вашата проектна задача до крајот на неделата. Не заборавајте да ја донесете во испринтана форма."
     },
     {
       "action": "add_task",

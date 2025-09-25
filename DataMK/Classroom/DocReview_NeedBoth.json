@@ -2,12 +2,12 @@
   "id": "DocReview_NeedBoth",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "To review, I need both your CV and your motivational letter."
+      "speaker": "Класен раководител",
+      "text": "За да ги прегледам, потребни ми се и CV-то и мотивациското писмо."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Come back when you have both ready."
+      "speaker": "Класен раководител",
+      "text": "Вратете се назад кога и двете ќе ви бидат изготвени."
     }
   ]
 }

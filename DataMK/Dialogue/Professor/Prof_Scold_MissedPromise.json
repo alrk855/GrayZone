@@ -2,16 +2,16 @@
   "id": "Prof_Scold_MissedPromise",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "(He glances at the clock.)"
+      "speaker": "Професор",
+      "text": "(Го погледнува часовникот.)"
     },
     {
-      "speaker": "Professor",
-      "text": "You promised yesterday. You’re late."
+      "speaker": "Професор",
+      "text": "Ветивте дека вчера ќе ја донесете. Доцните."
     },
     {
-      "speaker": "Professor",
-      "text": "Next time, keep your word."
+      "speaker": "Професор",
+      "text": "Следен пат држете се до зборот."
     }
   ]
 }

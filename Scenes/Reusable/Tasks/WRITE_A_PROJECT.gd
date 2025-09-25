@@ -16,8 +16,8 @@ extends Node
 @onready var outro: Control                = $"Outro"
 
 # ---------- Config ----------
-# RELATIVE ID under Data/. Example file: res://Data/Quizzes/Project_Quiz.json
-# Localized: GameState.get_data_path("Quizzes/Project_Quiz.json") -> res://DataMK/... if mk, etc.
+# RELATIVE ID under Data/. Example: "Quizzes/Project_Quiz.json"
+# Locale-aware absolute path is resolved via GameState.get_data_path(...)
 @export var QUESTIONS_JSON_ID: String = "Quizzes/Project_Quiz.json"
 
 const LEAVE_BUTTON_PATH: NodePath = NodePath("Leave/button2")
@@ -113,7 +113,7 @@ func _load_questions_from_json() -> void:
 		var ans_i: int = int(ans_v)
 
 		questions.append({
-			"question": q,              # already localized via file
+			"question": q,              # already localized via file content
 			"options": [opt0, opt1, opt2],
 			"answer": clamp(ans_i, 0, 2)
 		})
@@ -280,9 +280,9 @@ func _go_home() -> void:
 
 # ---------- ID → Path (Golden Standard) ----------
 func _path_from_id(id: String) -> String:
-	# Golden rule: *always* resolve relative JSON IDs through GameState.get_data_path(relative)
+	# R1: strictly depend on GameState.get_data_path; no direct res://Data fallback.
 	var rel: String = String(id).strip_edges().trim_prefix("/")
-	if GameState.has_method("get_data_path"):
-		return String(GameState.get_data_path(rel))
-	# Fallback for dev/debug if get_data_path() isn’t present:
-	return "res://Data/" + rel
+	if not GameState.has_method("get_data_path"):
+		return ""
+	var abs_path_v: Variant = GameState.get_data_path(rel)
+	return String(abs_path_v)

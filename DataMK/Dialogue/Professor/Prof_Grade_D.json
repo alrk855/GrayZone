@@ -2,16 +2,16 @@
   "id": "Prof_Grade_D",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "(He squints at a page, confused.)"
+      "speaker": "Професор",
+      "text": "(Збунето гледа во проектната задача.)"
     },
     {
-      "speaker": "Professor",
-      "text": "This is barely coherent. You want to pass with this?"
+      "speaker": "Професор",
+      "text": "Ова нема смисла. Со ова ли сакате да поминете?"
     },
     {
-      "speaker": "Professor",
-      "text": "D. You’re lucky I’m in a good mood."
+      "speaker": "Професор",
+      "text": "Двојка. Имате среќа што сум во добро расположение."
     }
   ]
 }

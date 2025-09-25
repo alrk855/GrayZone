@@ -2,8 +2,8 @@
   "id": "Janitor_Office_AnythingElse",
   "lines": [
     {
-      "speaker": "Домар",
-      "text": "Maybe. Try the classroom later this week… if you’re the type who studies answer sheets instead of books."
+      "speaker": "Хигиеничар",
+      "text": "Можеби. Отидете до училницата подоцна оваа недела… доколку сте како оние лица кои ги преферираат готовите решенија, отколку учењето од книга."
     },
     {
       "action": "add_task",

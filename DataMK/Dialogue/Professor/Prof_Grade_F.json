@@ -2,16 +2,16 @@
   "id": "Prof_Grade_F",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "(He exhales through his nose.)"
+      "speaker": "Професор",
+      "text": "(Длабоко издишува.)"
     },
     {
-      "speaker": "Professor",
-      "text": "This isn’t up to standard. Rushed, unclear, and unsupported."
+      "speaker": "Професор",
+      "text": "Ова не е по стандардно ниво. Избрзано, нејасно и необразложено."
     },
     {
-      "speaker": "Professor",
-      "text": "F."
+      "speaker": "Професор",
+      "text": "Единица."
     }
   ]
 }

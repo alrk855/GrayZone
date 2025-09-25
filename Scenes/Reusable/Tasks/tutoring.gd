@@ -87,8 +87,8 @@ func _ask_choice() -> String:
 	var panel = ps.instantiate()
 	add_child(panel)
 	panel.call("show_options", [
-		{"id":"1h", "text": tr("1 hour") + " (%d %s)" % [MONEY_1H, tr("ден")]},
-		{"id":"3h", "text": tr("3 hours") + " (%d %s)" % [MONEY_3H, tr("ден")]}
+		{"id":"1h", "text": tr("1 hour") + " (%d %s)" % [MONEY_1H, tr("MKD")]},
+		{"id":"3h", "text": tr("3 hours") + " (%d %s)" % [MONEY_3H, tr("MKD")]}
 	], Callable(self, "_on_choice"))
 
 	var pick: String = await selection_made

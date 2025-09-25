@@ -2,12 +2,12 @@
   "id": "Classroom_Morning_Late",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Nice of you to join us. Hopefully, your future employer won’t mind tardiness either."
+      "speaker": "Класен раководител",
+      "text": "Добро што ни се приклучи. Се надевам вашиот иден работодавец нема да има проблем со вакво доцнење."
     },
     {
       "speaker": "Наратор",
-      "text": "You quietly take your seat and try to catch up."
+      "text": "Тивко седнуваш и пробуваш да се фокусираш."
     },
     {
       "action": "adjust_reputation",

@@ -3,16 +3,16 @@
   "post_time_cost_minutes": 120,
   "lines": [
 	{
-	  "speaker": "Narrator",
-	  "text": "You open your phone to ‘take a quick break’. Scroll. Like. Scroll. Comment. Scroll."
+	  "speaker": "Наратор",
+	  "text": "Го отвараш телефонот за мала пауза. Скрол. Лајк. Скрол. Коментар. Скрол."
 	},
 	{
-	  "speaker": "Narrator",
-	  "text": "A ping here, a reel there—your focus unravels into threads."
+	  "speaker": "Наратор",
+	  "text": "Едно пингче тука, еден рил таму — твојот фокус почнува да се губи."
 	},
 	{
-	  "speaker": "Narrator",
-	  "text": "Memes blur into news, into reels, into… nothing. Time dissolves."
-	},
+	  "speaker": "Наратор",
+	  "text": "Мемињата се мешаат со вести, со рилови, со… ништо. Времето поминува."
+	}
   ]
 }

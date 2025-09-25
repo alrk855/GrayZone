@@ -1,3 +1,4 @@
+# res://Scenes/Reusable/Map/yco.gd
 extends Control
 
 # ---------- Inspector ----------
@@ -9,33 +10,32 @@ extends Control
 @export var volunteer_bg_male: Texture2D
 @export var volunteer_bg_female: Texture2D
 
-@export var city_scene_path: String           = "res://Scenes/Reusable/Map/City.tscn"
-@export var choice_panel_scene: PackedScene   = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
+@export var city_scene_path: String         = "res://Scenes/Reusable/Map/City.tscn"
+@export var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 
-# ---------- JSON paths ----------
-const D: String = "res://Data/YCO/"
-const J_INTRO: String             = D + "Daniel_Intro.json"
-const J_INTRO_FALLBACK: String    = D + "Daniel_Intro_Only.json"
+# ---------- Dialogue IDs (RELATIVE under Data/, resolved via GameState.get_data_path) ----------
+const J_INTRO_ID:               String = "YCO/Daniel_Intro.json"
+const J_INTRO_FALLBACK_ID:      String = "YCO/Daniel_Intro_Only.json"
 
-const J_OPT1_ACCEPT: String       = D + "Daniel_Option1_Accept.json"
-const J_OPT2_INFO: String         = D + "Daniel_Option2_Info.json"
-const J_OPT3_BRIBE_OFFER: String  = D + "Daniel_Option3_BribeOffer.json" # generic offer line
+const J_OPT1_ACCEPT_ID:         String = "YCO/Daniel_Option1_Accept.json"
+const J_OPT2_INFO_ID:           String = "YCO/Daniel_Option2_Info.json"
+const J_OPT3_BRIBE_OFFER_ID:    String = "YCO/Daniel_Option3_BribeOffer.json"
 
-const J_TALK_0: String            = D + "Daniel_Talk_0of3.json"
-const J_TALK_1: String            = D + "Daniel_Talk_1of3.json"
-const J_TALK_2: String            = D + "Daniel_Talk_2of3.json"
-const J_TALK_3_GRANT: String      = D + "Daniel_Talk_3of3_GrantLetter.json"
-const J_TALK_POST: String         = D + "Daniel_Talk_PostLetter.json"
+const J_TALK_0_ID:              String = "YCO/Daniel_Talk_0of3.json"
+const J_TALK_1_ID:              String = "YCO/Daniel_Talk_1of3.json"
+const J_TALK_2_ID:              String = "YCO/Daniel_Talk_2of3.json"
+const J_TALK_3_GRANT_ID:        String = "YCO/Daniel_Talk_3of3_GrantLetter.json"
+const J_TALK_POST_ID:           String = "YCO/Daniel_Talk_PostLetter.json"
 
-const J_VOL_FLYERS: String        = D + "Volunteer_Flyers.json"
-const J_VOL_FILING: String        = D + "Volunteer_Filing.json"
-const J_VOL_SURVEY: String        = D + "Volunteer_Survey.json"
-const J_VOL_DONE_TODAY: String    = D + "Volunteer_DoneToday.json"
+const J_VOL_FLYERS_ID:          String = "YCO/Volunteer_Flyers.json"
+const J_VOL_FILING_ID:          String = "YCO/Volunteer_Filing.json"
+const J_VOL_SURVEY_ID:          String = "YCO/Volunteer_Survey.json"
+const J_VOL_DONE_TODAY_ID:      String = "YCO/Volunteer_DoneToday.json"
 
 # Bribe JSONs
-const J_BRIBE_DECLINED: String            = D + "Daniel_Bribe_Declined.json"
-const J_BRIBE_NOMONEY: String             = D + "Daniel_Bribe_NoMoney.json"
-const J_BRIBE_GRANTED: String             = D + "Daniel_Bribe_Granted.json"
+const J_BRIBE_DECLINED_ID:      String = "YCO/Daniel_Bribe_Declined.json"
+const J_BRIBE_NOMONEY_ID:       String = "YCO/Daniel_Bribe_NoMoney.json"
+const J_BRIBE_GRANTED_ID:       String = "YCO/Daniel_Bribe_Granted.json"
 
 # ---------- Task / Flags / Ints ----------
 const TASK_ID: String = "volunteer"
@@ -47,7 +47,7 @@ const F_BRIBED: String     = "yco_letter_bribed"
 const I_COUNT: String    = "yco_volunteer_count"
 const I_LAST_DAY: String = "yco_last_shift_day"
 
-# ---------- Bribe pricing (base 1000; -200 per shift; floor 200) ----------
+# ---------- Bribe pricing ----------
 const BRIBE_BASE_PRICE: int = 1000
 const BRIBE_DISCOUNT_PER_SHIFT: int = 200
 const BRIBE_MIN_PRICE: int = 200
@@ -145,13 +145,22 @@ func _set_talk_enabled(v: bool) -> void:
 		_btn_talk.visible = v
 		_btn_talk.disabled = not v
 
-func _play_and_wait(path: String) -> void:
+# Resolve a relative ID via GameState.get_data_path (R1: no fallback)
+func _jp(rel_id: String) -> String:
+	var base := String(rel_id).strip_edges().trim_prefix("/")
+	if not GameState.has_method("get_data_path"):
+		push_error("GameState.get_data_path missing; cannot resolve: " + base)
+		return ""
+	return String(GameState.get_data_path(base))
+
+func _play_and_wait(rel_id: String) -> void:
 	_dialogue_playing = true
 	_set_talk_enabled(false)
-	if not ResourceLoader.exists(path):
-		await _play_inline_notice("Missing dialogue: " + path.get_file())
+	var p := _jp(rel_id)
+	if p == "" or not FileAccess.file_exists(p):
+		await _play_inline_notice("Missing dialogue: " + rel_id)
 	else:
-		var ui = DialogueManager.start_dialogue(path, self)
+		var ui = DialogueManager.start_dialogue(p, self)
 		if ui and ui.has_signal("dialogue_finished"):
 			await Signal(ui, "dialogue_finished")
 	_dialogue_playing = false
@@ -168,12 +177,13 @@ func _play_inline_notice(text: String) -> void:
 	if ui and ui.has_signal("dialogue_finished"):
 		await Signal(ui, "dialogue_finished")
 
-# Replace {price} inside a JSON by writing a temp file (no dependency on placeholder system)
-func _play_with_price(path: String, price: int) -> void:
-	if not ResourceLoader.exists(path):
-		await _play_inline_notice("Missing dialogue: " + path.get_file())
+# Replace {price} inside a JSON by writing a temp file (still via relative ID)
+func _play_with_price(rel_id: String, price: int) -> void:
+	var p := _jp(rel_id)
+	if p == "" or not FileAccess.file_exists(p):
+		await _play_inline_notice("Missing dialogue: " + rel_id.get_file())
 		return
-	var txt := FileAccess.get_file_as_string(path)
+	var txt := FileAccess.get_file_as_string(p)
 	txt = txt.replace("{price}", str(price))
 	var temp := "user://__yco_price__.json"
 	var f = FileAccess.open(temp, FileAccess.WRITE)
@@ -212,8 +222,11 @@ func _on_talk() -> void:
 	if not _has_flag(F_ACCEPTED) and not _has_flag(F_BRIBED):
 		if not _intro_shown_this_visit:
 			_intro_shown_this_visit = true
-			var intro_path := J_INTRO if ResourceLoader.exists(J_INTRO) else J_INTRO_FALLBACK
-			await _play_and_wait(intro_path)
+			var p_intro := _jp(J_INTRO_ID)
+			var intro_rel := J_INTRO_ID
+			if p_intro == "" or not FileAccess.file_exists(p_intro):
+				intro_rel = J_INTRO_FALLBACK_ID
+			await _play_and_wait(intro_rel)
 		_show_first_menu()
 		return
 
@@ -230,7 +243,7 @@ func _show_post_letter_menu() -> void:
 
 func _on_post_letter_choice(id: String) -> void:
 	if id == "talk":
-		await _play_and_wait(J_TALK_POST)
+		await _play_and_wait(J_TALK_POST_ID)
 	elif id == "back":
 		_clear_panel()
 
@@ -253,14 +266,14 @@ func _on_first_choice(id: String) -> void:
 			_ensure_task()
 			while GameState.get_task_progress(TASK_ID) < 3:
 				GameState.update_task_step(TASK_ID)
-			await _play_and_wait(J_OPT1_ACCEPT)
+			await _play_and_wait(J_OPT1_ACCEPT_ID)
 			_clear_panel()
 		"opt2":
-			await _play_and_wait(J_OPT2_INFO)
+			await _play_and_wait(J_OPT2_INFO_ID)
 			_show_first_menu()
 		"bribe":
 			var price := _current_bribe_price()
-			await _play_with_price(J_OPT3_BRIBE_OFFER, price)
+			await _play_with_price(J_OPT3_BRIBE_OFFER_ID, price)
 			_show_bribe_confirm_menu(price)
 		"back":
 			_clear_panel()
@@ -283,7 +296,7 @@ func _on_main_choice(id: String) -> void:
 			await _do_volunteer()
 		"bribe":
 			var price := _current_bribe_price()
-			await _play_with_price(J_OPT3_BRIBE_OFFER, price)
+			await _play_with_price(J_OPT3_BRIBE_OFFER_ID, price)
 			_show_bribe_confirm_menu(price)
 		"back":
 			_clear_panel()
@@ -300,7 +313,7 @@ func _on_bribe_confirm(id: String, price: int) -> void:
 	match id:
 		"bribe_yes":
 			if not _pay_money(price):
-				await _play_with_price(J_BRIBE_NOMONEY, price)
+				await _play_with_price(J_BRIBE_NOMONEY_ID, price)
 				_show_first_menu()
 				return
 			GameState.adjust_integrity(-BRIBE_INTEGRITY_PENALTY)
@@ -309,11 +322,11 @@ func _on_bribe_confirm(id: String, price: int) -> void:
 			_ensure_task()
 			while GameState.get_task_progress(TASK_ID) < 7:
 				GameState.update_task_step(TASK_ID)
-			await _play_and_wait(J_BRIBE_GRANTED)
+			await _play_and_wait(J_BRIBE_GRANTED_ID)
 			_clear_panel()
 		"bribe_no":
 			GameState.adjust_integrity(BRIBE_DECLINE_INTEGRITY_BONUS)
-			await _play_and_wait(J_BRIBE_DECLINED)
+			await _play_and_wait(J_BRIBE_DECLINED_ID)
 			_show_first_menu()
 
 # ========================= Talk flow =========================
@@ -321,20 +334,20 @@ func _do_talk() -> void:
 	_sync_task_from_flags()
 
 	if _has_flag(F_REC_LETTER):
-		await _play_and_wait(J_TALK_POST)
+		await _play_and_wait(J_TALK_POST_ID)
 		return
 
 	var c := _count()
 	match c:
 		0:
-			await _play_and_wait(J_TALK_0)
+			await _play_and_wait(J_TALK_0_ID)
 		1:
-			await _play_and_wait(J_TALK_1)
+			await _play_and_wait(J_TALK_1_ID)
 		2:
-			await _play_and_wait(J_TALK_2)
+			await _play_and_wait(J_TALK_2_ID)
 		3:
 			_set_flag(F_REC_LETTER, true)
-			await _play_and_wait(J_TALK_3_GRANT)
+			await _play_and_wait(J_TALK_3_GRANT_ID)
 			_ensure_task()
 			if GameState.get_task_progress(TASK_ID) == 6:
 				GameState.update_task_step(TASK_ID)
@@ -347,14 +360,14 @@ func _do_talk() -> void:
 # ========================= Volunteer flow (no separate scene; swap BG) =========================
 func _do_volunteer() -> void:
 	if not _has_flag(F_ACCEPTED):
-		await _play_and_wait(J_OPT2_INFO)
+		await _play_and_wait(J_OPT2_INFO_ID)
 		_show_first_menu()
 		return
 	if _has_flag(F_REC_LETTER):
-		await _play_and_wait(J_TALK_POST)
+		await _play_and_wait(J_TALK_POST_ID)
 		return
 	if _last_day() == _day():
-		await _play_and_wait(J_VOL_DONE_TODAY)
+		await _play_and_wait(J_VOL_DONE_TODAY_ID)
 		return
 	if _count() >= 3:
 		await _do_talk()
@@ -391,13 +404,13 @@ func _run_volunteer(duty_key: String) -> void:
 	_set_volunteer_bg(true)
 	match duty_key:
 		"flyers":
-			await _play_and_wait(J_VOL_FLYERS)
+			await _play_and_wait(J_VOL_FLYERS_ID)
 		"filing":
-			await _play_and_wait(J_VOL_FILING)
+			await _play_and_wait(J_VOL_FILING_ID)
 		"survey":
-			await _play_and_wait(J_VOL_SURVEY)
+			await _play_and_wait(J_VOL_SURVEY_ID)
 		_:
-			await _play_and_wait(J_VOL_FLYERS)
+			await _play_and_wait(J_VOL_FLYERS_ID)
 	_set_volunteer_bg(false)
 
 	# Update attendance

@@ -2,12 +2,12 @@
   "id": "Janitor_D4_Fallback",
   "lines": [
     {
-      "speaker": "Домар",
-      "text": "Let’s get this over with — I’m in a hurry."
+      "speaker": "Хигиеничар",
+      "text": "Ајде да завршиме. Се брзам."
     },
     {
-      "speaker": "Домар",
-      "text": "Do you have the money or not?"
+      "speaker": "Хигиеничар",
+      "text": "Ги имате парите или не?"
     }
   ]
 }

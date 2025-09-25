@@ -3,11 +3,11 @@
   "lines": [
     {
       "speaker": "Наратор",
-      "text": "You made it just in time. You sit through the morning block of classes without incident."
+      "text": "Стигна точно на време. Ги следиш утринските часови без никаков проблем."
     },
     {
       "speaker": "Наратор",
-      "text": "(At least you’re showing up.)"
+      "text": "(Барем се појавуваш.)"
     },
     {
       "action": "adjust_reputation",

@@ -86,7 +86,7 @@ func _ready() -> void:
 
 func _fill_slot(ql: Label, al: Label, qd: Dictionary) -> void:
 	ql.text = String(qd.get("q",""))
-	al.text = "Answer: " + String(qd.get("correct",""))
+	al.text = tr("Answer: ") + String(qd.get(tr("correct"),""))
 	ql.visible = true
 	al.visible = true
 

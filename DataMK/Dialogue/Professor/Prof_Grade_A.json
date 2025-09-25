@@ -2,16 +2,16 @@
   "id": "Prof_Grade_A",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "(He puts the pages down.)"
+      "speaker": "Професор",
+      "text": "(Ја остава проектната задача.)"
     },
     {
-      "speaker": "Professor",
-      "text": "Hmph. I’ll admit — this is excellent work. Organized, original, and clear."
+      "speaker": "Професор",
+      "text": "Хмм. Признавам, ова е одлично сработено. Средено, оригинално и јасно."
     },
     {
-      "speaker": "Professor",
-      "text": "A."
+      "speaker": "Професор",
+      "text": "Петка."
     }
   ]
 }

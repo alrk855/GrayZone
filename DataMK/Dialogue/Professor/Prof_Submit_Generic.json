@@ -2,12 +2,12 @@
   "id": "Prof_Submit_Generic",
   "lines": [
     {
-      "speaker": "Player",
-      "text": "I’ve brought my Final Project."
+      "speaker": "Играч",
+      "text": "Ви ја доставувам мојата проектна задача."
     },
     {
-      "speaker": "Professor",
-      "text": "…Hmph. I’ll review it."
+      "speaker": "Професор",
+      "text": "Ммм. Во ред. Ќе ја разгледам и оценам."
     },
     {
       "action": "update_task_step",

@@ -2,24 +2,24 @@
   "id": "Classroom_D2_Noon_Event",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Hold on — just a moment everyone."
+      "speaker": "Класен раководител",
+      "text": "Почекајте еден момент."
     },
     {
       "speaker": "Наратор",
-      "text": "(He straightens a few papers.)"
+      "text": "(Подредува неколку листови.)"
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "If you’re serious about applying for a scholarship, start thinking about how to make your application stand out."
+      "speaker": "Класен раководител",
+      "text": "Доколку сериозно размислувате за стипендијата, почнете да размислувате како личните апликации да се истакнат од останатите."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "There’s a volunteering program after school.If you help out three times this week, you will receive a recommendation letter from them."
+      "speaker": "Класен раководител",
+      "text": "Постојат волонтерски програм по училиште. Доколку помогнете три пати оваа недела, можете да добиете препорака од нив."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "And one more thing — if you want me to look over your CV or motivation letter before handing them in, I’m available. Just don’t drop them on my desk the day before the deadline."
+      "speaker": "Класен раководител",
+      "text": "И уште нешто - доколку сакате да ги прегледам вашите CV или мотивациски писма пред да ги предадете, секогаш сум достапна. Само не ги оставајте на пултот ден пред да истече рокот."
     },
     {
       "action": "add_task",

@@ -2,16 +2,16 @@
   "id": "DocReview_Suspicion_Prompt",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "…Hmm. This part here…"
+      "speaker": "Класен раководител",
+      "text": "…Хмм. Овој дел…"
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "This sounds extremely generic. Did you write this yourself?"
+      "speaker": "Класен раководител",
+      "text": "Ова звучи стандардизирато. Сами го напишавте?"
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Be honest. It matters."
+      "speaker": "Класен раководител",
+      "text": "Ве молам бидете искрени."
     }
   ]
 }

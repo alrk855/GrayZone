@@ -33,9 +33,9 @@ const F_PRINTED_MOTIVATION  := "printed_motivation"
 const F_MLETTER_AI          := "motivation_ai_generated"
 const F_MLETTER_REWRITE_REQ := "motivation_rewrite_required"
 
-# --------------------- JSON locations (RELATIVE, golden) ---------------------
-# These are *relative IDs* under Data/. We resolve them through GameState.get_data_path().
-const HUMAN_DIR_ID := "MotivationTemplates/Human"                   # directory containing Motivation_Human_XX.json
+# --------------------- JSON locations (RELATIVE) ---------------------
+# Relative IDs under Data/. Resolve with GameState.get_data_path(<id>).
+const HUMAN_DIR_ID := "MotivationTemplates/Human"                   # directory containing many Motivation_Human_XX.json
 const AI_JSON_ID   := "MotivationTemplates/AI/Motivation_AI_01.json"
 
 # --------------------- Runtime state ---------------------
@@ -64,7 +64,7 @@ var zvuci : Array[AudioStream] = [
 func _ready() -> void:
 	randomize()
 	GameState.location = "Unknown"
-	finishbutt.modulate.a = 0
+	finishbutt.modulate.a = 0.0
 
 	# Buttons
 	if not nevermind.pressed.is_connected(Callable(self, "exit")):
@@ -107,8 +107,8 @@ func _ready() -> void:
 
 # --------------------- Manual typing ---------------------
 func _on_button_pressed() -> void:
-	gamebox.modulate.a = 0
-	create_tween().tween_property(gamebox, "modulate:a", 1, 2)
+	gamebox.modulate.a = 0.0
+	create_tween().tween_property(gamebox, "modulate:a", 1.0, 2.0)
 	box.visible = false
 	gamebox.visible = true
 	msg.play("mesg")
@@ -143,7 +143,7 @@ func _on_button_2_pressed() -> void:
 
 # --------------------- Flow ---------------------
 func _process(_delta: float) -> void:
-	debLabel.text = "Correct: %d\nErrors: %d\nStatus:" % [correct, wrong]
+	debLabel.text = tr("Correct: %d") % correct + "\n" + tr("Errors: %d") % wrong + "\n" + tr("Status:")
 	if current_word < words.size():
 		header.text = words[current_word]
 		if edit.text == header.text:
@@ -160,24 +160,24 @@ func outro() -> void:
 	_mark_completed_once()
 
 	zvuk_end.play()
-	debLabel.visible_ratio = 0
+	debLabel.visible_ratio = 0.0
 	status.visible = false
 	outrobox.visible = true
 
 	var tween : Tween = create_tween()
 	if wrong == 0:
-		status.text = "Perfect"
+		status.text = tr("Perfect")
 	elif wrong < 4:
-		status.text = "Almost Perfect"
+		status.text = tr("Almost Perfect")
 	elif wrong < 7:
-		status.text = "Mid"
+		status.text = tr("Mid")
 	else:
-		status.text = "Bad"
-	tween.tween_property(debLabel, "visible_ratio", 1, 1)
+		status.text = tr("Bad")
+	tween.tween_property(debLabel, "visible_ratio", 1.0, 1.0)
 	await tween.finished
 	status.visible = true
-	create_tween().tween_property(status, "modulate:a", 1, 5)
-	create_tween().tween_property(finishbutt, "modulate:a", 1, 5)
+	create_tween().tween_property(status, "modulate:a", 1.0, 5.0)
+	create_tween().tween_property(finishbutt, "modulate:a", 1.0, 5.0)
 
 func _mark_completed_once() -> void:
 	if _completed:
@@ -210,7 +210,7 @@ func SFX_play() -> void:
 
 func exit() -> void:
 	var tween : Tween = create_tween()
-	tween.tween_property(self, "modulate:a", 0, 1).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(self, "modulate:a", 0.0, 1.0).set_trans(Tween.TRANS_CUBIC)
 	await tween.finished
 	get_tree().change_scene_to_file("res://Scenes/Reusable/Map/Home.tscn")
 
@@ -219,28 +219,28 @@ func exit() -> void:
 # Manual: pick one random JSON from HUMAN_DIR_ID and use it as the typing content
 func _load_one_manual_template() -> void:
 	_templates.clear()
-	var picked_abs: String = _pick_random_json_dir_id(HUMAN_DIR_ID)
+	var dir_abs: String = String(GameState.get_data_path(HUMAN_DIR_ID))
+	var picked_abs: String = _pick_random_json_from_abs_dir(dir_abs)
 	var text: String = _read_text_from_json(picked_abs)
 	if text.strip_edges() == "":
-		push_warning("MLetter: fallback used (no Human JSON found or empty). Path tried: " + picked_abs)
-		text = "Dear Committee, Thank you for your time. Sincerely, {name}"
+		push_warning("MLetter: fallback used (no Human JSON found or empty). Tried dir: " + dir_abs)
+		text = tr("Dear Committee, Thank you for your time. Sincerely, {name}")
 	text = _apply_placeholders(text)
 	_templates.append(text)
 
 # AI: load the single file you specified and assign to AILABEL (no randomness)
 func _load_ai_text_into_label() -> void:
-	var ai_abs: String = _dp(AI_JSON_ID)
+	var ai_abs: String = String(GameState.get_data_path(AI_JSON_ID))
 	var text: String = _read_text_from_json(ai_abs)
 	if text.strip_edges() == "":
 		push_warning("MLetter: AI fallback used (missing/empty): " + ai_abs)
-		text = "Esteemed Committee, I am enthusiastic about joining your program. With gratitude, {name}"
+		text = tr("Esteemed Committee, I am enthusiastic about joining your program. With gratitude, {name}")
 	text = _apply_placeholders(text)
 	if AILABEL:
 		AILABEL.text = text
 
-# Pick a random .json from a *relative* Data/ directory ID (golden standard)
-func _pick_random_json_dir_id(dir_id: String) -> String:
-	var dir_abs: String = _dp(dir_id)
+# Pick a random .json from an *absolute* directory path
+func _pick_random_json_from_abs_dir(dir_abs: String) -> String:
 	var da := DirAccess.open(dir_abs)
 	if da == null:
 		push_warning("MLetter: directory not found → " + dir_abs)
@@ -276,19 +276,11 @@ func _read_text_from_json(abs_path: String) -> String:
 func _apply_placeholders(s: String) -> String:
 	var nm: String = String(GameState.player_name).strip_edges()
 	if nm == "":
-		nm = "Student"
+		nm = tr("Student")
 	var field: String = String(GameState.subject1).strip_edges()
 	if field == "":
-		field = "your field"
+		field = tr("your field")
 	s = s.replace("{name}", nm)
 	s = s.replace("[Field]", field).replace("[field]", field).replace("[FIELD]", field)
 	return s
-
-# ===================== Golden path resolver =====================
-# Convert a *relative* Data/ ID (e.g., "MotivationTemplates/Human") into an absolute, locale-aware path.
-func _dp(relative: String) -> String:
-	var rel: String = String(relative).strip_edges().trim_prefix("/")
-	if GameState.has_method("get_data_path"):
-		return String(GameState.get_data_path(rel))
-	# Fallback for dev/debug if get_data_path() isn’t present:
-	return "res://Data/" + rel
+ 	

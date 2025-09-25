@@ -2,8 +2,8 @@
   "id": "Prof_Initial_BringTomorrow",
   "lines": [
     {
-      "speaker": "Professor",
-      "text": "Tomorrow then. Don’t be late—and make sure it’s printed."
+      "speaker": "Професор",
+      "text": "Тогаш утре. Немојте да доцните и не заборавајте да ја испринтате."
     },
     {
       "action": "add_task",

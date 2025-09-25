@@ -2,12 +2,12 @@
   "id": "DocReview_Lie_Passed",
   "lines": [
     {
-      "speaker": "Homeroom Teacher",
-      "text": "Alright. If this is all yours, then you did a good job."
+      "speaker": "Класен раководител",
+      "text": "Во ред. Доколку ова е се ваша изработка навистина е одлично."
     },
     {
-      "speaker": "Homeroom Teacher",
-      "text": "You’ll stand out for the right reasons."
+      "speaker": "Класен раководител",
+      "text": "Ќе оставите добар впечаток."
     }
   ]
 }

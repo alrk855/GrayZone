@@ -3,11 +3,11 @@
   "lines": [
     {
       "speaker": "Наратор",
-      "text": "You skipped class today. Teachers noticed. So did the students."
+      "text": "Не отиде на часовите денес. Наставниците и учениците забележаа."
     },
     {
       "speaker": "Наратор",
-      "text": "(You won’t get far on a scholarship like this.)"
+      "text": "(Со вакво однесување, нема да добиете стипендија.)"
     },
     {
       "action": "adjust_reputation",
