@@ -5,13 +5,18 @@ const HOME_SCENE_PATH := "res://Scenes/Reusable/Map/Home.tscn"
 const CV_TASK_ID := "cv"
 
 # Required sections (case-insensitive). Logic stays in English.
-const REQUIRED_TAGS := [
+const REQUIRED_TAGS_EN := [
 	"education:",
 	"skills:",
 	"name",
 	"experience"
 ]
-
+const REQUIRED_TAGS_MK := [
+	"образование:",
+	"вештини:",
+	"име",
+	"искуство"
+]
 var tekst_za_pisuvanje: String = ""
 
 @onready var animIntro : AnimationPlayer = $SceneAnimation
@@ -95,11 +100,22 @@ func _on_finish_button_pressed() -> void:
 
 func _contains_required_tags(s: String) -> bool:
 	var low := s.to_lower()
-	for tag in REQUIRED_TAGS:
-		if low.find(String(tag)) == -1:
-			return false
-	return true
 
+	# Check if all EN tags exist
+	var en_ok := true
+	for tag in REQUIRED_TAGS_EN:
+		if low.find(tag) == -1:
+			en_ok = false
+			break
+
+	# Check if all MK tags exist
+	var mk_ok := true
+	for tag in REQUIRED_TAGS_MK:
+		if low.find(tag) == -1:
+			mk_ok = false
+			break
+
+	return en_ok or mk_ok
 func _trim_trailing_ws(s: String) -> String:
 	while s.length() > 0:
 		var ch := s[s.length() - 1]

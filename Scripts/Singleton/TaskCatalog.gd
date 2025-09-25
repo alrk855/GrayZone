@@ -53,14 +53,33 @@ func _get_data(task_id: String) -> Dictionary:
 	return d
 
 func _format_placeholders(text: String) -> String:
-	var s := text
-	if GameState.subject1 != "":
+	var s: String = text
+
+	# Localized subjects (quick & dirty map)
+	if GameState.current_locale == "mk":
+		var dict := {
+			"science":    "Наука",
+			"geography":  "Географија",
+			"math":       "Математика",
+			"macedonian": "Македонски",
+			"english":    "Англиски"
+		}
+		var s1 := GameState.subject1
+		var s2 := GameState.subject2
+		if dict.has(s1): s1 = dict[s1]
+		if dict.has(s2): s2 = dict[s2]
+		s = s.replace("{subject1}", s1).replace("{subject2}", s2)
+		s = s.replace("[Subject 1]", s1).replace("[Subject 2]", s2)
+	else:
+		# Default English
 		s = s.replace("{subject1}", GameState.subject1.capitalize())
-		s = s.replace("[Subject 1]", GameState.subject1.capitalize())
-	if GameState.subject2 != "":
 		s = s.replace("{subject2}", GameState.subject2.capitalize())
+		s = s.replace("[Subject 1]", GameState.subject1.capitalize())
 		s = s.replace("[Subject 2]", GameState.subject2.capitalize())
+
+
 	return s
+
 
 func clear_titles() -> void:
 	_title_cache.clear()

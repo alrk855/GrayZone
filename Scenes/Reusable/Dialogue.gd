@@ -11,15 +11,43 @@ signal choices_requested(options: Array, max_select: int) # external UI can list
 @export var narrator_italic_font: Font
 
 var portraits: Dictionary = {
-	tr("homeroom teacher"): preload("res://Images/CharacterFrames/KlasenFrame.png"),
-	tr("principal"):        preload("res://Images/CharacterFrames/direktorframe.png"),
-	tr("secretary"):        preload("res://Images/CharacterFrames/secretaryframe.png"),
-	tr("janitor"):          preload("res://Images/CharacterFrames/JanitorFrame.png"),
-	tr("professor"):        preload("res://Images/CharacterFrames/Prof1Frame.png"),
-	tr("marko"):            preload("res://Images/CharacterFrames/MarkoFrame.png"),
-	tr("clerk"):            preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
-	tr("daniel"):           preload("res://Images/CharacterFrames/DanielFrame.png")
+	# Homeroom Teacher
+	"homeroom teacher": preload("res://Images/CharacterFrames/KlasenFrame.png"),
+	"класен раководител": preload("res://Images/CharacterFrames/KlasenFrame.png"),
+
+	# Principal
+	"principal": preload("res://Images/CharacterFrames/direktorframe.png"),
+	"директор": preload("res://Images/CharacterFrames/direktorframe.png"),
+
+	# Secretary
+	"secretary": preload("res://Images/CharacterFrames/secretaryframe.png"),
+	"секретарка": preload("res://Images/CharacterFrames/secretaryframe.png"),
+
+	# Janitor
+	"janitor": preload("res://Images/CharacterFrames/JanitorFrame.png"),
+	"хигиеничар": preload("res://Images/CharacterFrames/JanitorFrame.png"),
+
+	# Professor
+	"professor": preload("res://Images/CharacterFrames/Prof1Frame.png"),
+	"професор": preload("res://Images/CharacterFrames/Prof1Frame.png"),
+
+	# Marko
+	"marko": preload("res://Images/CharacterFrames/MarkoFrame.png"),
+	"марко": preload("res://Images/CharacterFrames/MarkoFrame.png"),
+
+	# Clerk
+	"clerk": preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
+	"шалтерски службеник": preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
+
+	# Daniel
+	"daniel": preload("res://Images/CharacterFrames/DanielFrame.png"),
+	"даниел": preload("res://Images/CharacterFrames/DanielFrame.png"),
+
+	# Narrator (no portrait → keep mapped to null if you want to clear)
+	"narrator": null,
+	"наратор": null
 }
+
 
 
 var dialogue_data: Array = []
@@ -79,7 +107,7 @@ func display_next() -> void:
 
 		# Narrator = italics (empty speaker also treated as Narrator)
 		var sp_key := show_speaker.strip_edges().to_lower()
-		var narrator_line := (sp_key == "" or sp_key == tr("narrator"))
+		var narrator_line := (sp_key == "" or sp_key == tr("narrator")) or sp_key == "наратор"
 
 		await _type_text(show_text, narrator_line)
 		await get_tree().create_timer(0.5).timeout
@@ -185,7 +213,7 @@ func receive_choice(selected: Array) -> void:
 # ---------- Portraits ----------
 func _update_portrait(speaker: String) -> void:
 	var key := speaker.strip_edges().to_lower()
-	if key == "narrator" or key == "":
+	if key == tr("narrator") or key == "":
 		portrait.texture = null
 		return
 	if portraits.has(key):

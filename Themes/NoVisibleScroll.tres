@@ -1,4 +1,6 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://jp8vrishkb81"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://jp8vrishkb81"]
+
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="1_ail23"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vkjcr"]
 bg_color = Color(1, 1, 1, 1)
@@ -11,6 +13,7 @@ bg_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_16tb2"]
 
 [resource]
+default_font = ExtResource("1_ail23")
 VScrollBar/styles/grabber = SubResource("StyleBoxFlat_vkjcr")
 VScrollBar/styles/grabber_highlight = SubResource("StyleBoxEmpty_ail23")
 VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_scoil")

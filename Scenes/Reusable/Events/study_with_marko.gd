@@ -120,21 +120,18 @@ func _on_dialogue_finished() -> void:
 
 # ---------------------- S2 Choice panel ----------------------
 func _show_choice_s2() -> void:
-	# Close dialogue UI so the panel is cleanly visible
 	DialogueManager.end_active_dialogue()
-
 	_clear_panel()
-	var s2_label: String = GameState.subject2
-	if s2_label.strip_edges() == "":
-		s2_label = tr("[Subject 2]")
 
 	var opts: Array = [
-		{"id":"do_s2","text": tr("Study %s now") % s2_label},
-		{"id":"end","text": tr("We’re done")}
+		{"id":"do_s2", "text": GameState.format_placeholders(tr("Study {subject2} now"))},
+		{"id":"end",   "text": tr("We’re done")}
 	]
+
 	_panel = choice_panel_scene.instantiate()
 	add_child(_panel)
 	_panel.call("show_options", opts, Callable(self, "_on_choice_s2"))
+
 
 func _on_choice_s2(id: String) -> void:
 	_clear_panel()

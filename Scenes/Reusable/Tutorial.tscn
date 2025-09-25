@@ -871,7 +871,7 @@ offset_top = 0.279999
 offset_right = 0.839966
 offset_bottom = 0.519989
 theme_override_font_sizes/font_size = 33
-text = "✅ Green text = task completed."
+text = "✅ Green text = task  completed."
 vertical_alignment = 1
 autowrap_mode = 3
 
@@ -887,8 +887,8 @@ offset_top = -0.320007
 offset_right = 0.399902
 offset_bottom = -0.0800171
 theme_override_font_sizes/font_size = 33
-text = "❌ Red text = task failed (irreversible)."
-horizontal_alignment = 2
+text = " ❌ Red text= task
+              failed."
 vertical_alignment = 1
 autowrap_mode = 3
 
@@ -903,7 +903,7 @@ offset_left = 0.639984
 offset_top = 0.239929
 offset_right = 0.560059
 offset_bottom = 53.9999
-theme_override_font_sizes/font_size = 46
+theme_override_font_sizes/font_size = 36
 text = "Clicking a task opens its detailed view, showing every step clearly."
 horizontal_alignment = 1
 vertical_alignment = 1

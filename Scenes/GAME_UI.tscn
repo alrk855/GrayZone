@@ -132,13 +132,13 @@ size_flags_horizontal = 0
 size_flags_vertical = 3
 
 [node name="Day" type="RichTextLabel" parent="Padding/Contents/HBoxContainer"]
-custom_minimum_size = Vector2(230, 92)
+custom_minimum_size = Vector2(240, 92)
 layout_mode = 2
 theme = ExtResource("2_38m6b")
 theme_override_fonts/normal_font = ExtResource("4_j8nkt")
 theme_override_font_sizes/normal_font_size = 80
 bbcode_enabled = true
-text = "DAY 1"
+text = "Day 1"
 horizontal_alignment = 1
 vertical_alignment = 1
 

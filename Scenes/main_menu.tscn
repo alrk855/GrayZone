@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://oq5r73rgk5ps"]
+[gd_scene load_steps=43 format=3 uid="uid://oq5r73rgk5ps"]
 
 [ext_resource type="Texture2D" uid="uid://djuajki81ehnr" path="res://Images/main_menu_gore.png" id="1_y82t1"]
 [ext_resource type="Script" uid="uid://cultu8nfi3tif" path="res://Scripts/MainMenu/click_to_start_picture.gd" id="2_trj04"]
@@ -12,7 +12,9 @@
 [ext_resource type="FontFile" uid="uid://de647gnm3sexo" path="res://Fonts/BergamotOrnaments-3oK6.ttf" id="7_16hvj"]
 [ext_resource type="Texture2D" uid="uid://b2ams56toc38o" path="res://Images/main_menu_sredina.png" id="7_bmhhk"]
 [ext_resource type="Texture2D" uid="uid://ds27ecvepd7yk" path="res://Images/main_menu_angliski.png" id="8_pddej"]
+[ext_resource type="Script" uid="uid://ifrbpm8oqyor" path="res://Scenes/main_menu_picture.gd" id="9_bmhhk"]
 [ext_resource type="Theme" uid="uid://cj3djhcerx2sa" path="res://Themes/MainOrn.tres" id="10_aylim"]
+[ext_resource type="Texture2D" uid="uid://nhvn4sxq8v40" path="res://Images/main_menu_dole.png" id="10_pddej"]
 [ext_resource type="Script" uid="uid://bk0shcf3ul7ob" path="res://Scripts/MainMenu/play.gd" id="10_vtepg"]
 [ext_resource type="Script" uid="uid://d3sojpw0ye6wd" path="res://Scripts/MainMenu/Settings/settings.gd" id="11_jr6u5"]
 [ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="12_m3bi6"]
@@ -89,6 +91,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Click_To_Start_Picture" type="TextureRect" parent="Click_to_Start_Control"]
+z_index = -59
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -100,6 +103,7 @@ texture = ExtResource("1_y82t1")
 [node name="Click_To_Start_Button" type="Button" parent="Click_to_Start_Control/Click_To_Start_Picture"]
 self_modulate = Color(1, 1, 1, 0)
 z_index = 100
+z_as_relative = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -107,28 +111,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 action_mode = 0
+text = "Click to start"
 script = ExtResource("3_16hvj")
 enable_delay = 6.5
 transit = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="Text" type="RichTextLabel" parent="Click_to_Start_Control/Click_To_Start_Picture"]
+visible = false
+z_index = -6
+z_as_relative = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -35.0
-offset_right = 300.0
-offset_bottom = 35.0
+anchors_preset = -1
+anchor_left = 0.129427
+anchor_top = 0.467593
+anchor_right = 0.870573
+anchor_bottom = 0.532407
+offset_left = -1.52588e-05
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/normal_font = ExtResource("2_yhxw7")
 theme_override_font_sizes/normal_font_size = 44
 text = "Click to start"
+horizontal_alignment = 1
+vertical_alignment = 1
 script = ExtResource("5_t1dhk")
+metadata/_edit_use_anchors_ = true
 
 [node name="Swoosh" type="AudioStreamPlayer2D" parent="Click_to_Start_Control/Click_To_Start_Picture"]
 stream = ExtResource("3_trj04")
@@ -180,7 +188,7 @@ offset_top = 1080.0
 offset_right = 1920.0
 offset_bottom = 2160.0
 
-[node name="Main_Menu_Picture" type="TextureRect" parent="Main_Menu_Control"]
+[node name="Main_Menu_Picture" type="TextureRect" parent="Main_Menu_Control" node_paths=PackedStringArray("rect")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -190,6 +198,10 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("8_pddej")
 expand_mode = 1
+script = ExtResource("9_bmhhk")
+MK = ExtResource("10_pddej")
+EN = ExtResource("8_pddej")
+rect = NodePath(".")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Main_Menu_Control/Main_Menu_Picture"]
 layout_mode = 1
@@ -526,6 +538,7 @@ layout_mode = 2
 
 [node name="Sound" type="Label" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
 text = "Sound"
@@ -593,15 +606,15 @@ layout_mode = 2
 
 [node name="Music" type="Label" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
-text = "Music "
+text = "Music"
 
 [node name="SlidingBAR" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
 layout_mode = 2
 size_flags_horizontal = 6
 script = ExtResource("21_84iac")
-metadata/_edit_lock_ = true
 
 [node name="FillBar" type="ProgressBar" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2/SlidingBAR"]
 custom_minimum_size = Vector2(500, 0)
@@ -625,9 +638,7 @@ value = 0.5
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.036
 anchor_top = 0.05
-anchor_right = 1.017
 anchor_bottom = 0.95
 offset_left = 0.00800133
 offset_right = 0.0239868
@@ -637,6 +648,7 @@ size_flags_vertical = 1
 max_value = 1.0
 step = 0.001
 value = 0.5
+metadata/_edit_use_anchors_ = true
 
 [node name="Vspacer2" type="Control" parent="Control/Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 70)

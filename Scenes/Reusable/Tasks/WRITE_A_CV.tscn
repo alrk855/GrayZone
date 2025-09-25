@@ -1,10 +1,10 @@
 [gd_scene load_steps=24 format=3 uid="uid://qd280ybioky1"]
 
+[ext_resource type="FontFile" uid="uid://bkpdciduy71nq" path="res://Fonts/dehinted-DarumadropOne.ttf" id="1_6f1df"]
 [ext_resource type="Script" uid="uid://do4deu8dtxej5" path="res://Scenes/Reusable/Tasks/WRITE_A_CV.gd" id="1_aog3w"]
 [ext_resource type="StyleBox" uid="uid://buns1l7dy7mi7" path="res://cv settings.tres" id="2_6f1df"]
 [ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_aog3w"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_6f1df"]
-[ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="5_xav0s"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6f1df"]
 
@@ -89,8 +89,8 @@ corner_radius_bottom_left = 22
 
 [sub_resource type="Theme" id="Theme_2ewob"]
 Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
-Button/font_sizes/font_size = 91
-Button/fonts/font = ExtResource("5_xav0s")
+Button/font_sizes/font_size = 73
+Button/fonts/font = ExtResource("1_6f1df")
 Button/styles/disabled = SubResource("StyleBoxEmpty_6f1df")
 Button/styles/focus = SubResource("StyleBoxEmpty_xav0s")
 Button/styles/hover = SubResource("StyleBoxFlat_xav0s")
@@ -303,19 +303,15 @@ grow_vertical = 2
 
 [node name="Label" type="Label" parent="CVBOX"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -427.0
-offset_top = -279.0
-offset_right = 427.0
-offset_bottom = 279.0
+anchors_preset = -1
+anchor_left = 0.0180587
+anchor_top = 0.0105263
+anchor_right = 0.981941
+anchor_bottom = 0.989474
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("4_6f1df")
-theme_override_font_sizes/font_size = 41
+theme_override_font_sizes/font_size = 33
 text = "CV Entry (Simple Confirm Template):
 
 Name: [YourName]
@@ -328,6 +324,7 @@ Skills: Typing, Teamwork, Basic Research
 
 Experience: None yet — willing to learn"
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="TextEdit" type="TextEdit" parent="."]
 layout_mode = 1
@@ -371,8 +368,6 @@ offset_left = 1602.0
 offset_top = -120.0
 offset_right = 1921.0
 offset_bottom = -1.0
-theme_override_fonts/font = ExtResource("5_xav0s")
-theme_override_font_sizes/font_size = 91
 text = "Peek"
 
 [node name="WriteButton" type="Button" parent="."]
@@ -380,8 +375,6 @@ layout_mode = 0
 offset_top = -120.0
 offset_right = 319.0
 offset_bottom = -1.0
-theme_override_fonts/font = ExtResource("5_xav0s")
-theme_override_font_sizes/font_size = 91
 text = "Write"
 
 [node name="Back" type="Button" parent="."]
@@ -395,8 +388,6 @@ offset_left = -319.0
 offset_top = -119.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_fonts/font = ExtResource("5_xav0s")
-theme_override_font_sizes/font_size = 91
 text = "Back"
 
 [connection signal="animation_finished" from="SceneAnimation" to="." method="_on_scene_animation_animation_finished"]

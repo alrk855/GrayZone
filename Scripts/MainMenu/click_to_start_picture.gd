@@ -17,5 +17,3 @@ func _ready() -> void:
 
 func _on_fade_done() -> void:
 	visible = false   # overlay no longer blocks input
-	if menu_audio:
-		menu_audio.play()

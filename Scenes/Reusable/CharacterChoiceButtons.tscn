@@ -1,10 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://cky0ib4r8cq63"]
+[gd_scene load_steps=8 format=3 uid="uid://cky0ib4r8cq63"]
 
 [ext_resource type="Script" uid="uid://dp8p3klbuwbwd" path="res://Scenes/Reusable/character_choice_buttons.gd" id="1_6qp2g"]
 [ext_resource type="Theme" uid="uid://cic3ab2y0afcf" path="res://Themes/1pxmarginVbox.tres" id="1_mqmbp"]
 [ext_resource type="AudioStream" uid="uid://bxhhbf28dcl2v" path="res://Audio/u1.mp3" id="2_qb3b8"]
 [ext_resource type="AudioStream" uid="uid://lyhht1a5m7r7" path="res://Audio/u4.mp3" id="3_gjc06"]
 [ext_resource type="Theme" uid="uid://bcpexnd6h0hk5" path="res://Scenes/Reusable/CharacterChoiceButtons.tres" id="3_vu4in"]
+[ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="4_gjc06"]
+
+[sub_resource type="Theme" id="Theme_8amy6"]
+default_font = ExtResource("4_gjc06")
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -31,6 +35,7 @@ offset_right = 574.0
 grow_horizontal = 2
 grow_vertical = 0
 localize_numeral_system = false
+theme = SubResource("Theme_8amy6")
 
 [node name="ChoiceBox" type="VBoxContainer" parent="Choice Control Node"]
 layout_mode = 1

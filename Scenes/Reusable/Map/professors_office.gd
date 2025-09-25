@@ -1,3 +1,4 @@
+# res://Scenes/Reusable/Map/professor_office.gd
 extends Control
 
 # ---------- Scene Nodes ----------
@@ -23,7 +24,7 @@ extends Control
 var _current_bg: Texture2D = null
 var _janitor_deal_active: bool = false
 
-# ---------- JSON paths (RELATIVE; resolved by GameState.get_data_path) ----------
+# ---------- JSON IDs (RELATIVE; resolved by GameState.get_data_path) ----------
 const D_PROF: String = "Dialogue/Professor/"
 
 const JSON_PROF_INITIAL: String      = D_PROF + "Prof_Office_Initial.json"
@@ -169,9 +170,9 @@ func _in(now: int, start_incl: int, end_excl: int) -> bool:
 	return now >= start_incl and now < end_excl
 
 func _maybe_show_not_here_on_enter() -> void:
-	# Show "not here" window outside 13:00–15:00
+	# Show "not here" window outside 13:00–15:00 (15:00–17:00)
 	if GameState.day >= 1 and GameState.day <= 5 and _in(GameState.time, T_15_00, T_17_00):
-		DialogueManager.start_dialogue(JSON_PROF_NOT_HERE, self)
+		_sd(JSON_PROF_NOT_HERE)
 
 # ===============================================================
 #                           PROFESSOR
@@ -184,7 +185,7 @@ func _on_professor_pressed() -> void:
 	var t: int = GameState.time
 	if not _in(t, T_13_00, T_15_00):
 		if d == 1 and _in(GameState.time, T_15_00, T_17_00):
-			DialogueManager.start_dialogue(JSON_PROF_NOT_HERE, self)
+			_sd(JSON_PROF_NOT_HERE)
 		return
 
 	var options: Array[Dictionary] = []
@@ -203,19 +204,18 @@ func _on_professor_pressed() -> void:
 	add_child(_panel)
 	_panel.call("show_options", options, Callable(self, "_on_prof_menu_choice"))
 
-
 func _on_prof_menu_choice(id: String) -> void:
 	match id:
 		"talk_initial":
-			DialogueManager.start_dialogue(JSON_PROF_INITIAL, self)
+			_sd(JSON_PROF_INITIAL)
 			_clear_panel()
 		"talk_followup":
 			if GameState.has_flag("project_submitted"):
-				DialogueManager.start_dialogue(JSON_POST_SUBMIT, self)
+				_sd(JSON_POST_SUBMIT)
 			elif GameState.has_flag("project_accepted"):
-				DialogueManager.start_dialogue(JSON_PROF_FOLLOWUP_NR, self)
+				_sd(JSON_PROF_FOLLOWUP_NR)
 			else:
-				DialogueManager.start_dialogue(JSON_PROF_INITIAL, self)
+				_sd(JSON_PROF_INITIAL)
 			_clear_panel()
 		"submit":
 			await _handle_project_submission()
@@ -231,10 +231,15 @@ func _project_ready_for_submit() -> bool:
 		return true
 	return false
 
-# Helper: start a dialogue and wait for it to finish
-func _start_and_wait(json_path: String) -> void:
-	DialogueManager.start_dialogue(json_path, self)
-	await DialogueManager.dialogue_finished
+# start & wait for a RELATIVE-ID dialogue
+func _start_and_wait(rel_id: String) -> void:
+	var p := _jp(rel_id)
+	if p == "" or not FileAccess.file_exists(p):
+		push_warning("Missing dialogue: " + rel_id + " -> " + p)
+		return
+	var ui := DialogueManager.start_dialogue(p, self)
+	if ui and ui.has_signal("dialogue_finished"):
+		await ui.dialogue_finished
 
 # ---------- Second-chance availability helper ----------
 func _second_chance_available() -> bool:
@@ -271,7 +276,6 @@ func _handle_project_submission() -> void:
 		await _start_and_wait(JSON_GRADE_F_PLAG)
 		GameState.set_flag("project_plagiarized", true)
 		GameState.adjust_integrity(-10)
-		print("[Integrity] Plagiarism detected at submission. -10 integrity.")
 
 		if _second_chance_available():
 			DialogueManager.end_active_dialogue()
@@ -335,8 +339,6 @@ func _valid_submit_increment_task() -> void:
 func _reset_project_for_second_chance() -> void:
 	GameState.ensure_task(TASK_PROJECT)
 	GameState.task_step_index[TASK_PROJECT] = 1
-	print("[Task] Project reset to step 1 for second chance.]")
-
 	GameState.clear_flag("project_written")
 	GameState.clear_flag("printed_project")
 	GameState.clear_flag("bought_project")
@@ -376,7 +378,7 @@ func on_dialogue_action(line: Dictionary) -> void:
 	if act == "show_prof_intro_choices":
 		if GameState.has_flag("project_accepted"):
 			DialogueManager.end_active_dialogue()
-			DialogueManager.start_dialogue(JSON_PROF_FOLLOWUP_NR, self)
+			_sd(JSON_PROF_FOLLOWUP_NR)
 			return
 		if not _intro_panel_shown:
 			_intro_panel_shown = true
@@ -409,14 +411,14 @@ func _on_prof_intro_option(id: String) -> void:
 	match id:
 		"prof_ask_deadline":
 			GameState.set_flag("project_accepted", true)
-			DialogueManager.start_dialogue(JSON_PROF_ASK, self)
+			_sd(JSON_PROF_ASK)
 		"prof_bring_tomorrow":
 			GameState.set_flag("project_accepted", true)
 			GameState.set_flag("project_promise_tomorrow", true)
 			GameState.set_int("project_promise_day", GameState.day)
-			DialogueManager.start_dialogue(JSON_PROF_TOMORROW, self)
+			_sd(JSON_PROF_TOMORROW)
 		"prof_nevermind":
-			DialogueManager.start_dialogue(JSON_PROF_DECLINE, self)
+			_sd(JSON_PROF_DECLINE)
 			await get_tree().create_timer(0.2).timeout
 		_:
 			DialogueManager.end_active_dialogue()
@@ -431,8 +433,8 @@ func _on_janitor_pressed() -> void:
 
 	# Already bought? Only show the short “done” JSON.
 	if GameState.has_flag("bought_project"):
-		if FileAccess.file_exists(GameState.get_data_path(JSON_JANITOR_DONE)):
-			DialogueManager.start_dialogue(JSON_JANITOR_DONE, self)
+		if FileAccess.file_exists(_jp(JSON_JANITOR_DONE)):
+			_sd(JSON_JANITOR_DONE)
 		else:
 			DialogueManager.end_active_dialogue()
 		return
@@ -442,18 +444,18 @@ func _on_janitor_pressed() -> void:
 
 	# Prioritize Marko's tip over REP gating
 	if has_tip:
-		DialogueManager.start_dialogue(JSON_JANITOR_TIPPED_INTRO, self)
-	elif rep >= 30 and FileAccess.file_exists(GameState.get_data_path(JSON_JANITOR_HIGHREP)):
-		DialogueManager.start_dialogue(JSON_JANITOR_HIGHREP, self)
+		_sd(JSON_JANITOR_TIPPED_INTRO)
+	elif rep >= 30 and FileAccess.file_exists(_jp(JSON_JANITOR_HIGHREP)):
+		_sd(JSON_JANITOR_HIGHREP)
 	else:
-		DialogueManager.start_dialogue(JSON_JANITOR_NOTIP_INTRO, self)
+		_sd(JSON_JANITOR_NOTIP_INTRO)
 
 func _show_janitor_office_options() -> void:
 	# Guard options after purchase
 	if GameState.has_flag("bought_project"):
 		DialogueManager.end_active_dialogue()
-		if FileAccess.file_exists(GameState.get_data_path(JSON_JANITOR_DONE)):
-			DialogueManager.start_dialogue(JSON_JANITOR_DONE, self)
+		if FileAccess.file_exists(_jp(JSON_JANITOR_DONE)):
+			_sd(JSON_JANITOR_DONE)
 		return
 	if _janitor_panel_shown:
 		return
@@ -479,7 +481,7 @@ func _on_janitor_option(id: String) -> void:
 		"janitor_buy_300":
 			_janitor_deal_active = true
 			if GameState.money < 300:
-				DialogueManager.start_dialogue(JSON_JANITOR_NOMONEY, self)
+				_sd(JSON_JANITOR_NOMONEY)
 				return
 			GameState.add_money(-300)
 			_handle_janitor_purchase(true)
@@ -487,7 +489,7 @@ func _on_janitor_option(id: String) -> void:
 		"janitor_buy_500":
 			_janitor_deal_active = true
 			if GameState.money < 500:
-				DialogueManager.start_dialogue(JSON_JANITOR_NOMONEY, self)
+				_sd(JSON_JANITOR_NOMONEY)
 				return
 			GameState.add_money(-500)
 			_handle_janitor_purchase(false)
@@ -496,11 +498,11 @@ func _on_janitor_option(id: String) -> void:
 			_janitor_deal_active = true
 			if not GameState.tasks.has("Visit the Classroom"):
 				GameState.add_task("Visit the Classroom")
-			DialogueManager.start_dialogue(JSON_JANITOR_ANYTHING_ELSE, self)
+			_sd(JSON_JANITOR_ANYTHING_ELSE)
 
 		"janitor_pass":
 			_janitor_deal_active = false
-			DialogueManager.start_dialogue(JSON_JANITOR_PASS, self)
+			_sd(JSON_JANITOR_PASS)
 
 		"back":
 			_janitor_deal_active = false
@@ -516,16 +518,15 @@ func _handle_janitor_purchase(tipped: bool) -> void:
 	GameState.set_flag("bought_project", true)
 	GameState.set_flag("project_plagiarized", true)
 	GameState.adjust_integrity(-5)
-	print("[Integrity] Bought project from janitor. -5 integrity.")
 	GameState.ensure_task_progress_at_least(TASK_PROJECT, 2)
 	if not GameState.tasks.has("Visit the Classroom"):
 		GameState.add_task("Visit the Classroom")
 
-	var dlg_path: String = JSON_JANITOR_DEAL_500
+	var dlg_id: String = JSON_JANITOR_DEAL_500
 	if tipped:
-		dlg_path = JSON_JANITOR_DEAL_300
+		dlg_id = JSON_JANITOR_DEAL_300
 
-	var ui := DialogueManager.start_dialogue(dlg_path, self)
+	var ui := DialogueManager.start_dialogue(_jp(dlg_id), self)
 	if ui and ui.has_signal("dialogue_finished"):
 		ui.connect("dialogue_finished", Callable(self, "_on_janitor_purchase_dialogue_finished"), CONNECT_ONE_SHOT)
 	else:
@@ -554,6 +555,20 @@ func _clear_panel() -> void:
 	if _panel and is_instance_valid(_panel):
 		_panel.queue_free()
 	_panel = null
+
+# --- Start dialogue by RELATIVE ID (no fallback paths) ---
+func _sd(rel_id: String) -> void:
+	var p := _jp(rel_id)
+	if p == "" or not FileAccess.file_exists(p):
+		push_warning("Missing dialogue: " + rel_id + " -> " + p)
+		return
+	DialogueManager.start_dialogue(p, self)
+
+# --- RELATIVE ID -> absolute, locale-aware path via GameState.get_data_path ---
+func _jp(rel_id: String) -> String:
+	var rel := String(rel_id).strip_edges().trim_prefix("/")
+	# Golden standard: depend solely on GameState.get_data_path
+	return String(GameState.get_data_path(rel))
 
 # ---------- Visit-Professor task auto mark ----------
 func _on_time_changed_visit_prof(_new_time: int, _new_day: int) -> void:

@@ -85,9 +85,9 @@ msgstr ""
 msgid "19:00"
 msgstr ""
 
-#: Scenes/GAME_UI.tscn Scenes/Reusable/Tutorial.tscn
-msgid "DAY 1"
-msgstr "ДЕН 1"
+#: Scenes/GAME_UI.tscn
+msgid "Day 1"
+msgstr "Ден 1"
 
 #: Scenes/GAME_UI.tscn Scenes/Reusable/Tutorial.tscn
 msgid "1000"
@@ -99,14 +99,13 @@ msgstr ""
 
 #: Scenes/Intro.tscn
 msgid ""
-"You are a high school senior in Skopje. Your dream? To get a scholarship and "
-"a visa to Germany so you can continue studying abroad Your goal: to get your "
-"grades in order, get your visa, and graduate on time."
+"You are a high school senior in Skopje. Your dream? To get a scholarship so "
+"you can continue studying abroad Your goal: to get your grades in order, get "
+"your visa, and graduate on time."
 msgstr ""
-"Ти си матурант во една скопска гимназија. Твојот сон Да добиеш стипендија и "
-"виза за Германија, за да можеш да продолжиш со школувањето во странство. "
-"Твојата цел?Да си ги средиш оценките, да ја добиеш визата и да положиш "
-"матура навреме."
+"Ти си матурант во средно училиште во Скопје. Твојот сон е да студираш на "
+"престижен универзитет во странство. Твојата цел?Да добиеш добри оценки и "
+"навремено да аплицираш за стипендијата со сите потребни документи."
 
 #: Scenes/main_menu.tscn
 msgid "Click to start"
@@ -141,8 +140,8 @@ msgstr "Подесувања\n"
 msgid "Sound"
 msgstr "Звук"
 
-#: Scenes/main_menu.tscn Scenes/Reusable/SettingsUI.tscn
-msgid "Music "
+#: Scenes/main_menu.tscn
+msgid "Music"
 msgstr "Музика"
 
 #: Scenes/main_menu.tscn
@@ -165,44 +164,8 @@ msgstr "Пол"
 msgid "Choice 1"
 msgstr ""
 
-#: Scenes/Reusable/Dialogue.gd
-msgid "homeroom teacher"
-msgstr "Класен раководител"
-
-#: Scenes/Reusable/Dialogue.gd
-msgid "principal"
-msgstr "Директор"
-
-#: Scenes/Reusable/Dialogue.gd
-msgid "secretary"
-msgstr "Секретарка"
-
-#: Scenes/Reusable/Dialogue.gd
-msgid "janitor"
-msgstr "Хигиеничар"
-
-#: Scenes/Reusable/Dialogue.gd
-msgid "professor"
-msgstr "Професор"
-
-#: Scenes/Reusable/Dialogue.gd
-msgid "marko"
-msgstr "Марко"
-
-#: Scenes/Reusable/Dialogue.gd
-msgid "clerk"
-msgstr "Шалтерски службеник"
-
-#: Scenes/Reusable/Dialogue.gd
-msgid "daniel"
-msgstr "Даниел"
-
-#: Scenes/Reusable/Dialogue.gd
-msgid "narrator"
-msgstr "Наратор"
-
 #: Scenes/Reusable/Dialogue.tscn
-msgid "The Quick Brown Fox Jumped Over The Fence"
+msgid "The Quick Brown Fox Jumped Over The Fence "
 msgstr ""
 
 #: Scenes/Reusable/Dialogue.tscn
@@ -212,6 +175,10 @@ msgstr ""
 #: Scenes/Reusable/Outro.tscn
 msgid "QUIT"
 msgstr "ИЗЛЕЗИ"
+
+#: Scenes/Reusable/SettingsUI.tscn
+msgid "Music "
+msgstr "Музика"
 
 #: Scenes/Reusable/SettingsUI.tscn
 msgid ""
@@ -244,8 +211,16 @@ msgid "Load\n"
 msgstr "Вчитај\n"
 
 #: Scenes/Reusable/TaskManager.tscn
-msgid "Tasks\n"
-msgstr "Задачи\n"
+msgid "Tasks"
+msgstr "Задачи"
+
+#: Scenes/Reusable/TaskManager.tscn
+msgid "Visit"
+msgstr ""
+
+#: Scenes/Reusable/TaskManager.tscn
+msgid "АСДАСДАСДА"
+msgstr ""
 
 #: Scenes/Reusable/task_manager.gd
 msgid "Unknown"
@@ -305,7 +280,7 @@ msgid ""
 "Some people are only available at certain hours — miss them, and you’ll have "
 "to wait for another chance."
 msgstr ""
-"Секоја акција(Зборење, Учење, Шетање) троши време.\n"
+"Секоја акција (Зборување, Учење, Шетање) троши време.\n"
 "\n"
 "\n"
 "Некои луѓе се достапни во одредено време - задоцни и ќе треба да чекаш "
@@ -323,7 +298,7 @@ msgstr ""
 "\n"
 "Спиењето дома после 19:00 ќе напредува до следниот ден.\n"
 "\n"
-"Ако останеш касно, следниот ден ќе се успиеш и ќе изгубиш дел од утрото!"
+"Ако останеш доцна , следниот ден ќе се успиеш и ќе изгубиш дел од утрото!"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid ""
@@ -352,6 +327,10 @@ msgstr "Ден"
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Money"
 msgstr "Пари"
+
+#: Scenes/Reusable/Tutorial.tscn
+msgid "DAY 1"
+msgstr "ДЕН 1"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Task Overview"
@@ -392,12 +371,14 @@ msgid "4/8"
 msgstr ""
 
 #: Scenes/Reusable/Tutorial.tscn
-msgid "✅ Green text = task completed."
+msgid "✅ Green text = task  completed."
 msgstr "✅Зелено = Завршена Задача"
 
 #: Scenes/Reusable/Tutorial.tscn
-msgid "❌ Red text = task failed (irreversible)."
-msgstr "❌Црвено"
+msgid ""
+" ❌ Red text= task\n"
+"              failed."
+msgstr "❌Црвено = Неуспешна Задача"
 
 #: Scenes/Reusable/Tutorial.tscn
 msgid "Clicking a task opens its detailed view, showing every step clearly."
@@ -491,7 +472,8 @@ msgstr ""
 "Можеш да одбереш чесната страна , да користиш кратенки или да останеш во "
 "сивата зона.\n"
 "\n"
-"Секоја акција остава трага - некои се видливи одма ,други дури подоцна."
+"Секоја акција остава трага - некои се видливи одма ,други дури кога веќе е "
+"предоцна."
 
 #: Scenes/Reusable/Tutorial.tscn Scenes/Reusable/Map/SecretaryOffice.tscn
 msgid "GO BACK"
@@ -543,7 +525,7 @@ msgstr "Дата на раѓање:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "Education:"
-msgstr "Образоване:"
+msgstr "Образование:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "High School"
@@ -567,7 +549,7 @@ msgstr "Без - Спремен да учам"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid "WRITE A CV"
-msgstr "Направи ЦВ"
+msgstr "Напиши ЦВ"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid ""
@@ -887,12 +869,14 @@ msgid "Ask for document review"
 msgstr "Проверка на документи"
 
 #: Scenes/Reusable/Map/classroom.gd
+#, fuzzy
+#| msgid "Ask for document review"
 msgid "Ask for document review (Locked)"
-msgstr ""
+msgstr "Проверка на документи"
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "Ask about transcript"
-msgstr "Прашај за оценките"
+msgstr "Прашај за сведителство"
 
 #: Scenes/Reusable/Map/classroom.gd
 msgid "(Lie) Yes, I wrote it myself."
@@ -933,7 +917,7 @@ msgstr "Учење"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Schoolwork"
-msgstr "За училиште"
+msgstr "Домашна"
 
 #: Scenes/Reusable/Map/home.gd
 msgid "Check Mailbox"
@@ -1009,7 +993,7 @@ msgstr "Збори со професорот"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "Submit Final Project"
-msgstr "Предај го проектот"
+msgstr "Предај ја проектната задача"
 
 #: Scenes/Reusable/Map/professors_office.gd Scenes/Reusable/Map/yco.gd
 msgid "Talk"
@@ -1017,11 +1001,11 @@ msgstr "Збори"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "When do I need to bring it?"
-msgstr "Кога да го донесам?"
+msgstr "Кога да ja донесам?"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "I'll bring it tomorrow."
-msgstr "Ќе го донесам утре"
+msgstr "Ќе јa донесам утре"
 
 #: Scenes/Reusable/Map/professors_office.gd
 msgid "Deal (300 денари)"
@@ -1092,8 +1076,10 @@ msgid "doma\n"
 msgstr ""
 
 #: Scenes/Reusable/Map/School.tscn
-msgid "START TIME SIMULATION\n"
-msgstr ""
+#, fuzzy
+#| msgid "MKD"
+msgid "MK"
+msgstr "МКД"
 
 #: Scenes/Reusable/Map/secretary_office.gd
 msgid "Secretary not here (missing JSON): "
@@ -1208,11 +1194,9 @@ msgid "Click to select"
 msgstr ""
 
 #: Scenes/Reusable/Events/study_with_marko.gd
-msgid "[Subject 2]"
-msgstr ""
-
-#: Scenes/Reusable/Events/study_with_marko.gd
-msgid "Study %s now"
+#, fuzzy
+#| msgid "Study %s now"
+msgid "Study {subject2} now"
 msgstr "Учи %s сега "
 
 #: Scenes/Reusable/Events/study_with_marko.gd
@@ -1238,3 +1222,313 @@ msgstr "Ажурирање на задачата: %s → Step %d/%d"
 #: Scripts/Singleton/UI.gd
 msgid "Task updated: %s → Step %d"
 msgstr "Ажурирање на задачата: %s → Step %d"
+
+#: Scenes/Reusable/Dialogue.gd
+msgid "narrator"
+msgstr "Наратор"
+
+msgid "All Recognized"
+msgstr ""
+
+msgid "New Code Region"
+msgstr ""
+
+msgid "Pick a color from the screen."
+msgstr ""
+
+msgid "Pick a color from the application window."
+msgstr ""
+
+msgid ""
+"Color: #%s\n"
+"LMB: Apply color\n"
+"RMB: Remove preset"
+msgstr ""
+
+msgid ""
+"Color: #%s\n"
+"LMB: Apply color"
+msgstr ""
+
+msgid "The changes to this palette have not been saved to a file."
+msgstr ""
+
+msgid "Enter a hex code (\"#ff0000\") or named color (\"red\")."
+msgstr ""
+
+msgid "Save the current color palette to reuse later."
+msgstr ""
+
+msgid "Save the current color palette as a new to reuse later."
+msgstr ""
+
+msgid "Load existing color palette."
+msgstr ""
+
+msgid "Clear the currently loaded color palettes in the picker."
+msgstr ""
+
+msgid "Select a picker shape."
+msgstr ""
+
+msgid "Select a picker mode."
+msgstr ""
+
+msgid "Colorized Sliders"
+msgstr ""
+
+msgid "Hex"
+msgstr ""
+
+msgid "Hex code or named color"
+msgstr ""
+
+msgid "Swatches"
+msgstr ""
+
+msgid "Show all options available."
+msgstr ""
+
+msgid "Recent Colors"
+msgstr ""
+
+msgid "Add current color as a preset."
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Alert!"
+msgstr ""
+
+msgid "Please Confirm..."
+msgstr ""
+
+msgid "Network"
+msgstr ""
+
+msgid ""
+"File \"%s\" already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Select Current Folder"
+msgstr ""
+
+#, fuzzy
+#| msgid "Save\n"
+msgid "Save"
+msgstr "Зачувај\n"
+
+msgid "Select This Folder"
+msgstr ""
+
+msgid "Open in File Manager"
+msgstr ""
+
+msgid "Show Package Contents"
+msgstr ""
+
+msgid "You don't have permission to access contents of this folder."
+msgstr ""
+
+msgid "All Files"
+msgstr ""
+
+msgid "Open a File"
+msgstr ""
+
+msgid "Open File(s)"
+msgstr ""
+
+msgid "Open a Directory"
+msgstr ""
+
+msgid "Open a File or Directory"
+msgstr ""
+
+msgid "Save a File"
+msgstr ""
+
+msgid "Go to previous folder."
+msgstr ""
+
+msgid "Go to next folder."
+msgstr ""
+
+msgid "Go to parent folder."
+msgstr ""
+
+msgid "Path:"
+msgstr ""
+
+msgid "Refresh files."
+msgstr ""
+
+msgid "Toggle the visibility of hidden files."
+msgstr ""
+
+msgid "Create a new folder."
+msgstr ""
+
+msgid "Directories & Files:"
+msgstr ""
+
+msgid "File:"
+msgstr ""
+
+msgid "Create Folder"
+msgstr ""
+
+msgid "Could not create folder."
+msgstr ""
+
+msgid "Invalid extension, or empty filename."
+msgstr ""
+
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Zoom Reset"
+msgstr ""
+
+msgid "Zoom In"
+msgstr ""
+
+msgid "Toggle the visual grid."
+msgstr ""
+
+msgid "Toggle snapping to the grid."
+msgstr ""
+
+msgid "Change the snapping distance."
+msgstr ""
+
+msgid "Toggle the graph minimap."
+msgstr ""
+
+msgid "Automatically arrange selected nodes."
+msgstr ""
+
+msgid "Same as Layout Direction"
+msgstr ""
+
+msgid "Auto-Detect Direction"
+msgstr ""
+
+msgid "Left-to-Right"
+msgstr ""
+
+msgid "Right-to-Left"
+msgstr ""
+
+msgid "Left-to-Right Mark (LRM)"
+msgstr ""
+
+msgid "Right-to-Left Mark (RLM)"
+msgstr ""
+
+msgid "Start of Left-to-Right Embedding (LRE)"
+msgstr ""
+
+msgid "Start of Right-to-Left Embedding (RLE)"
+msgstr ""
+
+msgid "Start of Left-to-Right Override (LRO)"
+msgstr ""
+
+msgid "Start of Right-to-Left Override (RLO)"
+msgstr ""
+
+msgid "Pop Direction Formatting (PDF)"
+msgstr ""
+
+msgid "Arabic Letter Mark (ALM)"
+msgstr ""
+
+msgid "Left-to-Right Isolate (LRI)"
+msgstr ""
+
+msgid "Right-to-Left Isolate (RLI)"
+msgstr ""
+
+msgid "First Strong Isolate (FSI)"
+msgstr ""
+
+msgid "Pop Direction Isolate (PDI)"
+msgstr ""
+
+msgid "Zero-Width Joiner (ZWJ)"
+msgstr ""
+
+msgid "Zero-Width Non-Joiner (ZWNJ)"
+msgstr ""
+
+msgid "Word Joiner (WJ)"
+msgstr ""
+
+msgid "Soft Hyphen (SHY)"
+msgstr ""
+
+msgid "Emoji & Symbols"
+msgstr ""
+
+msgid "Cut"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Paste"
+msgstr ""
+
+msgid "Select All"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Undo"
+msgstr ""
+
+msgid "Redo"
+msgstr ""
+
+msgid "Text Writing Direction"
+msgstr ""
+
+msgid "Display Control Characters"
+msgstr ""
+
+msgid "Insert Control Character"
+msgstr ""
+
+#~ msgid "homeroom teacher"
+#~ msgstr "Класен раководител"
+
+#~ msgid "principal"
+#~ msgstr "Директор"
+
+#~ msgid "secretary"
+#~ msgstr "Секретарка"
+
+#~ msgid "janitor"
+#~ msgstr "Хигиеничар"
+
+#~ msgid "professor"
+#~ msgstr "Професор"
+
+#~ msgid "marko"
+#~ msgstr "Марко"
+
+#~ msgid "clerk"
+#~ msgstr "Шалтерски службеник"
+
+#~ msgid "daniel"
+#~ msgstr "Даниел"

@@ -6,7 +6,7 @@ extends Control
 @export var choice_panel_scene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 @export var city_scene_path = "res://Scenes/Reusable/Map/City.tscn"
 
-# ---------- JSON paths (RELATIVE; DM will resolve per locale) ----------
+# ---------- JSON IDs (RELATIVE; resolved inline with GameState.get_data_path) ----------
 const D = "MVR/files/"
 const J_OPEN_ARRIVAL     = D + "MVR_Open_Arrival.json"
 const J_REQUEST_CLERK    = D + "MVR_Request_Clerk.json"
@@ -88,7 +88,6 @@ func _days_remaining() -> int:
 	return 0
 
 func _effective_after_hours_limit() -> int:
-	# Extend to 18:00 ONLY for bribery on its ready day (pre-pickup).
 	if _method() == METHOD_BRIBERY and GameState.day == _ready_day():
 		return T_AFTER_HOURS_EXTENDED
 	return T_AFTER_HOURS_LIMIT
@@ -185,8 +184,8 @@ func _on_talk() -> void:
 
 	# Bribery expired check
 	if _method() == METHOD_BRIBERY and GameState.day > _ready_day() and not GameState.has_flag(GameFlags.HAVE_BIRTH_CERTIFICATE):
-		if ResourceLoader.exists(GameState.get_data_path(J_BRIBERY_EXPIRED)):
-			await _play_and_wait(J_BRIBERY_EXPIRED)
+		if ResourceLoader.exists(String(GameState.get_data_path(J_BRIBERY_EXPIRED))):
+			await _play_and_wait(String(GameState.get_data_path(J_BRIBERY_EXPIRED)))
 		GameState.set_flag(K_BRIBE_PERMA_LOCK, true)
 		_set_method(METHOD_NONE)
 		GameState.set_int(K_READY_DAY, 0)
@@ -200,7 +199,7 @@ func _on_talk() -> void:
 
 	if not _arrival_shown:
 		_arrival_shown = true
-		await _play_and_wait(J_OPEN_ARRIVAL)
+		await _play_and_wait(String(GameState.get_data_path(J_OPEN_ARRIVAL)))
 
 	_show_greeting_menu()
 
@@ -215,7 +214,7 @@ func _on_greeting_choice(id: String) -> void:
 	if id == "ask":
 		GameState.ensure_task("birth")
 		GameState.update_task_step("birth")
-		await _play_and_wait(J_REQUEST_CLERK)
+		await _play_and_wait(String(GameState.get_data_path(J_REQUEST_CLERK)))
 		_show_method_menu()
 	elif id == "bye":
 		_clear_panel()
@@ -263,7 +262,7 @@ func _choose_standard() -> void:
 	GameState.set_int(K_READY_DAY, GameState.day + 3)
 	GameState.ensure_task("birth")
 	GameState.update_task_step("birth")
-	await _play_and_wait(J_PAY_STANDARD)
+	await _play_and_wait(String(GameState.get_data_path(J_PAY_STANDARD)))
 
 func _choose_expedited() -> void:
 	_clear_panel()
@@ -276,7 +275,7 @@ func _choose_expedited() -> void:
 	GameState.set_int(K_READY_DAY, GameState.day + 1)
 	GameState.ensure_task("birth")
 	GameState.update_task_step("birth")
-	await _play_and_wait(J_PAY_EXPEDITED)
+	await _play_and_wait(String(GameState.get_data_path(J_PAY_EXPEDITED)))
 
 func _choose_bribery() -> void:
 	_clear_panel()
@@ -289,7 +288,7 @@ func _choose_bribery() -> void:
 	GameState.set_int(K_READY_DAY, GameState.day)
 	GameState.ensure_task("birth")
 	GameState.update_task_step("birth")
-	await _play_and_wait(J_PAY_BRIBE_OFFER)
+	await _play_and_wait(String(GameState.get_data_path(J_PAY_BRIBE_OFFER)))
 	_show_bribe_wait_menu()
 
 # ========================= Follow-ups / pickup =========================
@@ -302,11 +301,11 @@ func _handle_followups_or_pickup() -> void:
 				await _fade_in_out(0.20)
 				await _do_pickup_bribery()
 			else:
-				await _play_and_wait(J_FOLLOW_BRIBERY)
+				await _play_and_wait(String(GameState.get_data_path(J_FOLLOW_BRIBERY)))
 				_show_bribe_wait_menu()
 		else:
-			if ResourceLoader.exists(GameState.get_data_path(J_BRIBERY_EXPIRED)):
-				await _play_and_wait(J_BRIBERY_EXPIRED)
+			if ResourceLoader.exists(String(GameState.get_data_path(J_BRIBERY_EXPIRED))):
+				await _play_and_wait(String(GameState.get_data_path(J_BRIBERY_EXPIRED)))
 			GameState.set_flag(K_BRIBE_PERMA_LOCK, true)
 			_set_method(METHOD_NONE)
 			GameState.set_int(K_READY_DAY, 0)
@@ -317,17 +316,17 @@ func _handle_followups_or_pickup() -> void:
 		if _days_remaining() == 0:
 			await _do_pickup_legal()
 		else:
-			await _play_and_wait(J_FOLLOW_STANDARD)
+			await _play_and_wait(String(GameState.get_data_path(J_FOLLOW_STANDARD)))
 		return
 
 	if m == METHOD_EXPEDITED:
 		if _days_remaining() == 0:
 			await _do_pickup_legal()
 		else:
-			await _play_and_wait(J_FOLLOW_EXPEDITED)
+			await _play_and_wait(String(GameState.get_data_path(J_FOLLOW_EXPEDITED)))
 		return
 
-# ========================= Bribery wait (auto-jump into pickup) =========================
+# ========================= Bribery wait =========================
 func _show_bribe_wait_menu() -> void:
 	var opts = []
 	if GameState.time < T_BRIBE_PICK:
@@ -342,14 +341,14 @@ func _on_bribe_wait_choice(id: String) -> void:
 		var delta = T_BRIBE_PICK - GameState.time
 		if delta > 0:
 			GameState.adjust_time(delta)
-		await _play_and_wait(J_BRIBE_WAIT)
+		await _play_and_wait(String(GameState.get_data_path(J_BRIBE_WAIT)))
 		await _do_pickup_bribery()
 		return
 	if id == "later":
-		await _play_and_wait(J_BRIBE_COME_LATER)
+		await _play_and_wait(String(GameState.get_data_path(J_BRIBE_COME_LATER)))
 		return
 
-# ========================= Pickups (each bumps task by +1) =========================
+# ========================= Pickups =========================
 func _advance_birth_task_by_one() -> void:
 	GameState.ensure_task("birth")
 	GameState.update_task_step("birth")
@@ -357,7 +356,7 @@ func _advance_birth_task_by_one() -> void:
 func _do_pickup_legal() -> void:
 	GameState.set_flag(GameFlags.HAVE_BIRTH_CERTIFICATE, true)
 	_advance_birth_task_by_one()
-	await _play_and_wait(J_PICKUP_LEGAL)
+	await _play_and_wait(String(GameState.get_data_path(J_PICKUP_LEGAL)))
 	await _fade_in_out(0.20)
 	_set_method(METHOD_NONE)
 	GameState.set_int(K_READY_DAY, 0)
@@ -367,7 +366,7 @@ func _do_pickup_bribery() -> void:
 	GameState.adjust_integrity(INTEGRITY_BRIBE_PICKUP)
 	GameState.set_flag(GameFlags.HAVE_BIRTH_CERTIFICATE, true)
 	_advance_birth_task_by_one()
-	await _play_and_wait(J_PICKUP_BRIBERY)
+	await _play_and_wait(String(GameState.get_data_path(J_PICKUP_BRIBERY)))
 	await _fade_in_out(0.20)
 	GameState.set_flag(K_BRIBE_PERMA_LOCK, true)
 	_set_method(METHOD_NONE)

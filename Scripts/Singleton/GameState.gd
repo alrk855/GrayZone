@@ -477,15 +477,35 @@ func apply_action(line: Dictionary) -> void:
 # -------------------------------------------------
 func format_placeholders(text: String) -> String:
 	var s: String = text
-	var s1: String = subject1.capitalize()
-	var s2: String = subject2.capitalize()
-	s = s.replace("{subject1}", s1).replace("{subject2}", s2)
-	s = s.replace("[Subject 1]", s1).replace("[Subject 2]", s2)
 
-	# >>> NEW: missed days placeholder(s)
-	var ndays := str(get_missed_morning_count()) # or: str(get_int("missed_morning_count", 0))
+	# Localized subjects (quick & dirty map)
+	if current_locale == "mk":
+		var dict := {
+			"science":    "Наука",
+			"geography":  "Географија",
+			"math":       "Математика",
+			"macedonian": "Македонски",
+			"english":    "Англиски"
+		}
+		var s1 := subject1
+		var s2 := subject2
+		if dict.has(s1): s1 = dict[s1]
+		if dict.has(s2): s2 = dict[s2]
+		s = s.replace("{subject1}", s1).replace("{subject2}", s2)
+		s = s.replace("[Subject 1]", s1).replace("[Subject 2]", s2)
+	else:
+		# Default English
+		s = s.replace("{subject1}", subject1.capitalize())
+		s = s.replace("{subject2}", subject2.capitalize())
+		s = s.replace("[Subject 1]", subject1.capitalize())
+		s = s.replace("[Subject 2]", subject2.capitalize())
+
+	# Missed days placeholder
+	var ndays := str(get_missed_morning_count())
 	s = s.replace("{ndays}", ndays)
+
 	return s
+
 
 
 # -------------------------------------------------
@@ -841,7 +861,9 @@ func get_data_path(relative: String) -> String:
 	return base + relative
 
 # Switch language at runtime
+signal locale_changed(new_locale: String)
 func switch_locale(new_locale: String) -> void:
 	current_locale = new_locale
 	TranslationServer.set_locale(new_locale)  # flips all tr() UI strings
 	print("Locale switched to:", new_locale)
+	locale_changed.emit(new_locale)

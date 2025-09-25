@@ -15,7 +15,7 @@ extends Control
 @export var bg_janitor_cleaning: Texture2D
 @export var bg_janitor_papers: Texture2D
 
-# ------------------------ JSON paths (relative; locale-resolved) ------------------------
+# ------------------------ JSON IDs (RELATIVE) ------------------------
 const J_EMPTY_CLASSROOM              := "Classroom/Classroom_Afternoon_Empty.json"
 
 const J_D2_MORNING_ON_TIME           := "Classroom/Classroom_Morning_OnTime.json"
@@ -146,13 +146,11 @@ func _update_presence_and_background() -> void:
 	var show_back := true
 	var tex: Texture2D = bg_empty
 
-	# Day 1 visuals
 	if d == 1:
 		tex = bg_empty
 		_apply_vis(tex, false, false, true)
 		return
 
-	# Days 2–4 visuals
 	if d >= 2 and d <= 4:
 		if t < T_12_30:
 			tex = bg_teacher_morning if bg_teacher_morning != null else bg_empty
@@ -199,12 +197,11 @@ func _apply_vis(tex: Texture2D, teacher_btn: bool, janitor_btn: bool, back_btn: 
 	if _btn_back != null:
 		_btn_back.visible = back_btn
 
-# ------------------------ Entry Flow (ordered precedence) ------------------------
+# ------------------------ Entry Flow ------------------------
 func _handle_entry_flow() -> void:
 	var d := GameState.day
 	var t := GameState.time
 
-	# Retro-skip marking for yesterday
 	if d >= 3 and d <= 4:
 		var prev := d - 1
 		if prev >= 2:
@@ -216,7 +213,6 @@ func _handle_entry_flow() -> void:
 				var mc := GameState.get_int(F_MISSED_CNT, 0)
 				GameState.set_int(F_MISSED_CNT, mc + 1)
 
-	# Morning block (07:00–12:30) — Day 2..4
 	if d >= 2 and d <= 4:
 		if t >= T_07_00 and t < T_08_00:
 			var advance := T_08_00 - t
@@ -247,7 +243,6 @@ func _handle_entry_flow() -> void:
 					_start_and_chain(J_D2_MORNING_LATE, "_after_morning_dialogue")
 					return
 
-	# After 12:30, if you didn't attend today, mark today's skip
 	if d >= 2 and d <= 4 and t >= T_12_30:
 		var attended_today2 := F_ATTENDED_PREFIX + str(d)
 		var skip_today := F_SKIP_PENALIZED_PREFIX + str(d)
@@ -259,7 +254,6 @@ func _handle_entry_flow() -> void:
 			var mc2 := GameState.get_int(F_MISSED_CNT, 0)
 			GameState.set_int(F_MISSED_CNT, mc2 + 1)
 
-	# Catch-up branch (13:00–16:00), show once per day
 	if d >= 2 and d <= 4:
 		var shown_key := F_CATCHUP_SHOWN_PREFIX + str(d)
 		if not GameState.has_flag(shown_key):
@@ -277,7 +271,6 @@ func _handle_entry_flow() -> void:
 					_start_and_chain(J_CATCHUP_REPEAT_SKIP, "_after_catchup")
 					return
 
-	# Day 2 noon announcement
 	if GameState.day == 2 and not GameState.has_flag(F_NOON_DAY2_DONE):
 		var attended_d2 := GameState.has_flag(F_ATTENDED_PREFIX + "2")
 		if attended_d2 and t >= T_12_30 and t < T_13_00:
@@ -286,7 +279,6 @@ func _handle_entry_flow() -> void:
 			_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "_after_day2_noon")
 			return
 
-	# If nobody is present -> show empty classroom JSON and kick back to School
 	if _is_room_empty_now(d, t):
 		_start_and_chain(J_EMPTY_CLASSROOM, "_go_school")
 		return
@@ -296,7 +288,6 @@ func _is_room_empty_now(d: int, t: int) -> bool:
 	var janitor_here := ((d == 3 or d == 4) and t >= T_17_00 and t < T_17_45)
 	return not teacher_here and not janitor_here
 
-# After morning JSONs
 func _after_morning_dialogue() -> void:
 	if GameState.time < T_12_30:
 		GameState.adjust_time(T_12_30 - GameState.time)
@@ -456,7 +447,6 @@ func _after_resubmit_accept() -> void:
 func _reset_mletter_for_rewrite() -> void:
 	GameState.ensure_task("motivation")
 	GameState.task_step_index["motivation"] = 1
-	print("[Task] Motivation Letter reset to step 1 for rewrite.]")
 	GameState.clear_flag("printed_motivation")
 	GameState.set_flag("motivation_rewrite_required", true)
 
@@ -561,23 +551,13 @@ func _after_janitor_confirm() -> void:
 	var base := 0
 	if GameState.has_flag(K_CLASSROOM_CHECK_DONE):
 		base = 1
-	var s1b := 0
-	if GameState.has_flag(F_ANS_SUBJ1):
-		s1b = 1
-	var s2b := 0
-	if GameState.has_flag(F_ANS_SUBJ2):
-		s2b = 1
+	var s1b := int(GameState.has_flag(F_ANS_SUBJ1))
+	var s2b := int(GameState.has_flag(F_ANS_SUBJ2))
 	var target := base + s1b + s2b
 
 	var current := GameState.get_task_progress(TASK_CLASSROOM_ANS)
-	if target > current:
-		if GameState.has_method("ensure_task_progress_at_least"):
-			GameState.ensure_task_progress_at_least(TASK_CLASSROOM_ANS, target)
-		elif GameState.has_method("set_task_progress"):
-			GameState.set_task_progress(TASK_CLASSROOM_ANS, target)
-		else:
-			while GameState.get_task_progress(TASK_CLASSROOM_ANS) < target:
-				GameState.update_task_step(TASK_CLASSROOM_ANS)
+	while GameState.get_task_progress(TASK_CLASSROOM_ANS) < target:
+		GameState.update_task_step(TASK_CLASSROOM_ANS)
 
 	var both_bought := GameState.has_flag(F_ANS_SUBJ1) and GameState.has_flag(F_ANS_SUBJ2)
 	if both_bought:
@@ -647,12 +627,13 @@ func _spawn_options_panel(options: Array, cb: Callable) -> void:
 	add_child(panel)
 	panel.call("show_options", options, cb)
 
-func _start_and_chain(json_path: String, next_method: String) -> void:
+# IMPORTANT: resolve RELATIVE IDs inline via GameState.get_data_path
+func _start_and_chain(json_rel_id: String, next_method: String) -> void:
 	_next_cb = next_method
 	if DialogueManager.is_connected("dialogue_finished", Callable(self, "_on_dm_finished")):
 		DialogueManager.disconnect("dialogue_finished", Callable(self, "_on_dm_finished"))
 	DialogueManager.connect("dialogue_finished", Callable(self, "_on_dm_finished"), Object.CONNECT_ONE_SHOT)
-	DialogueManager.start_dialogue(json_path, self)  # relative path; DM resolves per locale
+	DialogueManager.start_dialogue(String(GameState.get_data_path(json_rel_id)), self)
 
 func _on_dm_finished(_id: String) -> void:
 	var cb := _next_cb

@@ -14,7 +14,8 @@ const TIME_MIN: int = 90
 const REP_DELTA: int = -5
 
 # ---- Keys / Fallbacks ----
-const KEY_RETURN_SCENE: String    = "__study_return_scene"   # set by launcher
+# NEW: use a unique return key to avoid collisions with Study/MarkoStudy
+const KEY_RETURN_SCENE: String    = "__hangout_return_scene"
 const KEY_HANGOUT_CONTEXT: String = "__hangout_context"      # "event" | ""
 const RETURN_FALLBACK: String     = "res://Scenes/Reusable/Map/City.tscn"
 
@@ -27,7 +28,7 @@ func _ready() -> void:
 	_apply_bg_by_gender()
 
 	# Context: if launched from the event, skip REP penalty
-	var from_event: bool = String(GameState.features_unlocked.get(KEY_HANGOUT_CONTEXT, "")) == "event"
+	var from_event := String(GameState.features_unlocked.get(KEY_HANGOUT_CONTEXT, "")) == "event"
 	if GameState.features_unlocked.has(KEY_HANGOUT_CONTEXT):
 		GameState.features_unlocked.erase(KEY_HANGOUT_CONTEXT)
 
@@ -35,15 +36,28 @@ func _ready() -> void:
 		GameState.adjust_reputation(REP_DELTA)
 	GameState.adjust_time(TIME_MIN)
 
-	# Decide where to return; then consume the marker so it doesn't leak
-	var ret: String = String(GameState.features_unlocked.get(KEY_RETURN_SCENE, RETURN_FALLBACK)).strip_edges()
-	if ret == "":
+	# Decide where to return (read new key first; fall back to old if present),
+	# then consume the marker so it doesn't leak
+	var ret := String(GameState.features_unlocked.get(KEY_RETURN_SCENE, ""))
+
+	# Backward-compat: if some launcher still sets the old study key, use it once
+	if ret.strip_edges() == "":
+		ret = String(GameState.features_unlocked.get("__study_return_scene", ""))
+
+	# If still empty, default to current scene, else fallback to City
+	if ret.strip_edges() == "" and get_tree() and get_tree().current_scene:
+		ret = get_tree().current_scene.get_scene_file_path()
+	if ret.strip_edges() == "":
 		ret = RETURN_FALLBACK
+
+	# Consume both possible keys so they don't affect future flows
 	if GameState.features_unlocked.has(KEY_RETURN_SCENE):
 		GameState.features_unlocked.erase(KEY_RETURN_SCENE)
+	if GameState.features_unlocked.has("__study_return_scene"):
+		GameState.features_unlocked.erase("__study_return_scene")
 
 	# Resolve JSON via GameState.get_data_path(relative)
-	var json_path: String = _dp(HANGOUT_JSON_ID)
+	var json_path := _dp(HANGOUT_JSON_ID)
 
 	# Play JSON then return
 	if json_path != "" and FileAccess.file_exists(json_path):
@@ -65,7 +79,7 @@ func _apply_bg_by_gender() -> void:
 		push_error("MarkoHangout: bg_rect_path is invalid or not a TextureRect.")
 		return
 	var rect := node as TextureRect
-	var g: String = String(GameState.player_gender).to_lower()
+	var g := String(GameState.player_gender).to_lower()
 	rect.texture = bg_female if g == "female" else bg_male
 
 func _on_json_done(ret: String) -> void:
@@ -81,7 +95,7 @@ func _return_to(path: String) -> void:
 		get_tree().paused = false
 
 	# Validate target; if missing, use fallback (still via fade singleton)
-	var target: String = path
+	var target := path
 	if not ResourceLoader.exists(target):
 		push_warning("Hangout: invalid return path: " + target + " → using fallback")
 		target = RETURN_FALLBACK
@@ -96,10 +110,8 @@ func _return_to(path: String) -> void:
 	_returning = false
 
 # ===================== Golden path resolver =====================
-# Convert a *relative* Data/ ID (e.g., "Marko/Marko_Hangout_Free.json") into an absolute, locale-aware path.
 func _dp(relative: String) -> String:
-	var rel: String = String(relative).strip_edges().trim_prefix("/")
+	var rel := String(relative).strip_edges().trim_prefix("/")
 	if GameState.has_method("get_data_path"):
 		return String(GameState.get_data_path(rel))
-	# Dev fallback if get_data_path() isn’t present:
 	return "res://Data/" + rel

@@ -25,6 +25,7 @@ var _btn_by_id: Dictionary = {}   # id -> Button
 var _id_by_btn: Dictionary = {}   # Button -> id
 
 func _ready() -> void:
+	GameState.adjust_time(5)
 	GameUi.visible = true
 	GameState.location = "Classroom"  # logic string; unchanged
 	_set_bg(bg_teacher)

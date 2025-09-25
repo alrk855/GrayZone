@@ -32,7 +32,7 @@ const REQ_EXCLUDE_AUTO_ADD := {
 
 # ---------------- Fonts (only for details panel; grid mini label theme untouched) ----------------
 const OVERVIEW_FONT_PATH := "res://Fonts/Russo_One.ttf"          # grid buttons
-const BODY_FONT_PATH     := "res://Fonts/Chalkboard-Regular.ttf" # title/meta/steps
+const BODY_FONT_PATH     := "res://Fonts/dehinted-DarumadropOne.ttf" # title/meta/steps
 
 var FONT_OVERVIEW: Font = preload(OVERVIEW_FONT_PATH)
 var FONT_BODY: Font     = preload(BODY_FONT_PATH)
@@ -785,14 +785,9 @@ func _is_task_blocked(task_id: String) -> bool:
 	return false
 
 func _format_placeholders(text: String) -> String:
-	var s := text
-	if GameState.subject1 != "":
-		s = s.replace("{subject1}", GameState.subject1.capitalize())
-		s = s.replace("[Subject 1]", GameState.subject1.capitalize())
-	if GameState.subject2 != "":
-		s = s.replace("{subject2}", GameState.subject2.capitalize())
-		s = s.replace("[Subject 2]", GameState.subject2.capitalize())
-	return s
+	# Delegate to the centralized, locale-aware version in GameState
+	return GameState.format_placeholders(text)
+
 
 # ---- locale-aware cache key ----
 func _cache_key(task_id: String) -> String:

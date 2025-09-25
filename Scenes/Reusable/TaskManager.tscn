@@ -1,19 +1,20 @@
-[gd_scene load_steps=15 format=3 uid="uid://be02gb1lcicyt"]
+[gd_scene load_steps=19 format=3 uid="uid://be02gb1lcicyt"]
 
 [ext_resource type="Script" uid="uid://cgh3h3gek0533" path="res://Scenes/Reusable/task_manager.gd" id="1_wsdlb"]
 [ext_resource type="Texture2D" uid="uid://b4joiojiobkba" path="res://Images/board.png" id="1_xtc5h"]
 [ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="2_5qtaj"]
 [ext_resource type="Texture2D" uid="uid://dll21rvk30k2j" path="res://Images/Pin.png" id="3_5js0q"]
 [ext_resource type="Theme" uid="uid://jp8vrishkb81" path="res://Themes/NoVisibleScroll.tres" id="3_tv6op"]
+[ext_resource type="FontFile" uid="uid://bkpdciduy71nq" path="res://Fonts/dehinted-DarumadropOne.ttf" id="3_u4kjf"]
 [ext_resource type="Theme" uid="uid://bt7s2lqt8aalx" path="res://Themes/5pxMargin.tres" id="4_tv6op"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="7_u4kjf"]
 [ext_resource type="Theme" uid="uid://dac3bbni4k0gv" path="res://goback_tmng_button.tres" id="7_wsdlb"]
+[ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="8_dyxdf"]
 
 [sub_resource type="Theme" id="Theme_tv6op"]
-default_font = ExtResource("2_5qtaj")
 default_font_size = 0
 RichTextLabel/font_sizes/normal_font_size = 82
-RichTextLabel/fonts/normal_font = ExtResource("2_5qtaj")
+RichTextLabel/fonts/normal_font = ExtResource("3_u4kjf")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b3n2l"]
 
@@ -31,6 +32,14 @@ Button/styles/focus = SubResource("StyleBoxEmpty_b3n2l")
 Button/styles/hover = SubResource("StyleBoxTexture_4fpbc")
 Button/styles/normal = SubResource("StyleBoxTexture_86v4f")
 Button/styles/pressed = SubResource("StyleBoxTexture_5t3n7")
+
+[sub_resource type="Theme" id="Theme_5eg6m"]
+default_font = ExtResource("8_dyxdf")
+
+[sub_resource type="Theme" id="Theme_2bv4b"]
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/font_sizes/font_size = 33
+Label/fonts/font = ExtResource("2_5qtaj")
 
 [node name="Control2" type="Control"]
 custom_minimum_size = Vector2(1920, 1080)
@@ -56,18 +65,17 @@ expand_mode = 1
 
 [node name="Tasks" type="RichTextLabel" parent="Task Overview"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -102.0
-offset_top = 140.0
-offset_right = 101.0
-offset_bottom = 213.0
+anchors_preset = -1
+anchor_left = 0.398958
+anchor_top = 0.12963
+anchor_right = 0.597917
+anchor_bottom = 0.259259
 grow_horizontal = 2
 theme = SubResource("Theme_tv6op")
-text = "Tasks
-"
+text = "Tasks"
 scroll_active = false
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Task Overview"]
 layout_mode = 1
@@ -471,6 +479,7 @@ anchor_bottom = 2.0
 offset_left = 3.0
 offset_right = 3.0
 offset_bottom = 20.0
+theme = SubResource("Theme_5eg6m")
 texture = ExtResource("1_xtc5h")
 expand_mode = 1
 
@@ -486,7 +495,9 @@ offset_top = 67.64
 offset_right = 2.28003
 offset_bottom = 68.48
 grow_horizontal = 2
+theme_override_fonts/font = ExtResource("3_u4kjf")
 theme_override_font_sizes/font_size = 77
+text = "Visit"
 horizontal_alignment = 1
 
 [node name="MetaLabel" type="Label" parent="Task Detailed"]
@@ -500,7 +511,9 @@ offset_left = 4.88
 offset_top = 68.28
 offset_right = 1.63989
 offset_bottom = 67.72
+theme_override_fonts/font = ExtResource("3_u4kjf")
 theme_override_font_sizes/font_size = 33
+text = "АСДАСДАСДА"
 horizontal_alignment = 1
 
 [node name="Scroll" type="ScrollContainer" parent="Task Detailed"]
@@ -522,6 +535,7 @@ theme = ExtResource("3_tv6op")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = SubResource("Theme_2bv4b")
 
 [node name="goback" type="Button" parent="Task Detailed"]
 layout_mode = 1
