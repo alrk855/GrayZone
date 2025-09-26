@@ -1194,10 +1194,8 @@ msgid "Click to select"
 msgstr ""
 
 #: Scenes/Reusable/Events/study_with_marko.gd
-#, fuzzy
-#| msgid "Study %s now"
 msgid "Study {subject2} now"
-msgstr "Учи %s сега "
+msgstr "Учи  и {subject2} сега "
 
 #: Scenes/Reusable/Events/study_with_marko.gd
 msgid "We’re done"
