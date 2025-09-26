@@ -594,11 +594,11 @@ offset_right = 157.0
 offset_bottom = 54.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_2mygu")
 theme_override_font_sizes/font_size = 51
 text = "Correct: 00
-Errors: 00
-Status:        "
-horizontal_alignment = 1
+Error: 00
+Status:"
 vertical_alignment = 1
 
 [node name="Header" type="Label" parent="outrobox"]

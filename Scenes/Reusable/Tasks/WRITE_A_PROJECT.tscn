@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://bqyk43gnul3mf" path="res://Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd" id="1_pxg6s"]
 [ext_resource type="Texture2D" uid="uid://dll21rvk30k2j" path="res://Images/Pin.png" id="2_g38qk"]
 [ext_resource type="FontFile" uid="uid://de647gnm3sexo" path="res://Fonts/BergamotOrnaments-3oK6.ttf" id="3_5lfw6"]
-[ext_resource type="FontFile" uid="uid://tuee5vevvd58" path="res://Fonts/Chalkboard-Regular.ttf" id="4_moawo"]
-[ext_resource type="FontFile" uid="uid://bv0pm4qc1mksv" path="res://Fonts/BellavoirSerif_PERSONAL_USE_ONLY.otf" id="5_ylhej"]
+[ext_resource type="FontFile" uid="uid://bkpdciduy71nq" path="res://Fonts/dehinted-DarumadropOne.ttf" id="4_mfn1o"]
+[ext_resource type="FontFile" uid="uid://cxei884chjj1u" path="res://Fonts/Mileast Italic.otf" id="5_su66a"]
 [ext_resource type="StyleBox" uid="uid://d3s5ek8kweqtk" path="res://Themes/BUTTON_WHITE_BORDER.tres" id="6_p26ic"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m4l4v"]
@@ -244,7 +244,7 @@ offset_right = 502.5
 offset_bottom = 346.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("4_moawo")
+theme_override_fonts/font = ExtResource("4_mfn1o")
 theme_override_font_sizes/font_size = 46
 text = "Start writing the final project now? You’ll only have one shot at this."
 horizontal_alignment = 1
@@ -258,7 +258,7 @@ offset_top = 790.0
 offset_right = 568.0
 offset_bottom = 857.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_ylhej")
+theme_override_fonts/font = ExtResource("5_su66a")
 theme_override_font_sizes/font_size = 50
 text = "Begin writing"
 horizontal_alignment = 1
@@ -282,7 +282,7 @@ offset_top = 790.0
 offset_right = 1631.0
 offset_bottom = 857.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_ylhej")
+theme_override_fonts/font = ExtResource("5_su66a")
 theme_override_font_sizes/font_size = 50
 text = "Leave"
 horizontal_alignment = 1
@@ -320,8 +320,8 @@ offset_bottom = -23.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_ylhej")
-theme_override_font_sizes/font_size = 50
+theme_override_fonts/font = ExtResource("5_su66a")
+theme_override_font_sizes/font_size = 33
 text = "The Role of Civic Education in Modern Democracy"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -350,8 +350,8 @@ offset_bottom = 127.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_ylhej")
-theme_override_font_sizes/font_size = 50
+theme_override_fonts/font = ExtResource("5_su66a")
+theme_override_font_sizes/font_size = 33
 text = "Youth and Society: A Reflection"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -380,8 +380,8 @@ offset_bottom = 277.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_ylhej")
-theme_override_font_sizes/font_size = 50
+theme_override_fonts/font = ExtResource("5_su66a")
+theme_override_font_sizes/font_size = 33
 text = "How to Not Fail High School"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -506,7 +506,7 @@ offset_bottom = 356.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_ylhej")
+theme_override_fonts/font = ExtResource("5_su66a")
 theme_override_font_sizes/font_size = 50
 text = "Leave"
 horizontal_alignment = 1

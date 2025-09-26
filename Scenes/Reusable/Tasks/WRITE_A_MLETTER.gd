@@ -273,14 +273,26 @@ func _read_text_from_json(abs_path: String) -> String:
 	return ""
 
 # --- Placeholder helper: {name} and [Field] ---
+# --- Placeholder helper: {name}, [Field], and {subject1}/{subject2} ---
 func _apply_placeholders(s: String) -> String:
+	# Name (fallback to a localized generic)
 	var nm: String = String(GameState.player_name).strip_edges()
 	if nm == "":
 		nm = tr("Student")
-	var field: String = String(GameState.subject1).strip_edges()
-	if field == "":
-		field = tr("your field")
+
+	# Localized subject display (uses GameState.format_placeholders)
+	var field_display: String = GameState.format_placeholders("{subject1}")
+	if field_display == "{subject1}" or field_display.strip_edges() == "":
+		field_display = tr("your field")
+
+	# First, do explicit legacy tokens
 	s = s.replace("{name}", nm)
-	s = s.replace("[Field]", field).replace("[field]", field).replace("[FIELD]", field)
+	s = s.replace("[Field]", field_display)
+	s = s.replace("[field]", field_display)
+	s = s.replace("[FIELD]", field_display)
+
+	# Then allow modern subject placeholders inside the text as well
+	# (e.g., templates can use {subject1} / {subject2})
+	s = GameState.format_placeholders(s)
+
 	return s
- 	

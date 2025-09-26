@@ -505,7 +505,7 @@ msgstr ""
 
 #: Scenes/Reusable/Tasks/tutoring.gd
 msgid "1 hour"
-msgstr "1 саат"
+msgstr "1 час"
 
 #: Scenes/Reusable/Tasks/tutoring.gd
 msgid "MKD"
@@ -513,7 +513,7 @@ msgstr "МКД"
 
 #: Scenes/Reusable/Tasks/tutoring.gd
 msgid "3 hours"
-msgstr "3 саати"
+msgstr "3 часа"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.gd
 msgid "Name:"
@@ -571,11 +571,11 @@ msgstr ""
 "\n"
 "Дата на раѓање: [DD/MM/YYYY]\n"
 "\n"
-"Образование: Средноl\n"
+"Образование: [Ниво на образование]l\n"
 "\n"
-"Вештини: Пишување, Истражување, Тимска работа...\n"
+"Вештини: [Твои вештини]\n"
 "\n"
-"Искуство: Без - Спремен да учам"
+"Искуство: [Работно искуство]"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
 msgid ""
@@ -588,7 +588,7 @@ msgstr ""
 "Име: Александар\n"
 "Дата на раѓање: 28/11/2005\n"
 "Образование: Средно\n"
-"Вештини: Пишување, програмирање, Работа со тим\n"
+"Вештини: Пишување,Работа со тим\n"
 "Искуство: Немам"
 
 #: Scenes/Reusable/Tasks/WRITE_A_CV.tscn
@@ -616,7 +616,7 @@ msgstr "Точни: %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Errors: %d"
-msgstr "Грешки %d"
+msgstr "Грешни %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Status:"
@@ -706,7 +706,7 @@ msgid ""
 "Status:        "
 msgstr ""
 "Точни:\n"
-"Грешки:\n"
+"Грешни:\n"
 "Статус:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
@@ -739,7 +739,7 @@ msgstr "Ти одговори: %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
 msgid "Time Taken: %d min"
-msgstr "Потребно време: %d мин"
+msgstr "Време: %d мин"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
 msgid "Score: %d / 5"
@@ -779,7 +779,7 @@ msgstr "Резултат"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "Questions : 5"
-msgstr ""
+msgstr "Прашања: 5"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "You answered : 0"
@@ -1217,11 +1217,11 @@ msgstr "Додадена задача: %s"
 
 #: Scripts/Singleton/UI.gd
 msgid "Task updated: %s → Step %d/%d"
-msgstr "Ажурирање на задачата: %s → Step %d/%d"
+msgstr "Ажурирање на задачата: %s → Чекор %d/%d"
 
 #: Scripts/Singleton/UI.gd
 msgid "Task updated: %s → Step %d"
-msgstr "Ажурирање на задачата: %s → Step %d"
+msgstr "Ажурирање на задачата: %s → Чекор %d"
 
 #: Scenes/Reusable/Dialogue.gd
 msgid "narrator"

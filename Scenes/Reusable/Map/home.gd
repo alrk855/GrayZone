@@ -113,16 +113,17 @@ func _on_activities_choice(id: String) -> void:
 
 # ---- Study menus ----
 func _show_study_menu() -> void:
-	var s1: String = GameState.subject1
-	if s1.strip_edges() == "":
-		s1 = tr("Subject 1")
-	var s2: String = GameState.subject2
-	if s2.strip_edges() == "":
-		s2 = tr("Subject 2")
+	# Localized labels via placeholders; fallback if subjects unset
+	var s1_label := GameState.format_placeholders("{subject1}")
+	if s1_label == "{subject1}":
+		s1_label = tr("Subject 1")
+	var s2_label := GameState.format_placeholders("{subject2}")
+	if s2_label == "{subject2}":
+		s2_label = tr("Subject 2")
 
 	var opts: Array = []
-	opts.append({"id":"s1","text": tr("Study") + " " + s1})
-	opts.append({"id":"s2","text": tr("Study") + " " + s2})
+	opts.append({"id":"s1","text": tr("Study {subject}").format({"subject": s1_label})})
+	opts.append({"id":"s2","text": tr("Study {subject}").format({"subject": s2_label})})
 	opts.append({"id":"back","text": tr("Back")})
 	_show_choices(opts, Callable(self,"_on_study_choice"))
 
@@ -142,9 +143,18 @@ func _show_subject_sessions_menu(which_subject: String) -> void:
 	else:
 		subject_raw = GameState.subject1
 
-	var subj_label: String = subject_raw
-	if subj_label.strip_edges() == "":
-		subj_label = tr("Subject 2") if which_subject == "subject2" else tr("Subject 1")
+	# Localized subject display
+	var subj_label: String = ""
+	if which_subject == "subject2":
+		subj_label = GameState.format_placeholders("{subject2}")
+	else:
+		subj_label = GameState.format_placeholders("{subject1}")
+
+	if subj_label.begins_with("{subject"):
+		if which_subject == "subject2":
+			subj_label = tr("Subject 2")
+		else:
+			subj_label = tr("Subject 1")
 
 	var opts: Array = []
 	var days_to_show: Array = _get_available_days_for_subject(subject_raw)
@@ -159,6 +169,7 @@ func _show_subject_sessions_menu(which_subject: String) -> void:
 
 	opts.append({"id":"back","text": tr("Back")})
 	_show_choices(opts, Callable(self,"_on_subject_session_choice").bind(which_subject, subject_raw))
+
 
 func _on_subject_session_choice(id: String, which_subject: String, subject_raw: String) -> void:
 	if id == "back":

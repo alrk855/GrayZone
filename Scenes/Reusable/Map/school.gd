@@ -34,6 +34,7 @@ var _panel: Control = null
 var _is_fading: bool = false
 
 func _ready() -> void:
+	GameState.start_music_if_needed()
 	if GameState.subject1.strip_edges() == "":
 		GameState.subject1 = "math"
 	if GameState.subject2.strip_edges() == "":

@@ -16,8 +16,6 @@ extends Node
 @onready var outro: Control                = $"Outro"
 
 # ---------- Config ----------
-# RELATIVE ID under Data/. Example: "Quizzes/Project_Quiz.json"
-# Locale-aware absolute path is resolved via GameState.get_data_path(...)
 @export var QUESTIONS_JSON_ID: String = "Quizzes/Project_Quiz.json"
 
 const LEAVE_BUTTON_PATH: NodePath = NodePath("Leave/button2")
@@ -33,6 +31,7 @@ var _started: bool = false
 var _finished: bool = false
 var _score_out_of_5: int = 0
 var _exiting: bool = false
+var _rt_start_msec: int = 0   # <<< real-time stopwatch start (ms)
 
 # Each item: { "question": String, "options": [String, String, String], "answer": int(0..2) }
 var questions: Array[Dictionary] = []
@@ -113,7 +112,7 @@ func _load_questions_from_json() -> void:
 		var ans_i: int = int(ans_v)
 
 		questions.append({
-			"question": q,              # already localized via file content
+			"question": q,
 			"options": [opt0, opt1, opt2],
 			"answer": clamp(ans_i, 0, 2)
 		})
@@ -140,6 +139,7 @@ func _on_button3_pressed() -> void: # Option 3
 # ---------- Flow ----------
 func begin_project() -> void:
 	mark_started()
+	_rt_start_msec = Time.get_ticks_msec()   # <<< start stopwatch
 	if timer:
 		timer.start()
 	create_tween().tween_property(begin, "modulate:a", 0.0, 1.0).set_trans(Tween.TRANS_CUBIC)
@@ -176,7 +176,6 @@ func endQ() -> void:
 			b.queue_free()
 
 	question_label.text = tr("🎓 Project Completed!")
-
 	outro.visible = true
 
 	var t1 := create_tween()
@@ -196,8 +195,13 @@ func endQ() -> void:
 	await t3.finished
 
 	var t4 := create_tween()
-	var mins_taken: int = int(floor(float(GameState.time)))
-	taken.text = tr("Time Taken: %d min") % mins_taken
+	# >>> Real-time elapsed (mm:ss)
+	var elapsed_ms: int = Time.get_ticks_msec() - _rt_start_msec
+	if elapsed_ms < 0:
+		elapsed_ms = 0
+	var mins: int = int(elapsed_ms / 60000)
+	var secs: int = int((elapsed_ms % 60000) / 1000)
+	taken.text = tr("Time Taken: %d:%02d") % [mins, secs]
 	t4.tween_property(taken, "position", Vector2(116.5, 330), 0.6).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property(taken, "modulate:a", 1.0, 0.6).set_trans(Tween.TRANS_CUBIC)
 
@@ -280,7 +284,6 @@ func _go_home() -> void:
 
 # ---------- ID → Path (Golden Standard) ----------
 func _path_from_id(id: String) -> String:
-	# R1: strictly depend on GameState.get_data_path; no direct res://Data fallback.
 	var rel: String = String(id).strip_edges().trim_prefix("/")
 	if not GameState.has_method("get_data_path"):
 		return ""
