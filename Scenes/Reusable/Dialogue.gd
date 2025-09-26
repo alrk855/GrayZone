@@ -6,7 +6,6 @@ signal choices_requested(options: Array, max_select: int) # external UI can list
 @onready var dialogue_label: RichTextLabel = $"Dialogue Box/Control2/Dialogue"  # BBCode already enabled in Inspector
 @onready var speaker_label: Label = $"Speaker Box/SpeakerLABEL"
 @onready var portrait: TextureRect = $"Dialogue Box/Control/PlaceHolderFrame"
-@onready var timerr: Timer = $"change_text"
 
 # Optional: export an italic font for Narrator lines
 @export var narrator_italic_font: Font
@@ -54,7 +53,7 @@ var portraits: Dictionary = {
 var dialogue_data: Array = []
 var line_index: int = 0
 var is_typing: bool = false
-@export var typing_speed: float = 0.04
+var typing_speed: float = 0.2
 var caller: Node = null
 
 var _waiting_for_external_choice := false
@@ -161,8 +160,7 @@ func _type_text(text: String, italics: bool=false) -> void:
 		for i in range(text.length()):
 			dialogue_label.append_text(text.substr(i, 1))
 			await get_tree().create_timer(typing_speed).timeout
-	timerr.start()
-	await timerr.timeout
+
 	is_typing = false
 
 # ---------- External choices flow ----------

@@ -132,5 +132,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="change_text" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 3.5
 one_shot = true
