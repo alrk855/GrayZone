@@ -18,7 +18,6 @@
 [ext_resource type="Script" uid="uid://bk0shcf3ul7ob" path="res://Scripts/MainMenu/play.gd" id="10_vtepg"]
 [ext_resource type="Script" uid="uid://d3sojpw0ye6wd" path="res://Scripts/MainMenu/Settings/settings.gd" id="11_jr6u5"]
 [ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="12_m3bi6"]
-[ext_resource type="AudioStream" uid="uid://c86k0swfa5wtq" path="res://Audio/game.mp3" id="12_t1dhk"]
 [ext_resource type="Script" uid="uid://fc2lago8y5do" path="res://Scripts/MainMenu/quit.gd" id="13_6vfk8"]
 [ext_resource type="Theme" uid="uid://hfoalgua28li" path="res://Themes/ui_settings_card.tres" id="13_8dnnj"]
 [ext_resource type="AudioStream" uid="uid://lyhht1a5m7r7" path="res://Audio/u4.mp3" id="13_tt8ml"]
@@ -28,6 +27,7 @@
 [ext_resource type="Script" uid="uid://4slur511u7dy" path="res://Scripts/MainMenu/Settings/Back.gd" id="18_84iac"]
 [ext_resource type="Theme" uid="uid://yoi5dxdmyy02" path="res://Themes/MasterButton.tres" id="19_84iac"]
 [ext_resource type="Script" uid="uid://5d7vhpr1gd3h" path="res://Scripts/MainMenu/Settings/sliding.gd" id="20_6dk6o"]
+[ext_resource type="AudioStream" uid="uid://cnlkxj8gs4xs4" path="res://Audio/MainMenu.mp3" id="20_pddej"]
 [ext_resource type="Script" uid="uid://bf7p384gxmx6s" path="res://Scripts/MainMenu/Settings/sliding_bar.gd" id="21_84iac"]
 [ext_resource type="Theme" uid="uid://t18x08ii57qh" path="res://Themes/MusicButton.tres" id="21_jr6u5"]
 [ext_resource type="Theme" uid="uid://de6isrgwoaxiw" path="res://Themes/mkdbutton.tres" id="22_6m47u"]
@@ -376,7 +376,7 @@ script = ExtResource("33_msuys")
 target_node = NodePath("../Click_to_Start_Control")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("12_t1dhk")
+stream = ExtResource("20_pddej")
 autoplay = true
 bus = &"Music"
 parameters/looping = true

@@ -51,8 +51,8 @@ var _freeze_stack: Array[String] = []            # keep available for other syst
 # Status
 # -----------------------------
 var money: int = 2000
-var integrity: int = 20
-var reputation: int = 20
+var integrity: int = 45
+var reputation: int = 45
 
 # -----------------------------
 # Gameplay
@@ -503,6 +503,9 @@ func format_placeholders(text: String) -> String:
 	# Missed days placeholder
 	var ndays := str(get_missed_morning_count())
 	s = s.replace("{ndays}", ndays)
+# Birth certificate ETA (UPPERCASE)
+	var bcert_days := str(days_until_birth_cert_ready())
+	s = s.replace("{NDAYS}", bcert_days)
 
 	return s
 
@@ -867,59 +870,42 @@ func switch_locale(new_locale: String) -> void:
 	TranslationServer.set_locale(new_locale)  # flips all tr() UI strings
 	print("Locale switched to:", new_locale)
 	locale_changed.emit(new_locale)
-# ---------- Music (loop while location != "Unknown") ----------
-# File paths (strings). Use OGG/MP3 in your project.
-var music_track_a_path: String = "res://Audio/dark_game.mp3"
-var music_track_b_path: String = "res://Audio/extra.mp3"
+# ---------- Background Music (single track, manual play/stop) ----------
+var music_path: String = "res://Audio/BackgroundTheme.mp3"
+var _music_player: AudioStreamPlayer = null
+var _music_started: bool = false
 
-var _music_player: AudioStreamPlayer
-var _music_started := false
-var _music_toggle := false
-var _music_streams: Array[AudioStream] = []  # [A, B] if present
-
-func start_music_if_needed() -> void:
+func start_bg_music() -> void:
 	if _music_started:
-		return
-	_ensure_music_streams()
-	if _music_streams.is_empty():
 		return
 
 	if _music_player == null:
 		_music_player = AudioStreamPlayer.new()
-		_music_player.bus = "Music"  # optional: your audio bus name
+		_music_player.bus = "Music"  # optional: your audio bus
 		add_child(_music_player)
-		_music_player.finished.connect(_on_music_finished)
 
-	_music_started = true
-	_music_toggle = false
-	_play_current_track()
+		var stream := load(music_path)
+		if stream is AudioStream:
+			stream.loop = true   # ✅ direct property, no has_property check
+			_music_player.stream = stream
+		else:
+			push_error("Failed to load music: " + music_path)
+			return
 
-func _ensure_music_streams() -> void:
-	if not _music_streams.is_empty():
-		return
-	# Load A if it exists
-	if music_track_a_path != "" and ResourceLoader.exists(music_track_a_path):
-		var a := load(music_track_a_path) as AudioStream
-		if a: _music_streams.append(a)
-	# Load B if it exists
-	if music_track_b_path != "" and ResourceLoader.exists(music_track_b_path):
-		var b := load(music_track_b_path) as AudioStream
-		if b: _music_streams.append(b)
-
-func _play_current_track() -> void:
-	if _music_streams.is_empty():
-		return
-	# If only one track, always index 0. If two, alternate 0/1.
-	var idx := 0
-	if _music_streams.size() >= 2 and _music_toggle:
-		idx = 1
-	_music_player.stream = _music_streams[idx]
 	_music_player.play()
+	_music_started = true
 
-func _on_music_finished() -> void:
-	# Stop auto-looping if game moved to Unknown
-	if location == "Unknown":
-		_music_started = false
-		return
-	_music_toggle = not _music_toggle
-	_play_current_track()
+
+func stop_bg_music() -> void:
+	if _music_player and _music_player.playing:
+		_music_player.stop()
+	_music_started = false
+
+func days_until_birth_cert_ready() -> int:
+	var method := get_int(K_MVR_METHOD, 0)          # 1/2/3 if active
+	var ready  := get_int(K_MVR_READY_DAY, 0)       # target day
+	# If no active request, or already picked up, show 0.
+	if method == 0 or ready <= 0 or has_flag(Flags.HAVE_BIRTH_CERTIFICATE):
+		return 0
+	var rem := ready - day
+	return rem if rem > 0 else 0

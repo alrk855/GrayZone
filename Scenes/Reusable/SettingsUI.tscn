@@ -147,6 +147,7 @@ layout_mode = 2
 
 [node name="Sound" type="Label" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
 text = "Sound"
@@ -214,6 +215,7 @@ layout_mode = 2
 
 [node name="Music" type="Label" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/VolumeRow2"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
 text = "Music "

@@ -20,9 +20,9 @@ signal selection_made(id: String)  # "1h" | "3h"
 @export_file("*.tscn") var RETURN_SCENE: String = "res://Scenes/Reusable/Map/City.tscn"
 
 # ---- Rewards ----
-const MONEY_1H: int = 200
+const MONEY_1H: int = 100
 const TIME_1H: int  = 60
-const MONEY_3H: int = 600
+const MONEY_3H: int = 300
 const TIME_3H: int  = 180
 
 # ---- Flags / Task IDs ----

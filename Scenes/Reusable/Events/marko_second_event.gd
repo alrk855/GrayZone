@@ -15,6 +15,10 @@ const JSON_INTRO_STUDY_ID: String = "Marko/SecondEvent/MarkoSecond_Intro_Study.j
 const JSON_INTRO_PARTY_ID: String = "Marko/SecondEvent/MarkoSecond_Intro_Party.json"
 const JSON_PARTY_NIGHT_ID: String = "Marko/SecondEvent/MarkoSecond_Party_Night.json"
 
+# ---------- Local party music ----------
+const PARTY_TRACK_PATH := "res://Audio/ACO!.mp3"
+var _party_player: AudioStreamPlayer = null
+
 # ---------- Internals ----------
 var _bg_node: Node = null
 var _panel: Control = null
@@ -22,7 +26,7 @@ var _ui: Control = null
 var _came_from_study_intro: bool = false
 
 func _ready() -> void:
-	GameState.location = "MarkoSecondEvent"
+	GameState.location = "Unknown"
 
 	_bg_node = null
 	if bg_rect_path != NodePath():
@@ -84,18 +88,47 @@ func _handle_party_branch() -> void:
 	GameState.adjust_reputation(-5)
 	_apply_party_bg_by_gender()
 
+	# stop global BG and start the local party loop
+	GameState.stop_bg_music()
+	_start_party_music()
+
+	# advance to party time
 	GameState.time = 21 * 60
 	if GameState.has_method("_emit_time_changed"):
 		GameState._emit_time_changed()
 
 	await _play_json(JSON_PARTY_NIGHT_ID)
 
+	# night passes
 	GameState.time = 23 * 60
 	if GameState.has_method("_emit_time_changed"):
 		GameState._emit_time_changed()
 
+	# stop party loop and restore global BG before leaving
+	_stop_party_music()
+	GameState.start_bg_music()
+
 	await _fade_to(home_scene_path)
 	_mark_done(true)
+
+# -------------------- Local party music helpers --------------------
+func _start_party_music() -> void:
+	if _party_player == null:
+		_party_player = AudioStreamPlayer.new()
+		_party_player.bus = "Music"  # adjust if you use a different bus
+		add_child(_party_player)
+
+	var s := load(PARTY_TRACK_PATH)
+	if s is AudioStream:
+		s.loop = true
+		_party_player.stream = s
+		_party_player.play()
+	else:
+		push_warning("Party track missing: " + PARTY_TRACK_PATH)
+
+func _stop_party_music() -> void:
+	if _party_player:
+		_party_player.stop()
 
 # -------------------- Helpers --------------------
 func _apply_party_bg_by_gender() -> void:

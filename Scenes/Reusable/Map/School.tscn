@@ -1,7 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://io6e1ybfv6mj"]
+[gd_scene load_steps=11 format=3 uid="uid://io6e1ybfv6mj"]
 
 [ext_resource type="Script" uid="uid://c4d52b5ae03ne" path="res://Scenes/Reusable/Map/school.gd" id="1_hfkw0"]
 [ext_resource type="Texture2D" uid="uid://dwsapmgj87lci" path="res://Images/Hallway igra.png" id="2_3mlsj"]
+[ext_resource type="Script" uid="uid://b4og445pgyuwn" path="res://Scenes/Reusable/Map/sch.gd" id="3_wyiup"]
+[ext_resource type="Texture2D" uid="uid://dm1wkptoooq70" path="res://Images/Hallway_igra.png" id="4_4bypy"]
 [ext_resource type="Script" uid="uid://bngil6nruelbw" path="res://Scenes/Reusable/Map/rollback.gd" id="5_60yip"]
 [ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="6_iq7gh"]
 [ext_resource type="Script" uid="uid://rmihi0djaxp4" path="res://Scenes/Reusable/Map/forward.gd" id="6_jxu8x"]
@@ -18,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_hfkw0")
 
-[node name="background" type="TextureRect" parent="."]
+[node name="background" type="TextureRect" parent="." node_paths=PackedStringArray("rect")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,6 +28,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_3mlsj")
+script = ExtResource("3_wyiup")
+MK = ExtResource("4_4bypy")
+EN = ExtResource("2_3mlsj")
+rect = NodePath(".")
 
 [node name="doors" type="HBoxContainer" parent="background"]
 layout_mode = 1
@@ -116,6 +122,7 @@ text = "doma
 script = ExtResource("7_3mlsj")
 
 [node name="Button5" type="Button" parent="background"]
+visible = false
 layout_mode = 0
 offset_left = 125.0
 offset_top = 102.0
