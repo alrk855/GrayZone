@@ -616,11 +616,11 @@ msgstr "Точни: %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Errors: %d"
-msgstr "Грешни %d"
+msgstr "Грешни: %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 msgid "Status:"
-msgstr "Статус"
+msgstr "Статус:"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
@@ -787,7 +787,7 @@ msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "Time Taken : 46"
-msgstr ""
+msgstr "Време :"
 
 #: Scenes/Reusable/Map/city.gd
 msgid "Home"

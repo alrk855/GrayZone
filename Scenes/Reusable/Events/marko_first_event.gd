@@ -137,6 +137,7 @@ func _on_entry_choice(id: String) -> void:
 			_safe_end_dialogue()
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
 			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
+			GameState.features_unlocked["__hangout_return_scene"] = FALLBACK_HOME
 			_safe_change_scene(HANGOUT_SCENE)
 
 func _show_study_sway_choices() -> void:
@@ -171,6 +172,7 @@ func _on_study_sway_choice(id: String) -> void:
 			GameState.adjust_integrity(-10)
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
 			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
+			GameState.features_unlocked["__hangout_return_scene"] = FALLBACK_HOME
 			_safe_change_scene(HANGOUT_SCENE)
 
 func _show_alone_push_choices() -> void:
@@ -195,6 +197,7 @@ func _on_alone_push_choice(id: String) -> void:
 			GameState.adjust_integrity(-10)
 			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
 			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
+			GameState.features_unlocked["__hangout_return_scene"] = FALLBACK_HOME
 			_safe_change_scene(HANGOUT_SCENE)
 
 # ---- JSON finish handlers ----

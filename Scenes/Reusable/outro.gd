@@ -14,6 +14,8 @@ extends Control
 @onready var _quit:  Button = get_node_or_null(quit_button_path) as Button
 
 func _ready() -> void:
+	GameState.location="Unknown"
+	GameState.start_bg_music()
 	if _label:
 		_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_label.text = _load_text(_dp(json_id))

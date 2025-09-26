@@ -62,6 +62,7 @@ var zvuci : Array[AudioStream] = [
 ]
 
 func _ready() -> void:
+	correct=0
 	randomize()
 	GameState.location = "Unknown"
 	finishbutt.modulate.a = 0.0
@@ -143,6 +144,8 @@ func _on_button_2_pressed() -> void:
 
 # --------------------- Flow ---------------------
 func _process(_delta: float) -> void:
+	if(_used_gpt == true): #SO CHATGPT
+		correct = 33
 	debLabel.text = tr("Correct: %d") % correct + "\n" + tr("Errors: %d") % wrong + "\n" + tr("Status:")
 	if current_word < words.size():
 		header.text = words[current_word]

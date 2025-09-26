@@ -53,7 +53,7 @@ var portraits: Dictionary = {
 var dialogue_data: Array = []
 var line_index: int = 0
 var is_typing: bool = false
-var typing_speed: float = 0.04
+var typing_speed: float = 0.2
 var caller: Node = null
 
 var _waiting_for_external_choice := false
