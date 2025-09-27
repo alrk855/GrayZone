@@ -50,11 +50,6 @@ func _ready() -> void:
 	if ret.strip_edges() == "":
 		ret = RETURN_FALLBACK
 
-	# Consume both possible keys so they don't affect future flows
-	if GameState.features_unlocked.has(KEY_RETURN_SCENE):
-		GameState.features_unlocked.erase(KEY_RETURN_SCENE)
-	if GameState.features_unlocked.has("__study_return_scene"):
-		GameState.features_unlocked.erase("__study_return_scene")
 
 	# Resolve JSON via GameState.get_data_path(relative)
 	var json_path := _dp(HANGOUT_JSON_ID)

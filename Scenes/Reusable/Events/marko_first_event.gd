@@ -200,6 +200,7 @@ func _on_alone_push_choice(id: String) -> void:
 			GameState.features_unlocked["__hangout_return_scene"] = FALLBACK_HOME
 			_safe_change_scene(HANGOUT_SCENE)
 
+
 # ---- JSON finish handlers ----
 func _on_hangout_json_finished() -> void:
 	GameState.ensure_task(TASK_VISIT_PROF)
