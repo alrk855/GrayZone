@@ -17,6 +17,9 @@ const K_MVR_LAST_WAIT_BUMP_DAY    := "__MVR_LAST_WAIT_BUMP_DAY"  # int day marke
 const K_MVR_BRIBE_WAIT_BUMPED     := "__MVR_BRIBE_WAIT_BUMPED"   # bool marker (bumped at/after 17:00 on ready day)
 const K_MVR_LAST_CHECK_DAY        := "__MVR_LAST_CHECK_DAY"      # int day marker (last day reconcile saw)
 const T_BRIBE_PICK                := 17 * 60
+# --- Exam/quiz scores (just values) ---
+var scores1: int = 0
+var scores2: int = 0
 
 var _one_am_paused: bool = false                 # stops ticking/adjust_time after 01:00 only
 
@@ -909,3 +912,8 @@ func days_until_birth_cert_ready() -> int:
 		return 0
 	var rem := ready - day
 	return rem if rem > 0 else 0
+func push_exam_score_value(score: int) -> void:
+	if scores1 == 0:
+		scores1 = score
+	else:
+		scores2 = score

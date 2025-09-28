@@ -1,3 +1,4 @@
+# res://Scripts/Scenes/MarkoFirstEvent.gd
 extends Control
 
 # ---------- JSON IDs (relative under Data/) ----------
@@ -8,44 +9,39 @@ const JSON_ALONE_PUSH_ID:  String = "Marko/FirstEvent/10_StudyAlone_Push.json"
 const JSON_SOLO_END_ID:    String = "Marko/FirstEvent/11_Solo_Study_End.json"
 const JSON_HANGOUT_END_ID: String = "Marko/FirstEvent/12_Hangout_End.json"
 
+# ---- Scenes ----
 const FALLBACK_HOME: String = "res://Scenes/Reusable/Map/Home.tscn"
 const HANGOUT_SCENE: String = "res://Scenes/Reusable/Tasks/Hangout.tscn"
 
-# keys shared with Study/MarkoStudy
-const KEY_STUDY_MODE: String      = "__study_mode"
-const KEY_SUBJECT_PICK: String    = "__study_subject_pick"
-const KEY_RETURN_SCENE: String    = "__study_return_scene"
-const KEY_HANGOUT_CONTEXT: String = "__hangout_context" # "event" | ""
+# ---- Flags ----
+const FLAG_EVENT_DONE: String    = "marko_first_event_done"
+const FLAG_HANGOUT_RECENT: String = "marko_hangout_recent"
 
-# task we add after hangout
+# task we add after hangout end
 const TASK_VISIT_PROF: String = "visit_professor_office"
-const F_BACK_FROM_HANGOUT: String = "marko_first_event_hangout_done"
 
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 
 var _panel: Control = null
-var _transitioning: bool = false
+var _transitioning := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	GameState.location = "MarkoFirstEvent"
 	_clear_panel()
 
-	# Return path for hangout/study round-trips
-	var ret_path: String = ""
-	if get_tree() and get_tree().current_scene:
-		ret_path = String(get_tree().current_scene.get_scene_file_path())
-	if ret_path.strip_edges() == "":
-		ret_path = FALLBACK_HOME
-	GameState.features_unlocked[KEY_RETURN_SCENE] = ret_path
+	# If the event is already done, don't replay anything — just send the player Home.
+	if GameState.has_flag(FLAG_EVENT_DONE):
+		_safe_change_scene(FALLBACK_HOME)
+		return
 
-	# Handle comeback from hangout
-	if GameState.has_flag(F_BACK_FROM_HANGOUT):
-		GameState.clear_flag(F_BACK_FROM_HANGOUT)
+	# If we just returned from a Hangout during Day 1 flow, only show the end segment.
+	if GameState.has_flag(FLAG_HANGOUT_RECENT):
+		GameState.clear_flag(FLAG_HANGOUT_RECENT)
 		_start_json(JSON_HANGOUT_END_ID, "_on_hangout_json_finished")
 		return
 
-	# Otherwise, normal entry
+	# Otherwise, normal entry to the event:
 	_start_json(JSON_ENTRY_ID, "")
 
 # ---------- helpers ----------
@@ -105,6 +101,8 @@ func on_dialogue_action(line: Dictionary) -> void:
 				_safe_end_dialogue()
 				_safe_change_scene(scene_path)
 		"end_event":
+			# This ends the event track (e.g., after solo path).
+			GameState.set_flag(FLAG_EVENT_DONE)
 			_safe_end_dialogue()
 			_safe_change_scene(FALLBACK_HOME)
 		_:
@@ -135,9 +133,7 @@ func _on_entry_choice(id: String) -> void:
 		"hangout":
 			_clear_panel()
 			_safe_end_dialogue()
-			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
-			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
-			GameState.features_unlocked["__hangout_return_scene"] = FALLBACK_HOME
+			# No keys: just go to Hangout. Hangout will route back appropriately.
 			_safe_change_scene(HANGOUT_SCENE)
 
 func _show_study_sway_choices() -> void:
@@ -153,26 +149,12 @@ func _show_study_sway_choices() -> void:
 func _on_study_sway_choice(id: String) -> void:
 	match id:
 		"study_now":
-			GameState.features_unlocked[KEY_STUDY_MODE] = "marko"
-			GameState.features_unlocked[KEY_SUBJECT_PICK] = "subject1"
-
-			var ret: String = ""
-			if get_tree() and get_tree().current_scene:
-				ret = String(get_tree().current_scene.get_scene_file_path())
-			if ret == "":
-				ret = FALLBACK_HOME
-			GameState.features_unlocked[KEY_RETURN_SCENE] = ret
-
 			_clear_panel()
 			_safe_end_dialogue()
 			_start_json(JSON_GOTO_STUDY_ID, "")
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
-			GameState.adjust_integrity(-10)
-			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
-			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
-			GameState.features_unlocked["__hangout_return_scene"] = FALLBACK_HOME
 			_safe_change_scene(HANGOUT_SCENE)
 
 func _show_alone_push_choices() -> void:
@@ -194,19 +176,18 @@ func _on_alone_push_choice(id: String) -> void:
 		"hangout_now":
 			_clear_panel()
 			_safe_end_dialogue()
-			GameState.adjust_integrity(-10)
-			GameState.set_flag(F_BACK_FROM_HANGOUT, true)
-			GameState.features_unlocked[KEY_HANGOUT_CONTEXT] = "event"
-			GameState.features_unlocked["__hangout_return_scene"] = FALLBACK_HOME
 			_safe_change_scene(HANGOUT_SCENE)
-
 
 # ---- JSON finish handlers ----
 func _on_hangout_json_finished() -> void:
+	# We just came back from Hangout during Day1 flow: award task, set event done, go Home.
 	GameState.ensure_task(TASK_VISIT_PROF)
+	GameState.set_flag(FLAG_EVENT_DONE)
 	_safe_change_scene(FALLBACK_HOME)
 
 func _on_solo_end_finished() -> void:
+	# Solo path ends the event storyline as well.
+	GameState.set_flag(FLAG_EVENT_DONE)
 	_safe_change_scene(FALLBACK_HOME)
 
 # ---- Golden data-path resolver ----

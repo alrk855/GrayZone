@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://c1xtvb6u1cish"]
+[gd_scene load_steps=9 format=3 uid="uid://c1xtvb6u1cish"]
 
 [ext_resource type="Script" uid="uid://dxcvjm82l231m" path="res://Scenes/Reusable/quiz.gd" id="1_tcq3r"]
-[ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="2_by615"]
-[ext_resource type="FontFile" uid="uid://dseojunt8b3ga" path="res://Fonts/StalinistOne-Regular.ttf" id="2_tcq3r"]
+[ext_resource type="Theme" uid="uid://t4canaf7xfa0" path="res://quizneutral.tres" id="2_ybfg8"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="3_ueens"]
+[ext_resource type="Theme" uid="uid://dnbma8osxxml1" path="res://quizwrongl.tres" id="4_hj262"]
+[ext_resource type="Theme" uid="uid://pe202ukkd144" path="res://quizrightl.tres" id="5_ujsrj"]
 
 [sub_resource type="Gradient" id="Gradient_til2r"]
 colors = PackedColorArray(0.115638, 0.639724, 0.745773, 1, 0.576223, 0.480359, 0.980051, 1)
@@ -16,16 +17,15 @@ metadata/_snap_enabled = true
 metadata/_snap_count = 34
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_by615"]
-bg_color = Color(0.514699, 0.000204363, 0.520273, 1)
+bg_color = Color(0.314985, 0.000455606, 0.424777, 1)
 border_width_left = 8
-border_width_top = 8
 border_width_right = 8
 border_width_bottom = 8
 border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 22
 corner_radius_top_right = 22
-corner_radius_bottom_right = 22
-corner_radius_bottom_left = 22
+corner_radius_bottom_right = 44
+corner_radius_bottom_left = 44
 
 [node name="Quiz" type="Control"]
 layout_mode = 3
@@ -35,6 +35,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tcq3r")
+theme_neutral = ExtResource("2_ybfg8")
+theme_right = ExtResource("5_ujsrj")
+theme_wrong = ExtResource("4_hj262")
+subject = "macedonian"
+mode = "bought"
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -48,101 +53,90 @@ expand_mode = 1
 
 [node name="Option 1" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -436.0
-offset_top = 226.0
-offset_right = -226.0
-offset_bottom = 290.0
+anchors_preset = -1
+anchor_left = 0.341667
+anchor_top = 0.57037
+anchor_right = 0.659375
+anchor_bottom = 0.653704
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 0
-theme = ExtResource("2_by615")
-theme_override_fonts/font = ExtResource("2_tcq3r")
+theme = ExtResource("2_ybfg8")
+theme_override_fonts/font = ExtResource("3_ueens")
 text = "Option 1"
+metadata/_edit_use_anchors_ = true
 
 [node name="Option 2" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -106.0
-offset_top = 226.0
-offset_right = 104.0
-offset_bottom = 290.0
+anchors_preset = -1
+anchor_left = 0.341667
+anchor_top = 0.711111
+anchor_right = 0.659375
+anchor_bottom = 0.794444
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 0
-theme = ExtResource("2_by615")
-theme_override_fonts/font = ExtResource("2_tcq3r")
+theme = ExtResource("4_hj262")
+theme_override_fonts/font = ExtResource("3_ueens")
 text = "Option 2"
+metadata/_edit_use_anchors_ = true
 
 [node name="Option 3" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 224.0
-offset_top = 226.0
-offset_right = 434.0
-offset_bottom = 290.0
+anchors_preset = -1
+anchor_left = 0.341667
+anchor_top = 0.851852
+anchor_right = 0.659375
+anchor_bottom = 0.935185
+offset_top = -6.10352e-05
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 0
-theme = ExtResource("2_by615")
-theme_override_fonts/font = ExtResource("2_tcq3r")
+theme = ExtResource("5_ujsrj")
+theme_override_fonts/font = ExtResource("3_ueens")
 text = "Option 3
 "
+metadata/_edit_use_anchors_ = true
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = 1
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -486.0
-offset_top = -101.5
-offset_right = 486.0
-offset_bottom = 101.5
+anchors_preset = -1
+anchor_left = 0.246875
+anchor_top = 0.213889
+anchor_right = 0.755208
+anchor_bottom = 0.507407
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0.556863)
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="ColorRect"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.5
-offset_top = -11.5
-offset_right = 150.5
-offset_bottom = 11.5
+anchors_preset = -1
+anchor_left = 0.0389344
+anchor_top = 0.0788644
+anchor_right = 0.956967
+anchor_bottom = 0.684543
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_ueens")
 theme_override_font_sizes/font_size = 46
 text = "WHAT IS THE CAPITAL OF MACEDONIA?"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 visible_characters = 0
 visible_ratio = 0.0
+metadata/_edit_use_anchors_ = true
 
 [node name="TimePanel" type="Panel" parent="ColorRect"]
 layout_mode = 0
-offset_left = 1.0
-offset_top = 187.0
-offset_right = 971.0
-offset_bottom = 202.0
+anchor_top = 0.946372
+anchor_right = 1.0
+anchor_bottom = 1.0
+metadata/_edit_use_anchors_ = true
 
 [node name="score" type="Label" parent="."]
 layout_mode = 0
@@ -161,10 +155,11 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -80.5
-offset_right = 80.5
-offset_bottom = 91.0
+offset_left = -268.0
+offset_right = 268.0
+offset_bottom = 99.0
 grow_horizontal = 2
+theme_override_fonts/font = ExtResource("3_ueens")
 theme_override_font_sizes/font_size = 66
 theme_override_styles/normal = SubResource("StyleBoxFlat_by615")
 text = "MATHS FINAL"

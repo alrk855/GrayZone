@@ -183,7 +183,6 @@ func _go_home() -> void:
 
 	# Day 1 first event
 	if GameState.day == 1 and not GameState.has_flag(MARKO_FIRST_EVENT_DONE):
-		GameState.set_flag(MARKO_FIRST_EVENT_DONE, true)
 		GameState.location = "MarkoFirstEvent"
 		await fade.fade_to_scene(MARKO_FIRST_EVENT_SCENE)
 		return

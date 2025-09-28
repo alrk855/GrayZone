@@ -783,7 +783,7 @@ msgstr "Прашања: 5"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "You answered : 0"
-msgstr ""
+msgstr "Точни: 0"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn
 msgid "Time Taken : 46"
