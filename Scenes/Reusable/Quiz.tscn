@@ -38,8 +38,8 @@ script = ExtResource("1_tcq3r")
 theme_neutral = ExtResource("2_ybfg8")
 theme_right = ExtResource("5_ujsrj")
 theme_wrong = ExtResource("4_hj262")
-subject = "macedonian"
-mode = "bought"
+seconds_per_question = 20.0
+points_per_correct = 1
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1

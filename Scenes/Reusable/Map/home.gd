@@ -1,4 +1,4 @@
-extends Control 
+extends Control
 
 @export var home_button: Button
 const CCB_SCENE_PATH := "res://Scenes/Reusable/CharacterChoiceButtons.tscn"
@@ -11,9 +11,12 @@ const WRITE_PROJECT_PATH := "res://Scenes/Reusable/Tasks/WRITE_A_PROJECT.tscn"
 const MAILBOX_SCENE_PATH := "res://Scenes/Reusable/Tasks/Mailbox.tscn"
 const SOCIAL_SCENE_PATH := "res://Scenes/Reusable/Tasks/Social.tscn"
 
-# 🟡 RELATIVE ID under Data/ ; will be resolved via GameState.get_data_path(...)
+# Locale-aware relative IDs (resolved via GameState.get_data_path)
 const WAKEUP_JSON_ID := "Home/WakeUp_Reminder.json"
-const OUTRO_SCENE_PATH := "res://Scenes/Reusable/Outro.tscn"
+const FINALS_MORNING_JSON_ID := "System/Finals_Morning.json"
+
+# Finals controller scene
+const FINALS_SCENE_PATH := "res://Scenes/Finals.tscn"
 
 const SLEEP_AVAILABLE_MIN := 19 * 60  # 19:00
 
@@ -45,6 +48,7 @@ func _on_home_btn_pressed() -> void:
 	show_home_menu()
 
 func _is_midnight_window() -> bool:
+	# 00:00..01:00 → keep city locked / avoid scene hops (prevents day-skip weirdness)
 	return GameState.time <= 60
 
 # ---------------- Menus ----------------
@@ -113,7 +117,6 @@ func _on_activities_choice(id: String) -> void:
 
 # ---- Study menus ----
 func _show_study_menu() -> void:
-	# Localized labels via placeholders; fallback if subjects unset
 	var s1_label := GameState.format_placeholders("{subject1}")
 	if s1_label == "{subject1}":
 		s1_label = tr("Subject 1")
@@ -170,7 +173,6 @@ func _show_subject_sessions_menu(which_subject: String) -> void:
 	opts.append({"id":"back","text": tr("Back")})
 	_show_choices(opts, Callable(self,"_on_subject_session_choice").bind(which_subject, subject_raw))
 
-
 func _on_subject_session_choice(id: String, which_subject: String, subject_raw: String) -> void:
 	if id == "back":
 		_show_study_menu()
@@ -200,7 +202,7 @@ func _count_studied_days_for_subject(subject_raw: String) -> int:
 	if subj_key.strip_edges() == "":
 		return 0
 	var count: int = 0
-	for d in range(1, 5): # 1..4
+	for d in range(1, 5):
 		var k: String = subj_key + "|" + str(d)
 		if GameState.study_guard.has(k):
 			count += 1
@@ -284,7 +286,7 @@ func _change_scene(path: String) -> void:
 		return
 	await fade.fade_to_scene(path, 0.4, 0.35)
 
-# --------------- Sleep with Fade singleton + Day5 Outro ---------------
+# --------------- Sleep flow (Finals handoff on Day 5) ---------------
 func _block_ui(lock: bool) -> void:
 	_ui_was_visible = _panel != null and _panel.visible
 	if lock:
@@ -307,28 +309,45 @@ func _do_sleep(force: bool) -> void:
 	await fade.fade_out(3.35)
 	GameState.sleep_now()
 
-	if GameState.day >= 5:
-		if ResourceLoader.exists(OUTRO_SCENE_PATH):
-			await fade.fade_to_scene(OUTRO_SCENE_PATH, 0.0, 3.6)
+	# DAY 5: Finals flow — show morning JSON (locale-aware), then go to Finals.tscn
+	if GameState.day == 5:
+		await fade.fade_in(0.6)
+		var finals_path := FINALS_MORNING_JSON_ID
+		if GameState.has_method("get_data_path"):
+			finals_path = GameState.get_data_path(FINALS_MORNING_JSON_ID)
+
+		var dm := get_node_or_null("/root/DialogueManager")
+		var waited := false
+		if FileAccess.file_exists(finals_path) and dm and dm.has_method("start_dialogue"):
+			var ui = dm.start_dialogue(finals_path, self)
+			if ui and ui.has_signal("dialogue_finished"):
+				await ui.dialogue_finished
+				waited = true
+		if not waited:
+			await get_tree().process_frame
+
+		# Hand off to Finals controller scene
+		if ResourceLoader.exists(FINALS_SCENE_PATH):
+			await fade.fade_to_scene(FINALS_SCENE_PATH, 0.0, 0.6)
 		else:
-			push_warning("Outro scene not found at: " + OUTRO_SCENE_PATH)
-			await fade.fade_in(3.6)
+			push_warning("Finals scene not found at: " + FINALS_SCENE_PATH)
+			await fade.fade_in(0.6)
+
 		_block_ui(false)
 		return
 
+	# Normal wake-up for days < 5: show WakeUp reminder JSON (locale-aware)
 	await fade.fade_in(3.6)
 	_block_ui(false)
 
-	# ✅ Locale-aware wake-up JSON via GameState.get_data_path(relative)
 	var wake_path: String = WAKEUP_JSON_ID
 	if GameState.has_method("get_data_path"):
 		wake_path = GameState.get_data_path(WAKEUP_JSON_ID)
 
 	if FileAccess.file_exists(wake_path):
-		var dm := get_node_or_null("/root/DialogueManager")
-		if dm and dm.has_method("start_dialogue"):
-			# pass the resolved absolute path
-			dm.start_dialogue(wake_path, self)
+		var dm2 := get_node_or_null("/root/DialogueManager")
+		if dm2 and dm2.has_method("start_dialogue"):
+			dm2.start_dialogue(wake_path, self)
 
 func _is_project_available_now() -> bool:
 	if GameState.has_flag("project_submitted"): return false

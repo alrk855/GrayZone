@@ -16,14 +16,22 @@ signal quiz_finished(total: int, correct: int, score: int)
 @export var theme_wrong   : Theme
 
 # ---------- Config ----------
-@export var subject : String = ""            # e.g., "english" / "math"; set by caller
+@export var subject : String = ""            # e.g., "english" / "math"; set by Finals or Inspector
 @export var mode    : String = "auto"        # "auto" | "legit" | "bought"
 @export var seconds_per_question : float = 10.0
 @export var points_per_correct   : int = 10
 
-# ---------- Flags (string keys; maps to GameFlags if you have them) ----------
-const BOUGHT_ANSWERS_S1 := "bought_answers_s1"
-const BOUGHT_ANSWERS_S2 := "bought_answers_s2"
+# ---------- Auto-return to Finals when opened standalone ----------
+@export var auto_return_to_finals : bool = true
+@export var finals_scene_path     : String = "res://Scenes/Finals.tscn"
+@export var auto_return_delay     : float = 1.25
+
+# ---------- Keys / Flags ----------
+const K_FINALS_COUNTER    := "__finals_counter"      # 0 -> 1 -> 2
+const K_QUIZ_SUBJECT_KEY  := "__quiz_subject_key"    # string
+const K_QUIZ_MODE         := "__quiz_mode"           # "legit" | "bought"
+const BOUGHT_ANSWERS_S1   := "bought_answers_s1"
+const BOUGHT_ANSWERS_S2   := "bought_answers_s2"
 
 # ---------- Runtime state ----------
 var _paper : Array = []   # [{ id, q, choices:Array[String], correct_index:int }]
@@ -36,6 +44,14 @@ var _bought_mode : bool = false
 var _clicks_enabled : bool = false
 
 func _ready() -> void:
+	# Prefer Finals-provided config (overrides Inspector values)
+	if GameState and GameState.features_unlocked.has(K_QUIZ_SUBJECT_KEY):
+		subject = String(GameState.features_unlocked[K_QUIZ_SUBJECT_KEY])
+		GameState.features_unlocked.erase(K_QUIZ_SUBJECT_KEY)
+	if GameState and GameState.features_unlocked.has(K_QUIZ_MODE):
+		mode = String(GameState.features_unlocked[K_QUIZ_MODE])
+		GameState.features_unlocked.erase(K_QUIZ_MODE)
+
 	_set_title_from_subject()
 
 	# Load questions (prefer exam paper; fallback to daily study sheet normalized)
@@ -45,7 +61,7 @@ func _ready() -> void:
 		end_quiz()
 		return
 
-	# Decide mode
+	# Decide mode (true => bought visuals)
 	_bought_mode = _resolve_mode(subject)
 
 	# Connect buttons once, binding each index
@@ -73,7 +89,9 @@ func _ready() -> void:
 func _process(_dt: float) -> void:
 	if timer.wait_time <= 0.0:
 		return
-	var ratio := timer.time_left / timer.wait_time
+	var ratio := 0.0
+	if timer.wait_time > 0.0:
+		ratio = timer.time_left / timer.wait_time
 	if ratio < 0.0:
 		ratio = 0.0
 	if ratio > 1.0:
@@ -86,16 +104,16 @@ func _fetch_paper(subj_raw: String) -> Array:
 	var subj := _subject_key(subj_raw)
 
 	# Preferred: already UI-ready
-	if GameState.has_method("build_exam_paper"):
+	if GameState and GameState.has_method("build_exam_paper"):
 		var p := GameState.build_exam_paper(subj)
 		if p is Array and not p.is_empty():
 			return p
 
 	# Fallback: daily sheet -> normalize to UI-ready
 	var sheet := []
-	if GameState.has_method("get_daily_study_sheet"):
+	if GameState and GameState.has_method("get_daily_study_sheet"):
 		sheet = GameState.get_daily_study_sheet(subj)
-	elif GameState.has_method("get_study_sheet_for_session"):
+	elif GameState and GameState.has_method("get_study_sheet_for_session"):
 		sheet = GameState.get_study_sheet_for_session(subj, GameState.day)
 
 	var out := []
@@ -126,9 +144,9 @@ func _fetch_paper(subj_raw: String) -> Array:
 				c_idx = shuffled.size() - 1
 
 		out.append({
-			"id":           String(qd.get("id","")),
-			"q":            String(qd.get("q","")),
-			"choices":      shuffled,
+			"id":            String(qd.get("id","")),
+			"q":             String(qd.get("q","")),
+			"choices":       shuffled,
 			"correct_index": c_idx
 		})
 	return out
@@ -169,6 +187,7 @@ func _set_title_from_subject() -> void:
 # ----------------------- Mode -----------------------
 
 func _resolve_mode(subj_raw: String) -> bool:
+	# explicit override
 	if mode == "bought":
 		return true
 	if mode == "legit":
@@ -300,11 +319,22 @@ func end_quiz() -> void:
 	update_score()
 
 	# store numeric score in GameState (fills scores1, else scores2)
-	if GameState.has_method("push_exam_score_value"):
+	if GameState and GameState.has_method("push_exam_score_value"):
 		GameState.push_exam_score_value(_score)
 
+	# emit so embedding/tests can await
 	quiz_finished.emit(_paper.size(), _correct_count, _score)
 
+	# bump finals counter (0 -> 1 -> 2)
+	var c := 0
+	if GameState:
+		c = GameState.get_int(K_FINALS_COUNTER, 0)
+		GameState.set_int(K_FINALS_COUNTER, c + 1)
+
+	# If opened standalone, bounce back to Finals
+	if auto_return_to_finals and self == get_tree().current_scene and ResourceLoader.exists(finals_scene_path):
+		await get_tree().create_timer(auto_return_delay).timeout
+		await fade.fade_to_scene(finals_scene_path)
 
 # ----------------------- Utils -----------------------
 

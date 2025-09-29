@@ -122,7 +122,6 @@ text = "doma
 script = ExtResource("7_3mlsj")
 
 [node name="Button5" type="Button" parent="background"]
-visible = false
 layout_mode = 0
 offset_left = 125.0
 offset_top = 102.0
