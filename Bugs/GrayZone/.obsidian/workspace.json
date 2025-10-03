@@ -4,39 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "9274f438c44a15ec",
+        "id": "dfcbb1cf553ca434",
         "type": "tabs",
         "children": [
           {
-            "id": "7394bc74979c49ff",
+            "id": "e814356d02b90157",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Home/Mailbox.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Mailbox"
-            }
-          },
-          {
-            "id": "2a023d2bbe02d248",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Lista na gosti - ACO - FIC.md",
-                "mode": "source",
-                "source": true
-              },
-              "icon": "lucide-file",
-              "title": "Lista na gosti - ACO - FIC"
+              "title": "New tab"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -181,12 +162,13 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "2a023d2bbe02d248",
+  "active": "e814356d02b90157",
   "lastOpenFiles": [
-    "Characters/Janitor/Classroom.md",
-    "Characters/Janitor/First Interaction (FIXED).md",
+    "Untitled.base",
     "Home/Mailbox.md",
     "Lista na gosti - ACO - FIC.md",
+    "Characters/Janitor/Classroom.md",
+    "Characters/Janitor/First Interaction (FIXED).md",
     "Home/Mletter.md",
     "Home/Study.md",
     "UI/Task Overview.md",

@@ -64,6 +64,8 @@
 # res://Scripts/Singleton/UI.gd
 # res://Scenes/Intro.gd
 # res://Scenes/Reusable/Dialogue.gd
+# res://Scenes/Reusable/quiz.gd
+# res://Scenes/Reusable/Quiz.tscn
 #
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -418,6 +420,7 @@ msgstr ""
 
 #: Scenes/Reusable/Tasks/study.gd
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.gd
+#: Scenes/Reusable/quiz.gd
 msgid ""
 msgstr ""
 
@@ -624,8 +627,8 @@ msgstr ""
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
 msgid ""
 "Correct: 00\n"
-"Errors: 00\n"
-"Status:        "
+"Error: 00\n"
+"Status:"
 msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
@@ -657,7 +660,7 @@ msgid "You answered: %d"
 msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
-msgid "Time Taken: %d min"
+msgid "Time Taken: %d:%02d"
 msgstr ""
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
@@ -856,6 +859,10 @@ msgid "Subject 2"
 msgstr ""
 
 #: Scenes/Reusable/Map/home.gd
+msgid "Study {subject}"
+msgstr ""
+
+#: Scenes/Reusable/Map/home.gd
 msgid "Notes #%d"
 msgstr ""
 
@@ -1018,6 +1025,14 @@ msgid "Submit documents"
 msgstr ""
 
 #: Scenes/Reusable/Map/secretary_office.gd
+msgid "Submit anyway"
+msgstr ""
+
+#: Scenes/Reusable/Map/secretary_office.gd
+msgid "Cancel"
+msgstr ""
+
+#: Scenes/Reusable/Map/secretary_office.gd
 msgid "Nothing to print right now."
 msgstr ""
 
@@ -1145,6 +1160,38 @@ msgstr ""
 msgid "narrator"
 msgstr ""
 
+#: Scenes/Reusable/quiz.gd
+msgid "Score: %d"
+msgstr ""
+
+#: Scenes/Reusable/quiz.gd
+msgid "Quiz Finished!"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "Option 1"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "Option 2"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "Option 3\n"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "WHAT IS THE CAPITAL OF MACEDONIA?"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "Score : 0"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "MATHS FINAL"
+msgstr ""
+
 msgid "All Recognized"
 msgstr ""
 
@@ -1211,9 +1258,6 @@ msgid "Recent Colors"
 msgstr ""
 
 msgid "Add current color as a preset."
-msgstr ""
-
-msgid "Cancel"
 msgstr ""
 
 msgid "OK"

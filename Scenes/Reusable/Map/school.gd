@@ -9,9 +9,10 @@ const SECRETARY_OFFICE_SCENE := "res://Scenes/Reusable/Map/SecretaryOffice.tscn"
 const CITY_SCENE := "res://Scenes/Reusable/Map/City.tscn"
 
 # --- Time limits (minutes from 00:00) ---
-const PROFESSOR_OPEN := 13 * 60
+
+const PROFESSOR_OPEN := 12 * 60
 const PROFESSOR_CLOSE := 19 * 60
-const SECRETARY_OPEN := 13 * 60
+const SECRETARY_OPEN := 12 * 60
 const SECRETARY_CLOSE := 19 * 60
 
 # Classroom lock windows (Days 2–4)
@@ -34,8 +35,6 @@ var _panel: Control = null
 var _is_fading: bool = false
 
 func _ready() -> void:
-	
-	
 	GameState.start_bg_music()  # starts & loops
 	if GameState.subject1.strip_edges() == "":
 		GameState.subject1 = "math"

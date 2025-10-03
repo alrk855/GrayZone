@@ -156,13 +156,18 @@ func _go_home() -> void:
 		return
 	_returned = true
 
-	# Unfreeze/unpause before switching scenes.
+	# Unfreeze/unpause before (or while) switching scenes.
 	GameState.pop_time_freeze("mailbox_scene")
 	if get_tree().paused:
 		get_tree().paused = false
 
 	if home_scene_path != "" and ResourceLoader.exists(home_scene_path):
-		get_tree().change_scene_to_file(home_scene_path)
+		# Use the autoloaded singleton named "fade" (lowercase)
+		# If it's missing for any reason, fall back to direct scene change.
+		if typeof(fade) != TYPE_NIL:
+			await fade.fade_to_scene(home_scene_path)  # fade out -> change -> fade in
+		else:
+			get_tree().change_scene_to_file(home_scene_path)
 	else:
 		push_warning("[Mailbox] Invalid home_scene_path: " + home_scene_path)
 

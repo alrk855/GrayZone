@@ -59,7 +59,7 @@ const JSON_JANITOR_NOMONEY: String       = D_PROF + "Janitor_NotEnoughMoney.json
 const JSON_JANITOR_DONE: String          = D_PROF + "Janitor_Done.json"
 
 # ---------- Time gates ----------
-const T_13_00: int = 13 * 60
+const T_13_00: int = 12 * 60
 const T_15_00: int = 15 * 60
 const T_17_00: int = 17 * 60
 const T_17_45: int = 17 * 60 + 45
@@ -119,10 +119,15 @@ func _update_presence() -> void:
 	var d: int = GameState.day
 	var t: int = GameState.time
 
-	# Professor 13:00–15:00
+	# Professor
 	var prof_visible := false
 	if professor_btn:
-		prof_visible = _in(t, T_13_00, T_15_00)
+		if d == 5:
+			# Day 5 exception: available 12:00–19:00
+			prof_visible = _in(t, 12 * 60, 19 * 60)
+		else:
+			# Normal days: available 13:00–15:00
+			prof_visible = _in(t, T_13_00, T_15_00)
 		professor_btn.visible = prof_visible
 
 	# Janitor 17:00–17:45 (D1 always; D2 if not bought)

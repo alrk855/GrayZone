@@ -1,0 +1,17 @@
+{
+  "id": "Classroom_Transcript_D5_Pass",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Here are your transcripts."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Both subjects are passed. Good work."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "Hand these to the secretary when you can."
+    }
+  ]
+}

@@ -44,6 +44,11 @@ const J_JANITOR_NO_MONEY             := "Janitor/Classroom/Janitor_NotEnough.jso
 const J_JANITOR_CONFIRM              := "Janitor/Classroom/Janitor_Confirm.json"
 const J_JANITOR_D4_FALLBACK          := "Janitor/Classroom/Janitor_D4_Fallback.json"
 
+const J_TR_D5_BEFORE14 := "Classroom/Transcript_D5_Before14.json"
+
+const J_TR_D5_PASS := "Classroom/Transcript_D5_Pass.json"
+
+const J_TR_D5_FAIL := "Classroom/Transcript_D5_Fail.json"
 # ------------------------ Time Gates ------------------------
 const T_07_00 := 7 * 60
 const T_08_00 := 8 * 60
@@ -151,6 +156,7 @@ func _update_presence_and_background() -> void:
 		_apply_vis(tex, false, false, true)
 		return
 
+	# Days 2–4 (UNCHANGED)
 	if d >= 2 and d <= 4:
 		if t < T_12_30:
 			tex = bg_teacher_morning if bg_teacher_morning != null else bg_empty
@@ -179,13 +185,33 @@ func _update_presence_and_background() -> void:
 			show_teacher_btn = false
 			show_janitor_btn = false
 			show_back = true
-	else:
-		tex = bg_empty
-		show_teacher_btn = false
-		show_janitor_btn = false
-		show_back = true
 
+		_apply_vis(tex, show_teacher_btn, show_janitor_btn, show_back)
+		return
+
+	# Day 5 — teacher available 12:00–19:00
+	if d == 5:
+		if t >= 12 * 60 and t < 19 * 60:
+			tex = bg_teacher_morning if bg_teacher_morning != null else bg_empty
+			show_teacher_btn = true
+			show_janitor_btn = false
+			show_back = true
+		else:
+			tex = bg_empty
+			show_teacher_btn = false
+			show_janitor_btn = false
+			show_back = true
+
+		_apply_vis(tex, show_teacher_btn, show_janitor_btn, show_back)
+		return
+
+	# Fallback
+	tex = bg_empty
+	show_teacher_btn = false
+	show_janitor_btn = false
+	show_back = true
 	_apply_vis(tex, show_teacher_btn, show_janitor_btn, show_back)
+
 
 func _apply_vis(tex: Texture2D, teacher_btn: bool, janitor_btn: bool, back_btn: bool) -> void:
 	if _bg != null:
@@ -284,6 +310,13 @@ func _handle_entry_flow() -> void:
 		return
 
 func _is_room_empty_now(d: int, t: int) -> bool:
+	# Day 5: teacher here 12:00–19:00, no janitor
+	if d == 5:
+		var teacher_here := (t >= 12 * 60 and t < 19 * 60)
+		var janitor_here := false
+		return not teacher_here and not janitor_here
+
+	# Days 2–4: existing windows
 	var teacher_here := (d >= 2 and d <= 4 and t >= T_12_30 and t < T_16_00)
 	var janitor_here := ((d == 3 or d == 4) and t >= T_17_00 and t < T_17_45)
 	return not teacher_here and not janitor_here
@@ -352,18 +385,54 @@ func _on_teacher_pressed() -> void:
 
 func _on_teacher_choice(id: String) -> void:
 	if id == "doc_review":
-		_try_doc_review(); _clear_panel(); return
+		_try_doc_review()
+		_clear_panel()
+		return
+
 	if id == "doc_locked":
-		_start_and_chain(J_D2_NOON_ANNOUNCEMENT, ""); _clear_panel(); return
+		_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "")
+		_clear_panel()
+		return
+
 	if id == "transcript":
+		# Day 5 special handling (results available after 14:00)
+		if GameState.day == 5:
+			if GameState.time < 14 * 60:
+				_start_and_chain(J_TR_D5_BEFORE14, "")
+			else:
+				var s1 := GameState.get_int("scores1", -1)
+				var s2 := GameState.get_int("scores2", -1)
+				var failed := (s1 >= 0 and s2 >= 0) and (s1 < 3 or s2 < 3)
+
+				# Always bump the transcript task when results are delivered
+				GameState.ensure_task(TASK_TRANSCRIPT)
+				GameState.update_task_step(TASK_TRANSCRIPT)
+
+				if failed:
+					# <-- THIS is where we set the flag the task manager reads
+					GameState.set_flag("transcripts_failed", true)
+					_start_and_chain(J_TR_D5_FAIL, "")
+				else:
+					# Clear in case it was previously set
+					if GameState.has_flag("transcripts_failed"):
+						GameState.clear_flag("transcripts_failed")
+					_start_and_chain(J_TR_D5_PASS, "")
+			_clear_panel()
+			return
+
+		# Default (pre-Day5) behavior — unchanged
 		_start_and_chain(J_TEACHER_TRANSCRIPT_TOO_EARLY, "")
 		if not GameState.has_flag("transcript_step1_done"):
 			GameState.ensure_task(TASK_TRANSCRIPT)
 			GameState.update_task_step(TASK_TRANSCRIPT)
 			GameState.set_flag("transcript_step1_done", true)
-		_clear_panel(); return
+		_clear_panel()
+		return
+
 	if id == "back":
-		_clear_panel(); return
+		_clear_panel()
+		return
+
 
 func _try_doc_review() -> void:
 	if GameState.has_flag(F_TEACHER_REVIEW_DONE) and not GameState.has_flag(F_MLETTER_REWRITE_REQ):

@@ -700,10 +700,15 @@ msgid "Type here"
 msgstr "Пишувај тука"
 
 #: Scenes/Reusable/Tasks/WRITE_A_MLETTER.tscn
+#, fuzzy
+#| msgid ""
+#| "Correct: 00\n"
+#| "Errors: 00\n"
+#| "Status:        "
 msgid ""
 "Correct: 00\n"
-"Errors: 00\n"
-"Status:        "
+"Error: 00\n"
+"Status:"
 msgstr ""
 "Точни:\n"
 "Грешни:\n"
@@ -738,8 +743,8 @@ msgid "You answered: %d"
 msgstr "Ти одговори: %d"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
-msgid "Time Taken: %d min"
-msgstr "Време: %d мин"
+msgid "Time Taken: %d:%02d"
+msgstr "Време: %d:%02d мин"
 
 #: Scenes/Reusable/Tasks/WRITE_A_PROJECT.gd
 msgid "Score: %d / 5"
@@ -936,6 +941,10 @@ msgid "Subject 2"
 msgstr ""
 
 #: Scenes/Reusable/Map/home.gd
+msgid "Study {subject}"
+msgstr "Учи {subject} "
+
+#: Scenes/Reusable/Map/home.gd
 msgid "Notes #%d"
 msgstr "Белешки #%d"
 
@@ -1098,6 +1107,14 @@ msgid "Submit documents"
 msgstr "Поднеси документи"
 
 #: Scenes/Reusable/Map/secretary_office.gd
+msgid "Submit anyway"
+msgstr "Сигурен сум "
+
+#: Scenes/Reusable/Map/secretary_office.gd
+msgid "Cancel"
+msgstr "Ќе се вратам"
+
+#: Scenes/Reusable/Map/secretary_office.gd
 msgid "Nothing to print right now."
 msgstr "Нема ништо за принтање"
 
@@ -1225,6 +1242,44 @@ msgstr "Ажурирање на задачата: %s → Чекор %d"
 msgid "narrator"
 msgstr "Наратор"
 
+#: Scenes/Reusable/quiz.gd
+#, fuzzy
+#| msgid "Score: %d / 5"
+msgid "Score: %d"
+msgstr "Оценка: %d / 5"
+
+#: Scenes/Reusable/quiz.gd
+#, fuzzy
+#| msgid "Finish"
+msgid "Quiz Finished!"
+msgstr "Заврши"
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "Option 1"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "Option 2"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "Option 3\n"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "WHAT IS THE CAPITAL OF MACEDONIA?"
+msgstr ""
+
+#: Scenes/Reusable/Quiz.tscn
+#, fuzzy
+#| msgid "Score: %d / 5"
+msgid "Score : 0"
+msgstr "Оценка: %d / 5"
+
+#: Scenes/Reusable/Quiz.tscn
+msgid "MATHS FINAL"
+msgstr ""
+
 msgid "All Recognized"
 msgstr ""
 
@@ -1291,9 +1346,6 @@ msgid "Recent Colors"
 msgstr ""
 
 msgid "Add current color as a preset."
-msgstr ""
-
-msgid "Cancel"
 msgstr ""
 
 msgid "OK"

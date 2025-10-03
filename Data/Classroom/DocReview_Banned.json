@@ -1,10 +1,10 @@
 {
   "id": "DocReview_Banned",
   "lines": [
-	{ "speaker": "Teacher", "text": "We need to talk about your submission." },
-	{ "speaker": "Teacher", "text": "Your motivation letter raised serious integrity concerns." },
-	{ "speaker": "Teacher", "text": "Because of that, I won't be reviewing any further documents from you." },
-	{ "speaker": "Teacher", "text": "You may still submit your paperwork to the secretary, but there will be no more feedback from me." },
-	{ "speaker": "Teacher", "text": "Take responsibility and do better." }
+	{ "speaker": "Homeroom Teacher", "text": "We need to talk about your submission." },
+	{ "speaker": "Homeroom Teacher", "text": "Your motivation letter raised serious integrity concerns." },
+	{ "speaker": "Homeroom Teacher", "text": "Because of that, I won't be reviewing any further documents from you." },
+	{ "speaker": "Homeroom Teacher", "text": "You may still submit your paperwork to the secretary, but there will be no more feedback from me." },
+	{ "speaker": "Homeroom Teacher", "text": "Take responsibility and do better." }
   ]
 }

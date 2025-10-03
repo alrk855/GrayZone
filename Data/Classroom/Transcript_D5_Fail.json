@@ -1,0 +1,17 @@
+{
+  "id": "Classroom_Transcript_D5_Fail",
+  "lines": [
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "I’ve reviewed your results."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "You didn’t pass at least one subject."
+    },
+    {
+      "speaker": "Homeroom Teacher",
+      "text": "You’ll need to retake the finals next year."
+    }
+  ]
+}

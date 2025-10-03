@@ -373,10 +373,17 @@ func _req_step_state_from_id(step: Dictionary) -> int:
 
 	# --- Transcript ---
 	if norm == "transcript":
+		# Fail ONLY if classroom explicitly marked failure
+		if GameState.has_flag("transcripts_failed"):
+			return StepState.FAILED
+
+		# Consider DONE if task itself is finished or you keep any of these legacy flags
 		if _any_flag(["transcript_accepted", "transcript_delivered", "have_transcript"]):
 			return StepState.DONE
 		if GameState.get_task_progress("transcript") >= 2:
 			return StepState.DONE
+
+		# Otherwise still ongoing (no red until the flag is set)
 		return StepState.ONGOING
 
 	# --- CV ---
@@ -436,27 +443,9 @@ func _req_step_state_from_id(step: Dictionary) -> int:
 
 # --- helper: fetch letter grade using ProfessorOffice if available (fallback to local map) ---
 func _project_grade_letter() -> String:
-	var score := -1
-	# Prefer numeric score if you track it
-	if GameState.has_method("get_project_score"):
-		score = int(GameState.get_project_score())
-	elif "project_score" in GameState:
-		score = int(GameState.project_score)
+	var score: int = GameState.get_int("project_score", 0)
+	return _grade_from_score_local(score)
 
-	# If we have a score, try the professor's helper first
-	if score >= 0:
-		var prof = get_node_or_null("/root/ProfessorOffice")
-		if prof and prof.has_method("_grade_from_score"):
-			return String(prof._grade_from_score(score))
-		# fallback to the same mapping the prof uses
-		return _grade_from_score_local(score)
-
-	# Otherwise, fall back to any stored letter
-	if GameState.has_method("get_project_grade"):
-		return String(GameState.get_project_grade())
-	elif "project_grade" in GameState:
-		return String(GameState.project_grade)
-	return ""
 
 func _grade_from_score_local(score: int) -> String:
 	if score >= 5: return "A"
@@ -464,6 +453,7 @@ func _grade_from_score_local(score: int) -> String:
 	if score == 3: return "C"
 	if score == 2: return "D"
 	return "F"
+
 
 # --- drop-in replacement: requirement state for the Final Project line ---
 func _project_req_state() -> int:

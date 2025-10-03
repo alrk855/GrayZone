@@ -5,6 +5,7 @@ extends Control
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 
 const VISIT_SEC_ID := "Visit the Secretary"
+const TASK_REQ := "Gather Scholarship Requirements"
 
 # ---------- Full-background swap ----------
 @export var background_node_path: NodePath = "background" # TextureRect/Sprite2D that renders the scene BG
@@ -16,7 +17,7 @@ const VISIT_SEC_ID := "Visit the Secretary"
 var _bg_current: Texture2D = null
 
 # Hours
-const T_13_00: int = 13 * 60
+const T_13_00: int = 12 * 60
 const T_16_00: int = 16 * 60
 
 # ---------- JSONs (RELATIVE IDs; resolved via GameState.get_data_path) ----------
@@ -25,8 +26,15 @@ const JSON_SEC_NOT_HERE  := "Dialogue/Secretary/Secretary_NotHere.json"
 const PRINT_MENU_JSON    := "Dialogue/Secretary/Secretary_Print_Menu.json"
 const PRINT_CONFIG_JSON  := "Dialogue/Secretary/Secretary_Print_Config.json"
 const JSON_TALK          := "Dialogue/Secretary/Secretary_Talk.json"
-const JSON_SUBMIT_PREFRI := "Dialogue/Secretary/Secretary_Submit_PreFriday.json"
-const JSON_SUBMIT        := "Dialogue/Secretary/Secretary_Submit.json"
+
+# Submit-specific JSONs
+const JSON_SUBMIT_COMPLETE                := "Dialogue/Secretary/Secretary_Submit_Complete.json"
+const JSON_SUBMIT_INCOMPLETE_PROMPT       := "Dialogue/Secretary/Secretary_Submit_Incomplete.json"
+const JSON_SUBMIT_INCOMPLETE_ACCEPTED     := "Dialogue/Secretary/Secretary_Submit_Incomplete_Accepted.json"
+const JSON_SUBMIT_INCOMPLETE_DECLINED     := "Dialogue/Secretary/Secretary_Submit_Incomplete_Declined.json"
+
+# Endings scene
+const ENDINGS_SCENE_PATH := "res://Scenes/Reusable/Endings.tscn"
 
 var _active_panel: Control = null
 var _print_cfg: Dictionary = {}
@@ -46,7 +54,7 @@ func _ready() -> void:
 	_allow_auto_close = GameState.time < T_16_00
 	_update_background()
 
-	# ENTER LOGIC:
+	# ========== A) First-visit bump preserved ==========
 	if _is_open_now():
 		if GameState.get_task_progress(VISIT_SEC_ID) == 0:
 			GameState.update_task_step(VISIT_SEC_ID)
@@ -56,6 +64,7 @@ func _ready() -> void:
 				DialogueManager.start_dialogue(p, self)
 	else:
 		call_deferred("_start_not_here_on_enter")
+	# ===================================================
 
 func _process(_delta: float) -> void:
 	_update_background()
@@ -136,18 +145,107 @@ func _on_choice_selected(id: String) -> void:
 			if p_menu != "" and FileAccess.file_exists(p_menu):
 				DialogueManager.start_dialogue(p_menu, self)
 		"submit":
-			var p := _jp(JSON_SUBMIT_PREFRI) if GameState.day < 5 else _jp(JSON_SUBMIT)
-			if p != "" and FileAccess.file_exists(p):
-				DialogueManager.start_dialogue(p, self)
+			await _start_submit_flow()
 		"back":
 			_clear_panel()
 
+# ----- Submit flow (strictly checks the task progress vs steps) -----
+func _start_submit_flow() -> void:
+	_clear_panel()
+	if _is_requirements_task_complete():
+		# Complete route
+		var p := _jp(JSON_SUBMIT_COMPLETE)
+		if p != "" and FileAccess.file_exists(p):
+			var ui := DialogueManager.start_dialogue(p, self)
+			if ui and ui.has_signal("dialogue_finished"):
+				await ui.dialogue_finished
+		_finalize_submission_complete()
+		await _goto_endings()
+	else:
+		# Incomplete prompt
+		var p2 := _jp(JSON_SUBMIT_INCOMPLETE_PROMPT)
+		if p2 != "" and FileAccess.file_exists(p2):
+			var ui2 := DialogueManager.start_dialogue(p2, self)
+			if ui2 and ui2.has_signal("dialogue_finished"):
+				await ui2.dialogue_finished
+		# If your JSON uses action to show choices, great; we also show a menu fallback:
+		_show_submit_incomplete_choices()
+
+func _show_submit_incomplete_choices() -> void:
+	_clear_panel()
+	var opts := [
+		{ "text": tr("Submit anyway"), "id": "submit_anyway" },
+		{ "text": tr("Cancel"),        "id": "cancel" }
+	]
+	_active_panel = choice_panel_scene.instantiate()
+	add_child(_active_panel)
+	_active_panel.call("show_options", opts, Callable(self, "_on_submit_incomplete_choice"))
+
+func _on_submit_incomplete_choice(choice_id: String) -> void:
+	match choice_id:
+		"submit_anyway":
+			_clear_panel()
+			var p := _jp(JSON_SUBMIT_INCOMPLETE_ACCEPTED)
+			if p != "" and FileAccess.file_exists(p):
+				var ui := DialogueManager.start_dialogue(p, self)
+				if ui and ui.has_signal("dialogue_finished"):
+					ui.connect("dialogue_finished", func():
+						_finalize_submission_incomplete()
+						_goto_endings()
+					, CONNECT_ONE_SHOT)
+					return
+			_finalize_submission_incomplete()
+			await _goto_endings()
+		"cancel":
+			_clear_panel()
+			var p2 := _jp(JSON_SUBMIT_INCOMPLETE_DECLINED)
+			if p2 != "" and FileAccess.file_exists(p2):
+				DialogueManager.start_dialogue(p2, self)
+
+func _finalize_submission_complete() -> void:
+	# Mark a generic "submitted" flag if you want; task logic remains your own
+	GameState.set_flag("submitted_docs_complete", true)
+
+func _finalize_submission_incomplete() -> void:
+	GameState.set_flag("submitted_incomplete_docs", true)
+
+func _is_requirements_task_complete() -> bool:
+	var total := _get_task_steps_count(TASK_REQ)
+	if total <= 0:
+		return false
+	return GameState.get_task_progress(TASK_REQ) >= total
+
+func _get_task_steps_count(task_id: String) -> int:
+	var path := GameState.get_data_path("Tasks/%s.json" % task_id)
+	if not FileAccess.file_exists(path):
+		return 0
+	var txt := FileAccess.get_file_as_string(path)
+	var parsed = JSON.parse_string(txt)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return 0
+	var steps = (parsed as Dictionary).get("steps", [])
+	return (steps as Array).size() if steps is Array else 0
+
+# ----- Dialogue Manager action hooks -----
 func on_dialogue_action(line: Dictionary) -> void:
 	var act := String(line.get("action", ""))
-	if act == "sec_show_print_menu":
-		_show_print_menu_from_config()
-	else:
-		GameState.apply_action(line)
+
+	match act:
+		"sec_show_print_menu":
+			_show_print_menu_from_config()
+		"sec_show_submit_incomplete_choices":
+			_show_submit_incomplete_choices()
+		"sec_submit_anyway":
+			_finalize_submission_incomplete()
+		"sec_submit_complete":
+			_finalize_submission_complete()
+		"sec_submit_cancel":
+			# nothing; player will come back later
+			pass
+		"ending":
+			await _goto_endings()
+		_:
+			GameState.apply_action(line)
 
 # ----- Printing gating -----
 func _is_print_ready_item(item: Dictionary) -> bool:
@@ -274,4 +372,10 @@ func _fade_and_change_scene(path: String) -> void:
 	await _fade_to(1.0, 0.4)
 	if ResourceLoader.exists(path):
 		get_tree().change_scene_to_file(path)
+	await _fade_to(0.0, 0.4)
+
+func _goto_endings() -> void:
+	await _fade_to(1.0, 0.4)
+	if ResourceLoader.exists(ENDINGS_SCENE_PATH):
+		get_tree().change_scene_to_file(ENDINGS_SCENE_PATH)
 	await _fade_to(0.0, 0.4)
