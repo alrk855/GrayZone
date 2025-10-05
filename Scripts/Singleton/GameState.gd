@@ -169,6 +169,7 @@ func _format_time() -> String:
 # ---- central wrapper: reconcile first, then emit ----
 func _emit_time_changed() -> void:
 	reconcile_mvr_wait_progress()
+	reconcile_submission_deadline() 
 	emit_signal("time_changed", time, day)
 
 func adjust_time(value: int) -> void:
@@ -917,3 +918,31 @@ func push_exam_score_value(score: int) -> void:
 		scores1 = score
 	else:
 		scores2 = score
+		
+		
+const DEADLINE_DAY := 5
+const DEADLINE_MINUTE := 19 * 60 + 15   # 19:01
+const ENDINGS_SCENE_PATH := "res://Scenes/ENDINGS.tscn"  # <-- set your real path
+const FLAG_APP_SUBMITTED := "application_submitted"
+const FLAG_SUBMISSION_FAILED := "submission_failed"
+var _deadline_triggered: bool = false
+
+func reconcile_submission_deadline() -> void:
+	if _deadline_triggered:
+		return
+
+	var past_deadline := (day > DEADLINE_DAY) or (day == DEADLINE_DAY and time >= DEADLINE_MINUTE)
+	if not past_deadline:
+		return
+
+	# Only mark failure if no submission was made
+	if has_flag(FLAG_APP_SUBMITTED):
+		return
+
+	_deadline_triggered = true
+	set_flag(FLAG_SUBMISSION_FAILED, true)
+	time_running = false  # stop ticking to avoid re-entry
+
+	var err := get_tree().change_scene_to_file(ENDINGS_SCENE_PATH)
+	if err != OK:
+		push_error("Failed to load endings scene: %s" % str(err))
