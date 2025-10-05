@@ -27,7 +27,7 @@ var _came_from_study_intro: bool = false
 
 func _ready() -> void:
 	GameState.location = "Unknown"
-
+	GameState.set_flag("marko_second_event_done", true)
 	_bg_node = null
 	if bg_rect_path != NodePath():
 		_bg_node = get_node_or_null(bg_rect_path)

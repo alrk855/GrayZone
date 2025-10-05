@@ -1,6 +1,6 @@
 extends RichTextLabel
 
-@onready var anim_player: AnimationPlayer = $"../AnimationPlayer"
+@onready var anim_player: AnimationPlayer = $"../../AnimationPlayer"
 
 @export var fade_duration: float = 6.5
 @export var reveal_time: float = 0.

@@ -379,7 +379,10 @@ func _on_teacher_pressed() -> void:
 	elif not review_unlocked:
 		opts.append({"id":"doc_locked","text": tr("Ask for document review (Locked)")})
 
-	opts.append({"id":"transcript","text": tr("Ask about transcript")})
+	# Only add transcript option if delivery not done yet
+	if not GameState.has_flag("transcripts_delivered_bumped"):
+		opts.append({"id":"transcript","text": tr("Ask about transcript")})
+
 	opts.append({"id":"back","text": tr("Back")})
 	_spawn_options_panel(opts, Callable(self, "_on_teacher_choice"))
 
@@ -393,41 +396,59 @@ func _on_teacher_choice(id: String) -> void:
 		_start_and_chain(J_D2_NOON_ANNOUNCEMENT, "")
 		_clear_panel()
 		return
+		
 
+	var prog := GameState.get_task_progress("transcript")
 	if id == "transcript":
-		# Day 5 special handling (results available after 14:00)
-		if GameState.day == 5:
-			if GameState.time < 14 * 60:
-				_start_and_chain(J_TR_D5_BEFORE14, "")
-			else:
-				var s1 := GameState.get_int("scores1", -1)
-				var s2 := GameState.get_int("scores2", -1)
-				var failed := (s1 >= 0 and s2 >= 0) and (s1 < 3 or s2 < 3)
+		GameState.ensure_task("transcript")
 
-				# Always bump the transcript task when results are delivered
-				GameState.ensure_task(TASK_TRANSCRIPT)
-				GameState.update_task_step(TASK_TRANSCRIPT)
 
-				if failed:
-					# <-- THIS is where we set the flag the task manager reads
-					GameState.set_flag("transcripts_failed", true)
-					_start_and_chain(J_TR_D5_FAIL, "")
-				else:
-					# Clear in case it was previously set
-					if GameState.has_flag("transcripts_failed"):
-						GameState.clear_flag("transcripts_failed")
-					_start_and_chain(J_TR_D5_PASS, "")
-			_clear_panel()
-			return
-
-		# Default (pre-Day5) behavior — unchanged
+	# --- Days 2–4: bump ONCE from 0/3 → 1/3 ---
+	if GameState.day >= 2 and GameState.day <= 4:
+		if prog == 0:
+			GameState.update_task_step("transcript")  # 0/3 → 1/3 once
 		_start_and_chain(J_TEACHER_TRANSCRIPT_TOO_EARLY, "")
-		if not GameState.has_flag("transcript_step1_done"):
-			GameState.ensure_task(TASK_TRANSCRIPT)
-			GameState.update_task_step(TASK_TRANSCRIPT)
-			GameState.set_flag("transcript_step1_done", true)
 		_clear_panel()
 		return
+
+	# --- Day 5 before 14:00: no bump, just info ---
+	if GameState.day == 5 and GameState.time < 14 * 60:
+		_start_and_chain(J_TR_D5_BEFORE14, "")
+		_clear_panel()
+		return
+
+	# --- Day 5 at/after 14:00: deliver once, bump final step ---
+	if GameState.day == 5 and GameState.time >= 14 * 60:
+		if not GameState.has_flag("transcripts_delivered_bumped"):
+			# Final bump to 3/3
+			var cur := GameState.get_task_progress("transcript")
+			if cur < 3:
+				GameState.update_task_step("transcript")
+			GameState.set_flag("transcripts_delivered_bumped", true)
+
+			var s1 := GameState.get_int("scores1", -1)
+			var s2 := GameState.get_int("scores2", -1)
+			var failed := (s1 >= 0 and s2 >= 0) and (s1 < 3 or s2 < 3)
+
+			if failed:
+				GameState.set_flag("transcripts_failed", true)
+				_start_and_chain(J_TR_D5_FAIL, "")
+			else:
+				if GameState.has_flag("transcripts_failed"):
+					GameState.clear_flag("transcripts_failed")
+				_start_and_chain(J_TR_D5_PASS, "")
+		else:
+			# Already delivered: just replay info, no bump
+			var failed = GameState.has_flag("transcripts_failed")
+			if failed:
+				_start_and_chain(J_TR_D5_FAIL, "")
+			else:
+				_start_and_chain(J_TR_D5_PASS, "")
+
+
+		_clear_panel()
+		return
+
 
 	if id == "back":
 		_clear_panel()

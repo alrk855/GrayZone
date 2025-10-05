@@ -48,7 +48,7 @@
     },
     {
       "id": "GEO_06",
-      "q": "What is the longest river in the world (commonly taught)?",
+      "q": "What is the longest river in the world?",
       "correct": "Nile",
       "wrong": [
         "Amazon",

@@ -165,10 +165,10 @@
     },
     {
       "id": "MATH_19",
-      "q": "Solve: x^2 = 16 (take the positive root)",
+      "q": "Solve: x^2 = 16",
       "correct": "4",
       "wrong": [
-        "-4",
+        "6",
         "8"
       ]
     },
@@ -210,10 +210,10 @@
     },
     {
       "id": "MATH_24",
-      "q": "Solve: x^2 - 9 = 0 (positive root)",
+      "q": "Solve: x^2 - 9 = 0",
       "correct": "3",
       "wrong": [
-        "-3",
+        "4",
         "9"
       ]
     },

@@ -34,7 +34,7 @@ const JSON_SUBMIT_INCOMPLETE_ACCEPTED     := "Dialogue/Secretary/Secretary_Submi
 const JSON_SUBMIT_INCOMPLETE_DECLINED     := "Dialogue/Secretary/Secretary_Submit_Incomplete_Declined.json"
 
 # Endings scene
-const ENDINGS_SCENE_PATH := "res://Scenes/Reusable/Endings.tscn"
+const ENDINGS_SCENE_PATH := "res://Scenes/ENDINGS.tscn"
 
 var _active_panel: Control = null
 var _print_cfg: Dictionary = {}

@@ -21,7 +21,7 @@
     },
     {
       "id": "SCI_03",
-      "q": "Water boils at what temperature at sea level?",
+      "q": "Water boils at what temperature?",
       "correct": "100°C",
       "wrong": [
         "50°C",
@@ -66,11 +66,11 @@
     },
     {
       "id": "SCI_08",
-      "q": "What do we call baby frogs?",
-      "correct": "Tadpoles",
+      "q": "Which planet is closest to the sun?",
+      "correct": "Mercury",
       "wrong": [
-        "Puppies",
-        "Chicks"
+        "Mars",
+        "Earth"
       ]
     },
     {

@@ -3,9 +3,9 @@
 	{
 	  "question": "What’s the title and general theme of your project?",
 	  "options": [
-		"The Role of Civic Education in Modern Democracy",
-		"Youth and Society: A Reflection",
-		"How to Not Fail High School"
+		",,The Role of Civic Education in Modern Democracy‘‘",
+		",,Youth and Society: A Reflection‘‘",
+		",,How to Not Fail High School‘‘"
 	  ],
 	  "answer": 0
 	},
@@ -19,7 +19,7 @@
 	  "answer": 2
 	},
 	{
-	  "question": "Include a relevant example or case study?",
+	  "question": "Include a relevant example or case study.",
 	  "options": [
 		"That one time our teacher forgot to mark us present.",
 		"A general mention of student activism.",
@@ -28,11 +28,11 @@
 	  "answer": 2
 	},
 	{
-	  "question": "Add a brief personal viewpoint?",
+	  "question": "Add a brief personal viewpoint.",
 	  "options": [
-		"I believe civic awareness should be taught from a young age.",
-		"Everyone has their own opinion.",
-		"This was boring. But here we are."
+		",,I believe civic awareness should be taught from a young age.‘‘",
+		",,Everyone has their own opinion.‘‘",
+		",,This was boring. But here we are.‘‘"
 	  ],
 	  "answer": 0
 	},

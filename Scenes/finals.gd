@@ -63,6 +63,16 @@ func _goto_quiz() -> void:
 	await fade.fade_to_scene(quiz_scene_path)
 
 func _goto_school() -> void:
+	# --- Finals → ensure Transcript task reflects exam phase done ---
+	GameState.ensure_task("transcript")
+	var cur := GameState.get_task_progress("transcript")
+	if cur <= 0:
+		# Jump straight to 2/3 if the player never asked before Day 5
+		GameState.task_step_index["transcript"] = 2
+	elif cur == 1:
+		# 1/3 → 2/3
+		GameState.update_task_step("transcript")
+
 	if not ResourceLoader.exists(SCHOOL_SCENE_PATH):
 		push_error("Finals.gd: School scene not found at: " + SCHOOL_SCENE_PATH)
 		return

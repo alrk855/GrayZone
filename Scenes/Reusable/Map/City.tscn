@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://bdwff2rioevg3"]
+[gd_scene load_steps=5 format=3 uid="uid://bdwff2rioevg3"]
 
 [ext_resource type="Script" uid="uid://57qv81hsikf3" path="res://Scenes/Reusable/Map/city.gd" id="1_1r77k"]
 [ext_resource type="Texture2D" uid="uid://cs447uwu1njr1" path="res://Images/ploshtad.png" id="2_1r77k"]
+[ext_resource type="Texture2D" uid="uid://cgvpswp325a4x" path="res://Images/ploshtad_igra_nokje.png" id="3_2cslb"]
 [ext_resource type="Theme" uid="uid://uv5syh2wbonm" path="res://Themes/ActivitiesBtn.tres" id="3_kyi2b"]
 
 [node name="City" type="Control"]
@@ -12,6 +13,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1r77k")
+background_texrect_path = NodePath("TextureRect")
+bg_day = ExtResource("2_1r77k")
+bg_night = ExtResource("3_2cslb")
 city_button_path = NodePath("TextureRect/ShowMenuButton")
 
 [node name="TextureRect" type="TextureRect" parent="."]

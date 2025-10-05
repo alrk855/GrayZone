@@ -12,6 +12,7 @@ extends Button
 var triggered: bool = false
 
 func _ready():
+	GameState.switch_locale("mk")
 	# Button starts disabled until fade is over
 	disabled = true
 	await get_tree().create_timer(enable_delay).timeout

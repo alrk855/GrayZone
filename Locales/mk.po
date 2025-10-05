@@ -1249,10 +1249,8 @@ msgid "Score: %d"
 msgstr "Оценка: %d / 5"
 
 #: Scenes/Reusable/quiz.gd
-#, fuzzy
-#| msgid "Finish"
 msgid "Quiz Finished!"
-msgstr "Заврши"
+msgstr "Тестот заврши"
 
 #: Scenes/Reusable/Quiz.tscn
 msgid "Option 1"
@@ -1279,6 +1277,184 @@ msgstr "Оценка: %d / 5"
 #: Scenes/Reusable/Quiz.tscn
 msgid "MATHS FINAL"
 msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "SO THIS WAS THE END"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "THANK YOU FOR PLAYING "
+msgstr "Благодариме што ја игравте"
+
+#: Scenes/ENDINGS.tscn
+msgid "GR"
+msgstr "СИ"
+
+#: Scenes/ENDINGS.tscn
+msgid "AY "
+msgstr "ВА"
+
+#: Scenes/ENDINGS.tscn
+msgid "ZO"
+msgstr "ЗО"
+
+#: Scenes/ENDINGS.tscn
+msgid "NE"
+msgstr "НА"
+
+#: Scenes/ENDINGS.tscn
+msgid "END CREDITS"
+msgstr "Заслуги"
+
+#: Scenes/ENDINGS.tscn
+msgid "PROJECT CREATION & DIRECTION"
+msgstr "Креаирање и Дирекција"
+
+#: Scenes/ENDINGS.tscn
+msgid "Aleksandar Talevski"
+msgstr "Александар Талевски"
+
+#: Scenes/ENDINGS.tscn
+msgid "Hristina Jovcevska"
+msgstr "Христина Јовчевска"
+
+#: Scenes/ENDINGS.tscn
+msgid "CONCEPT CREATION"
+msgstr "КОНЦЕПТ И ИДЕЈА"
+
+#: Scenes/ENDINGS.tscn
+msgid "WRITING & NARRATIVE"
+msgstr "ПИШУВАЊЕ И НАРАТИВА"
+
+#: Scenes/ENDINGS.tscn
+msgid "EDUCATIONAL CONTENT"
+msgstr "ЕДУКАТИВНА СОДРЖИНА"
+
+#: Scenes/ENDINGS.tscn
+msgid "Mina Zdravevska"
+msgstr "Мина Здравевска"
+
+#: Scenes/ENDINGS.tscn
+msgid "GAME DESIGN & UX"
+msgstr "ДИЗАЈН НА ИГРАТА И UX"
+
+#: Scenes/ENDINGS.tscn
+msgid "Filip Mladenovikj"
+msgstr "Филип Младеновиќ"
+
+#: Scenes/ENDINGS.tscn
+msgid "UI DESIGN"
+msgstr "UI ДИЗАЈН"
+
+#: Scenes/ENDINGS.tscn
+msgid "PROGRAMMING & CORE DEVELOPMENT"
+msgstr "ПРОГРАМИРАЊЕ И ЈАДРЕН РАЗВОЈ"
+
+#: Scenes/ENDINGS.tscn
+msgid "CHARACTER ART"
+msgstr "ИЗРАБОТКА НА ЛИКОВИ"
+
+#: Scenes/ENDINGS.tscn
+msgid "Martin Nasteski"
+msgstr "Мартин Настески"
+
+#: Scenes/ENDINGS.tscn
+msgid "BACKGROUND ART"
+msgstr "ПОЗАДИНСКА УМЕТНОСТ / ПОЗАДИНИ"
+
+#: Scenes/ENDINGS.tscn
+msgid "Filip Simonovski"
+msgstr "Филип Симоновски"
+
+#: Scenes/ENDINGS.tscn
+msgid "MUSIC & SOUND DESIGN"
+msgstr "МУЗИКА И ЗВУЧЕН ДИЗАЈН"
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+"Filip Mladenovikj\n"
+" Alex_Kizenkov (Credits Music)"
+msgstr ""
+"Филип Младеновиќ\n"
+" Alex_Kizenkov (Музика во заслуги)"
+
+#: Scenes/ENDINGS.tscn
+msgid "PUBLIC RELATIONS & OUTREACH"
+msgstr "ЈАВНИ ОДНОСИ И ПРОМОЦИЈА"
+
+#: Scenes/ENDINGS.tscn
+msgid "Ognen Kiprijanovski"
+msgstr "Огнен Кипријановски"
+
+#: Scenes/ENDINGS.tscn
+msgid "LOCALIZATION"
+msgstr "ЛОКАЛИЗАЦИЈА"
+
+#: Scenes/ENDINGS.tscn
+msgid "TESTING & FEEDBACK"
+msgstr "ТЕСТИРАЊЕ "
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+" Zafir Bogdanovikj\n"
+" Andrej Zlatanov\n"
+" Hristijan Petkovski\n"
+" Nikola Shikole"
+msgstr ""
+"Зафир Богдановиќ\n"
+"Андреј Златанов\n"
+"Христијан Петковски\n"
+"Никола Шиколе"
+
+#: Scenes/ENDINGS.tscn
+msgid "MADE WITH"
+msgstr "ИЗРАБОТЕНО СО"
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+"Godot Engine 4.4.1\n"
+"·GIMP\n"
+" · DaVinci Resolve \n"
+"· Photoshop\n"
+"·FL Studio"
+msgstr ""
+"Godot Engine 4.4.1\n"
+"·GIMP\n"
+" · DaVinci Resolve \n"
+"· Photoshop\n"
+"·FL Studio"
+
+#: Scenes/ENDINGS.tscn
+msgid "Godot Splash Art"
+msgstr "Интро"
+
+#: Scenes/ENDINGS.tscn
+msgid "https://github.com/KenneyNL/Godot-SplashScreens"
+msgstr "https://github.com/KenneyNL/Godot-SplashScreens"
+
+#: Scenes/ENDINGS.tscn
+msgid "PROJECT MADE POSSIBLE BY"
+msgstr "ПРОЕКТОТ Е ОВОЗМОЖЕН ОД"
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+"Europian Union\n"
+"EU With YOU\n"
+"SELDI.net\n"
+"Youth Council Prilep"
+msgstr ""
+"Европска Унија\n"
+"ЕУ ЗА ТЕБЕ\n"
+"СЕЛДИ.net\n"
+"Младински Совет Прилеп"
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+"© 2025 GrayZone Team\n"
+"All Rights Reserved\n"
+msgstr ""
+"© 2025 СиваЗона Тим\n"
+"Сите права задржани\n"
 
 msgid "All Recognized"
 msgstr ""

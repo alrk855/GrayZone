@@ -1,16 +1,16 @@
 {
   "id": "Marko_Study_Continue",
   "lines": [
-    {
-      "speaker": "Наратор",
-      "text": "Назад од {subject1}."
-    },
-    {
-      "speaker": "Марко",
-      "text": "Сакаш ли да го разгледаме и {subject2}?"
-    },
-    {
-      "action": "marko_study_show_choices_s2"
-    }
+	{
+	  "speaker": "Наратор",
+	  "text": "Назад од {subject1}."
+	},
+	{
+	  "speaker": "Марко",
+	  "text": "Сакаш ли да учиме и {subject2}?"
+	},
+	{
+	  "action": "marko_study_show_choices_s2"
+	}
   ]
 }

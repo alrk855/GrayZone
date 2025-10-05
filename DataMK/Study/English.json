@@ -57,7 +57,7 @@
 	},
 	{
 	  "id": "ENG_07",
-	  "q": "Find the synonym of 'big'.",
+	  "q": "Find the synonym of ,,Big‘‘.",
 	  "correct": "Large",
 	  "wrong": [
 		"Tiny",
@@ -75,7 +75,7 @@
 	},
 	{
 	  "id": "ENG_09",
-	  "q": "Which word completes: 'There ___ three cats.'",
+	  "q": "Which word completes: ,,There ___ three cats.‘‘",
 	  "correct": "are",
 	  "wrong": [
 		"is",
@@ -93,7 +93,7 @@
 	},
 	{
 	  "id": "ENG_11",
-	  "q": "Which is an antonym of 'happy'?",
+	  "q": "Which is an antonym of ,,Happy‘‘?",
 	  "correct": "Sad",
 	  "wrong": [
 		"Glad",
@@ -102,7 +102,7 @@
 	},
 	{
 	  "id": "ENG_12",
-	  "q": "Pick the preposition: 'The book is on the table.'",
+	  "q": "Pick the preposition: ,,The book is on the table.‘‘",
 	  "correct": "on",
 	  "wrong": [
 		"book",
@@ -120,7 +120,7 @@
 	},
 	{
 	  "id": "ENG_14",
-	  "q": "Comparative of 'fast' is ___",
+	  "q": "Comparative of ,,fast‘‘ is ___",
 	  "correct": "faster",
 	  "wrong": [
 		"fastest",
@@ -156,7 +156,7 @@
 	},
 	{
 	  "id": "ENG_18",
-	  "q": "Which word fits: 'I have ___ umbrella.'",
+	  "q": "Which word fits: ,,I have ___ umbrella.‘‘",
 	  "correct": "an",
 	  "wrong": [
 		"a",
@@ -174,7 +174,7 @@
 	},
 	{
 	  "id": "ENG_20",
-	  "q": "Past tense of 'eat' is ___",
+	  "q": "Past tense of ,,eat‘‘ is ___",
 	  "correct": "ate",
 	  "wrong": [
 		"eated",
@@ -183,7 +183,7 @@
 	},
 	{
 	  "id": "ENG_21",
-	  "q": "Pick the correct form: 'She is ___ than me.'",
+	  "q": "Pick the correct form: ,,She is ___ than me.‘‘",
 	  "correct": "taller",
 	  "wrong": [
 		"more tall",

@@ -1,32 +1,50 @@
-[gd_scene load_steps=5 format=3 uid="uid://b736y8yjextp3"]
+[gd_scene load_steps=10 format=3 uid="uid://b736y8yjextp3"]
 
 [ext_resource type="Script" uid="uid://djg2i3g363u42" path="res://Scenes/endings.gd" id="1_1gdqv"]
 [ext_resource type="FontFile" uid="uid://b23yltayewnmu" path="res://Fonts/Russo_One.ttf" id="2_gbpi2"]
+[ext_resource type="AudioStream" uid="uid://dcu50alyiejf0" path="res://Audio/mellow-summer-folk-144448.mp3" id="2_s8k7v"]
+[ext_resource type="FontFile" uid="uid://bkpdciduy71nq" path="res://Fonts/dehinted-DarumadropOne.ttf" id="3_gbpi2"]
+[ext_resource type="Texture2D" uid="uid://c50j8a58t5mim" path="res://Images/лого крајно.png" id="4_sxuhc"]
+[ext_resource type="Texture2D" uid="uid://celuyw4ys8gij" path="res://Images/дисклајмер (1).png" id="5_s8k7v"]
 
 [sub_resource type="Gradient" id="Gradient_ev15k"]
-offsets = PackedFloat32Array(0, 0.290598, 0.495726, 0.91453, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.0885599, 0.0885599, 0.0885599, 1, 0.229112, 0.229112, 0.229112, 1, 0.0695828, 0.0695828, 0.0695828, 1, 0, 0, 0, 1)
+offsets = PackedFloat32Array(0, 0.111111, 0.538462, 0.91453, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0885599, 0.0885599, 0.0885599, 1, 0.142858, 0.142858, 0.142858, 1, 0.0695828, 0.0695828, 0.0695828, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_sxuhc"]
 gradient = SubResource("Gradient_ev15k")
-fill_from = Vector2(0.5, 0)
-fill_to = Vector2(0.5, 1)
+fill_to = Vector2(1, 1)
 metadata/_snap_enabled = true
 
-[node name="Control" type="Control"]
+[sub_resource type="Theme" id="Theme_ev15k"]
+RichTextLabel/font_sizes/normal_font_size = 66
+RichTextLabel/fonts/normal_font = ExtResource("3_gbpi2")
+
+[node name="Control" type="Control" node_paths=PackedStringArray("text_label", "camera2d")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = 11620.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1gdqv")
+text_label = NodePath("TextureRect/RichTextLabel")
+camera2d = NodePath("Camera2D")
+post_credits_vbox_path = NodePath("CREDITS")
+content_end_y = 12000.0
+camera_speed_pps = 120.0
+credits_music_stream = ExtResource("2_s8k7v")
+credits_music_player_path = NodePath("AudioStreamPlayer")
+metadata/_edit_vertical_guides_ = [-711.0]
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_sxuhc")
@@ -34,10 +52,10 @@ texture = SubResource("GradientTexture2D_sxuhc")
 [node name="RichTextLabel" type="RichTextLabel" parent="TextureRect"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.244792
-anchor_top = 0.252778
-anchor_right = 0.755729
-anchor_bottom = 0.757407
+anchor_left = 0.133333
+anchor_top = 0.0188976
+anchor_right = 0.866667
+anchor_bottom = 0.0655118
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/normal_font = ExtResource("2_gbpi2")
@@ -45,3 +63,446 @@ theme_override_font_sizes/normal_font_size = 66
 text = "SO THIS WAS THE END"
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
+
+[node name="CREDITS" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.00104167
+anchor_top = 0.0411024
+anchor_right = 1.00104
+anchor_bottom = 1.00276
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_ev15k")
+theme_override_constants/separation = 20
+metadata/_edit_use_anchors_ = true
+
+[node name="THANKYOU" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+text = "THANK YOU FOR PLAYING "
+horizontal_alignment = 1
+
+[node name="Control2" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="GRAY" type="HBoxContainer" parent="CREDITS"]
+layout_mode = 2
+
+[node name="GR" type="RichTextLabel" parent="CREDITS/GRAY"]
+custom_minimum_size = Vector2(960, 180)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.427474, 6.73831e-07, 1.44392e-07, 1)
+theme_override_font_sizes/normal_font_size = 166
+text = "GR"
+horizontal_alignment = 2
+
+[node name="AY" type="RichTextLabel" parent="CREDITS/GRAY"]
+custom_minimum_size = Vector2(960, 180)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.924138, 0.780582, 0.814399, 1)
+theme_override_font_sizes/normal_font_size = 166
+text = "AY "
+
+[node name="ZONE" type="HBoxContainer" parent="CREDITS"]
+layout_mode = 2
+
+[node name="ZO" type="RichTextLabel" parent="CREDITS/ZONE"]
+custom_minimum_size = Vector2(960, 180)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.427474, 6.73831e-07, 1.44392e-07, 1)
+theme_override_font_sizes/normal_font_size = 166
+text = "ZO"
+horizontal_alignment = 2
+
+[node name="NE" type="RichTextLabel" parent="CREDITS/ZONE"]
+custom_minimum_size = Vector2(960, 180)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.924138, 0.780582, 0.814399, 1)
+theme_override_font_sizes/normal_font_size = 166
+text = "NE"
+
+[node name="Control" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="credits" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 122
+text = "END CREDITS"
+horizontal_alignment = 1
+
+[node name="Control3" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="PCD" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "PROJECT CREATION & DIRECTION"
+horizontal_alignment = 1
+
+[node name="ACE" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Aleksandar Talevski"
+horizontal_alignment = 1
+
+[node name="Hris" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Hristina Jovcevska"
+horizontal_alignment = 1
+
+[node name="Control4" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "CONCEPT CREATION"
+horizontal_alignment = 1
+
+[node name="ACE2" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Aleksandar Talevski"
+horizontal_alignment = 1
+
+[node name="Hris2" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Hristina Jovcevska"
+horizontal_alignment = 1
+
+[node name="Control5" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC2" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "WRITING & NARRATIVE"
+horizontal_alignment = 1
+
+[node name="ACE3" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Aleksandar Talevski"
+horizontal_alignment = 1
+
+[node name="Control6" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC3" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "EDUCATIONAL CONTENT"
+horizontal_alignment = 1
+
+[node name="mina" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Mina Zdravevska"
+horizontal_alignment = 1
+
+[node name="Control7" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC4" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "GAME DESIGN & UX"
+horizontal_alignment = 1
+
+[node name="ACE4" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Aleksandar Talevski"
+horizontal_alignment = 1
+
+[node name="Fic" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Filip Mladenovikj"
+horizontal_alignment = 1
+
+[node name="Control8" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC5" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "UI DESIGN"
+horizontal_alignment = 1
+
+[node name="ACE5" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Aleksandar Talevski"
+horizontal_alignment = 1
+
+[node name="Fic2" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Filip Mladenovikj"
+horizontal_alignment = 1
+
+[node name="Control9" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC6" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "PROGRAMMING & CORE DEVELOPMENT"
+horizontal_alignment = 1
+
+[node name="ACE6" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Aleksandar Talevski"
+horizontal_alignment = 1
+
+[node name="Fic3" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Filip Mladenovikj"
+horizontal_alignment = 1
+
+[node name="Control10" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC7" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "CHARACTER ART"
+horizontal_alignment = 1
+
+[node name="MAC" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Martin Nasteski"
+horizontal_alignment = 1
+
+[node name="Control11" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC8" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "BACKGROUND ART"
+horizontal_alignment = 1
+
+[node name="zelka" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Filip Simonovski"
+horizontal_alignment = 1
+
+[node name="Control12" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC9" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "MUSIC & SOUND DESIGN"
+horizontal_alignment = 1
+
+[node name="Fic4" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Filip Mladenovikj
+ Alex_Kizenkov (Credits Music)"
+horizontal_alignment = 1
+
+[node name="Control13" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC10" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "PUBLIC RELATIONS & OUTREACH"
+horizontal_alignment = 1
+
+[node name="Ognen" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Ognen Kiprijanovski"
+horizontal_alignment = 1
+
+[node name="Control14" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC11" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "LOCALIZATION"
+horizontal_alignment = 1
+
+[node name="ACE7" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Aleksandar Talevski"
+horizontal_alignment = 1
+
+[node name="mina2" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Mina Zdravevska"
+horizontal_alignment = 1
+
+[node name="Control15" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC12" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "TESTING & FEEDBACK"
+horizontal_alignment = 1
+
+[node name="testeri" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = " Zafir Bogdanovikj
+ Andrej Zlatanov
+ Hristijan Petkovski
+ Nikola Shikole"
+horizontal_alignment = 1
+
+[node name="Control16" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="CC13" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "MADE WITH"
+horizontal_alignment = 1
+
+[node name="testeri2" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Godot Engine 4.4.1
+·GIMP
+ · DaVinci Resolve 
+· Photoshop
+·FL Studio"
+horizontal_alignment = 1
+
+[node name="Control19" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+
+[node name="CC15" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "Godot Splash Art"
+horizontal_alignment = 1
+
+[node name="testeri5" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "https://github.com/KenneyNL/Godot-SplashScreens"
+horizontal_alignment = 1
+
+[node name="CC14" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+text = "PROJECT MADE POSSIBLE BY"
+horizontal_alignment = 1
+
+[node name="testeri4" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "Europian Union
+EU With YOU
+SELDI.net
+Youth Council Prilep"
+horizontal_alignment = 1
+
+[node name="Control17" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+texture = ExtResource("4_sxuhc")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="Control18" type="Control" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="testeri3" type="RichTextLabel" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 77
+text = "© 2025 GrayZone Team
+All Rights Reserved
+"
+horizontal_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="CREDITS"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+texture = ExtResource("5_s8k7v")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

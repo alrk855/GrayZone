@@ -66,6 +66,9 @@
 # res://Scenes/Reusable/Dialogue.gd
 # res://Scenes/Reusable/quiz.gd
 # res://Scenes/Reusable/Quiz.tscn
+# res://Scenes/ENDINGS.tscn
+# res://Scenes/finals.gd
+# res://Scenes/Finals.tscn
 #
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -1190,6 +1193,167 @@ msgstr ""
 
 #: Scenes/Reusable/Quiz.tscn
 msgid "MATHS FINAL"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "SO THIS WAS THE END"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "THANK YOU FOR PLAYING "
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "GR"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "AY "
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "ZO"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "NE"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "END CREDITS"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "PROJECT CREATION & DIRECTION"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "Aleksandar Talevski"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "Hristina Jovcevska"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "CONCEPT CREATION"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "WRITING & NARRATIVE"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "EDUCATIONAL CONTENT"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "Mina Zdravevska"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "GAME DESIGN & UX"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "Filip Mladenovikj"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "UI DESIGN"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "PROGRAMMING & CORE DEVELOPMENT"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "CHARACTER ART"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "Martin Nasteski"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "BACKGROUND ART"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "Filip Simonovski"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "MUSIC & SOUND DESIGN"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+"Filip Mladenovikj\n"
+" Alex_Kizenkov (Credits Music)"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "PUBLIC RELATIONS & OUTREACH"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "Ognen Kiprijanovski"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "LOCALIZATION"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "TESTING & FEEDBACK"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+" Zafir Bogdanovikj\n"
+" Andrej Zlatanov\n"
+" Hristijan Petkovski\n"
+" Nikola Shikole"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "MADE WITH"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+"Godot Engine 4.4.1\n"
+"·GIMP\n"
+" · DaVinci Resolve \n"
+"· Photoshop\n"
+"·FL Studio"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "Godot Splash Art"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "https://github.com/KenneyNL/Godot-SplashScreens"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid "PROJECT MADE POSSIBLE BY"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+"Europian Union\n"
+"EU With YOU\n"
+"SELDI.net\n"
+"Youth Council Prilep"
+msgstr ""
+
+#: Scenes/ENDINGS.tscn
+msgid ""
+"© 2025 GrayZone Team\n"
+"All Rights Reserved\n"
 msgstr ""
 
 msgid "All Recognized"
