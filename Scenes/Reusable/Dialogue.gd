@@ -1,101 +1,113 @@
 extends Control
 
 signal dialogue_finished
-signal choices_requested(options: Array, max_select: int) # external UI can listen
+signal choices_requested(options: Array, max_select: int)
 
-@onready var dialogue_label: RichTextLabel = $"Dialogue Box/Control2/Dialogue"  # BBCode already enabled in Inspector
-@onready var speaker_label: Label = $"Speaker Box/SpeakerLABEL"
-@onready var portrait: TextureRect = $"Dialogue Box/Control/PlaceHolderFrame"
-@onready var timerr: Timer = $"change_text"
+@onready var dialogue_label: RichTextLabel = $"Dialogue Box/Control2/Dialogue"  # BBCode enabled in Inspector
+@onready var speaker_label: Label          = $"Speaker Box/SpeakerLABEL"
+@onready var portrait: TextureRect         = $"Dialogue Box/Control/PlaceHolderFrame"
+@onready var timerr: Timer                 = $"change_text"
 
-# Optional: export an italic font for Narrator lines
 @export var narrator_italic_font: Font
+@export var typing_speed: float = 0.04
 
 var portraits: Dictionary = {
-	# Homeroom Teacher
 	"homeroom teacher": preload("res://Images/CharacterFrames/KlasenFrame.png"),
 	"класен раководител": preload("res://Images/CharacterFrames/KlasenFrame.png"),
-
-	# Principal
 	"principal": preload("res://Images/CharacterFrames/direktorframe.png"),
 	"директор": preload("res://Images/CharacterFrames/direktorframe.png"),
-
-	# Secretary
 	"secretary": preload("res://Images/CharacterFrames/secretaryframe.png"),
 	"секретарка": preload("res://Images/CharacterFrames/secretaryframe.png"),
-
-	# Janitor
 	"janitor": preload("res://Images/CharacterFrames/JanitorFrame.png"),
 	"хигиеничар": preload("res://Images/CharacterFrames/JanitorFrame.png"),
-
-	# Professor
 	"professor": preload("res://Images/CharacterFrames/Prof1Frame.png"),
 	"професор": preload("res://Images/CharacterFrames/Prof1Frame.png"),
-
-	# Marko
 	"marko": preload("res://Images/CharacterFrames/MarkoFrame.png"),
 	"марко": preload("res://Images/CharacterFrames/MarkoFrame.png"),
-
-	# Clerk
 	"clerk": preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
 	"шалтерски службеник": preload("res://Images/CharacterFrames/MvrClerkFrame.png"),
-
-	# Daniel
 	"daniel": preload("res://Images/CharacterFrames/DanielFrame.png"),
 	"даниел": preload("res://Images/CharacterFrames/DanielFrame.png"),
-
-	# Narrator (no portrait → keep mapped to null if you want to clear)
-	"narrator": null,
-	"наратор": null
+	"narrator": null, "наратор": null
 }
-
-
 
 var dialogue_data: Array = []
 var line_index: int = 0
 var is_typing: bool = false
-@export var typing_speed: float = 0.04
 var caller: Node = null
 
 var _waiting_for_external_choice := false
 var _pending_choice_options: Array = []
 var _pending_max_select: int = 1
 
+# reentrancy / spam guards
+var _advancing := false
+var _last_advance_time := 0.0
+const ADV_DEBOUNCE := 0.08  # seconds
+
+func _ready() -> void:
+	# Make the label inert to selection/scroll/hover while we animate it
+	dialogue_label.selection_enabled = false
+	dialogue_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dialogue_label.focus_mode = Control.FOCUS_NONE
+	dialogue_label.text_direction = Control.TEXT_DIRECTION_LTR  # you’re using Cyrillic LTR; keeps BiDi stable
+	dialogue_label.structured_text_bidi_override = TextServer.STRUCTURED_TEXT_DEFAULT
+
 func start(lines: Array, caller_node: Node = null) -> void:
 	dialogue_data = lines
 	caller = caller_node
 	line_index = 0
 
-	# If you supplied an italic font, make sure the label knows to use it for [i] tags too.
 	if narrator_italic_font:
 		dialogue_label.add_theme_font_override("italics_font", narrator_italic_font)
 		dialogue_label.add_theme_font_override("bold_italics_font", narrator_italic_font)
 
-	dialogue_label.clear() # BBCode already enabled in Inspector
+	dialogue_label.clear()
+	dialogue_label.deselect()
 	show()
 	display_next()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept") and not is_typing and not _waiting_for_external_choice:
-		display_next()
+	# Eat Ctrl + MouseWheel (prevents accidental zoom/scroll style interactions on some setups)
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.ctrl_pressed and (mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN):
+			accept_event()
+			return
+
+	if event.is_action_pressed("ui_accept"):
+		accept_event()  # stop propagation
+		var now := Time.get_ticks_msec() / 1000.0
+		if now - _last_advance_time < ADV_DEBOUNCE:
+			return
+		_last_advance_time = now
+
+		if not is_typing and not _waiting_for_external_choice:
+			display_next()
 
 func display_next() -> void:
+	if _advancing:
+		return
+	_advancing = true
+
 	if line_index >= dialogue_data.size():
+		_advancing = false
 		emit_signal("dialogue_finished")
 		queue_free()
 		return
 
 	var line: Dictionary = dialogue_data[line_index]
 
-	# Scene transition (no text)
+	# scene transition without text
 	if line.has("scene_transition") and not line.has("text"):
 		if caller and caller.has_method("on_scene_transition"):
 			await caller.call("on_scene_transition", String(line["scene_transition"]))
 		line_index += 1
+		_advancing = false
 		display_next()
 		return
 
-	# Spoken line
+	# spoken line
 	if line.has("text"):
 		var raw_speaker := String(line.get("speaker", ""))
 		var raw_text := String(line.get("text", ""))
@@ -106,71 +118,73 @@ func display_next() -> void:
 		speaker_label.text = show_speaker
 		_update_portrait(speaker_label.text)
 
-		# Narrator = italics (empty speaker also treated as Narrator)
 		var sp_key := show_speaker.strip_edges().to_lower()
-		var narrator_line := (sp_key == "" or sp_key == tr("narrator")) or sp_key == "наратор"
+		var narrator_line := (sp_key == "" or sp_key == tr("narrator") or sp_key == "наратор")
 
 		await _type_text(show_text, narrator_line)
-		await get_tree().create_timer(0.5).timeout
+
+		# small post-line pause (keeps your original pacing via the Timer node)
+		if is_instance_valid(timerr):
+			timerr.start()  # use the scene’s timer as before
+			await timerr.timeout
+		else:
+			await get_tree().create_timer(0.35).timeout
+
 		line_index += 1
+		_advancing = false
 		display_next()
 		return
 
-	# Choice request → hand off to external UI and pause here
+	# choices → external UI
 	if line.has("choice_type"):
 		_request_external_choices(line)
+		_advancing = false
 		return
 
-	# Action (let caller handle; fallback to GameState)
+	# action (caller first, fallback to GameState)
 	if line.has("action"):
 		if caller and caller.has_method("on_dialogue_action"):
 			caller.call("on_dialogue_action", line)
 		else:
 			GameState.apply_action(line)
 		line_index += 1
+		_advancing = false
 		display_next()
 		return
 
-	# Fallback
+	# fallback
 	line_index += 1
+	_advancing = false
 	display_next()
 
-# ---------- Typing with reliable italics ----------
-# If you exported a narrator_italic_font, we push it on the stack while typing.
-# Otherwise, we wrap with [i]...[/i] so it still renders italic if the label has an 'Italics Font' override.
-func _type_text(text: String, italics: bool=false) -> void:
+# unified typing: set once, reveal with visible_characters (stable shaping, no backwards glyphs)
+func _type_text(text: String, italics: bool = false) -> void:
 	is_typing = true
-	dialogue_label.clear()
+	dialogue_label.deselect()
+	dialogue_label.scroll_to_line(0)  # ensure top; avoid flicker
 
-	if italics and narrator_italic_font and dialogue_label.has_method("push_font"):
-		# Use the supplied italic font directly.
-		dialogue_label.push_font(narrator_italic_font)
-		for i in range(text.length()):
-			dialogue_label.append_text(text.substr(i, 1))
-			await get_tree().create_timer(typing_speed).timeout
-		dialogue_label.pop()
-	elif italics:
-		# BBCode fallback: ensure the label knows what font to use (see start()).
-		dialogue_label.text = "[i]" + text + "[/i]"
-		dialogue_label.visible_characters = 0
-		for i in range(text.length()):
-			dialogue_label.visible_characters = i + 1
-			await get_tree().create_timer(typing_speed).timeout
+	var bb: String = ""
+	if italics:
+		bb = "[i]" + text + "[/i]"
 	else:
-		# Normal typing
-		for i in range(text.length()):
-			dialogue_label.append_text(text.substr(i, 1))
-			await get_tree().create_timer(typing_speed).timeout
-	timerr.start()
-	await timerr.timeout
+		bb = text
+
+	dialogue_label.bbcode_text = bb
+	dialogue_label.visible_characters = 0
+
+	var total := text.length()
+	for i in range(total):
+		dialogue_label.visible_characters = i + 1
+		await get_tree().create_timer(typing_speed).timeout
+
 	is_typing = false
+
 
 # ---------- External choices flow ----------
 func _request_external_choices(line: Dictionary) -> void:
 	_pending_choice_options = []
 	_pending_max_select = int(line.get("max_select", 1))
 
-	# Accept "options": [{id,text}, ...] or ["Math","Physics",...]
 	var opt_raw = line.get("options", [])
 	if opt_raw is Array:
 		for o in opt_raw:
@@ -185,7 +199,6 @@ func _request_external_choices(line: Dictionary) -> void:
 				_pending_choice_options.append({"id": s, "text": s})
 
 	_waiting_for_external_choice = true
-
 	emit_signal("choices_requested", _pending_choice_options, _pending_max_select)
 
 	if caller and caller.has_method("on_dialogue_action"):
@@ -196,7 +209,6 @@ func _request_external_choices(line: Dictionary) -> void:
 		}
 		caller.call("on_dialogue_action", normalized)
 
-# Call this from your controller after the player picks via CharacterChoiceButtons
 func apply_choices(selected: Array) -> void:
 	if not _waiting_for_external_choice:
 		return
@@ -208,7 +220,6 @@ func apply_choices(selected: Array) -> void:
 	line_index += 1
 	display_next()
 
-# Alias for controllers that call "receive_choice(...)"
 func receive_choice(selected: Array) -> void:
 	apply_choices(selected)
 
