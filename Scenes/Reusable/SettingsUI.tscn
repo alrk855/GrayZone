@@ -279,7 +279,6 @@ layout_mode = 2
 size_flags_horizontal = 6
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer"]
-visible = false
 
 [node name="Warning" type="HBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer"]
 visible = false
@@ -348,13 +347,14 @@ layout_mode = 2
 
 [node name="Buttons" type="VBoxContainer" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer"]
 offset_left = 89.0
-offset_top = 686.0
+offset_top = 791.0
 offset_right = 1833.0
 offset_bottom = 1020.0
 theme = ExtResource("1_isorg")
 theme_override_constants/separation = 10
 
 [node name="MainMenu" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
+visible = false
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -362,14 +362,14 @@ size_flags_vertical = 4
 text = "Main Menu
 "
 
-[node name="Save" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
+[node name="Quit" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "Save
-"
+text = "QUIT"
 
 [node name="Load" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
+visible = false
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
 size_flags_horizontal = 4

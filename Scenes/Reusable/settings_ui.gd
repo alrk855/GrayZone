@@ -23,13 +23,8 @@ const HOVER_SFX_PATH       := "res://Audio/u1.mp3"
 
 @onready var _buttons_box       : VBoxContainer   = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons
 @onready var _btn_main_menu     : Button          = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/MainMenu
-@onready var _btn_save          : Button          = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Save
-@onready var _btn_load          : Button          = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Load
-
-@onready var _warning_box       : HBoxContainer   = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Warning
-@onready var _yesno_box         : HBoxContainer   = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container"
-@onready var _btn_yes           : Button          = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container/Yes"
-@onready var _btn_no            : Button          = $"Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Yes_No Container/No"
+@onready var _btn_quit          : Button          = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Quit   # repurposed
+@onready var _btn_load_hidden   : Button          = $Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons/Load   # hidden
 
 func _ready() -> void:
 	# Keep layers above the world/HUD
@@ -45,18 +40,19 @@ func _ready() -> void:
 	_set_stream_if_empty(_click_player, CLICK_SFX_PATH)
 	_set_stream_if_empty(_hover_player, HOVER_SFX_PATH)
 
+	# Rewire buttons: Save -> Quit; hide Load
+	_btn_load_hidden.visible = false
+	_btn_load_hidden.disabled = true
+
 	# Wire handlers
 	_help_btn.pressed.connect(_on_help_pressed)
 	_exit_btn.pressed.connect(_on_exit_pressed)
 
 	_btn_main_menu.pressed.connect(_on_main_menu_pressed)
-	_btn_save.pressed.connect(_on_save_pressed)
-	_btn_load.pressed.connect(_on_load_pressed)
+	_btn_quit.pressed.connect(_on_quit_pressed)
 
-	_btn_yes.pressed.connect(_on_yes_pressed)
-	_btn_no.pressed.connect(_on_no_pressed)
-
-	for b in [_help_btn, _exit_btn, _btn_main_menu, _btn_save, _btn_load, _btn_yes, _btn_no]:
+	# Hover/click SFX for visible buttons
+	for b in [_help_btn, _exit_btn, _btn_main_menu, _btn_quit]:
 		b.mouse_entered.connect(_play_hover_sfx)
 		b.pressed.connect(_play_click_sfx)
 
@@ -85,14 +81,6 @@ func is_open() -> bool:
 func _show_menu_state() -> void:
 	_buttons_box.visible = true
 	_padding_container.visible = true
-	_warning_box.visible = false
-	_yesno_box.visible = false
-
-func _show_confirm_state() -> void:
-	_buttons_box.visible = false
-	_padding_container.visible = false
-	_warning_box.visible = true
-	_yesno_box.visible = true
 
 # --------------- Handlers -----------------
 
@@ -127,23 +115,12 @@ func _on_exit_pressed() -> void:
 func _on_main_menu_pressed() -> void:
 	# Block while dialogue is active (no UI change, just ignore)
 	if _is_dialogue_active():
-		_play_click_sfx() # optional soft feedback
+		_play_click_sfx() # soft feedback
 		return
-	_show_confirm_state()
-
-func _on_save_pressed() -> void:
-	# to be implemented later
-	pass
-
-func _on_load_pressed() -> void:
-	# to be implemented later
-	pass
-
-func _on_no_pressed() -> void:
-	_show_menu_state()
-
-func _on_yes_pressed() -> void:
 	get_tree().change_scene_to_file(MAIN_MENU_SCENE_PATH)
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()
 
 # --------------- Dialogue detection -----------------
 
@@ -152,26 +129,19 @@ func _is_dialogue_active() -> bool:
 
 	# 1) Our always-used choice UI
 	var ccb: Node = root.find_child("CharacterChoiceButtons", true, false)
-	if ccb is Control:
-		var ccb_ctrl := ccb as Control
-		if ccb_ctrl.visible:
-			return true
+	if ccb is Control and (ccb as Control).visible:
+		return true
 
 	# 2) Common dialogue groups (if you use them)
 	for group_name in ["dialogue", "dialogue_ui", "Dialogue", "DialogueUI"]:
-		var nodes := get_tree().get_nodes_in_group(group_name)
-		for n in nodes:
-			if n is Control:
-				var ctrl := n as Control
-				if ctrl.visible:
-					return true
+		for n in get_tree().get_nodes_in_group(group_name):
+			if n is Control and (n as Control).visible:
+				return true
 
 	# 3) Common node names
 	var dlg: Node = root.find_child("Dialogue", true, false)
-	if dlg is Control:
-		var dlg_ctrl := dlg as Control
-		if dlg_ctrl.visible:
-			return true
+	if dlg is Control and (dlg as Control).visible:
+		return true
 
 	return false
 
