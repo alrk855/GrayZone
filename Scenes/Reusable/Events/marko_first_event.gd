@@ -18,7 +18,7 @@ const FLAG_EVENT_DONE: String    = "marko_first_event_done"
 const FLAG_HANGOUT_RECENT: String = "marko_hangout_recent"
 
 # task we add after hangout end
-const TASK_VISIT_PROF: String = "visit_professor_office"
+const TASK_VISIT_PROF: String = "Visit_Professor_Office"
 
 @onready var choice_panel_scene: PackedScene = preload("res://Scenes/Reusable/CharacterChoiceButtons.tscn")
 
