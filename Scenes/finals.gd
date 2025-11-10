@@ -1,7 +1,7 @@
 extends Control
 
 # ---------- Scene paths ----------
-@export var quiz_scene_path: String = "res://Scenes/reusable/Quiz.tscn"   # set in Inspector if different
+@export var quiz_scene_path: String = "res://Scenes/Reusable/Quiz.tscn"   # set in Inspector if different
 const SCHOOL_SCENE_PATH := "res://Scenes/Reusable/Map/School.tscn"
 
 # If your Finals scene lives elsewhere, point Quiz’s finals_scene_path to this.

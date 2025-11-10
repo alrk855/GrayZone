@@ -65,6 +65,10 @@ var features_unlocked: Dictionary = {}
 var subject1: String = ""
 var subject2: String = ""
 var flags: Dictionary = {}   # canonicalized keys only (via Flags.canon)
+var master_volume: float = 0.8     # linear 0..1
+var master_muted: bool = false
+var music_volume: float = 0.8   # linear 0..1
+var music_muted: bool = false
 
 # Mailbox / Language Certificate
 # Randomized arrival day ∈ [1..4] stored HERE (not in flags) for easy save/load.

@@ -12,25 +12,28 @@ func _ready():
 	bus_index = AudioServer.get_bus_index(bus_name)
 	slider.value_changed.connect(_on_slider_changed)
 	toggle.pressed.connect(_on_toggle_pressed)
-
-	fill_bar.value = slider.value
-	last_volume = slider.value
-	_set_volume(slider.value)
+	toggle.button_pressed = GameState.master_muted
+	slider.value = GameState.master_volume
+	last_volume = GameState.master_volume
+	_set_volume(GameState.master_volume)
 
 func _process(_delta):
 	fill_bar.value = slider.value
 	slider.queue_redraw()
 
 func _on_slider_changed(value: float) -> void:
-	last_volume = value
-	if !toggle.button_pressed:
-		_set_volume(value)
+	last_volume = value        # ✅ restore logic for unmute
+	GameState.master_volume = value
+	_set_volume(value)
 
 func _on_toggle_pressed():
+	GameState.master_muted = toggle.button_pressed    # ✅ this was missing
+
 	if toggle.button_pressed:
 		_set_volume(0.0)
 	else:
-		_set_volume(last_volume)
+		_set_volume(GameState.master_volume)
+
 
 func _set_volume(value: float) -> void:
 	if value <= 0.001:

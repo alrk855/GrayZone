@@ -13,7 +13,7 @@ config_version=5
 config/name="GrayZone"
 config/tags=PackedStringArray("2d", "official")
 run/main_scene="uid://drxcg2tkp2a54"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+config/features=PackedStringArray("4.5", "GL Compatibility")
 boot_splash/show_image=false
 run/main_script="res://Scenes/main_run.gd"
 

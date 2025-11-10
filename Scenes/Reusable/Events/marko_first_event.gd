@@ -157,6 +157,7 @@ func _on_study_sway_choice(id: String) -> void:
 			_safe_end_dialogue()
 			_safe_change_scene(HANGOUT_SCENE)
 
+
 func _show_alone_push_choices() -> void:
 	_clear_panel()
 	var options: Array = [
@@ -183,6 +184,7 @@ func _on_hangout_json_finished() -> void:
 	# We just came back from Hangout during Day1 flow: award task, set event done, go Home.
 	GameState.ensure_task(TASK_VISIT_PROF)
 	GameState.set_flag(FLAG_EVENT_DONE)
+	GameState.set_flag("marko_tip")
 	_safe_change_scene(FALLBACK_HOME)
 
 func _on_solo_end_finished() -> void:

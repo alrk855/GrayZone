@@ -172,7 +172,7 @@ msgstr ""
 msgid "Professor"
 msgstr ""
 
-#: Scenes/Reusable/Outro.tscn
+#: Scenes/Reusable/Outro.tscn Scenes/Reusable/SettingsUI.tscn
 msgid "QUIT"
 msgstr "ИЗЛЕЗИ"
 
@@ -203,12 +203,12 @@ msgid "Main Menu\n"
 msgstr "Главно Мени\n"
 
 #: Scenes/Reusable/SettingsUI.tscn
-msgid "Save\n"
-msgstr "Зачувај\n"
-
-#: Scenes/Reusable/SettingsUI.tscn
 msgid "Load\n"
 msgstr "Вчитај\n"
+
+#: Scenes/Reusable/SettingsUI.tscn
+msgid "Clicking this will exit the game , there is no save functionality"
+msgstr "Овде се гаси играта,  нема трајна меморија!"
 
 #: Scenes/Reusable/TaskManager.tscn
 msgid "Tasks"
@@ -1462,39 +1462,70 @@ msgstr ""
 msgid "New Code Region"
 msgstr ""
 
+msgid "Linear"
+msgstr ""
+
 msgid "Pick a color from the screen."
 msgstr ""
 
 msgid "Pick a color from the application window."
 msgstr ""
 
-msgid ""
-"Color: #%s\n"
-"LMB: Apply color\n"
-"RMB: Remove preset"
+msgid "Alpha"
 msgstr ""
 
-msgid ""
-"Color: #%s\n"
-"LMB: Apply color"
+msgid "Intensity"
 msgstr ""
 
-msgid "The changes to this palette have not been saved to a file."
+msgid "Expr"
+msgstr ""
+
+msgid "Hex"
 msgstr ""
 
 msgid "Enter a hex code (\"#ff0000\") or named color (\"red\")."
 msgstr ""
 
+msgid "Load Color Palette"
+msgstr ""
+
+msgid "Save Color Palette"
+msgstr ""
+
+msgid "The changes to this palette have not been saved to a file."
+msgstr ""
+
+#, fuzzy
+#| msgid "Save\n"
+msgid "Save"
+msgstr "Зачувај\n"
+
 msgid "Save the current color palette to reuse later."
 msgstr ""
+
+#, fuzzy
+#| msgid "Save\n"
+msgid "Save As"
+msgstr "Зачувај\n"
 
 msgid "Save the current color palette as a new to reuse later."
 msgstr ""
 
+#, fuzzy
+#| msgid "Load\n"
+msgid "Load"
+msgstr "Вчитај\n"
+
 msgid "Load existing color palette."
 msgstr ""
 
+msgid "Clear"
+msgstr ""
+
 msgid "Clear the currently loaded color palettes in the picker."
+msgstr ""
+
+msgid "Pick"
 msgstr ""
 
 msgid "Select a picker shape."
@@ -1506,7 +1537,7 @@ msgstr ""
 msgid "Colorized Sliders"
 msgstr ""
 
-msgid "Hex"
+msgid "Hexadecimal Values"
 msgstr ""
 
 msgid "Hex code or named color"
@@ -1522,6 +1553,47 @@ msgid "Recent Colors"
 msgstr ""
 
 msgid "Add current color as a preset."
+msgstr ""
+
+msgid "Screen Recording permission missing!"
+msgstr ""
+
+msgid ""
+"Screen Recording permission is required to pick colors from the other "
+"application windows.\n"
+"Click here to request access..."
+msgstr ""
+
+msgid ""
+"Color: %s\n"
+"LMB: Apply color"
+msgstr ""
+
+msgid ""
+"Color: %s\n"
+"LMB: Apply color\n"
+"RMB: Remove preset"
+msgstr ""
+
+msgid "Color: %s"
+msgstr ""
+
+msgid "HSV Rectangle"
+msgstr ""
+
+msgid "OK HS Rectangle"
+msgstr ""
+
+msgid "OK HL Rectangle"
+msgstr ""
+
+msgid "HSV Wheel"
+msgstr ""
+
+msgid "VHS Circle"
+msgstr ""
+
+msgid "OKHSL Circle"
 msgstr ""
 
 msgid "OK"
@@ -1546,11 +1618,6 @@ msgstr ""
 
 msgid "Select Current Folder"
 msgstr ""
-
-#, fuzzy
-#| msgid "Save\n"
-msgid "Save"
-msgstr "Зачувај\n"
 
 msgid "Select This Folder"
 msgstr ""
@@ -1594,16 +1661,64 @@ msgstr ""
 msgid "Path:"
 msgstr ""
 
+msgid "Drive"
+msgstr ""
+
 msgid "Refresh files."
 msgstr ""
 
-msgid "Toggle the visibility of hidden files."
+msgid "(Un)favorite current folder."
 msgstr ""
 
 msgid "Create a new folder."
 msgstr ""
 
+msgid "Favorites:"
+msgstr ""
+
+msgid "Recent:"
+msgstr ""
+
 msgid "Directories & Files:"
+msgstr ""
+
+msgid "Toggle the visibility of hidden files."
+msgstr ""
+
+msgid "View items as a grid of thumbnails."
+msgstr ""
+
+msgid "View items as a list."
+msgstr ""
+
+msgid "Toggle the visibility of the filter for file names."
+msgstr ""
+
+msgid "Sort files"
+msgstr ""
+
+msgid "Sort by Name (Ascending)"
+msgstr ""
+
+msgid "Sort by Name (Descending)"
+msgstr ""
+
+msgid "Sort by Type (Ascending)"
+msgstr ""
+
+msgid "Sort by Type (Descending)"
+msgstr ""
+
+msgid "Sort by Modified Time (Newest First)"
+msgstr ""
+
+msgid "Sort by Modified Time (Oldest First)"
+msgstr ""
+
+msgid "Filter:"
+msgstr ""
+
+msgid "Filename Filter:"
 msgstr ""
 
 msgid "File:"
@@ -1616,6 +1731,12 @@ msgid "Could not create folder."
 msgstr ""
 
 msgid "Invalid extension, or empty filename."
+msgstr ""
+
+msgid "connection to %s (%s) port %d"
+msgstr ""
+
+msgid "connection from %s (%s) port %d"
 msgstr ""
 
 msgid "Zoom Out"
@@ -1640,6 +1761,48 @@ msgid "Toggle the graph minimap."
 msgstr ""
 
 msgid "Automatically arrange selected nodes."
+msgstr ""
+
+msgid "graph node %s (%s)"
+msgstr ""
+
+msgid "slot %d of %d"
+msgstr ""
+
+msgid "input port, type: %s"
+msgstr ""
+
+msgid "input port, type: %d"
+msgstr ""
+
+msgid "no connections"
+msgstr ""
+
+msgid "output port, type: %s"
+msgstr ""
+
+msgid "output port, type: %d"
+msgstr ""
+
+msgid "currently selecting target port"
+msgstr ""
+
+msgid "has %d slots"
+msgstr ""
+
+msgid "Edit Input Port Connection"
+msgstr ""
+
+msgid "Edit Output Port Connection"
+msgstr ""
+
+msgid "Follow Input Port Connection"
+msgstr ""
+
+msgid "Follow Output Port Connection"
+msgstr ""
+
+msgid ", in slot %d of graph node %s (%s)"
 msgstr ""
 
 msgid "Same as Layout Direction"
@@ -1717,9 +1880,6 @@ msgstr ""
 msgid "Select All"
 msgstr ""
 
-msgid "Clear"
-msgstr ""
-
 msgid "Undo"
 msgstr ""
 
@@ -1734,6 +1894,9 @@ msgstr ""
 
 msgid "Insert Control Character"
 msgstr ""
+
+#~ msgid "Save\n"
+#~ msgstr "Зачувај\n"
 
 #~ msgid "homeroom teacher"
 #~ msgstr "Класен раководител"

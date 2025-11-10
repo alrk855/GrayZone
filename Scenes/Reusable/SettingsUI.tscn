@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bu1qy61ttp47k"]
+[gd_scene load_steps=19 format=3 uid="uid://bu1qy61ttp47k"]
 
 [ext_resource type="Script" uid="uid://damghbksmw56q" path="res://Scenes/Reusable/settings_ui.gd" id="1_iak35"]
 [ext_resource type="Theme" uid="uid://b4sfnwtf87bqu" path="res://Themes/settingsFont.tres" id="1_isorg"]
@@ -29,6 +29,22 @@ corner_radius_top_left = 9
 corner_radius_top_right = 9
 corner_radius_bottom_right = 9
 corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eeoqn"]
+content_margin_left = 20.0
+content_margin_top = 12.0
+content_margin_right = 20.0
+content_margin_bottom = 12.0
+bg_color = Color(0.2555218, 6.4675696e-08, 7.219613e-08, 0.4627451)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0, 0, 0, 0.5568628)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="Control" type="CanvasLayer"]
 script = ExtResource("1_iak35")
@@ -366,6 +382,7 @@ text = "Main Menu
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_eeoqn")
 text = "QUIT"
 
 [node name="Load" type="Button" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
@@ -375,3 +392,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "Load
 "
+
+[node name="Label" type="Label" parent="Settings_Control/CardRoot/PanelContainer/VBoxContainer/CanvasLayer/Buttons"]
+layout_mode = 2
+text = "Clicking this will exit the game , there is no save functionality"
+horizontal_alignment = 1
